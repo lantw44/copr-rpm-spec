@@ -1,0 +1,16 @@
+BUILD
+BUILDROOT
+RPMS
+SOURCES
+SPECS
+SRPMS
+*.tgz
+*.tbz
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.lzma
+*.zip
+*.rpm
+.*.swp
+.*.swo
