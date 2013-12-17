@@ -1,10 +1,10 @@
 Name:       qelly
 Version:    1.0
-Release:    0.1.alpha3%{?dist}
+Release:    0.1.beta%{?dist}
 Summary:    Qelly is a Qt port of Nally
 
 %global     real_name     Qelly
-%global     real_version  1.0a3
+%global     real_version  1.0b
 
 Group:      Applications/Internet
 License:    GPLv3
@@ -40,6 +40,9 @@ install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
 %doc AUTHORS CHANGES LICENSE README.md
 
 %changelog
+* Tue Dec 17 2013 Ting-Wei Lan <lantw44@gmail.com>
+- Update to 1.0b (https://github.com/uranusjr/Qelly/releases/tag/v1.0b)
+
 * Mon Oct 21 2013 Ting-Wei Lan <lantw44@gmail.com>
 - Update to 1.0a3 (https://github.com/uranusjr/Qelly/releases/tag/v1.0a3)
 
