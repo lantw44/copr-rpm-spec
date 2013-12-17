@@ -1,6 +1,6 @@
 Name:       guix
-Version:    0.4
-Release:    4%{?dist}
+Version:    0.5
+Release:    1%{?dist}
 Summary:    a purely functional package manager for the GNU system
 
 Group:      System Environment/Base
@@ -85,5 +85,8 @@ fi
 %exclude %{_infodir}/dir
 
 %changelog
+* Tue Dec 17 2013 Ting-Wei Lan <lantw44@gmail.com>
+- Update to 0.5
+
 * Mon Sep 30 2013 Ting-Wei Lan <lantw44@gmail.com>
 - Initial packaging
