@@ -129,10 +129,6 @@ Copr: lantw44/patches
 Note: This is a modified package. Install it if you want Lua intepreter
 support in Vim.
 
-Copr: lantw44/patches
-Note: This is a modified package. Install it if you want Lua intepreter
-support in Vim.
-
 VIM (VIsual editor iMproved) is an updated and improved version of the
 vi editor.  Vi was the first real screen-based editor for UNIX, and is
 still very popular.  VIM improves on vi by adding new features:
