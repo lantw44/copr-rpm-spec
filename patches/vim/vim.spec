@@ -1,4 +1,4 @@
-%define patchlevel 027
+%define patchlevel 179
 %if %{?WITH_SELINUX:0}%{!?WITH_SELINUX:1}
 %define WITH_SELINUX 1
 %endif
@@ -20,7 +20,7 @@ Summary: The VIM editor (Copr: lantw44/patches)
 URL:     http://www.vim.org/
 Name: vim
 Version: %{baseversion}.%{patchlevel}
-Release: 2%{?dist}
+Release: 1%{?dist}
 License: Vim
 Group: Applications/Editors
 Source0: ftp://ftp.vim.org/pub/vim/unix/vim-%{baseversion}.tar.bz2
@@ -74,6 +74,158 @@ Patch024: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.024
 Patch025: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.025
 Patch026: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.026
 Patch027: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.027
+Patch028: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.028
+Patch029: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.029
+Patch030: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.030
+Patch031: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.031
+Patch032: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.032
+Patch033: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.033
+Patch034: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.034
+Patch035: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.035
+Patch036: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.036
+Patch037: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.037
+Patch038: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.038
+Patch039: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.039
+Patch040: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.040
+Patch041: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.041
+Patch042: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.042
+Patch043: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.043
+Patch044: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.044
+Patch045: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.045
+Patch046: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.046
+Patch047: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.047
+Patch048: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.048
+Patch049: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.049
+Patch050: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.050
+Patch051: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.051
+Patch052: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.052
+Patch053: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.053
+Patch054: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.054
+Patch055: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.055
+Patch056: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.056
+Patch057: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.057
+Patch058: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.058
+Patch059: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.059
+Patch060: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.060
+Patch061: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.061
+Patch062: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.062
+Patch063: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.063
+Patch064: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.064
+Patch065: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.065
+Patch066: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.066
+Patch067: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.067
+Patch068: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.068
+Patch069: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.069
+Patch070: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.070
+Patch071: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.071
+Patch072: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.072
+Patch073: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.073
+Patch074: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.074
+Patch075: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.075
+Patch076: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.076
+Patch077: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.077
+Patch078: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.078
+Patch079: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.079
+Patch080: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.080
+Patch081: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.081
+Patch082: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.082
+Patch083: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.083
+Patch084: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.084
+Patch085: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.085
+Patch086: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.086
+Patch087: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.087
+Patch088: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.088
+Patch089: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.089
+Patch090: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.090
+Patch091: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.091
+Patch092: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.092
+Patch093: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.093
+Patch094: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.094
+Patch095: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.095
+Patch096: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.096
+Patch097: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.097
+Patch098: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.098
+Patch099: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.099
+Patch100: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.100
+Patch101: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.101
+Patch102: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.102
+Patch103: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.103
+Patch104: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.104
+Patch105: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.105
+Patch106: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.106
+Patch107: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.107
+Patch108: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.108
+Patch109: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.109
+Patch110: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.110
+Patch111: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.111
+Patch112: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.112
+Patch113: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.113
+Patch114: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.114
+Patch115: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.115
+Patch116: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.116
+Patch117: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.117
+Patch118: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.118
+Patch119: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.119
+Patch120: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.120
+Patch121: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.121
+Patch122: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.122
+Patch123: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.123
+Patch124: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.124
+Patch125: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.125
+Patch126: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.126
+Patch127: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.127
+Patch128: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.128
+Patch129: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.129
+Patch130: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.130
+Patch131: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.131
+Patch132: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.132
+Patch133: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.133
+Patch134: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.134
+Patch135: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.135
+Patch136: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.136
+Patch137: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.137
+Patch138: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.138
+Patch139: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.139
+Patch140: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.140
+Patch141: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.141
+Patch142: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.142
+Patch143: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.143
+Patch144: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.144
+Patch145: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.145
+Patch146: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.146
+Patch147: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.147
+Patch148: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.148
+Patch149: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.149
+Patch150: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.150
+Patch151: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.151
+Patch152: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.152
+Patch153: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.153
+Patch154: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.154
+Patch155: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.155
+Patch156: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.156
+Patch157: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.157
+Patch158: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.158
+Patch159: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.159
+Patch160: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.160
+Patch161: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.161
+Patch162: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.162
+Patch163: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.163
+Patch164: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.164
+Patch165: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.165
+Patch166: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.166
+Patch167: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.167
+Patch168: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.168
+Patch169: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.169
+Patch170: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.170
+Patch171: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.171
+Patch172: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.172
+Patch173: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.173
+Patch174: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.174
+Patch175: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.175
+Patch176: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.176
+Patch177: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.177
+Patch178: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.178
+Patch179: ftp://ftp.vim.org/pub/vim/patches/7.4/7.4.179
 
 Patch3000: vim-7.4-syntax.patch
 Patch3002: vim-7.1-nowarnings.patch
@@ -270,6 +422,158 @@ perl -pi -e "s,bin/nawk,bin/awk,g" runtime/tools/mve.awk
 %patch025 -p0
 %patch026 -p0
 %patch027 -p0
+%patch028 -p0
+%patch029 -p0
+%patch030 -p0
+%patch031 -p0
+%patch032 -p0
+%patch033 -p0
+%patch034 -p0
+%patch035 -p0
+%patch036 -p0
+%patch037 -p0
+%patch038 -p0
+%patch039 -p0
+%patch040 -p0
+%patch041 -p0
+%patch042 -p0
+%patch043 -p0
+%patch044 -p0
+%patch045 -p0
+%patch046 -p0
+%patch047 -p0
+%patch048 -p0
+%patch049 -p0
+%patch050 -p0
+%patch051 -p0
+%patch052 -p0
+%patch053 -p0
+%patch054 -p0
+%patch055 -p0
+%patch056 -p0
+%patch057 -p0
+%patch058 -p0
+%patch059 -p0
+%patch060 -p0
+%patch061 -p0
+%patch062 -p0
+%patch063 -p0
+%patch064 -p0
+%patch065 -p0
+%patch066 -p0
+%patch067 -p0
+%patch068 -p0
+%patch069 -p0
+%patch070 -p0
+%patch071 -p0
+%patch072 -p0
+%patch073 -p0
+%patch074 -p0
+%patch075 -p0
+%patch076 -p0
+%patch077 -p0
+%patch078 -p0
+%patch079 -p0
+%patch080 -p0
+%patch081 -p0
+%patch082 -p0
+%patch083 -p0
+%patch084 -p0
+%patch085 -p0
+%patch086 -p0
+%patch087 -p0
+%patch088 -p0
+%patch089 -p0
+%patch090 -p0
+%patch091 -p0
+%patch092 -p0
+%patch093 -p0
+%patch094 -p0
+%patch095 -p0
+%patch096 -p0
+%patch097 -p0
+%patch098 -p0
+%patch099 -p0
+%patch100 -p0
+%patch101 -p0
+%patch102 -p0
+%patch103 -p0
+%patch104 -p0
+%patch105 -p0
+%patch106 -p0
+%patch107 -p0
+%patch108 -p0
+%patch109 -p0
+%patch110 -p0
+%patch111 -p0
+%patch112 -p0
+%patch113 -p0
+%patch114 -p0
+%patch115 -p0
+%patch116 -p0
+%patch117 -p0
+%patch118 -p0
+%patch119 -p0
+%patch120 -p0
+%patch121 -p0
+%patch122 -p0
+%patch123 -p0
+%patch124 -p0
+%patch125 -p0
+%patch126 -p0
+%patch127 -p0
+%patch128 -p0
+%patch129 -p0
+%patch130 -p0
+%patch131 -p0
+%patch132 -p0
+%patch133 -p0
+%patch134 -p0
+%patch135 -p0
+%patch136 -p0
+%patch137 -p0
+%patch138 -p0
+%patch139 -p0
+%patch140 -p0
+%patch141 -p0
+%patch142 -p0
+%patch143 -p0
+%patch144 -p0
+%patch145 -p0
+%patch146 -p0
+%patch147 -p0
+%patch148 -p0
+%patch149 -p0
+%patch150 -p0
+%patch151 -p0
+%patch152 -p0
+%patch153 -p0
+%patch154 -p0
+%patch155 -p0
+%patch156 -p0
+%patch157 -p0
+%patch158 -p0
+%patch159 -p0
+%patch160 -p0
+%patch161 -p0
+%patch162 -p0
+%patch163 -p0
+%patch164 -p0
+%patch165 -p0
+%patch166 -p0
+%patch167 -p0
+%patch168 -p0
+%patch169 -p0
+%patch170 -p0
+%patch171 -p0
+%patch172 -p0
+%patch173 -p0
+%patch174 -p0
+%patch175 -p0
+%patch176 -p0
+%patch177 -p0
+%patch178 -p0
+%patch179 -p0
 
 # install spell files
 %if %{withvimspell}
@@ -772,9 +1076,24 @@ rm -rf %{buildroot}
 %{_datadir}/icons/hicolor/*/apps/*
 
 %changelog
-* Tue Jan 28 2014 Ting-Wei Lan <lantw44@gmail.com> 7.4.027-2
-- modified from Fedora official repo, version 7.4.027-2
+* Wed Feb 19 2014 Ting-Wei Lan <lantw44@gmail.com> 7.4.179-1
+- modified from Fedora official repo, version 7.4.179-1
 - add Lua interpreter support
+
+* Sat Feb 15 2014 Karsten Hopp <karsten@redhat.com> 7.4.179-1
+- patchlevel 179
+
+* Wed Jan 29 2014 Karsten Hopp <karsten@redhat.com> 7.4.160-1
+- patchlevel 160
+
+* Tue Dec 17 2013 Karsten Hopp <karsten@redhat.com> 7.4.131-1
+- patchlevel 131
+
+* Wed Nov 20 2013 Karsten Hopp <karsten@redhat.com> 7.4.094-1
+- patchlevel 094
+
+* Tue Oct 15 2013 Karsten Hopp <karsten@redhat.com> 7.4.052-1
+- patchlevel 052
 
 * Wed Sep 11 2013 Karsten Hopp <karsten@redhat.com> 7.4.027-2
 - update vim icons (#1004788)
