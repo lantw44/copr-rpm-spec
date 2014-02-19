@@ -7,6 +7,7 @@ Packages built using modified RPM spec file or additional patches. All packages 
  * ht: Update to the latest version and prevent file name conflict with TeXLive
  * gnome-settings-daemon: Add buttons-have-images and menus-have-icons
  * gsettings-desktop-schemas: Respect buttons-have-images and menus-have-icons
+ * blender: Add FFmpeg support (Not available in Copr due to legal issues)
 
 _WARNING: Packages in this repo have the same names as packages from official Fedora repos._ You can identify whether packages are installed from this repo by checking the Summary and Description of the packages.
 
