@@ -7,9 +7,12 @@ Packages built using modified RPM spec file or additional patches. All packages 
  * ht: Update to the latest version and prevent file name conflict with TeXLive
  * gnome-settings-daemon: Add buttons-have-images and menus-have-icons
  * gsettings-desktop-schemas: Respect buttons-have-images and menus-have-icons
+ * lilyterm-gtk3: LilyTerm built using GTK+ 3 and latest VTE
  * blender: Add FFmpeg support (Not available in Copr due to legal issues)
 
-_WARNING: Packages in this repo have the same names as packages from official Fedora repos._ You can identify whether packages are installed from this repo by checking the Summary and Description of the packages.
+_WARNING: Packages in this repo may have the same names as packages from official Fedora repos._ You can identify whether packages are installed from this repo by checking the Summary and Description of the packages.
+
+_WARNING: You should reinstall both gnome-settings-daemon and gsettings-desktop-schemas from this repository._ Installing only one of them may cause GNOME shell fail to start.
 
 #### SRPMs Git Repository
 * [Main](http://www.tfcis.org/~lantw44/cgit/cgit.cgi/copr-rpm-spec/)
