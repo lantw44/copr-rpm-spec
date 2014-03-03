@@ -1,0 +1,22 @@
+diff -Naur lilyterm-0.9.9.2/.default lilyterm-0.9.9.2.m/.default
+--- lilyterm-0.9.9.2/.default	2012-06-16 10:21:04.000000000 +0800
++++ lilyterm-0.9.9.2.m/.default	2014-03-03 22:58:38.767316222 +0800
+@@ -1,5 +1,5 @@
+ PACKAGE = LilyTerm
+-BINARY = lilyterm
++BINARY = lilyterm-gtk3
+ AUTHOR = Lu, Chao-Ming (Tetralet)
+ BUGREPORT = tetrlet@gmail.com
+ MAINSITE = http://lilyterm.luna.com.tw/index.html
+diff -Naur lilyterm-0.9.9.2/src/Makefile lilyterm-0.9.9.2.m/src/Makefile
+--- lilyterm-0.9.9.2/src/Makefile	2012-06-16 10:45:48.000000000 +0800
++++ lilyterm-0.9.9.2.m/src/Makefile	2014-03-03 23:03:01.999786972 +0800
+@@ -186,7 +186,7 @@
+ 		fi; \
+ 	done
+ 
+-%.o: %.c %.h data.h $(BINARY).h
++%.o: %.c %.h data.h lilyterm.h
+ 	@ $(PRINTF) "\033[1;33m** compiling $@...\033[0m\n"
+ 	@ $(CC) $(CFLAGS) $(INCLUDES) -c $< `$(OBJ_PKG_CMD)`
+ 
