@@ -1,12 +1,13 @@
 Name:       guix
 Version:    0.6
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    a purely functional package manager for the GNU system
 
 Group:      System Environment/Base
 License:    GPLv3+
 URL:        https://www.gnu.org/software/guix
 Source0:    ftp://alpha.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source1:    guix.service
 
 %global guile_required    2.0.5
 %global sqlite_required   3.6.19
@@ -16,6 +17,9 @@ Source0:    ftp://alpha.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 BuildRequires: guile-devel >= %{guile_required}
 BuildRequires: sqlite-devel >= %{sqlite_required}
 BuildRequires: bzip2-devel, libgcrypt-devel
+
+# Get %{_unitdir} macro
+BuildRequires: systemd
 
 Requires:   guile >= %{guile_required}
 Requires:   sqlite >= %{sqlite_required}
@@ -48,6 +52,8 @@ make install DESTDIR=%{buildroot}
 mkdir -p %{buildroot}/gnu/store
 mkdir -p %{buildroot}%{_localstatedir}/log/guix
 mkdir -p %{buildroot}%{_localstatedir}/guix
+mkdir -p %{buildroot}%{_unitdir}
+install -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/guix.service
 %find_lang %{name}
 
 %post
@@ -125,13 +131,17 @@ fi
 %{_infodir}/%{name}.info*
 %{_infodir}/images/bootstrap-graph.png.gz
 %exclude %{_infodir}/dir
+%{_unitdir}/guix.service
 
 %changelog
-* Thu Apr 10 2014 Ting-Wei Lan <lantw44@gmail.com>
+* Fri Apr 18 2014 Ting-Wei Lan <lantw44@gmail.com> - 0.6-2
+- Add a systemd service file
+
+* Thu Apr 10 2014 Ting-Wei Lan <lantw44@gmail.com> - 0.6-1
 - Update to 0.6
 
-* Tue Dec 17 2013 Ting-Wei Lan <lantw44@gmail.com>
+* Tue Dec 17 2013 Ting-Wei Lan <lantw44@gmail.com> - 0.5-1
 - Update to 0.5
 
-* Mon Sep 30 2013 Ting-Wei Lan <lantw44@gmail.com>
+* Mon Sep 30 2013 Ting-Wei Lan <lantw44@gmail.com> - 0.4-4
 - Initial packaging
