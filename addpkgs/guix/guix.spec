@@ -1,5 +1,5 @@
 Name:       guix
-Version:    0.5
+Version:    0.6
 Release:    1%{?dist}
 Summary:    a purely functional package manager for the GNU system
 
@@ -45,25 +45,27 @@ make %{?_smp_mflags}
 
 %install
 make install DESTDIR=%{buildroot}
-mkdir -p %{buildroot}/nix/store
-mkdir -p %{buildroot}%{_localstatedir}/log/nix
-mkdir -p %{buildroot}%{_localstatedir}/nix
+mkdir -p %{buildroot}/gnu/store
+mkdir -p %{buildroot}%{_localstatedir}/log/guix
+mkdir -p %{buildroot}%{_localstatedir}/guix
 %find_lang %{name}
 
 %post
 /sbin/install-info %{_infodir}/guix.info.gz %{_infodir}/dir || :
 if [ "$1" = 1 ]; then
     /sbin/groupadd -r %{guix_group}
-    /sbin/useradd -M -N -g %{guix_group} -d /nix/store -s /sbin/nologin \
+    /sbin/useradd -M -N -g %{guix_group} -d /gnu/store -s /sbin/nologin \
         -c "Guix build user" %{guix_user}
     /usr/bin/gpasswd -a %{guix_user} %{guix_group} >/dev/null
-    chgrp %{guix_user} /nix/store
-    chmod 1775 /nix/store
 fi
+chgrp %{guix_user} /gnu/store
+chmod 1775 /gnu/store
 
 %preun
 if [ "$1" = 0 ]; then
     /sbin/install-info --del %{_infodir}/guix.info.gz %{_infodir}/dir || :
+	rmdir --ignore-fail-on-non-empty /gnu/store
+	rmdir --ignore-fail-on-non-empty /gnu
 fi
 
 %files -f %{name}.lang
@@ -71,20 +73,63 @@ fi
 %{_bindir}/guix-daemon
 %{_sbindir}/guix-register
 %{_libexecdir}/guix/list-runtime-roots
+%{?fc20:%{_libexecdir}/guix/offload}
+%{?fc21:%{_libexecdir}/guix/offload}
 %{_libexecdir}/guix/substitute-binary
-%attr(4755,root,root) %{_libexecdir}/nix-setuid-helper
-%{_datadir}/guile/site/2.0/gnu/*
-%{_datadir}/guile/site/2.0/guix/*
+%{_libexecdir}/guix-authenticate
+%{_datadir}/guix/hydra.gnu.org.pub
+%{_datadir}/guile/site/2.0/gnu/packages.scm
+%{_datadir}/guile/site/2.0/gnu/packages.go
+%{_datadir}/guile/site/2.0/gnu/packages/*.scm
+%{_datadir}/guile/site/2.0/gnu/packages/*.go
+%{_datadir}/guile/site/2.0/gnu/packages/patches/*.patch
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/tar
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/xz
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/mkdir
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/bash
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/guile-2.0.9.tar.xz
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/i686-linux
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/i686-linux/tar
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/i686-linux/xz
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/i686-linux/mkdir
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/i686-linux/bash
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/i686-linux/guile-2.0.9.tar.xz
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/x86_64-linux
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/x86_64-linux/tar
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/x86_64-linux/xz
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/x86_64-linux/mkdir
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/x86_64-linux/bash
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/x86_64-linux/guile-2.0.9.tar.xz
+%{_datadir}/guile/site/2.0/gnu/services.scm
+%{_datadir}/guile/site/2.0/gnu/services.go
+%{_datadir}/guile/site/2.0/gnu/services/*.scm
+%{_datadir}/guile/site/2.0/gnu/services/*.go
+%{_datadir}/guile/site/2.0/gnu/system.scm
+%{_datadir}/guile/site/2.0/gnu/system.go
+%{_datadir}/guile/site/2.0/gnu/system/*.scm
+%{_datadir}/guile/site/2.0/gnu/system/*.go
 %{_datadir}/guile/site/2.0/guix.scm
 %{_datadir}/guile/site/2.0/guix.go
-%dir /nix/store
-%dir %{_localstatedir}/log/nix
-%dir %{_localstatedir}/nix
+%{_datadir}/guile/site/2.0/guix/*.scm
+%{_datadir}/guile/site/2.0/guix/*.go
+%{_datadir}/guile/site/2.0/guix/build/*.scm
+%{_datadir}/guile/site/2.0/guix/build/*.go
+%{_datadir}/guile/site/2.0/guix/scripts/*.scm
+%{_datadir}/guile/site/2.0/guix/scripts/*.go
+%{_datadir}/guile/site/2.0/guix/build-system/*.scm
+%{_datadir}/guile/site/2.0/guix/build-system/*.go
+%dir /gnu/store
+%dir %{_localstatedir}/log/guix
+%dir %{_localstatedir}/guix
 %{_infodir}/%{name}.info*
 %{_infodir}/images/bootstrap-graph.png.gz
 %exclude %{_infodir}/dir
 
 %changelog
+* Thu Apr 10 2014 Ting-Wei Lan <lantw44@gmail.com>
+- Update to 0.6
+
 * Tue Dec 17 2013 Ting-Wei Lan <lantw44@gmail.com>
 - Update to 0.5
 
