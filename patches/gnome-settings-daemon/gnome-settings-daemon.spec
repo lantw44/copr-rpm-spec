@@ -5,8 +5,8 @@
 %global geocode_glib_version 3.10.0
 
 Name:           gnome-settings-daemon
-Version:        3.10.2
-Release:        3%{?dist}
+Version:        3.10.3
+Release:        1%{?dist}
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/patches)
 
 Group:          System Environment/Daemons
@@ -19,12 +19,6 @@ Patch0:         %{name}-3.5.4-ppc-no-wacom.patch
 
 # already upstream, fixes launching gnome-software from the notification
 Patch1:         0001-updates-Correctly-start-gnome-software-when-clicking.patch
-
-# already upstream, fixes review in gnome-software
-Patch2:         0001-updates-Remove-the-unconditional-clearing-of-the-off.patch
-
-# upstream fix
-Patch3: 	0001-xsettings-export-Gtk-ShellShowsDesktop-setting.patch
 
 # respect menus-have-icons and buttons-have-icons settings
 Patch4:         gsd-respect-menus-buttons-icons.patch
@@ -105,8 +99,6 @@ The %{name}-updates package contains the updates plugin for %{name}
 %endif
 
 %patch1 -p1 -b .updates-fix-notification
-%patch2 -p1 -b .updates-fix-review
-%patch3 -p1 -b .shows-desktop
 
 %define _default_patch_fuzz 2
 %patch4 -p1 -b .menus-buttons-icons
@@ -295,6 +287,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.updates.gschema.xml
 
 %changelog
+* Tue Jun  3 2014 Rui Matos <rmatos@redhat.com> - 3.10.3-1
+- Update to 3.10.3
+
 * Tue Nov 26 2013 Matthias Clasen <mclasen@redhat.com> - 3.10.2-3
 - Export a shell-shows-desktop xsetting
 
