@@ -1,6 +1,6 @@
 Name:       guix
-Version:    0.6
-Release:    2%{?dist}
+Version:    0.7
+Release:    1%{?dist}
 Summary:    a purely functional package manager for the GNU system
 
 Group:      System Environment/Base
@@ -54,7 +54,8 @@ mkdir -p %{buildroot}%{_localstatedir}/log/guix
 mkdir -p %{buildroot}%{_localstatedir}/guix
 mkdir -p %{buildroot}%{_unitdir}
 install -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/guix.service
-%find_lang %{name}
+%find_lang guix
+%find_lang guix-packages
 
 %post
 /sbin/install-info %{_infodir}/guix.info.gz %{_infodir}/dir || :
@@ -74,7 +75,7 @@ if [ "$1" = 0 ]; then
 	rmdir --ignore-fail-on-non-empty /gnu
 fi
 
-%files -f %{name}.lang
+%files -f guix.lang -f guix-packages.lang
 %{_bindir}/guix
 %{_bindir}/guix-daemon
 %{_sbindir}/guix-register
@@ -84,10 +85,13 @@ fi
 %{_libexecdir}/guix/substitute-binary
 %{_libexecdir}/guix-authenticate
 %{_datadir}/guix/hydra.gnu.org.pub
+%{_datadir}/guile/site/2.0/gnu.scm
+%{_datadir}/guile/site/2.0/gnu.go
 %{_datadir}/guile/site/2.0/gnu/packages.scm
 %{_datadir}/guile/site/2.0/gnu/packages.go
 %{_datadir}/guile/site/2.0/gnu/packages/*.scm
 %{_datadir}/guile/site/2.0/gnu/packages/*.go
+%{_datadir}/guile/site/2.0/gnu/packages/linux-libre-*.conf
 %{_datadir}/guile/site/2.0/gnu/packages/patches/*.patch
 %{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux
 %{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/tar
@@ -115,6 +119,7 @@ fi
 %{_datadir}/guile/site/2.0/gnu/system.go
 %{_datadir}/guile/site/2.0/gnu/system/*.scm
 %{_datadir}/guile/site/2.0/gnu/system/*.go
+%{_datadir}/guile/site/2.0/gnu/system/os-config.tmpl
 %{_datadir}/guile/site/2.0/guix.scm
 %{_datadir}/guile/site/2.0/guix.go
 %{_datadir}/guile/site/2.0/guix/*.scm
@@ -134,6 +139,9 @@ fi
 %{_unitdir}/guix.service
 
 %changelog
+* Tue Jul 29 2014 Ting-Wei Lan <lantw44@gmail.com> - 0.7-1
+- Update to 0.7
+
 * Fri Apr 18 2014 Ting-Wei Lan <lantw44@gmail.com> - 0.6-2
 - Add a systemd service file
 
