@@ -6,7 +6,7 @@
 
 Name:           gnome-settings-daemon
 Version:        3.10.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/patches)
 
 Group:          System Environment/Daemons
@@ -287,6 +287,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.updates.gschema.xml
 
 %changelog
+* Thu Jul 17 2014 Rex Dieter <rdieter@fedoraproject.org> 3.10.3-2
+- rebuild (for pulseaudio, bug #1117683)
+
 * Tue Jun  3 2014 Rui Matos <rmatos@redhat.com> - 3.10.3-1
 - Update to 3.10.3
 
