@@ -1,6 +1,6 @@
 Name:       guix
 Version:    0.8
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    a purely functional package manager for the GNU system
 
 Group:      System Environment/Base
@@ -69,7 +69,6 @@ make %{?_smp_mflags}
 make install DESTDIR=%{buildroot}
 mkdir -p %{buildroot}/gnu/store
 mkdir -p %{buildroot}%{_localstatedir}/log/guix
-mkdir -p %{buildroot}%{_localstatedir}/guix
 mkdir -p %{buildroot}%{_unitdir}
 install -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/guix.service
 %{_emacs_bytecompile} %{buildroot}%{_emacs_sitelispdir}/guix*.el
@@ -158,7 +157,6 @@ fi
 %{_datadir}/guile/site/2.0/guix/build-system/*.go
 %dir /gnu/store
 %dir %{_localstatedir}/log/guix
-%dir %{_localstatedir}/guix
 %{_infodir}/%{name}.info*
 %{_infodir}/images/bootstrap-graph.png.gz
 %exclude %{_infodir}/dir
@@ -171,6 +169,10 @@ fi
 %{_emacs_sitelispdir}/guix*.el
 
 %changelog
+* Sat Nov 22 2014 Ting-Wei Lan <lantw44@gmail.com> - 0.8-2
+- Do not create /var/guix, which prevents guix-daemon from populating /var/guix
+  and /gnu/store on the first start.
+
 * Wed Nov 19 2014 Ting-Wei Lan <lantw44@gmail.com> - 0.8-1
 - Update to 0.8
 
