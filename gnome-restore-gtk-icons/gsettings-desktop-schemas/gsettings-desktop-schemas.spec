@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           gsettings-desktop-schemas
-Version:        3.10.1
+Version:        3.14.1
 Release:        1%{?dist}
 Summary:        A collection of GSettings schemas (Copr: lantw44/patches)
 
@@ -10,9 +10,9 @@ License:        LGPLv2+
 # no homepage exists for this component
 URL:            http://bugzilla.gnome.org/enter_bug.cgi?product=gsettings-desktop-schemas
 #VCS: git:git://git.gnome.org/gsettings-desktop-schemas
-Source:         http://download.gnome.org/sources/%{name}/3.10/%{name}-%{version}.tar.xz
-
-Patch0:         gds-revert-icons-settings.patch
+Source:         http://download.gnome.org/sources/%{name}/3.14/%{name}-%{version}.tar.xz
+# revert settings related to icons and buttons
+Patch0:         %{name}-3.14-revert-icons-settings.patch
 
 BuildRequires: glib2-devel >= 2.31.0
 BuildRequires: intltool
@@ -21,9 +21,9 @@ BuildRequires: gobject-introspection-devel
 Requires: glib2 >= 2.31.0
 
 %description
-Copr: lantw44/patches
+Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.10 or later version.
+buttons and menus in GNOME 3.14.
 
 gsettings-desktop-schemas contains a collection of GSettings schemas for
 settings shared by various components of a desktop.
@@ -31,7 +31,7 @@ settings shared by various components of a desktop.
 %package        devel
 Summary:        Development files for %{name}
 Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description    devel
 The %{name}-devel package contains libraries
@@ -40,7 +40,7 @@ and header files for developing applications that use %{name}.
 
 %prep
 %setup -q
-%patch0 -p1 -b .icons.settings
+%patch0 -p1 -b .revert.icons.settings
 
 %build
 %configure --disable-schemas-compile --enable-introspection=yes
@@ -76,6 +76,55 @@ fi
 
 
 %changelog
+* Wed Oct 15 2014 Kalev Lember <kalevlember@gmail.com> - 3.14.1-1
+- Update to 3.14.1
+
+* Mon Sep 22 2014 Kalev Lember <kalevlember@gmail.com> - 3.14.0-1
+- Update to 3.14.0
+
+* Tue Sep 02 2014 Kalev Lember <kalevlember@gmail.com> - 3.13.92-1
+- Update to 3.13.92
+- Tighten -devel subpackage deps
+
+* Tue Aug 19 2014 Kalev Lember <kalevlember@gmail.com> - 3.13.91-1
+- Update to 3.13.91
+
+* Mon Aug 18 2014 Kalev Lember <kalevlember@gmail.com> - 3.13.90-1
+- Update to 3.13.90
+
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.13.2-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Tue Jul 22 2014 Kalev Lember <kalevlember@gmail.com> - 3.13.2-3
+- Rebuilt for gobject-introspection 1.41.4
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.13.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Wed May 28 2014 Kalev Lember <kalevlember@gmail.com> - 3.13.2-1
+- Update to 3.13.2
+
+* Thu May 01 2014 Kalev Lember <kalevlember@gmail.com> - 3.13.1-1
+- Update to 3.13.1
+
+* Mon Mar 24 2014 Richard Hughes <rhughes@redhat.com> - 3.12.0-1
+- Update to 3.12.0
+
+* Tue Mar 18 2014 Richard Hughes <rhughes@redhat.com> - 3.11.91-1
+- Update to 3.11.91
+
+* Tue Feb 18 2014 Richard Hughes <rhughes@redhat.com> - 3.11.90-1
+- Update to 3.11.90
+
+* Tue Feb 04 2014 Richard Hughes <rhughes@redhat.com> - 3.11.5-1
+- Update to 3.11.5
+
+* Tue Jan 14 2014 Richard Hughes <rhughes@redhat.com> - 3.11.4-1
+- Update to 3.11.4
+
+* Mon Dec 23 2013 Adam Williamson <awilliam@redhat.com> - 3.11.3-1
+- Update to 3.11.3
+
 * Wed Oct 16 2013 Richard Hughes <rhughes@redhat.com> - 3.10.1-1
 - Update to 3.10.1
 

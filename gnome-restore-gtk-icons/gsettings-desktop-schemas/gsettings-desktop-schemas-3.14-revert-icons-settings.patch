@@ -12,7 +12,7 @@ index 98539c3..2e42a2f 100644
  #toolbar-detachable = /desktop/gnome/interface/toolbar_detachable
  #toolbar-icons-size = /desktop/gnome/interface/toolbar_icons_size
 diff --git a/schemas/org.gnome.desktop.interface.gschema.xml.in.in b/schemas/org.gnome.desktop.interface.gschema.xml.in.in
-index c102bd1..3307b4a 100644
+index 82c7984..e56d82a 100644
 --- a/schemas/org.gnome.desktop.interface.gschema.xml.in.in
 +++ b/schemas/org.gnome.desktop.interface.gschema.xml.in.in
 @@ -38,6 +38,20 @@

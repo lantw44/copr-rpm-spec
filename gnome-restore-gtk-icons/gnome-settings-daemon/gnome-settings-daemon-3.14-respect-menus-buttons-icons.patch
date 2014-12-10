@@ -1,8 +1,8 @@
 diff --git a/plugins/xsettings/gsd-xsettings-manager.c b/plugins/xsettings/gsd-xsettings-manager.c
-index fcd7bf2..ae672b0 100644
+index 489021c..73a5d14 100644
 --- a/plugins/xsettings/gsd-xsettings-manager.c
 +++ b/plugins/xsettings/gsd-xsettings-manager.c
-@@ -379,6 +379,8 @@ static TranslationEntry translations [] = {
+@@ -411,6 +411,8 @@ static TranslationEntry translations [] = {
          { "org.gnome.desktop.interface", "gtk-im-status-style",    "Gtk/IMStatusStyle",       translate_string_string },
          { "org.gnome.desktop.interface", "gtk-im-module",          "Gtk/IMModule",            translate_string_string },
          { "org.gnome.desktop.interface", "icon-theme",             "Net/IconThemeName",       translate_string_string },

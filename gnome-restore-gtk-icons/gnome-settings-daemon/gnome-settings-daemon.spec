@@ -1,29 +1,26 @@
-%global gnome_desktop_version 3.9.0
+%global gtk3_version 3.12.0
+%global gnome_desktop_version 3.11.1
 %global libgweather_version 3.9.5
 %global gsettings_desktop_schemas_version 3.9.91
-%global geoclue_version 1.99.3
+%global geoclue_version 2.1.2
 %global geocode_glib_version 3.10.0
 
 Name:           gnome-settings-daemon
-Version:        3.10.3
-Release:        2%{?dist}
+Version:        3.14.2
+Release:        1%{?dist}
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/patches)
 
 Group:          System Environment/Daemons
 License:        GPLv2+
 URL:            http://download.gnome.org/sources/%{name}
 #VCS: git:git://git.gnome.org/gnome-settings-daemon
-Source:         http://download.gnome.org/sources/%{name}/3.10/%{name}-%{version}.tar.xz
+Source:         http://download.gnome.org/sources/%{name}/3.14/%{name}-%{version}.tar.xz
 # disable wacom for ppc/ppc64 (used on RHEL)
 Patch0:         %{name}-3.5.4-ppc-no-wacom.patch
-
-# already upstream, fixes launching gnome-software from the notification
-Patch1:         0001-updates-Correctly-start-gnome-software-when-clicking.patch
-
 # respect menus-have-icons and buttons-have-icons settings
-Patch4:         gsd-respect-menus-buttons-icons.patch
+Patch1:         %{name}-3.14-respect-menus-buttons-icons.patch
 
-BuildRequires:  gtk3-devel >= 3.7.8
+BuildRequires:  gtk3-devel >= %{gtk3_version}
 BuildRequires:  gnome-desktop3-devel >= %{gnome_desktop_version}
 BuildRequires:  xorg-x11-proto-devel libXxf86misc-devel
 BuildRequires:  pulseaudio-libs-devel
@@ -50,27 +47,37 @@ BuildRequires:  lcms2-devel >= 2.2
 BuildRequires:  libXi-devel libXfixes-devel
 BuildRequires:  systemd-devel
 BuildRequires:  libXtst-devel
-BuildRequires:  libxkbfile-devel
-BuildRequires:  ibus-devel
+%if 0%{?fedora}
+BuildRequires:  libwayland-client-devel
+%endif
 BuildRequires:  libxslt
 BuildRequires:  docbook-style-xsl
+BuildRequires:  xkeyboard-config-devel
+BuildRequires:  NetworkManager-glib-devel
 %ifnarch s390 s390x %{?rhel:ppc ppc64}
 BuildRequires:  libwacom-devel >= 0.7
 BuildRequires:  xorg-x11-drv-wacom-devel
 %endif
 
 Requires: colord
-Requires: control-center-filesystem
 Requires: geoclue2 >= %{geoclue_version}
 Requires: geocode-glib%{?_isa} >= %{geocode_glib_version}
 Requires: gnome-desktop3%{?_isa} >= %{gnome_desktop_version}
 Requires: gsettings-desktop-schemas%{?_isa} >= %{gsettings_desktop_schemas_version}
+Requires: gtk3%{?_isa} >= %{gtk3_version}
 Requires: libgweather%{?_isa} >= %{libgweather_version}
 
+Obsoletes: %{name}-updates < 3.13.1
+Obsoletes: drwright < 3.5.0-3
+
+# Input sources handling was moved to gnome-shell / mutter; make sure not to
+# break older gnome-shell versions.
+Conflicts: gnome-shell < 3.13.92
+
 %description
-Copr: lantw44/patches
+Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.10 or later version.
+buttons and menus in GNOME 3.14.
 
 A daemon to share settings from GNOME to other applications. It also
 handles global keybindings, as well as a number of desktop-wide settings.
@@ -78,19 +85,11 @@ handles global keybindings, as well as a number of desktop-wide settings.
 %package        devel
 Summary:        Development files for %{name}
 Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description    devel
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
-
-%package	updates
-Summary:        updates plugin for  %{name} 
-Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
-
-%description	updates
-The %{name}-updates package contains the updates plugin for %{name} 
 
 %prep
 %setup -q
@@ -98,18 +97,16 @@ The %{name}-updates package contains the updates plugin for %{name}
 %patch0 -p1 -b .ppc-no-wacom
 %endif
 
-%patch1 -p1 -b .updates-fix-notification
-
-%define _default_patch_fuzz 2
-%patch4 -p1 -b .menus-buttons-icons
+%patch1 -p1 -b .menus-buttons-icons
 
 autoreconf -i -f
 
 %build
 %configure --disable-static \
-           --enable-profiling \
-           --enable-packagekit \
-           --enable-systemd
+%if 0%{?rhel}
+           --disable-wayland \
+%endif
+           --enable-profiling
 make %{?_smp_mflags}
 
 
@@ -133,14 +130,6 @@ fi
 
 %posttrans
 gtk-update-icon-cache %{_datadir}/icons/hicolor >&/dev/null || :
-glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
-
-%postun	updates
-if [ $1 -eq 0 ]; then
-  glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
-fi
-
-%posttrans updates
 glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 %files -f %{name}.lang
@@ -182,9 +171,6 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libdir}/gnome-settings-daemon-3.0/print-notifications.gnome-settings-plugin
 %{_libdir}/gnome-settings-daemon-3.0/libprint-notifications.so
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.print-notifications.gschema.xml
-
-%{_libdir}/gnome-settings-daemon-3.0/remote-display.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libremote-display.so
 
 %{_libdir}/gnome-settings-daemon-3.0/librfkill.so
 %{_libdir}/gnome-settings-daemon-3.0/rfkill.gnome-settings-plugin
@@ -231,6 +217,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libdir}/gnome-settings-daemon-3.0/libcursor.so
 %{_libdir}/gnome-settings-daemon-3.0/cursor.gnome-settings-plugin
 
+%{_libdir}/gnome-settings-daemon-3.0/libsharing.so
+%{_libdir}/gnome-settings-daemon-3.0/sharing.gnome-settings-plugin
+%{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.sharing.gschema.xml
+
 %{_libdir}/gnome-settings-daemon-3.0/libgsd.so
 
 %{_libexecdir}/gnome-settings-daemon
@@ -238,6 +228,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-locate-pointer
 %{_libexecdir}/gsd-printer
 
+/usr/lib/udev/rules.d/*.rules
 %{_datadir}/gnome-settings-daemon/
 %{_sysconfdir}/xdg/autostart/gnome-settings-daemon.desktop
 %{_datadir}/icons/hicolor/*/apps/gsd-xrandr.*
@@ -245,8 +236,6 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.enums.xml
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.gschema.xml
-
-%{_datadir}/dbus-1/services/org.freedesktop.IBus.service
 
 %{_datadir}/man/man1/gnome-settings-daemon.1.gz
 
@@ -272,42 +261,101 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-mouse
 %{_libexecdir}/gsd-test-orientation
 %{_libexecdir}/gsd-test-print-notifications
-%{_libexecdir}/gsd-test-remote-display
 %{_libexecdir}/gsd-test-rfkill
 %{_libexecdir}/gsd-test-screensaver-proxy
 %{_libexecdir}/gsd-test-smartcard
 %{_libexecdir}/gsd-test-sound
-%{_libexecdir}/gsd-test-updates
 %{_libexecdir}/gsd-test-xrandr
 %{_libexecdir}/gsd-test-xsettings
 
-%files updates
-%{_libdir}/gnome-settings-daemon-3.0/updates.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libupdates.so
-%{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.updates.gschema.xml
-
 %changelog
-* Thu Jul 17 2014 Rex Dieter <rdieter@fedoraproject.org> 3.10.3-2
-- rebuild (for pulseaudio, bug #1117683)
+* Tue Nov 11 2014 Kalev Lember <kalevlember@gmail.com> - 3.14.2-1
+- Update to 3.14.2
 
-* Tue Jun  3 2014 Rui Matos <rmatos@redhat.com> - 3.10.3-1
-- Update to 3.10.3
+* Sat Nov 01 2014 Richard Hughes <rhughes@redhat.com> - 3.14.1-3
+- Fix compile on RHEL
 
-* Tue Nov 26 2013 Matthias Clasen <mclasen@redhat.com> - 3.10.2-3
-- Export a shell-shows-desktop xsetting
+* Sun Oct 26 2014 Kalev Lember <kalevlember@gmail.com> - 3.14.1-2
+- Obsolete drwright
 
-* Mon Nov 25 2013 Richard Hughes <rhughes@redhat.com> - 3.10.2-2
-- Backport a patch to make 'Review' work when using gnome-software
+* Tue Oct 14 2014 Rui Matos <rmatos@redhat.com> - 3.14.1-1
+- Update to 3.14.1
 
-* Wed Nov 13 2013 Richard Hughes <rhughes@redhat.com> - 3.10.2-1
-- Update to 3.10.2
+* Mon Sep 22 2014 Kalev Lember <kalevlember@gmail.com> - 3.14.0-1
+- Update to 3.14.0
 
-* Thu Oct 17 2013 Richard Hughes <rhughes@redhat.com> - 3.10.1-2
-- Backport a patch from master to fix launching gnome-software from the
-  notification.
-- Resolves: https://bugzilla.gnome.org/show_bug.cgi?id=710038
+* Tue Sep 16 2014 Kalev Lember <kalevlember@gmail.com> - 3.13.92-1
+- Update to 3.13.92
 
-* Tue Oct 15 2013 Richard Hughes <rhughes@redhat.com> - 3.10.1-1
+* Wed Sep 03 2014 Kalev Lember <kalevlember@gmail.com> - 3.13.91-1
+- Update to 3.13.91
+
+* Mon Aug 18 2014 Kalev Lember <kalevlember@gmail.com> - 3.13.90-1
+- Update to 3.13.90
+
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.13.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Wed Jul 23 2014 Kalev Lember <kalevlember@gmail.com> - 3.13.4-1
+- Update to 3.13.4
+
+* Thu Jun 26 2014 Richard Hughes <rhughes@redhat.com> - 3.13.3-1
+- Update to 3.13.3
+
+* Wed Jun 25 2014 Richard Hughes <rhughes@redhat.com> - 3.13.2-1
+- Update to 3.13.2
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.13.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Thu May 01 2014 Kalev Lember <kalevlember@gmail.com> - 3.13.1-1
+- Update to 3.13.1
+- Remove and obsolete the updates plugin
+
+* Wed Apr 16 2014 Kalev Lember <kalevlember@gmail.com> - 3.12.1-1
+- Update to 3.12.1
+- Tighten subpackage deps
+
+* Mon Apr 14 2014 Kalev Lember <kalevlember@gmail.com> - 3.12.0.1-3
+- Drop control-center-filesystem dependency
+
+* Sat Apr 05 2014 Kalev Lember <kalevlember@gmail.com> - 3.12.0.1-2
+- Update dep versions
+
+* Wed Mar 26 2014 Richard Hughes <rhughes@redhat.com> - 3.12.0.1-1
+- Update to 3.12.0.1
+
+* Mon Mar 24 2014 Richard Hughes <rhughes@redhat.com> - 3.12.0-1
+- Update to 3.12.0
+
+* Tue Mar 18 2014 Richard Hughes <rhughes@redhat.com> - 3.11.92-1
+- Update to 3.11.92
+
+* Tue Mar 04 2014 Richard Hughes <rhughes@redhat.com> - 3.11.91-1
+- Update to 3.11.91
+
+* Wed Feb 19 2014 Richard Hughes <rhughes@redhat.com> - 3.11.90-2
+- Rebuilt for gnome-desktop soname bump
+
+* Tue Feb 18 2014 Richard Hughes <rhughes@redhat.com> - 3.11.90-1
+- Update to 3.11.90
+
+* Tue Feb 04 2014 Richard Hughes <rhughes@redhat.com> - 3.11.5-1
+- Update to 3.11.5
+
+* Thu Jan 30 2014 Richard Hughes <rhughes@redhat.com> - 3.11.3-2
+- Rebuild for libpackagekit-glib soname bump
+
+* Tue Dec 17 2013 Richard Hughes <rhughes@redhat.com> - 3.11.3-1
+- Update to 3.11.3
+
+* Mon Nov 25 2013 Richard Hughes <rhughes@redhat.com> - 3.11.2-1
+- Update to 3.11.2
+
+* Thu Oct 31 2013 Florian Müllner <fmuellner@redhat.com> - 3.11.1-1
+- Update to 3.11.1
+
+* Mon Oct 28 2013 Richard Hughes <rhughes@redhat.com> - 3.10.1-1
 - Update to 3.10.1
 
 * Fri Oct 11 2013 Richard Hughes <rhughes@redhat.com> - 3.10.0-3
