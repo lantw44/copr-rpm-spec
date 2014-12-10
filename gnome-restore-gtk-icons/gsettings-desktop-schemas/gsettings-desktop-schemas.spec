@@ -3,7 +3,7 @@
 Name:           gsettings-desktop-schemas
 Version:        3.14.1
 Release:        1%{?dist}
-Summary:        A collection of GSettings schemas (Copr: lantw44/patches)
+Summary:        A collection of GSettings schemas (Copr: lantw44/gnome-restore-gtk-icons)
 
 Group:          System Environment/Libraries
 License:        LGPLv2+
