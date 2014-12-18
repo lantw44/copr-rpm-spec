@@ -1,0 +1,574 @@
+From ebcfe1f03b74eb5947b3d1341392115a268abbf2 Mon Sep 17 00:00:00 2001
+From: Michael Catanzaro <mcatanzaro@igalia.com>
+Date: Tue, 9 Dec 2014 19:47:01 +0100
+Subject: Don't crash when a database access fails
+
+Database accesses can fail for many reasons, none of which merit a
+crash. In particular, this should fix
+https://bugzilla.redhat.com/show_bug.cgi?id=1065494
+
+https://bugzilla.gnome.org/show_bug.cgi?id=740396
+
+diff --git a/lib/ephy-sqlite-connection.c b/lib/ephy-sqlite-connection.c
+index 0c49bf6..15db90b 100644
+--- a/lib/ephy-sqlite-connection.c
++++ b/lib/ephy-sqlite-connection.c
+@@ -173,7 +173,7 @@ ephy_sqlite_connection_table_exists (EphySQLiteConnection *self, const char *tab
+   EphySQLiteStatement *statement = ephy_sqlite_connection_create_statement (self,
+     "SELECT COUNT(type) FROM sqlite_master WHERE type='table' and name=?", &error);
+   if (error) {
+-    g_error ("Could not detect table existence: %s", error->message);
++    g_warning ("Could not detect table existence: %s", error->message);
+     g_error_free (error);
+     return FALSE;
+   }
+@@ -181,7 +181,7 @@ ephy_sqlite_connection_table_exists (EphySQLiteConnection *self, const char *tab
+   ephy_sqlite_statement_bind_string (statement, 0, table_name, &error);
+   if (error) {
+     g_object_unref (statement);
+-    g_error ("Could not detect table existence: %s", error->message);
++    g_warning ("Could not detect table existence: %s", error->message);
+     g_error_free (error);
+     return FALSE;
+   }
+@@ -189,7 +189,7 @@ ephy_sqlite_connection_table_exists (EphySQLiteConnection *self, const char *tab
+   ephy_sqlite_statement_step (statement, &error);
+   if (error) {
+     g_object_unref (statement);
+-    g_error ("Could not detect table existence: %s", error->message);
++    g_warning ("Could not detect table existence: %s", error->message);
+     g_error_free (error);
+     return FALSE;
+   }
+diff --git a/lib/history/ephy-history-service-hosts-table.c b/lib/history/ephy-history-service-hosts-table.c
+index ce1739b..3a3e672 100644
+--- a/lib/history/ephy-history-service-hosts-table.c
++++ b/lib/history/ephy-history-service-hosts-table.c
+@@ -43,7 +43,7 @@ ephy_history_service_initialize_hosts_table (EphyHistoryService *self)
+     "zoom_level REAL DEFAULT 1.0)", &error);
+ 
+   if (error) {
+-    g_error("Could not create hosts table: %s", error->message);
++    g_warning ("Could not create hosts table: %s", error->message);
+     g_error_free (error);
+     return FALSE;
+   }
+@@ -66,7 +66,7 @@ ephy_history_service_add_host_row (EphyHistoryService *self, EphyHistoryHost *ho
+     "VALUES (?, ?, ?, ?)", &error);
+ 
+   if (error) {
+-    g_error ("Could not build hosts table addition statement: %s", error->message);
++    g_warning ("Could not build hosts table addition statement: %s", error->message);
+     g_error_free (error);
+     return;
+   }
+@@ -75,7 +75,7 @@ ephy_history_service_add_host_row (EphyHistoryService *self, EphyHistoryHost *ho
+       ephy_sqlite_statement_bind_string (statement, 1, host->title, &error) == FALSE ||
+       ephy_sqlite_statement_bind_int (statement, 2, host->visit_count, &error) == FALSE ||
+       ephy_sqlite_statement_bind_double (statement, 3, host->zoom_level, &error) == FALSE) {
+-    g_error ("Could not insert host into hosts table: %s", error->message);
++    g_warning ("Could not insert host into hosts table: %s", error->message);
+     g_error_free (error);
+     g_object_unref (statement);
+     return;
+@@ -83,7 +83,7 @@ ephy_history_service_add_host_row (EphyHistoryService *self, EphyHistoryHost *ho
+ 
+   ephy_sqlite_statement_step (statement, &error);
+   if (error) {
+-    g_error ("Could not insert host into hosts table: %s", error->message);
++    g_warning ("Could not insert host into hosts table: %s", error->message);
+     g_error_free (error);
+   } else {
+     host->id = ephy_sqlite_connection_get_last_insert_id (priv->history_database);
+@@ -106,7 +106,7 @@ ephy_history_service_update_host_row (EphyHistoryService *self, EphyHistoryHost
+     "UPDATE hosts SET url=?, title=?, visit_count=?, zoom_level=?"
+     "WHERE id=?", &error);
+   if (error) {
+-    g_error ("Could not build hosts table modification statement: %s", error->message);
++    g_warning ("Could not build hosts table modification statement: %s", error->message);
+     g_error_free (error);
+     return;
+   }
+@@ -116,7 +116,7 @@ ephy_history_service_update_host_row (EphyHistoryService *self, EphyHistoryHost
+       ephy_sqlite_statement_bind_int (statement, 2, host->visit_count, &error) == FALSE ||
+       ephy_sqlite_statement_bind_double (statement, 3, host->zoom_level, &error) == FALSE ||
+       ephy_sqlite_statement_bind_int (statement, 4, host->id, &error) == FALSE) {
+-    g_error ("Could not modify host in hosts table: %s", error->message);
++    g_warning ("Could not modify host in hosts table: %s", error->message);
+     g_error_free (error);
+     g_object_unref (statement);
+     return;
+@@ -124,7 +124,7 @@ ephy_history_service_update_host_row (EphyHistoryService *self, EphyHistoryHost
+ 
+   ephy_sqlite_statement_step (statement, &error);
+   if (error) {
+-    g_error ("Could not modify URL in urls table: %s", error->message);
++    g_warning ("Could not modify URL in urls table: %s", error->message);
+     g_error_free (error);
+   }
+   g_object_unref (statement);
+@@ -156,7 +156,7 @@ ephy_history_service_get_host_row (EphyHistoryService *self, const gchar *host_s
+   }
+ 
+   if (error) {
+-    g_error ("Could not build hosts query statement: %s", error->message);
++    g_warning ("Could not build hosts query statement: %s", error->message);
+     g_error_free (error);
+     return NULL;
+   }
+@@ -167,7 +167,7 @@ ephy_history_service_get_host_row (EphyHistoryService *self, const gchar *host_s
+     ephy_sqlite_statement_bind_string (statement, 0, host_string, &error);
+ 
+   if (error) {
+-    g_error ("Could not build hosts table query statement: %s", error->message);
++    g_warning ("Could not build hosts table query statement: %s", error->message);
+     g_error_free (error);
+     g_object_unref (statement);
+     return NULL;
+@@ -227,7 +227,7 @@ ephy_history_service_get_all_hosts (EphyHistoryService *self)
+       "SELECT id, url, title, visit_count, zoom_level FROM hosts", &error);
+ 
+   if (error) {
+-    g_error ("Could not build hosts query statement: %s", error->message);
++    g_warning ("Could not build hosts query statement: %s", error->message);
+     g_error_free (error);
+     return NULL;
+   }
+@@ -238,7 +238,7 @@ ephy_history_service_get_all_hosts (EphyHistoryService *self)
+   hosts = g_list_reverse (hosts);
+ 
+   if (error) {
+-    g_error ("Could not execute hosts table query statement: %s", error->message);
++    g_warning ("Could not execute hosts table query statement: %s", error->message);
+     g_error_free (error);
+   }
+   g_object_unref (statement);
+@@ -298,13 +298,13 @@ ephy_history_service_find_host_rows (EphyHistoryService *self, EphyHistoryQuery
+   g_string_free (statement_str, TRUE);
+ 
+   if (error) {
+-    g_error ("Could not build hosts table query statement: %s", error->message);
++    g_warning ("Could not build hosts table query statement: %s", error->message);
+     g_error_free (error);
+     return NULL;
+   }
+   if (query->from > 0) {
+     if (ephy_sqlite_statement_bind_int (statement, i++, (int)query->from, &error) == FALSE) {
+-      g_error ("Could not build hosts table query statement: %s", error->message);
++      g_warning ("Could not build hosts table query statement: %s", error->message);
+       g_error_free (error);
+       g_object_unref (statement);
+       return NULL;
+@@ -312,7 +312,7 @@ ephy_history_service_find_host_rows (EphyHistoryService *self, EphyHistoryQuery
+   }
+   if (query->to > 0) {
+     if (ephy_sqlite_statement_bind_int (statement, i++, (int)query->to, &error) == FALSE) {
+-      g_error ("Could not build hosts table query statement: %s", error->message);
++      g_warning ("Could not build hosts table query statement: %s", error->message);
+       g_error_free (error);
+       g_object_unref (statement);
+       return NULL;
+@@ -324,7 +324,7 @@ ephy_history_service_find_host_rows (EphyHistoryService *self, EphyHistoryQuery
+     while (j--)
+       /* The bitwise operation ensures we only skip two characters for titles. */
+       if (ephy_sqlite_statement_bind_string (statement, i++, string + 2*((j+1) & 1), &error) == FALSE) {
+-        g_error ("Could not build hosts table query statement: %s", error->message);
++        g_warning ("Could not build hosts table query statement: %s", error->message);
+         g_error_free (error);
+         g_object_unref (statement);
+         g_free (string);
+@@ -339,7 +339,7 @@ ephy_history_service_find_host_rows (EphyHistoryService *self, EphyHistoryQuery
+   hosts = g_list_reverse (hosts);
+ 
+   if (error) {
+-    g_error ("Could not execute hosts table query statement: %s", error->message);
++    g_warning ("Could not execute hosts table query statement: %s", error->message);
+     g_error_free (error);
+   }
+   g_object_unref (statement);
+@@ -449,7 +449,7 @@ ephy_history_service_delete_host_row (EphyHistoryService *self,
+   g_free (sql_statement);
+ 
+   if (error) {
+-    g_error ("Could not build urls table query statement: %s", error->message);
++    g_warning ("Could not build urls table query statement: %s", error->message);
+     g_error_free (error);
+     return;
+   }
+@@ -460,7 +460,7 @@ ephy_history_service_delete_host_row (EphyHistoryService *self,
+     ephy_sqlite_statement_bind_string (statement, 0, host->url, &error);
+ 
+   if (error) {
+-    g_error ("Could not build hosts table query statement: %s", error->message);
++    g_warning ("Could not build hosts table query statement: %s", error->message);
+     g_error_free (error);
+     g_object_unref (statement);
+     return;
+@@ -468,7 +468,7 @@ ephy_history_service_delete_host_row (EphyHistoryService *self,
+ 
+   ephy_sqlite_statement_step (statement, &error);
+   if (error) {
+-    g_error ("Could not modify host in hosts table: %s", error->message);
++    g_warning ("Could not modify host in hosts table: %s", error->message);
+     g_error_free (error);
+   }
+   g_object_unref (statement);
+@@ -494,7 +494,7 @@ ephy_history_service_delete_orphan_hosts (EphyHistoryService *self)
+                                   "    ON hosts.id = urls.host WHERE urls.host is NULL);",
+                                   &error);
+   if (error) {
+-    g_error ("Couldn't remove orphan hosts from database: %s", error->message);
++    g_warning ("Couldn't remove orphan hosts from database: %s", error->message);
+     g_error_free (error);
+   }
+ }
+diff --git a/lib/history/ephy-history-service-urls-table.c b/lib/history/ephy-history-service-urls-table.c
+index 026a116..fa9142d 100644
+--- a/lib/history/ephy-history-service-urls-table.c
++++ b/lib/history/ephy-history-service-urls-table.c
+@@ -45,7 +45,7 @@ ephy_history_service_initialize_urls_table (EphyHistoryService *self)
+     "hidden_from_overview INTEGER DEFAULT 0)", &error);
+ 
+   if (error) {
+-    g_error("Could not create urls table: %s", error->message);
++    g_warning ("Could not create urls table: %s", error->message);
+     g_error_free (error);
+     return FALSE;
+   }
+@@ -79,7 +79,7 @@ ephy_history_service_get_url_row (EphyHistoryService *self, const char *url_stri
+   }
+ 
+   if (error) {
+-    g_error ("Could not build urls table query statement: %s", error->message);
++    g_warning ("Could not build urls table query statement: %s", error->message);
+     g_error_free (error);
+     return NULL;
+   }
+@@ -90,7 +90,7 @@ ephy_history_service_get_url_row (EphyHistoryService *self, const char *url_stri
+     ephy_sqlite_statement_bind_string (statement, 0, url_string, &error);
+   }
+   if (error) {
+-    g_error ("Could not build urls table query statement: %s", error->message);
++    g_warning ("Could not build urls table query statement: %s", error->message);
+     g_error_free (error);
+     g_object_unref (statement);
+     return NULL;
+@@ -138,7 +138,7 @@ ephy_history_service_add_url_row (EphyHistoryService *self, EphyHistoryURL *url)
+     "INSERT INTO urls (url, title, visit_count, typed_count, last_visit_time, host) "
+     " VALUES (?, ?, ?, ?, ?, ?)", &error);
+   if (error) {
+-    g_error ("Could not build urls table addition statement: %s", error->message);
++    g_warning ("Could not build urls table addition statement: %s", error->message);
+     g_error_free (error);
+     return;
+   }
+@@ -149,7 +149,7 @@ ephy_history_service_add_url_row (EphyHistoryService *self, EphyHistoryURL *url)
+       ephy_sqlite_statement_bind_int (statement, 3, url->typed_count, &error) == FALSE ||
+       ephy_sqlite_statement_bind_int (statement, 4, url->last_visit_time, &error) == FALSE ||
+       ephy_sqlite_statement_bind_int (statement, 5, url->host->id, &error) == FALSE) {
+-    g_error ("Could not insert URL into urls table: %s", error->message);
++    g_warning ("Could not insert URL into urls table: %s", error->message);
+     g_error_free (error);
+     g_object_unref (statement);
+     return;
+@@ -157,7 +157,7 @@ ephy_history_service_add_url_row (EphyHistoryService *self, EphyHistoryURL *url)
+ 
+   ephy_sqlite_statement_step (statement, &error);
+   if (error) {
+-    g_error ("Could not insert URL into urls table: %s", error->message);
++    g_warning ("Could not insert URL into urls table: %s", error->message);
+     g_error_free (error);
+   } else {
+     url->id = ephy_sqlite_connection_get_last_insert_id (priv->history_database);
+@@ -180,7 +180,7 @@ ephy_history_service_update_url_row (EphyHistoryService *self, EphyHistoryURL *u
+     "UPDATE urls SET title=?, visit_count=?, typed_count=?, last_visit_time=?, hidden_from_overview=?, thumbnail_update_time=? "
+     "WHERE id=?", &error);
+   if (error) {
+-    g_error ("Could not build urls table modification statement: %s", error->message);
++    g_warning ("Could not build urls table modification statement: %s", error->message);
+     g_error_free (error);
+     return;
+   }
+@@ -192,7 +192,7 @@ ephy_history_service_update_url_row (EphyHistoryService *self, EphyHistoryURL *u
+       ephy_sqlite_statement_bind_int (statement, 4, url->hidden, &error) == FALSE ||
+       ephy_sqlite_statement_bind_int (statement, 5, url->thumbnail_time, &error) == FALSE ||
+       ephy_sqlite_statement_bind_int (statement, 6, url->id, &error) == FALSE) {
+-    g_error ("Could not modify URL in urls table: %s", error->message);
++    g_warning ("Could not modify URL in urls table: %s", error->message);
+     g_error_free (error);
+     g_object_unref (statement);
+     return;
+@@ -200,7 +200,7 @@ ephy_history_service_update_url_row (EphyHistoryService *self, EphyHistoryURL *u
+ 
+   ephy_sqlite_statement_step (statement, &error);
+   if (error) {
+-    g_error ("Could not modify URL in urls table: %s", error->message);
++    g_warning ("Could not modify URL in urls table: %s", error->message);
+     g_error_free (error);
+   }
+   g_object_unref (statement);
+@@ -313,14 +313,14 @@ ephy_history_service_find_url_rows (EphyHistoryService *self, EphyHistoryQuery *
+   g_string_free (statement_str, TRUE);
+ 
+   if (error) {
+-    g_error ("Could not build urls table query statement: %s", error->message);
++    g_warning ("Could not build urls table query statement: %s", error->message);
+     g_error_free (error);
+     return NULL;
+   }
+ 
+   if (query->from > 0) {
+     if (ephy_sqlite_statement_bind_int (statement, i++, (int)query->from, &error) == FALSE) {
+-      g_error ("Could not build urls table query statement: %s", error->message);
++      g_warning ("Could not build urls table query statement: %s", error->message);
+       g_error_free (error);
+       g_object_unref (statement);
+       return NULL;
+@@ -328,7 +328,7 @@ ephy_history_service_find_url_rows (EphyHistoryService *self, EphyHistoryQuery *
+   }
+   if (query->to > 0) {
+     if (ephy_sqlite_statement_bind_int (statement, i++, (int)query->to, &error) == FALSE) {
+-      g_error ("Could not build urls table query statement: %s", error->message);
++      g_warning ("Could not build urls table query statement: %s", error->message);
+       g_error_free (error);
+       g_object_unref (statement);
+       return NULL;
+@@ -336,7 +336,7 @@ ephy_history_service_find_url_rows (EphyHistoryService *self, EphyHistoryQuery *
+   }
+   if (query->host > 0) {
+     if (ephy_sqlite_statement_bind_int (statement, i++, (int)query->host, &error) == FALSE) {
+-      g_error ("Could not build urls table query statement: %s", error->message);
++      g_warning ("Could not build urls table query statement: %s", error->message);
+       g_error_free (error);
+       g_object_unref (statement);
+       return NULL;
+@@ -345,14 +345,14 @@ ephy_history_service_find_url_rows (EphyHistoryService *self, EphyHistoryQuery *
+   for (substring = query->substring_list; substring != NULL; substring = substring->next) {
+     char *string = ephy_sqlite_create_match_pattern (substring->data);
+     if (ephy_sqlite_statement_bind_string (statement, i++, string, &error) == FALSE) {
+-      g_error ("Could not build urls table query statement: %s", error->message);
++      g_warning ("Could not build urls table query statement: %s", error->message);
+       g_error_free (error);
+       g_object_unref (statement);
+       g_free (string);
+       return NULL;
+     }
+     if (ephy_sqlite_statement_bind_string (statement, i++, string + 2, &error) == FALSE) {
+-      g_error ("Could not build urls table query statement: %s", error->message);
++      g_warning ("Could not build urls table query statement: %s", error->message);
+       g_error_free (error);
+       g_object_unref (statement);
+       g_free (string);
+@@ -363,7 +363,7 @@ ephy_history_service_find_url_rows (EphyHistoryService *self, EphyHistoryQuery *
+ 
+   if (query->limit)
+     if (ephy_sqlite_statement_bind_int (statement, i++, query->limit, &error) == FALSE) {
+-      g_error ("Could not build urls table query statement: %s", error->message);
++      g_warning ("Could not build urls table query statement: %s", error->message);
+       g_error_free (error);
+       g_object_unref (statement);
+       return NULL;
+@@ -375,7 +375,7 @@ ephy_history_service_find_url_rows (EphyHistoryService *self, EphyHistoryQuery *
+   urls = g_list_reverse (urls);
+ 
+   if (error) {
+-    g_error ("Could not execute urls table query statement: %s", error->message);
++    g_warning ("Could not execute urls table query statement: %s", error->message);
+     g_error_free (error);
+     g_object_unref (statement);
+     g_list_free_full (urls, (GDestroyNotify)ephy_history_url_free);
+@@ -409,7 +409,7 @@ ephy_history_service_delete_url (EphyHistoryService *self, EphyHistoryURL *url)
+   g_free (sql_statement);
+ 
+   if (error) {
+-    g_error ("Could not build urls table query statement: %s", error->message);
++    g_warning ("Could not build urls table query statement: %s", error->message);
+     g_error_free (error);
+     return;
+   }
+@@ -420,7 +420,7 @@ ephy_history_service_delete_url (EphyHistoryService *self, EphyHistoryURL *url)
+     ephy_sqlite_statement_bind_string (statement, 0, url->url, &error);
+ 
+   if (error) {
+-    g_error ("Could not build urls table query statement: %s", error->message);
++    g_warning ("Could not build urls table query statement: %s", error->message);
+     g_error_free (error);
+     g_object_unref (statement);
+     return;
+@@ -428,7 +428,7 @@ ephy_history_service_delete_url (EphyHistoryService *self, EphyHistoryURL *url)
+ 
+   ephy_sqlite_statement_step (statement, &error);
+   if (error) {
+-    g_error ("Could not modify URL in urls table: %s", error->message);
++    g_warning ("Could not modify URL in urls table: %s", error->message);
+     g_error_free (error);
+   }
+   g_object_unref (statement);
+diff --git a/lib/history/ephy-history-service-visits-table.c b/lib/history/ephy-history-service-visits-table.c
+index c5b32eb..be5089a 100644
+--- a/lib/history/ephy-history-service-visits-table.c
++++ b/lib/history/ephy-history-service-visits-table.c
+@@ -39,7 +39,7 @@ ephy_history_service_initialize_visits_table (EphyHistoryService *self)
+     "referring_visit INTEGER)", &error);
+ 
+   if (error) {
+-    g_error("Could not create visits table: %s", error->message);
++    g_warning ("Could not create visits table: %s", error->message);
+     g_error_free (error);
+     return FALSE;
+   }
+@@ -62,7 +62,7 @@ ephy_history_service_add_visit_row (EphyHistoryService *self, EphyHistoryPageVis
+     "INSERT INTO visits (url, visit_time, visit_type) "
+     " VALUES (?, ?, ?) ", &error);
+   if (error) {
+-    g_error ("Could not build visits table addition statement: %s", error->message);
++    g_warning ("Could not build visits table addition statement: %s", error->message);
+     g_error_free (error);
+     return;
+   }
+@@ -70,7 +70,7 @@ ephy_history_service_add_visit_row (EphyHistoryService *self, EphyHistoryPageVis
+   if (ephy_sqlite_statement_bind_int (statement, 0, visit->url->id, &error) == FALSE ||
+       ephy_sqlite_statement_bind_int (statement, 1, visit->visit_time, &error) == FALSE ||
+       ephy_sqlite_statement_bind_int (statement, 2, visit->visit_type, &error) == FALSE ) {
+-    g_error ("Could not build visits table addition statement: %s", error->message);
++    g_warning ("Could not build visits table addition statement: %s", error->message);
+     g_error_free (error);
+     g_object_unref (statement);
+     return;
+@@ -78,7 +78,7 @@ ephy_history_service_add_visit_row (EphyHistoryService *self, EphyHistoryPageVis
+ 
+   ephy_sqlite_statement_step (statement, &error);
+   if (error) {
+-    g_error ("Could not insert URL into visits table: %s", error->message);
++    g_warning ("Could not insert URL into visits table: %s", error->message);
+     g_error_free (error);
+   } else {
+     visit->id = ephy_sqlite_connection_get_last_insert_id (priv->history_database);
+@@ -153,14 +153,14 @@ ephy_history_service_find_visit_rows (EphyHistoryService *self, EphyHistoryQuery
+   g_string_free (statement_str, TRUE);
+ 
+   if (error) {
+-    g_error ("Could not build visits table query statement: %s", error->message);
++    g_warning ("Could not build visits table query statement: %s", error->message);
+     g_error_free (error);
+     return NULL;
+   }
+ 
+   if (query->from >= 0) {
+     if (ephy_sqlite_statement_bind_int (statement, i++, (int)query->from, &error) == FALSE) {
+-      g_error ("Could not build urls table query statement: %s", error->message);
++      g_warning ("Could not build urls table query statement: %s", error->message);
+       g_error_free (error);
+       g_object_unref (statement);
+       return NULL;
+@@ -168,7 +168,7 @@ ephy_history_service_find_visit_rows (EphyHistoryService *self, EphyHistoryQuery
+   }
+   if (query->to >= 0) {
+     if (ephy_sqlite_statement_bind_int (statement, i++, (int)query->to, &error) == FALSE) {
+-      g_error ("Could not build urls table query statement: %s", error->message);
++      g_warning ("Could not build urls table query statement: %s", error->message);
+       g_error_free (error);
+       g_object_unref (statement);
+       return NULL;
+@@ -176,7 +176,7 @@ ephy_history_service_find_visit_rows (EphyHistoryService *self, EphyHistoryQuery
+   }
+   if (query->host > 0) {
+     if (ephy_sqlite_statement_bind_int (statement, i++, (int)query->host, &error) == FALSE) {
+-      g_error ("Could not build urls table query statement: %s", error->message);
++      g_warning ("Could not build urls table query statement: %s", error->message);
+       g_error_free (error);
+       g_object_unref (statement);
+       return NULL;
+@@ -185,14 +185,14 @@ ephy_history_service_find_visit_rows (EphyHistoryService *self, EphyHistoryQuery
+   for (substring = query->substring_list; substring != NULL; substring = substring->next) {
+     char *string = ephy_sqlite_create_match_pattern (substring->data);
+     if (ephy_sqlite_statement_bind_string (statement, i++, string, &error) == FALSE) {
+-      g_error ("Could not build urls table query statement: %s", error->message);
++      g_warning ("Could not build urls table query statement: %s", error->message);
+       g_error_free (error);
+       g_object_unref (statement);
+       g_free (string);
+       return NULL;
+     }
+     if (ephy_sqlite_statement_bind_string (statement, i++, string + 2, &error) == FALSE) {
+-      g_error ("Could not build urls table query statement: %s", error->message);
++      g_warning ("Could not build urls table query statement: %s", error->message);
+       g_error_free (error);
+       g_object_unref (statement);
+       g_free (string);
+@@ -207,7 +207,7 @@ ephy_history_service_find_visit_rows (EphyHistoryService *self, EphyHistoryQuery
+   visits = g_list_reverse (visits);
+ 
+   if (error) {
+-    g_error ("Could not execute visits table query statement: %s", error->message);
++    g_warning ("Could not execute visits table query statement: %s", error->message);
+     g_error_free (error);
+     g_object_unref (statement);
+     ephy_history_page_visit_list_free (visits);
+diff --git a/lib/history/ephy-history-service.c b/lib/history/ephy-history-service.c
+index d0765f7..0ff2664 100644
+--- a/lib/history/ephy-history-service.c
++++ b/lib/history/ephy-history-service.c
+@@ -365,12 +365,12 @@ ephy_history_service_commit (EphyHistoryService *self)
+ 
+   ephy_sqlite_connection_commit_transaction (priv->history_database, &error);
+   if (NULL != error) {
+-    g_error ("Could not commit idle history database transaction: %s", error->message);
++    g_warning ("Could not commit idle history database transaction: %s", error->message);
+     g_error_free (error);
+   }
+   ephy_sqlite_connection_begin_transaction (priv->history_database, &error);
+   if (NULL != error) {
+-    g_error ("Could not start long-running history database transaction: %s", error->message);
++    g_warning ("Could not start long-running history database transaction: %s", error->message);
+     g_error_free (error);
+   }
+ 
+@@ -390,7 +390,7 @@ ephy_history_service_enable_foreign_keys (EphyHistoryService *self)
+                                   "PRAGMA foreign_keys = ON", &error);
+ 
+   if (error) {
+-    g_error ("Could not enable foreign keys pragma: %s", error->message);
++    g_warning ("Could not enable foreign keys pragma: %s", error->message);
+     g_error_free (error);
+   }
+ }
+@@ -420,7 +420,7 @@ ephy_history_service_open_database_connections (EphyHistoryService *self)
+ 
+   ephy_sqlite_connection_begin_transaction (priv->history_database, &error);
+   if (error) {
+-    g_error ("Could not begin long running transaction in history database: %s", error->message);
++    g_warning ("Could not begin long running transaction in history database: %s", error->message);
+     g_error_free (error);
+     return FALSE;
+   }
+@@ -460,7 +460,7 @@ ephy_history_service_clear_all (EphyHistoryService *self)
+   ephy_sqlite_connection_execute (priv->history_database,
+                                   "DELETE FROM hosts;", &error);
+   if (error) {
+-    g_error ("Couldn't clear history database: %s", error->message);
++    g_warning ("Couldn't clear history database: %s", error->message);
+     g_error_free(error);
+   }
+ }
+@@ -610,7 +610,7 @@ ephy_history_service_execute_add_visit_helper (EphyHistoryService *self, EphyHis
+     ephy_history_service_add_url_row (self, visit->url);
+ 
+     if (visit->url->id == -1) {
+-      g_error ("Adding visit failed after failed URL addition.");
++      g_warning ("Adding visit failed after failed URL addition.");
+       return FALSE;
+     }
+ 
+@@ -670,7 +670,7 @@ ephy_history_service_execute_find_visits (EphyHistoryService *self, EphyHistoryQ
+     EphyHistoryPageVisit *visit = (EphyHistoryPageVisit *) current->data;
+     if (NULL == ephy_history_service_get_url_row (self, NULL, visit->url)) {
+       ephy_history_page_visit_list_free (visits);
+-      g_error ("Tried to process an orphaned page visit");
++      g_warning ("Tried to process an orphaned page visit");
+       return FALSE;
+     }
+ 
+-- 
+cgit v0.10.1
+

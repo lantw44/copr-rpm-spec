@@ -1,7 +1,7 @@
 Name: epiphany
 Epoch: 1
 Version: 3.14.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv2+ and CC-BY-SA
@@ -12,8 +12,10 @@ Source0: http://download.gnome.org/sources/epiphany/3.14/%{name}-%{version}.tar.
 Patch0: epiphany-default-bookmarks.patch
 # DRI3 is currently only used in Fedora. It breaks DuckDuckGo, YouTube, et. al.
 Patch1: epiphany-disable-DRI3.patch
+# Committed upstream for 3.16 and 3.14.3
+Patch2: epiphany-db-access-crash.patch
 # Reduce the minimum tab width
-Patch2: epiphany-reduce-tab-width.patch
+Patch3: epiphany-reduce-tab-width.patch
 
 BuildRequires: desktop-file-utils
 BuildRequires: gcr-devel >= 3.5.5
@@ -69,7 +71,8 @@ installing the epiphany application itself.
 %setup -q
 %patch0 -p1 -b .default-bookmarks
 %patch1 -p1 -b .disable-dri3
-%patch2 -p1 -b .reduce-tab-width
+%patch2 -p1 -b .db-access-crash
+%patch3 -p1 -b .reduce-tab-width
 
 %build
 %configure --with-distributor-name=Fedora
@@ -115,6 +118,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_mandir}/man*/*
 
 %changelog
+* Fri Dec 12 2014 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.14.2-3
+- Add patch to prevent search provider crashes when accessing history fails
+
 * Thu Nov 13 2014 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.14.2-2
 - Add patch to disable DRI3
 
