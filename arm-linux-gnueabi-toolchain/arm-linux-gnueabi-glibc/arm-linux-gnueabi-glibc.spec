@@ -13,7 +13,7 @@
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.20
 Release:    1%{?dist}
-Summary:    The GNU C Library (%{cross_triplet}
+Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+

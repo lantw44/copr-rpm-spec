@@ -24,7 +24,7 @@
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    4.9.2
 Release:    1%{?dist}
-Summary:    The GNU Compiler Collection (%{cross_triplet}
+Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
 License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD

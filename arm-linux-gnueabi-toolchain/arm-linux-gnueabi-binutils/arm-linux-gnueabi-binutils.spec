@@ -2,12 +2,12 @@
 %define cross_triplet   arm-linux-gnueabi
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
-Name:        %{cross_triplet}-binutils
+Name:       %{cross_triplet}-binutils
 Version:    2.24
 Release:    1%{?dist}
-Summary:    A GNU collection of binary utilities (%{cross_triplet}
+Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
-Group:        Development/Tools
+Group:      Development/Tools
 License:    GPLv3+
 URL:        https://www.gnu.org/software/binutils
 Source0:    https://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
