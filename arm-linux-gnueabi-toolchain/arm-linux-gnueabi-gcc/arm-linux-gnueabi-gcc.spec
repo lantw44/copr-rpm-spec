@@ -23,7 +23,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    4.9.2
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
@@ -39,26 +39,19 @@ BuildRequires: %{cross_triplet}-binutils
 Requires:   %{cross_triplet}-binutils
 
 %if %{cross_stage} == "pass2"
-BuildRequires: %{cross_triplet}-kernel-headers
 BuildRequires: %{cross_triplet}-glibc-headers
-Requires:   %{cross_triplet}-kernel-headers
 Requires:   %{cross_triplet}-glibc-headers
 Provides:   %{cross_triplet}-gcc-pass1 = %{version}
 Obsoletes:  %{cross_triplet}-gcc-pass1 <= %{version}
 %endif
 
 %if %{cross_stage} == "final"
-BuildRequires: %{cross_triplet}-kernel-headers
 BuildRequires: %{cross_triplet}-glibc
-Requires:   %{cross_triplet}-kernel-headers
 Requires:   %{cross_triplet}-glibc
 Provides:   %{cross_triplet}-gcc-pass1 = %{version}
 Provides:   %{cross_triplet}-gcc-pass2 = %{version}
 Obsoletes:  %{cross_triplet}-gcc-pass1 <= %{version}
 Obsoletes:  %{cross_triplet}-gcc-pass2 <= %{version}
-# Tell rpmbuild not to add libraries built for ARM to dependencies,
-# which is not possible to resolve on an x86_64 host.
-AutoReqProv: no
 %endif
 
 %description
@@ -200,6 +193,25 @@ chmod +x %{__ar_no_strip}
 %undefine __strip
 %define __strip %{__ar_no_strip}
 
+# Disable automatic requirements finding in %{cross_sysroot}
+%define _use_internal_dependency_generator 0
+%define __rpmdeps_command %{__find_requires}
+%define __rpmdeps_skip_sysroot %{_builddir}/gcc-%{version}/rpmdeps-skip-sysroot
+cat > %{__rpmdeps_skip_sysroot} << EOF
+#!/bin/sh
+while read oneline; do
+    case \$oneline in
+        %{buildroot}%{cross_sysroot}*)
+            ;;
+        *)
+            echo \$oneline | %{__rpmdeps_command}
+    esac
+done
+EOF
+chmod +x %{__rpmdeps_skip_sysroot}
+%undefine __find_requires
+%define __find_requires %{__rpmdeps_skip_sysroot}
+
 
 %files
 %{_bindir}/%{cross_triplet}-cpp
@@ -294,5 +306,11 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Sun Dec 21 2014 Ting-Wei Lan <lantw44@gmail.com> - 4.9.2-2
+- Disable automatic requirements finding in %{cross_sysroot} instead of
+  disabling it in all directories.
+- Remove the %{cross_triplet}-kernel-headers dependency. It should be pulled
+  in by %{cross_triplet}-glibc or %{cross_triplet}-glibc-headers.
+
 * Fri Dec 19 2014 Ting-Wei Lan <lantw44@gmail.com> - 4.9.2-1
 - Initial packaging
