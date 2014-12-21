@@ -12,7 +12,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.20
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -22,6 +22,7 @@ Source0:    https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 
 BuildRequires: %{cross_triplet}-gcc-pass1
 BuildRequires: %{cross_triplet}-kernel-headers
+Requires:   %{cross_triplet}-kernel-headers
 
 %if !%{headers_only}
 BuildRequires: %{cross_triplet}-gcc-pass2
@@ -476,5 +477,8 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Sun Dec 21 2014 Ting-Wei Lan <lantw44@gmail.com> - 2.20-2
+- Pull in %{cross_arch}-kernel-headers
+
 * Fri Dec 19 2014 Ting-Wei Lan <lantw44@gmail.com> - 2.20-1
 - Initial packaging
