@@ -12,6 +12,13 @@
 %define pkg_suffix      %{nil}
 %endif
 
+%define enable_java     0
+%if 0%{?fedora} >= 21
+%define enable_ada      1
+%else
+%define enable_ada      0
+%endif
+
 %define isl_version     0.12.2
 %define isl_source      %{_builddir}/isl-%{isl_version}
 %define isl_build       %{_builddir}/isl-build
@@ -23,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    4.9.2
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
@@ -47,6 +54,7 @@ Obsoletes:  %{cross_triplet}-gcc-pass1 <= %{version}
 
 %if %{cross_stage} == "final"
 BuildRequires: %{cross_triplet}-glibc
+BuildRequires: gcc-gnat, libstdc++-static
 Requires:   %{cross_triplet}-glibc
 Provides:   %{cross_triplet}-gcc-pass1 = %{version}
 Provides:   %{cross_triplet}-gcc-pass2 = %{version}
@@ -130,7 +138,11 @@ make %{?_smp_mflags} all-gcc
 make %{?_smp_mflags} all-gcc all-target-libgcc
 %endif
 %if %{cross_stage} == "final"
+%if %{enable_ada}
+    --enable-languages=c,c++,fortran,objc,obj-c++,ada \
+%else
     --enable-languages=c,c++,fortran,objc,obj-c++ \
+%endif
     --enable-libmulflap \
     --enable-libgomp \
     --enable-libssp \
@@ -302,10 +314,54 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{cross_sysroot}/lib/libsupc++.a
 %{cross_sysroot}/lib/libubsan.a
 %{cross_sysroot}/lib/libubsan.so*
+%if %{enable_java}
+%{_bindir}/%{cross_triplet}-aot-compile
+%{_bindir}/%{cross_triplet}-gcj
+%{_bindir}/%{cross_triplet}-jcf-dump
+%{_bindir}/%{cross_triplet}-rebuild-gcj-db
+%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/gcj
+%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/jawt.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/jawt_md.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/jni.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/jni_md.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/jvmpi.h
+%{_libexecdir}/gcc/%{cross_triplet}/%{version}/jc1
+%{_libexecdir}/gcc/%{cross_triplet}/%{version}/jvgenmain
+%{cross_sysroot}/lib/gcj-%{version}-15/libjvm.so
+%{cross_sysroot}/lib/libgcj.so
+%{cross_sysroot}/lib/libgcj.so.15*
+%{cross_sysroot}/lib/libgcj.spec
+%{cross_sysroot}/lib/libgcj_bc.so*
+%{cross_sysroot}/lib/libgij.so
+%{cross_sysroot}/lib/libgij.so.15*
+%{cross_sysroot}/lib/logging.properties
+%{cross_sysroot}/lib/pkgconfig/libgcj-4.9.pc
+%{cross_sysroot}/lib/security/classpath.security
+%endif
+%if %{enable_ada}
+%{_bindir}/%{cross_triplet}-gnat
+%{_bindir}/%{cross_triplet}-gnatbind
+%{_bindir}/%{cross_triplet}-gnatchop
+%{_bindir}/%{cross_triplet}-gnatclean
+%{_bindir}/%{cross_triplet}-gnatfind
+%{_bindir}/%{cross_triplet}-gnatkr
+%{_bindir}/%{cross_triplet}-gnatlink
+%{_bindir}/%{cross_triplet}-gnatls
+%{_bindir}/%{cross_triplet}-gnatmake
+%{_bindir}/%{cross_triplet}-gnatname
+%{_bindir}/%{cross_triplet}-gnatprep
+%{_bindir}/%{cross_triplet}-gnatxref
+%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/adainclude
+%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/adalib
+%{_libexecdir}/gcc/%{cross_triplet}/%{version}/gnat1
+%endif
 %endif
 
 
 %changelog
+* Fri Jan 02 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.9.2-3
+- Enable Ada support on Fedora 21 or later.
+
 * Sun Dec 21 2014 Ting-Wei Lan <lantw44@gmail.com> - 4.9.2-2
 - Disable automatic requirements finding in %{cross_sysroot} instead of
   disabling it in all directories.
