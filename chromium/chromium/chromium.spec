@@ -8,7 +8,7 @@
 
 Name:       chromium
 Version:    39.0.2171.95
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -136,7 +136,7 @@ sed -e "s|@@CHROMIUMDIR@@|%{chromiumdir}|" -e "s|@@BUILDTARGET@@|`cat /etc/redha
 install -m 755 chromium-browser.sh %{buildroot}%{_bindir}/chromium-browser
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE2}
 install -m 644 out/Release/chrome.1 %{buildroot}%{_mandir}/man1/chromium-browser.1
-install -m 755 out/Release/chrome %{buildroot}%{chromiumdir}/
+install -m 755 out/Release/chrome %{buildroot}%{chromiumdir}/chromium-browser
 install -m 4755 out/Release/chrome_sandbox %{buildroot}%{chromiumdir}/chrome-sandbox
 install -m 755 out/Release/chromedriver %{buildroot}%{chromiumdir}/
 install -m 755 out/Release/libffmpegsumo.so %{buildroot}%{chromiumdir}/
@@ -180,7 +180,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/icons/hicolor/128x128/apps/chromium-browser.png
 %{_datadir}/icons/hicolor/256x256/apps/chromium-browser.png
 %{_mandir}/man1/chromium-browser.1.gz
-%{chromiumdir}/chrome
+%{chromiumdir}/chromium-browser
 %{chromiumdir}/chrome-sandbox
 %{chromiumdir}/chromedriver
 %{chromiumdir}/libffmpegsumo.so
@@ -195,5 +195,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Jan 03 2015 - Ting-Wei Lan <lantw44@gmail.com> - 39.0.2171.95-2
+- Make sure that GNOME shell obtains correct application name from the
+  chromium-browser.desktop file.
+
 * Fri Jan 02 2015 - Ting-Wei Lan <lantw44@gmail.com> - 39.0.2171.95-1
 - Initial packaging

@@ -10,12 +10,12 @@
 # and modified by Ting-Wei Lan <lantw44@gmail.com>. All modifications are also
 # licensed under GPLv2 or later.
 
-APPNAME=chrome
+APPNAME=chromium-browser
 LIBDIR=@@CHROMIUMDIR@@
 GDB=/usr/bin/gdb
 
 usage () {
-  echo "chromium-browser [-h|--help] [-g|--debug] [options] [URL]"
+  echo "$APPNAME [-h|--help] [-g|--debug] [options] [URL]"
   echo
   echo "        -g or --debug           Start within $GDB"
   echo "        -h or --help            This help screen"
