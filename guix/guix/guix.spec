@@ -1,6 +1,6 @@
 Name:       guix
-Version:    0.8
-Release:    2%{?dist}
+Version:    0.8.1
+Release:    1%{?dist}
 Summary:    a purely functional package manager for the GNU system
 
 Group:      System Environment/Base
@@ -19,7 +19,7 @@ BuildRequires: sqlite-devel >= %{sqlite_required}
 BuildRequires: bzip2-devel, libgcrypt-devel
 BuildRequires: emacs, emacs-geiser
 
-# Get %{_unitdir} macro
+# Get _unitdir macro to install the systemd service file
 BuildRequires: systemd
 
 Requires:   guile >= %{guile_required}
@@ -113,8 +113,14 @@ fi
 %{_datadir}/guile/site/2.0/gnu/packages.go
 %{_datadir}/guile/site/2.0/gnu/packages/*.scm
 %{_datadir}/guile/site/2.0/gnu/packages/*.go
+%{_datadir}/guile/site/2.0/gnu/packages/javac.in
 %{_datadir}/guile/site/2.0/gnu/packages/linux-libre-*.conf
 %{_datadir}/guile/site/2.0/gnu/packages/patches/*.patch
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/armhf-linux/tar
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/armhf-linux/xz
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/armhf-linux/mkdir
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/armhf-linux/bash
+%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/armhf-linux/guile-2.0.11.tar.xz
 %{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/tar
 %{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/xz
 %{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/mkdir
@@ -169,6 +175,9 @@ fi
 %{_emacs_sitelispdir}/guix*.el
 
 %changelog
+* Fri Jan 30 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.8.1-1
+- Update to 0.8.1
+
 * Sat Nov 22 2014 Ting-Wei Lan <lantw44@gmail.com> - 0.8-2
 - Do not create /var/guix, which prevents guix-daemon from populating /var/guix
   and /gnu/store on the first start.
