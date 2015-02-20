@@ -7,7 +7,7 @@
 # $ curl -s 'http://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
 Name:       chromium
-Version:    40.0.2214.111
+Version:    40.0.2214.115
 Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -195,6 +195,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Feb 21 2015 - Ting-Wei Lan <lantw44@gmail.com> - 40.0.2214.115-1
+- Update to 40.0.2214.115
+
 * Fri Feb 06 2015 - Ting-Wei Lan <lantw44@gmail.com> - 40.0.2214.111-1
 - Update to 40.0.2214.111
 
