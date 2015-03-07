@@ -7,7 +7,7 @@
 # $ curl -s 'http://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
 Name:       chromium
-Version:    40.0.2214.115
+Version:    41.0.2272.76
 Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -120,7 +120,7 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Dgoogle_default_client_secret=GuvPB069ONrHxN7Y_y0txLKn \
 
 ./build/download_nacl_toolchains.py --packages \
-    nacl_x86_glibc,nacl_x86_newlib,pnacl_newlib,pnacl_translator
+    nacl_x86_glibc,nacl_x86_newlib,pnacl_newlib,pnacl_translator sync
 
 ninja-build -C out/Release chrome chrome_sandbox chromedriver
 
@@ -144,6 +144,8 @@ install -m 755 out/Release/libpdf.so %{buildroot}%{chromiumdir}/
 install -m 755 out/Release/nacl_helper %{buildroot}%{chromiumdir}/
 install -m 755 out/Release/nacl_helper_bootstrap %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/nacl_irt_x86_64.nexe %{buildroot}%{chromiumdir}/
+install -m 644 out/Release/natives_blob.bin %{buildroot}%{chromiumdir}/
+install -m 644 out/Release/snapshot_blob.bin %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/*.pak %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/locales/*.pak %{buildroot}%{chromiumdir}/locales/
 for i in 22 24 32 48 64 128 256; do
@@ -188,6 +190,8 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/nacl_helper
 %{chromiumdir}/nacl_helper_bootstrap
 %{chromiumdir}/nacl_irt_x86_64.nexe
+%{chromiumdir}/natives_blob.bin
+%{chromiumdir}/snapshot_blob.bin
 %{chromiumdir}/*.pak
 %{chromiumdir}/locales/*.pak
 %doc LICENSE AUTHORS
@@ -195,6 +199,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Mar 04 2015 - Ting-Wei Lan <lantw44@gmail.com> - 41.0.2272.76-1
+- Update to 41.0.2272.76
+
 * Sat Feb 21 2015 - Ting-Wei Lan <lantw44@gmail.com> - 40.0.2214.115-1
 - Update to 40.0.2214.115
 
