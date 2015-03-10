@@ -1,7 +1,7 @@
 Name: epiphany
 Epoch: 1
 Version: 3.14.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv2+ and CC-BY-SA
@@ -14,8 +14,14 @@ Patch0: epiphany-default-bookmarks.patch
 Patch1: epiphany-disable-DRI3.patch
 # Committed upstream for 3.16 and 3.14.3
 Patch2: epiphany-db-access-crash.patch
+# https://bugzilla.gnome.org/show_bug.cgi?id=745306
+Patch3: epiphany-web-dom-utils-find-form-auth-elements-crash.patch
+# https://bugzilla.gnome.org/show_bug.cgi?id=744896
+Patch4: epiphany-web-extension-proxy-created-cb-crash.patch
+# https://bugzilla.gnome.org/show_bug.cgi?id=744360
+Patch5: epiphany-setup-web-extensions-connection-crash.patch
 # Reduce the minimum tab width
-Patch3: epiphany-reduce-tab-width.patch
+Patch6: epiphany-reduce-tab-width.patch
 
 BuildRequires: desktop-file-utils
 BuildRequires: gcr-devel >= 3.5.5
@@ -72,7 +78,10 @@ installing the epiphany application itself.
 %patch0 -p1 -b .default-bookmarks
 %patch1 -p1 -b .disable-dri3
 %patch2 -p1 -b .db-access-crash
-%patch3 -p1 -b .reduce-tab-width
+%patch3 -p1 -b .dom-utils-crash
+%patch4 -p1 -b .extension-proxy-crash
+%patch5 -p1 -b .setup-extensions-crash
+%patch6 -p1 -b .reduce-tab-width
 
 %build
 %configure --with-distributor-name=Fedora
@@ -118,6 +127,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_mandir}/man*/*
 
 %changelog
+* Sat Feb 28 2015 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.14.2-4
+- Add patches to fix a few crashes
+
 * Fri Dec 12 2014 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.14.2-3
 - Add patch to prevent search provider crashes when accessing history fails
 
