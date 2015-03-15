@@ -11,8 +11,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.20
-Release:    2%{?dist}
+Version:    2.21
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -151,6 +151,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/glob.h
 %{cross_sysroot}/usr/include/gnu-versions.h
 %{cross_sysroot}/usr/include/gnu/lib-names.h
+%{cross_sysroot}/usr/include/gnu/lib-names-soft.h
 %{cross_sysroot}/usr/include/gnu/libc-version.h
 %{cross_sysroot}/usr/include/gnu/stubs.h
 %{cross_sysroot}/usr/include/grp.h
@@ -477,6 +478,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Sun Mar 15 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.21-1
+- Update to 2.21
+
 * Sun Dec 21 2014 Ting-Wei Lan <lantw44@gmail.com> - 2.20-2
 - Pull in %{cross_arch}-kernel-headers
 
