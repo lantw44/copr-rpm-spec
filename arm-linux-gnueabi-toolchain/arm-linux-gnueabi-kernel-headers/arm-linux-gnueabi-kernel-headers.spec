@@ -3,7 +3,7 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    3.18.1
+Version:    3.19.1
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -35,6 +35,7 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %files
 %{cross_sysroot}/usr/include/asm-generic/*.h
 %{cross_sysroot}/usr/include/drm/*.h
+%{cross_sysroot}/usr/include/linux/android/binder.h
 %{cross_sysroot}/usr/include/linux/byteorder/*.h
 %{cross_sysroot}/usr/include/linux/caif/*.h
 %{cross_sysroot}/usr/include/linux/can/*.h
@@ -70,5 +71,8 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Sun Mar 15 2015 Ting-Wei Lan <lantw44@gmail.com> - 3.19.1-1
+- Update to 3.19.1
+
 * Thu Dec 18 2014 Ting-Wei Lan <lantw44@gmail.com> - 3.18.1-1
 - Initial packaging
