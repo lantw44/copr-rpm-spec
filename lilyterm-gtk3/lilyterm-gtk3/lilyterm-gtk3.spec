@@ -1,21 +1,24 @@
-# Review at https://bugzilla.redhat.com/show_bug.cgi?id=496167
-
-%global prerelease
+%global commit f600c0863c8e095f8669890fef0f29f6e969fa0c
+%global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           lilyterm-gtk3
-Version:        0.9.9.2
-Release:        3%{?prerelease:.%{?prerelease}}%{?dist}
-Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/patches)
+Version:        0.9.9.5
+Release:        0.1.20150208git%{shortcommit}%{?dist}
+Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 Group:          User Interface/X
 License:        GPLv3+
 URL:            http://lilyterm.luna.com.tw
-Source0:        http://lilyterm.luna.com.tw/file/lilyterm-%{version}%{?prerelease:~%{?prerelease}}.tar.gz
+Source0:        https://github.com/Tetralet/LilyTerm/archive/%{commit}/LilyTerm-%{commit}.tar.gz
 Patch0:         lilyterm-gtk3.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  gtk3-devel
+%if 0%{?fedora} >= 21 || 0%{?rhel} >= 8
+BuildRequires:  vte291-devel
+%else
 BuildRequires:  vte3-devel
+%endif
 BuildRequires:  desktop-file-utils intltool
 
 %description
@@ -42,8 +45,8 @@ lot of features:
 
 
 %prep
-%setup -qn lilyterm-%{version}%{?prerelease:~%{?prerelease}}
-%patch0 -p1
+%setup -qn LilyTerm-%{commit}
+%patch0 -p0
 rename lilyterm lilyterm-gtk3 data/lilyterm.*
 
 %build
@@ -55,7 +58,6 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 sed -i -e 's/LilyTerm/LilyTermGtk3/' -e 's/lilyterm/lilyterm-gtk3/' \
   ${RPM_BUILD_ROOT}%{_datadir}/applications/%{name}.desktop
-rm -f ${RPM_BUILD_ROOT}%{_datadir}/applications/lilyterm.desktop
 desktop-file-install                                       \
   --delete-original                                        \
   --remove-category=Utility                                \
@@ -63,8 +65,6 @@ desktop-file-install                                       \
   --dir=${RPM_BUILD_ROOT}%{_datadir}/applications          \
   ${RPM_BUILD_ROOT}%{_datadir}/applications/%{name}.desktop
 %find_lang %{name}
-# we install the docfiles versioned
-rm -rf ${RPM_BUILD_ROOT}%{_datadir}/doc/lilyterm/
 
 
 %clean
@@ -82,8 +82,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Mar 03 2014 Ting-Wei Lan <lantw44@gmail.com>
-- Use GTK+ 3 version
+* Fri Mar 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.1.20150208gitf600c08
+- Use GTK+ 3 version and the latest VTE
+
+* Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.9.9.2-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.9.9.2-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.9.9.2-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
