@@ -2,7 +2,7 @@
 %global pkgname Geiser
 
 Name:       emacs-%{pkg} 
-Version:    0.6
+Version:    0.7
 Release:    1%{?dist}
 Summary:    Geiser is an Emacs environment to hack and have fun in Scheme.
 
@@ -58,6 +58,7 @@ fi
 %doc AUTHORS ChangeLog COPYING NEWS README THANKS
 %{_bindir}/geiser-racket
 %{_infodir}/geiser.info.gz
+%{_datadir}/geiser/chicken/geiser/emacs.scm
 %{_datadir}/geiser/guile/geiser/xref.scm
 %{_datadir}/geiser/guile/geiser/utils.scm
 %{_datadir}/geiser/guile/geiser/modules.scm
@@ -89,5 +90,9 @@ fi
 
 
 %changelog
+* Fri Mar 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.7-1
+- Rebuilt for Fedora 22 and 23
+- Update to 0.7
+
 * Sat Nov 22 2014 Ting-Wei Lan <lantw44@gmail.com> - 0.6-1
 - Initial packaging

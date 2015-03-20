@@ -1,6 +1,6 @@
 Name:       guix
 Version:    0.8.1
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    a purely functional package manager for the GNU system
 
 Group:      System Environment/Base
@@ -9,7 +9,7 @@ URL:        https://www.gnu.org/software/guix
 Source0:    ftp://alpha.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:    guix.service
 
-%global guile_required    2.0.5
+%global guile_required    5:2.0.5
 %global sqlite_required   3.6.19
 %global guix_user         guix-builder
 %global guix_group        guix-builder
@@ -175,6 +175,10 @@ fi
 %{_emacs_sitelispdir}/guix*.el
 
 %changelog
+* Fri Mar 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.8.1-2
+- Rebuilt for Fedora 22 and 23
+- Add epoch to guile dependency to prevent it from using compat-guile18
+
 * Fri Jan 30 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.8.1-1
 - Update to 0.8.1
 
