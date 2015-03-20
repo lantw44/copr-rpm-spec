@@ -5,8 +5,8 @@ Summary:    Msieve is a C library to factor large integers.
 
 Group:      Applications/Engineering
 License:    Public Domain
-URL:        http://sourceforge.net/projects/msieve
-Source0:    http://downloads.sourceforge.net/project/msieve/msieve/Msieve v1.52/msieve152.tar.gz
+URL:        https://sourceforge.net/projects/msieve
+Source0:    https://downloads.sourceforge.net/project/msieve/msieve/Msieve v1.52/msieve152.tar.gz
 
 BuildRequires: gmp-ecm-devel, zlib-devel
 Requires:   zlib-devel

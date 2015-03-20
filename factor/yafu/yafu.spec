@@ -5,8 +5,8 @@ Summary:    Automated integer factorization
 
 Group:      Applications/Engineering
 License:    Public Domain
-URL:        http://sourceforge.net/projects/yafu
-Source0:    http://downloads.sourceforge.net/project/yafu/%{version}/%{name}-%{version}-src.zip
+URL:        https://sourceforge.net/projects/yafu
+Source0:    https://downloads.sourceforge.net/project/yafu/%{version}/%{name}-%{version}-src.zip
 
 BuildRequires: msieve, gmp-ecm-devel
 
