@@ -82,5 +82,5 @@ fi
 %doc Changelog COPYING README TODO VERSION tcc-doc.html
 
 %changelog
-* Mon Nov 04 2013 Ting-Wei Lan <lantw44@gmail.com>
+* Mon Nov 04 2013 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-4
 - Initial packaging

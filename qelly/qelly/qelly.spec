@@ -40,11 +40,11 @@ install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
 %doc AUTHORS CHANGES LICENSE README.md
 
 %changelog
-* Tue Dec 17 2013 Ting-Wei Lan <lantw44@gmail.com>
+* Tue Dec 17 2013 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.1.beta
 - Update to 1.0b (https://github.com/uranusjr/Qelly/releases/tag/v1.0b)
 
-* Mon Oct 21 2013 Ting-Wei Lan <lantw44@gmail.com>
+* Mon Oct 21 2013 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.1.alpha3
 - Update to 1.0a3 (https://github.com/uranusjr/Qelly/releases/tag/v1.0a3)
 
-* Thu Oct 17 2013 Ting-Wei Lan <lantw44@gmail.com>
+* Thu Oct 17 2013 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.1.alpha2
 - Initial packaging
