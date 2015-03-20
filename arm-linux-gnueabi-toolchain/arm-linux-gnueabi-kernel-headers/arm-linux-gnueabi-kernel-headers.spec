@@ -71,7 +71,7 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
-* Fri Mar 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 3.19.2-1
+* Fri Mar 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 3.19.2-2
 - Update to 3.19.2
 
 * Sun Mar 15 2015 Ting-Wei Lan <lantw44@gmail.com> - 3.19.1-1
