@@ -13,7 +13,7 @@
 %endif
 
 %define enable_java     0
-%if 0%{?fedora} >= 21
+%if 0%{?fedora} == 21
 %define enable_ada      1
 %else
 %define enable_ada      0
@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    4.9.2
-Release:    3%{?dist}
+Release:    4%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
@@ -359,6 +359,11 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Fri Mar 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.9.2-4
+- Rebuilt for Fedora 22 and 23
+- Ada support cannot be built using GCC 5, so we disable it until GCC 5
+  become a stable release.
+
 * Fri Jan 02 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.9.2-3
 - Enable Ada support on Fedora 21 or later.
 

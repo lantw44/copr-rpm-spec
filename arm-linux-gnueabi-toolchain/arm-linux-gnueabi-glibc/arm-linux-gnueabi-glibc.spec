@@ -12,7 +12,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.21
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -478,6 +478,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Fri Mar 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.21-2
+- Rebuilt for Fedora 22 and 23
+
 * Sun Mar 15 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.21-1
 - Update to 2.21
 
