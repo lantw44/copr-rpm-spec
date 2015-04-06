@@ -6,8 +6,8 @@
 %global geocode_glib_version 3.10.0
 
 Name:           gnome-settings-daemon
-Version:        3.14.2
-Release:        2%{?dist}
+Version:        3.14.3
+Release:        1%{?dist}
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 Group:          System Environment/Daemons
@@ -18,7 +18,6 @@ Source:         http://download.gnome.org/sources/%{name}/3.14/%{name}-%{version
 # disable wacom for ppc/ppc64 (used on RHEL)
 Patch0:         %{name}-3.5.4-ppc-no-wacom.patch
 
-Patch1:         0001-power-Don-t-forget-about-disabled-touchscreens.patch
 # respect menus-have-icons and buttons-have-icons settings
 Patch2:         %{name}-3.14-respect-menus-buttons-icons.patch
 
@@ -102,8 +101,6 @@ developing applications that use %{name}.
 %patch2 -p1 -b .menus-buttons-icons
 
 autoreconf -i -f
-
-%patch1 -p1
 
 %build
 %configure --disable-static \
@@ -273,6 +270,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-xsettings
 
 %changelog
+* Tue Mar 24 2015 Rui Matos <rmatos@redhat.com> - 3.14.3-1
+- Update to 3.14.3
+- Remove upstreamed patch
+
 * Tue Jan 20 2015 Bastien Nocera <bnocera@redhat.com> 3.14.2-2
 - Fix disabled touchscreens when resuming from suspend (#1173849)
 
