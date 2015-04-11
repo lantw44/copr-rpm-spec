@@ -3,7 +3,7 @@
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.1.20150208git%{shortcommit}%{?dist}
+Release:        0.2.20150208git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 Group:          User Interface/X
@@ -22,7 +22,7 @@ BuildRequires:  vte3-devel
 BuildRequires:  desktop-file-utils intltool
 
 %description
-Copr: lantw44/patches
+Copr: lantw44/lilyterm-gtk3
 Note: This is a modified package. Install it if you want to use LilyTerm with
 GTK+ 3 and latest VTE.
 
@@ -82,6 +82,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Apr 12 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.2.20150208gitf600c08
+- Fix the wrong Copr description
+
 * Fri Mar 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.1.20150208gitf600c08
 - Use GTK+ 3 version and the latest VTE
 
