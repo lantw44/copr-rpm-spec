@@ -3,20 +3,22 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    3.19.3
+Version:    4.0.0
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
+
+%define kversion        %(echo %{version} | sed 's/\.0$//')
 
 Group:      Development/System
 License:    GPLv2
 URL:        http://www.kernel.org/
-Source0:    https://www.kernel.org/pub/linux/kernel/v3.x/linux-%{version}.tar.xz
+Source0:    https://www.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
 
 %description
 
 
 %prep
-%setup -qn linux-%{version}
+%setup -qn linux-%{kversion}
 
 
 %build
@@ -71,6 +73,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Mon Apr 13 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.0.0-1
+- Update to 4.0
+
 * Thu Mar 26 2015 Ting-Wei Lan <lantw44@gmail.com> - 3.19.3-1
 - Update to 3.19.3
 
