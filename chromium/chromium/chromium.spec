@@ -7,7 +7,7 @@
 # $ curl -s 'http://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
 Name:       chromium
-Version:    41.0.2272.118
+Version:    42.0.2311.90
 Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -85,6 +85,8 @@ Requires:   hicolor-icon-theme
     -Duse_system_speex=1 \
     -Duse_system_zlib=1
 
+find third_party/icu -type f '!' -regex '.*\.\(gyp\|gypi\|isolate\)' -delete
+
 GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Duse_system_expat=1 \
     -Duse_system_flac=1 \
@@ -120,7 +122,7 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Dgoogle_default_client_secret=GuvPB069ONrHxN7Y_y0txLKn \
 
 ./build/download_nacl_toolchains.py --packages \
-    nacl_x86_glibc,nacl_x86_newlib,pnacl_newlib,pnacl_translator sync
+    nacl_x86_glibc,nacl_x86_newlib,pnacl_newlib,pnacl_translator sync --extract
 
 ninja-build -C out/Release chrome chrome_sandbox chromedriver
 
@@ -140,7 +142,6 @@ install -m 755 out/Release/chrome %{buildroot}%{chromiumdir}/chromium-browser
 install -m 4755 out/Release/chrome_sandbox %{buildroot}%{chromiumdir}/chrome-sandbox
 install -m 755 out/Release/chromedriver %{buildroot}%{chromiumdir}/
 install -m 755 out/Release/libffmpegsumo.so %{buildroot}%{chromiumdir}/
-install -m 755 out/Release/libpdf.so %{buildroot}%{chromiumdir}/
 install -m 755 out/Release/nacl_helper %{buildroot}%{chromiumdir}/
 install -m 755 out/Release/nacl_helper_bootstrap %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/nacl_irt_x86_64.nexe %{buildroot}%{chromiumdir}/
@@ -186,7 +187,6 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/chrome-sandbox
 %{chromiumdir}/chromedriver
 %{chromiumdir}/libffmpegsumo.so
-%{chromiumdir}/libpdf.so
 %{chromiumdir}/nacl_helper
 %{chromiumdir}/nacl_helper_bootstrap
 %{chromiumdir}/nacl_irt_x86_64.nexe
@@ -199,6 +199,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Apr 02 2015 - Ting-Wei Lan <lantw44@gmail.com> - 42.0.2311.90-1
+- Update to 42.0.2311.90
+
 * Thu Apr 02 2015 - Ting-Wei Lan <lantw44@gmail.com> - 41.0.2272.118-1
 - Update to 41.0.2272.118
 
