@@ -1,6 +1,6 @@
 Name:       guix
 Version:    0.8.1
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    a purely functional package manager for the GNU system
 
 Group:      System Environment/Base
@@ -25,8 +25,8 @@ BuildRequires: systemd
 Requires:   guile >= %{guile_required}
 Requires:   sqlite >= %{sqlite_required}
 Requires:   bzip2, libgcrypt
-Requires(post):  /sbin/useradd
-Requires(post):  /sbin/groupadd
+Requires(post):  /usr/sbin/useradd
+Requires(post):  /usr/sbin/groupadd
 Requires(post):  /usr/bin/gpasswd
 Requires(post):  /sbin/install-info
 Requires(preun): /sbin/install-info
@@ -78,8 +78,8 @@ install -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/guix.service
 %post
 /sbin/install-info %{_infodir}/guix.info.gz %{_infodir}/dir || :
 if [ "$1" = 1 ]; then
-    /sbin/groupadd -r %{guix_group}
-    /sbin/useradd -M -N -g %{guix_group} -d /gnu/store -s /sbin/nologin \
+    /usr/sbin/groupadd -r %{guix_group}
+    /usr/sbin/useradd -M -N -g %{guix_group} -d /gnu/store -s /sbin/nologin \
         -c "Guix build user" %{guix_user}
     /usr/bin/gpasswd -a %{guix_user} %{guix_group} >/dev/null
 fi
@@ -175,6 +175,10 @@ fi
 %{_emacs_sitelispdir}/guix*.el
 
 %changelog
+* Wed Apr 15 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.8.1-3
+- Use /usr/sbin/useradd and /usr/sbin/groupadd instead of /sbin/useradd and
+  /sbin/groupadd to make this package work with DNF
+
 * Fri Mar 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.8.1-2
 - Rebuilt for Fedora 22 and 23
 - Add epoch to guile dependency to prevent it from using compat-guile18
