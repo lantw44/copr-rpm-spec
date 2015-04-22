@@ -12,35 +12,23 @@
 %define pkg_suffix      %{nil}
 %endif
 
-%define enable_java     0
-%if 0%{?fedora} == 21
+%if 0%{?fedora} >= 22
 %define enable_ada      1
 %else
 %define enable_ada      0
 %endif
 
-%define isl_version     0.12.2
-%define isl_source      %{_builddir}/isl-%{isl_version}
-%define isl_build       %{_builddir}/isl-build
-%define isl_install     %{_builddir}/isl-install
-%define cloog_version   0.18.1
-%define cloog_source    %{_builddir}/cloog-%{cloog_version}
-%define cloog_build     %{_builddir}/cloog-build
-%define cloog_install   %{_builddir}/cloog-install
-
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    4.9.2
-Release:    4%{?dist}
+Version:    5.1.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
 License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
 URL:        https://gcc.gnu.org
 Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
-Source1:    ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-%{isl_version}.tar.bz2
-Source2:    ftp://gcc.gnu.org/pub/gcc/infrastructure/cloog-%{cloog_version}.tar.gz
 
-BuildRequires: texinfo, gettext, flex, bison, zlib-devel
+BuildRequires: texinfo, gettext, flex, bison, zlib-devel, isl-devel
 BuildRequires: gmp-devel, mpfr-devel, libmpc-devel, elfutils-libelf-devel
 BuildRequires: %{cross_triplet}-binutils
 Requires:   %{cross_triplet}-binutils
@@ -66,32 +54,10 @@ Obsoletes:  %{cross_triplet}-gcc-pass2 <= %{version}
 
 
 %prep
-%setup -qTb 2 -n cloog-%{cloog_version}
-%setup -qTb 1 -n isl-%{isl_version}
 %setup -qTb 0 -n gcc-%{version}
 
 
 %build
-mkdir -p %{isl_build} %{isl_install}
-cd %{isl_build}
-%{isl_source}/configure \
-    --prefix=%{isl_install} \
-    --disable-shared \
-
-make %{?_smp_mflags}
-make install
-
-mkdir -p %{cloog_build} %{cloog_install}
-cd %{cloog_build}
-%{cloog_source}/configure \
-    --prefix=%{cloog_install} \
-    --disable-shared \
-    --with-isl=system \
-    --with-isl-prefix=%{isl_install} \
-
-make %{?_smp_mflags} V=1
-make install
-
 mkdir -p %{_builddir}/gcc-build
 cd %{_builddir}/gcc-build
 AR_FOR_TARGET=%{_bindir}/%{cross_triplet}-ar \
@@ -113,9 +79,8 @@ WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc \
     --target=%{cross_triplet} \
     --with-local-prefix=%{cross_sysroot} \
     --with-sysroot=%{cross_sysroot} \
-    --with-isl=%{isl_install} \
-    --with-cloog=%{cloog_install} \
     --with-system-zlib \
+    --with-isl \
     --disable-nls \
     --enable-lto \
     --enable-__cxa_atexit \
@@ -142,6 +107,9 @@ make %{?_smp_mflags} all-gcc all-target-libgcc
     --enable-languages=c,c++,fortran,objc,obj-c++,ada \
 %else
     --enable-languages=c,c++,fortran,objc,obj-c++ \
+%endif
+%if 0%{fedora} <= 22
+    --with-default-libstdcxx-abi=c++98 \
 %endif
     --enable-libmulflap \
     --enable-libgomp \
@@ -181,6 +149,7 @@ rm -rf %{buildroot}%{_mandir}
 rm -rf %{buildroot}%{_infodir}
 rm -rf %{buildroot}%{_datadir}/gcc-%{version}/python
 rm -f %{buildroot}%{_bindir}/%{cross_triplet}-gcc-%{version}
+rm -f %{buildroot}%{_libdir}/libcc1.so*
 rm -rf %{buildroot}%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/install-tools
 rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{version}/install-tools/fixincl
 rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{version}/install-tools/fixinc.sh
@@ -232,6 +201,7 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{_bindir}/%{cross_triplet}-gcc-nm
 %{_bindir}/%{cross_triplet}-gcc-ranlib
 %{_bindir}/%{cross_triplet}-gcov
+%{_bindir}/%{cross_triplet}-gcov-tool
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include-fixed/README
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include-fixed/limits.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include-fixed/syslimits.h
@@ -276,6 +246,7 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{_bindir}/%{cross_triplet}-gfortran
 %{_prefix}/%{cross_triplet}/include/c++/%{version}
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/omp.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/openacc.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/objc
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/ssp
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/sanitizer
@@ -297,6 +268,7 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{cross_sysroot}/lib/libgomp.a
 %{cross_sysroot}/lib/libgomp.so*
 %{cross_sysroot}/lib/libgomp.spec
+%{cross_sysroot}/lib/libgomp-plugin-host_nonshm.so*
 %{cross_sysroot}/lib/libitm.a
 %{cross_sysroot}/lib/libitm.so*
 %{cross_sysroot}/lib/libitm.spec
@@ -314,30 +286,6 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{cross_sysroot}/lib/libsupc++.a
 %{cross_sysroot}/lib/libubsan.a
 %{cross_sysroot}/lib/libubsan.so*
-%if %{enable_java}
-%{_bindir}/%{cross_triplet}-aot-compile
-%{_bindir}/%{cross_triplet}-gcj
-%{_bindir}/%{cross_triplet}-jcf-dump
-%{_bindir}/%{cross_triplet}-rebuild-gcj-db
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/gcj
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/jawt.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/jawt_md.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/jni.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/jni_md.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/jvmpi.h
-%{_libexecdir}/gcc/%{cross_triplet}/%{version}/jc1
-%{_libexecdir}/gcc/%{cross_triplet}/%{version}/jvgenmain
-%{cross_sysroot}/lib/gcj-%{version}-15/libjvm.so
-%{cross_sysroot}/lib/libgcj.so
-%{cross_sysroot}/lib/libgcj.so.15*
-%{cross_sysroot}/lib/libgcj.spec
-%{cross_sysroot}/lib/libgcj_bc.so*
-%{cross_sysroot}/lib/libgij.so
-%{cross_sysroot}/lib/libgij.so.15*
-%{cross_sysroot}/lib/logging.properties
-%{cross_sysroot}/lib/pkgconfig/libgcj-4.9.pc
-%{cross_sysroot}/lib/security/classpath.security
-%endif
 %if %{enable_ada}
 %{_bindir}/%{cross_triplet}-gnat
 %{_bindir}/%{cross_triplet}-gnatbind
@@ -359,6 +307,13 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Wed Apr 22 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.1.0-1
+- Update to new stable release 5.1.0
+- Drop untested and possibly non-working Java support.
+- Drop bundled CLooG because it is no longer required in GCC 5.
+- Drop bundled ISL because it is now available in Fedora repository.
+- Remove libcc1.so to prevent conflict with gcc-gdb-plugin.
+
 * Fri Mar 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.9.2-4
 - Rebuilt for Fedora 22 and 23
 - Ada support cannot be built using GCC 5, so we disable it until GCC 5
