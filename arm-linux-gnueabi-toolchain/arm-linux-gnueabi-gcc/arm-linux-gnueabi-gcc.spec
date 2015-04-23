@@ -20,7 +20,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    5.1.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
@@ -108,7 +108,7 @@ make %{?_smp_mflags} all-gcc all-target-libgcc
 %else
     --enable-languages=c,c++,fortran,objc,obj-c++ \
 %endif
-%if 0%{fedora} <= 22
+%if 0%{?fedora} <= 22
     --with-default-libstdcxx-abi=c++98 \
 %endif
     --enable-libmulflap \
@@ -307,6 +307,9 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Thu Apr 23 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.1.0-2
+- Fix the usage of Fedora macro
+
 * Wed Apr 22 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.1.0-1
 - Update to new stable release 5.1.0
 - Drop untested and possibly non-working Java support.
