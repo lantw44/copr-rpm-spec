@@ -11,7 +11,7 @@ Summary:    Header files for the Linux kernel (%{cross_triplet})
 
 Group:      Development/System
 License:    GPLv2
-URL:        http://www.kernel.org/
+URL:        https://www.kernel.org/
 Source0:    https://www.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
 
 %description

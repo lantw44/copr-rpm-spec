@@ -4,7 +4,7 @@
 #  [3] https://www.archlinux.org/packages/extra/x86_64/chromium/
 
 # Get the version number of latest stable version
-# $ curl -s 'http://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
+# $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
 Name:       chromium
 Version:    42.0.2311.135
@@ -13,8 +13,8 @@ Summary:    An open-source project that aims to build a safer, faster, and more 
 
 Group:      Applications/Internet
 License:    BSD and LGPLv2+
-URL:        http://www.chromium.org
-Source0:    http://commondatastorage.googleapis.com/chromium-browser-official/chromium-%{version}.tar.xz
+URL:        https://www.chromium.org
+Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/chromium-%{version}.tar.xz
 
 # The following two source files are copied and modified from
 # https://repos.fedorapeople.org/repos/spot/chromium/
