@@ -1,6 +1,6 @@
 Name:       guix
-Version:    0.8.1
-Release:    3%{?dist}
+Version:    0.8.2
+Release:    1%{?dist}
 Summary:    a purely functional package manager for the GNU system
 
 Group:      System Environment/Base
@@ -13,11 +13,12 @@ Source1:    guix.service
 %global sqlite_required   3.6.19
 %global guix_user         guix-builder
 %global guix_group        guix-builder
+%global completionsdir    %(pkg-config --variable=completionsdir bash-completion)
 
 BuildRequires: guile-devel >= %{guile_required}
 BuildRequires: sqlite-devel >= %{sqlite_required}
 BuildRequires: bzip2-devel, libgcrypt-devel
-BuildRequires: emacs, emacs-geiser
+BuildRequires: emacs, emacs-geiser, bash-completion
 
 # Get _unitdir macro to install the systemd service file
 BuildRequires: systemd
@@ -62,8 +63,11 @@ Source for Emacs interface for GNU Guix.
 %setup -q
 
 %build
-%configure --disable-rpath
+%configure --disable-rpath --with-bash-completion-dir=%{completionsdir}
 make %{?_smp_mflags}
+
+%check
+make %{?_smp_mflags} check
 
 %install
 make install DESTDIR=%{buildroot}
@@ -100,7 +104,7 @@ fi
 %{_sbindir}/guix-register
 %{_libexecdir}/guix/list-runtime-roots
 %{_libexecdir}/guix/offload
-%{_libexecdir}/guix/substitute-binary
+%{_libexecdir}/guix/substitute
 %{_libexecdir}/guix-authenticate
 %{_datadir}/guix/hydra.gnu.org.pub
 %{_datadir}/guile/site/2.0/gnu.scm
@@ -113,7 +117,7 @@ fi
 %{_datadir}/guile/site/2.0/gnu/packages.go
 %{_datadir}/guile/site/2.0/gnu/packages/*.scm
 %{_datadir}/guile/site/2.0/gnu/packages/*.go
-%{_datadir}/guile/site/2.0/gnu/packages/javac.in
+%{_datadir}/guile/site/2.0/gnu/packages/ld-wrapper.in
 %{_datadir}/guile/site/2.0/gnu/packages/linux-libre-*.conf
 %{_datadir}/guile/site/2.0/gnu/packages/patches/*.patch
 %{_datadir}/guile/site/2.0/gnu/packages/bootstrap/armhf-linux/tar
@@ -144,7 +148,8 @@ fi
 %{_datadir}/guile/site/2.0/gnu/system.go
 %{_datadir}/guile/site/2.0/gnu/system/*.scm
 %{_datadir}/guile/site/2.0/gnu/system/*.go
-%{_datadir}/guile/site/2.0/gnu/system/os-config.tmpl
+%{_datadir}/guile/site/2.0/gnu/system/examples/bare-bones.tmpl
+%{_datadir}/guile/site/2.0/gnu/system/examples/desktop.tmpl
 %{_datadir}/guile/site/2.0/guix.scm
 %{_datadir}/guile/site/2.0/guix.go
 %{_datadir}/guile/site/2.0/guix/*.scm
@@ -166,6 +171,7 @@ fi
 %{_infodir}/%{name}.info*
 %{_infodir}/images/bootstrap-graph.png.gz
 %exclude %{_infodir}/dir
+%{completionsdir}/guix
 %{_unitdir}/guix.service
 
 %files emacs
@@ -175,6 +181,10 @@ fi
 %{_emacs_sitelispdir}/guix*.el
 
 %changelog
+* Fri May 15 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.8.2-1
+- Update to 0.8.2
+- Add a %check section to run the test
+
 * Wed Apr 15 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.8.1-3
 - Use /usr/sbin/useradd and /usr/sbin/groupadd instead of /sbin/useradd and
   /sbin/groupadd to make this package work with DNF
