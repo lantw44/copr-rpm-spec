@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           gsettings-desktop-schemas
-Version:        3.14.1
+Version:        3.14.2
 Release:        1%{?dist}
 Summary:        A collection of GSettings schemas (Copr: lantw44/gnome-restore-gtk-icons)
 
@@ -76,6 +76,9 @@ fi
 
 
 %changelog
+* Fri May 01 2015 David King <amigadave@amigadave.com> - 3.14.2-1
+- Update to 3.14.2
+
 * Wed Oct 15 2014 Kalev Lember <kalevlember@gmail.com> - 3.14.1-1
 - Update to 3.14.1
 
