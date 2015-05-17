@@ -8,7 +8,7 @@
 
 Name:       chromium
 Version:    42.0.2311.135
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -194,11 +194,15 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/snapshot_blob.bin
 %{chromiumdir}/*.pak
 %{chromiumdir}/locales/*.pak
-%doc LICENSE AUTHORS
+%license LICENSE
+%doc AUTHORS
 
 
 
 %changelog
+* Sun May 17 2015 - Ting-Wei Lan <lantw44@gmail.com> - 42.0.2311.135-2
+- Use license marco to install the license file
+
 * Wed Apr 29 2015 - Ting-Wei Lan <lantw44@gmail.com> - 42.0.2311.135-1
 - Update to 42.0.2311.135
 

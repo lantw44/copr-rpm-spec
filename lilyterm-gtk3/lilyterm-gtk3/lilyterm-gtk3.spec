@@ -3,7 +3,7 @@
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.2.20150208git%{shortcommit}%{?dist}
+Release:        0.3.20150208git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 Group:          User Interface/X
@@ -73,7 +73,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
-%doc AUTHORS ChangeLog COPYING README TODO
+%license COPYING
+%doc AUTHORS ChangeLog README TODO
 %config(noreplace) %{_sysconfdir}/%{name}.conf
 %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
@@ -82,6 +83,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun May 17 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.3.20150208gitf600c08
+- Use license marco to install the license file
+
 * Sun Apr 12 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.2.20150208gitf600c08
 - Fix the wrong Copr description
 

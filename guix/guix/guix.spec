@@ -1,6 +1,6 @@
 Name:       guix
 Version:    0.8.2
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    a purely functional package manager for the GNU system
 
 Group:      System Environment/Base
@@ -98,7 +98,8 @@ if [ "$1" = 0 ]; then
 fi
 
 %files -f guix.lang -f guix-packages.lang
-%doc AUTHORS ChangeLog COPYING NEWS README ROADMAP THANKS TODO
+%license COPYING
+%doc AUTHORS ChangeLog NEWS README ROADMAP THANKS TODO
 %{_bindir}/guix
 %{_bindir}/guix-daemon
 %{_sbindir}/guix-register
@@ -181,6 +182,9 @@ fi
 %{_emacs_sitelispdir}/guix*.el
 
 %changelog
+* Sun May 17 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.8.2-2
+- Use license marco to install the license file
+
 * Fri May 15 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.8.2-1
 - Update to 0.8.2
 - Add a %check section to run the test

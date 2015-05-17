@@ -3,7 +3,7 @@
 
 Name:       emacs-%{pkg} 
 Version:    0.7
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    Geiser is an Emacs environment to hack and have fun in Scheme.
 
 License:    BSD
@@ -55,7 +55,8 @@ fi
 
 
 %files
-%doc AUTHORS ChangeLog COPYING NEWS README THANKS
+%license COPYING
+%doc AUTHORS ChangeLog NEWS README THANKS
 %{_bindir}/geiser-racket
 %{_infodir}/geiser.info.gz
 %{_datadir}/geiser/chicken/geiser/emacs.scm
@@ -90,6 +91,9 @@ fi
 
 
 %changelog
+* Sun May 17 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.7-2
+- Use license marco to install the license file
+
 * Fri Mar 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.7-1
 - Rebuilt for Fedora 22 and 23
 - Update to 0.7
