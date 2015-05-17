@@ -6,7 +6,7 @@
 %global geocode_glib_version 3.10.0
 
 Name:           gnome-settings-daemon
-Version:        3.14.3
+Version:        3.14.4
 Release:        1%{?dist}
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
@@ -270,6 +270,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-xsettings
 
 %changelog
+* Fri May 01 2015 David King <amigadave@amigadave.com> - 3.14.4-1
+- Update to 3.14.4
+
 * Tue Mar 24 2015 Rui Matos <rmatos@redhat.com> - 3.14.3-1
 - Update to 3.14.3
 - Remove upstreamed patch
