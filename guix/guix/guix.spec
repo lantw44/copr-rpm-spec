@@ -1,6 +1,6 @@
 Name:       guix
 Version:    0.8.2
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    a purely functional package manager for the GNU system
 
 Group:      System Environment/Base
@@ -71,8 +71,6 @@ make %{?_smp_mflags} check
 
 %install
 make install DESTDIR=%{buildroot}
-mkdir -p %{buildroot}/gnu/store
-mkdir -p %{buildroot}%{_localstatedir}/log/guix
 mkdir -p %{buildroot}%{_unitdir}
 install -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/guix.service
 %{_emacs_bytecompile} %{buildroot}%{_emacs_sitelispdir}/guix*.el
@@ -87,14 +85,10 @@ if [ "$1" = 1 ]; then
         -c "Guix build user" %{guix_user}
     /usr/bin/gpasswd -a %{guix_user} %{guix_group} >/dev/null
 fi
-chgrp %{guix_user} /gnu/store
-chmod 1775 /gnu/store
 
 %preun
 if [ "$1" = 0 ]; then
     /sbin/install-info --del %{_infodir}/guix.info.gz %{_infodir}/dir || :
-    rmdir --ignore-fail-on-non-empty /gnu/store
-    rmdir --ignore-fail-on-non-empty /gnu
 fi
 
 %files -f guix.lang -f guix-packages.lang
@@ -167,8 +161,6 @@ fi
 %{_datadir}/guile/site/2.0/guix/scripts/import/*.go
 %{_datadir}/guile/site/2.0/guix/build-system/*.scm
 %{_datadir}/guile/site/2.0/guix/build-system/*.go
-%dir /gnu/store
-%dir %{_localstatedir}/log/guix
 %{_infodir}/%{name}.info*
 %{_infodir}/images/bootstrap-graph.png.gz
 %exclude %{_infodir}/dir
@@ -182,6 +174,10 @@ fi
 %{_emacs_sitelispdir}/guix*.el
 
 %changelog
+* Thu May 21 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.8.2-3
+- We no longer have to create /gnu/store and /var/log/guix manually. Guix can
+  create and set correct permissions for these directories.
+
 * Sun May 17 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.8.2-2
 - Use license marco to install the license file
 
