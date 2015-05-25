@@ -1,27 +1,42 @@
 Name: epiphany
 Epoch: 1
-Version: 3.14.2
-Release: 4%{?dist}
+Version: 3.16.1
+Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv2+ and CC-BY-SA
 URL: https://wiki.gnome.org/Apps/Web
-Source0: http://download.gnome.org/sources/epiphany/3.14/%{name}-%{version}.tar.xz
+Source0: http://download.gnome.org/sources/epiphany/3.16/%{name}-%{version}.tar.xz
 
 # Fedora bookmarks
 Patch0: epiphany-default-bookmarks.patch
 # DRI3 is currently only used in Fedora. It breaks DuckDuckGo, YouTube, et. al.
 Patch1: epiphany-disable-DRI3.patch
-# Committed upstream for 3.16 and 3.14.3
-Patch2: epiphany-db-access-crash.patch
-# https://bugzilla.gnome.org/show_bug.cgi?id=745306
-Patch3: epiphany-web-dom-utils-find-form-auth-elements-crash.patch
-# https://bugzilla.gnome.org/show_bug.cgi?id=744896
-Patch4: epiphany-web-extension-proxy-created-cb-crash.patch
-# https://bugzilla.gnome.org/show_bug.cgi?id=744360
-Patch5: epiphany-setup-web-extensions-connection-crash.patch
+# Fix the build, backported from upstream
+Patch2: 0001-Fix-a-syntax-error-in-Esperanto-translation.patch
 # Reduce the minimum tab width
-Patch6: epiphany-reduce-tab-width.patch
+Patch3: epiphany-reduce-tab-width.patch
+
+# There is a large queue of unreviewed patches upstream, so we'll carry more
+# patches than we really ought to until it comes under control.
+# Patches from https://git.gnome.org/browse/epiphany/log/?h=wip/mcatanzaro/fedora-needs-upstreamed
+
+# These patches make Ephy understand URLs that contain non-Western characters.
+# These should be upstreamed. Still need to fix the download widget.
+Patch101: 0001-nautilus-floating-bar-Show-correctly-UTF-8-URL.patch
+Patch102: 0002-ephy-title-box-Show-correctly-UTF-8-URL.patch
+Patch103: 0003-Properly-display-UTF-8-URLs-in-the-location-entry.patch
+Patch104: 0004-Display-unescaped-URIs-in-the-location-entry-complet.patch
+Patch105: 0005-Display-unescaped-URIs-in-the-bookmark-properties-di.patch
+Patch106: 0006-Add-ephy_tree_model_node_add_column_full.patch
+Patch107: 0007-Add-ephy_node_view_add_column_full.patch
+Patch108: 0008-Display-unescaped-URLs-in-the-bookmarks-editor.patch
+Patch109: 0009-Display-unescaped-URIs-in-the-history-dialog.patch
+
+# Miscellaneous patches that ought to go upstream in one form or another.
+Patch110: 0010-nautilus-floating-bar-hide-on-hover.patch
+Patch111: 0011-ephy-location-entry-update-padding-for-latest-Adwait.patch
+Patch112: 0012-Use-GdTwoLinesRenderer-for-location-entry-completion.patch
 
 BuildRequires: desktop-file-utils
 BuildRequires: gcr-devel >= 3.5.5
@@ -77,11 +92,23 @@ installing the epiphany application itself.
 %setup -q
 %patch0 -p1 -b .default-bookmarks
 %patch1 -p1 -b .disable-dri3
-%patch2 -p1 -b .db-access-crash
-%patch3 -p1 -b .dom-utils-crash
-%patch4 -p1 -b .extension-proxy-crash
-%patch5 -p1 -b .setup-extensions-crash
-%patch6 -p1 -b .reduce-tab-width
+%patch2 -p1
+%patch3 -p1 -b .reduce-tab-width
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
+%patch104 -p1
+%patch105 -p1
+%patch106 -p1
+%patch107 -p1
+%patch108 -p1
+%patch109 -p1
+%patch110 -p1
+%patch111 -p1
+%patch112 -p1
+
+# For Use-GdTwoLinesRenderer-for-location-entry-completion.patch
+autoreconf -fi
 
 %build
 %configure --with-distributor-name=Fedora
@@ -116,7 +143,8 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_datadir}/dbus-1/services/org.gnome.Epiphany.service
 
 %files runtime
-%doc README NEWS COPYING COPYING.README AUTHORS
+%license COPYING COPYING.README
+%doc README NEWS AUTHORS
 %{_datadir}/glib-2.0/schemas/org.gnome.epiphany.gschema.xml
 %{_datadir}/glib-2.0/schemas/org.gnome.Epiphany.enums.xml
 %{_datadir}/GConf/gsettings/epiphany.convert
@@ -127,11 +155,43 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_mandir}/man*/*
 
 %changelog
-* Sat Feb 28 2015 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.14.2-4
-- Add patches to fix a few crashes
+* Tue May 12 2015 Kalev Lember <kalevlember@gmail.com> - 1:3.16.1-1
+- Update to 3.16.1
 
-* Fri Dec 12 2014 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.14.2-3
-- Add patch to prevent search provider crashes when accessing history fails
+* Mon Apr 06 2015 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.16.0-3
+- Also drop title box patch, bgo#741808
+
+* Fri Apr 03 2015 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.16.0-2
+- Drop duplicate menu item patch, rbz#1208906
+- Drop xft dpi patch, will be fixed in 3.16.1
+
+* Tue Mar 24 2015 Kalev Lember <kalevlember@gmail.com> - 1:3.16.0-1
+- Update to 3.16.0
+
+* Wed Mar 18 2015 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.15.92-1
+- Also drop no-longer-applied, upstreamed patches
+
+* Tue Mar 17 2015 Kalev Lember <kalevlember@gmail.com> - 1:3.15.92-1
+- Update to 3.15.92
+- Use license macro for the COPYING files
+
+* Wed Mar 04 2015 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.15.90-4
+- Rejigger set of patches.
+
+* Fri Feb 27 2015 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.15.90-3
+- Add patch for rbz#1196847
+
+* Thu Feb 26 2015 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.15.90-2
+- Add several patches that haven't made it upstream yet
+
+* Wed Feb 25 2015 Richard Hughes <rhughes@redhat.com> - 1:3.15.90-1
+- Update to 3.15.90
+
+* Fri Feb 06 2015 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.15.1-2
+- Fix the search provider, which was crashing on start
+
+* Fri Dec 12 2014 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.15.1-1
+- Update to 3.15.1
 
 * Thu Nov 13 2014 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.14.2-2
 - Add patch to disable DRI3
