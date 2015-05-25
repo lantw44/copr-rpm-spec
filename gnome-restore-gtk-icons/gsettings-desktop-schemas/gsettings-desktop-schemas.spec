@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           gsettings-desktop-schemas
-Version:        3.14.2
-Release:        1%{?dist}
+Version:        3.16.1
+Release:        1%{?dist}.1
 Summary:        A collection of GSettings schemas (Copr: lantw44/gnome-restore-gtk-icons)
 
 Group:          System Environment/Libraries
@@ -10,9 +10,9 @@ License:        LGPLv2+
 # no homepage exists for this component
 URL:            http://bugzilla.gnome.org/enter_bug.cgi?product=gsettings-desktop-schemas
 #VCS: git:git://git.gnome.org/gsettings-desktop-schemas
-Source:         http://download.gnome.org/sources/%{name}/3.14/%{name}-%{version}.tar.xz
+Source:         http://download.gnome.org/sources/%{name}/3.16/%{name}-%{version}.tar.xz
 # revert settings related to icons and buttons
-Patch0:         %{name}-3.14-revert-icons-settings.patch
+Patch0:         %{name}-3.16-revert-icons-settings.patch
 
 BuildRequires: glib2-devel >= 2.31.0
 BuildRequires: intltool
@@ -23,7 +23,7 @@ Requires: glib2 >= 2.31.0
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.14.
+buttons and menus in GNOME 3.16.
 
 gsettings-desktop-schemas contains a collection of GSettings schemas for
 settings shared by various components of a desktop.
@@ -62,7 +62,8 @@ fi
 
 
 %files -f %{name}.lang
-%doc AUTHORS COPYING MAINTAINERS NEWS README
+%doc AUTHORS MAINTAINERS NEWS README
+%license COPYING
 %{_datadir}/glib-2.0/schemas/*
 %{_datadir}/GConf/gsettings/gsettings-desktop-schemas.convert
 %{_datadir}/GConf/gsettings/wm-schemas.convert
@@ -76,8 +77,21 @@ fi
 
 
 %changelog
-* Fri May 01 2015 David King <amigadave@amigadave.com> - 3.14.2-1
-- Update to 3.14.2
+* Tue Apr 14 2015 Kalev Lember <kalevlember@gmail.com> - 3.16.1-1
+- Update to 3.16.1
+
+* Mon Mar 23 2015 Kalev Lember <kalevlember@gmail.com> - 3.16.0-1
+- Update to 3.16.0
+
+* Tue Mar 17 2015 Kalev Lember <kalevlember@gmail.com> - 3.15.92-1
+- Update to 3.15.92
+- Use license macro for the COPYING file
+
+* Thu Feb 19 2015 Richard Hughes <rhughes@redhat.com> - 3.15.90-1
+- Update to 3.15.90
+
+* Tue Jan 20 2015 Richard Hughes <rhughes@redhat.com> - 3.15.4-1
+- Update to 3.15.4
 
 * Wed Oct 15 2014 Kalev Lember <kalevlember@gmail.com> - 3.14.1-1
 - Update to 3.14.1

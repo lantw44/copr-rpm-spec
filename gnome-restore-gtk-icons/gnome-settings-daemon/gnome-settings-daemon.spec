@@ -1,25 +1,25 @@
-%global gtk3_version 3.12.0
+%global gtk3_version 3.15.3
 %global gnome_desktop_version 3.11.1
 %global libgweather_version 3.9.5
-%global gsettings_desktop_schemas_version 3.9.91
+%global gsettings_desktop_schemas_version 3.15.4
 %global geoclue_version 2.1.2
 %global geocode_glib_version 3.10.0
 
 Name:           gnome-settings-daemon
-Version:        3.14.4
-Release:        1%{?dist}
+Version:        3.16.2
+Release:        1%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 Group:          System Environment/Daemons
 License:        GPLv2+
 URL:            http://download.gnome.org/sources/%{name}
 #VCS: git:git://git.gnome.org/gnome-settings-daemon
-Source:         http://download.gnome.org/sources/%{name}/3.14/%{name}-%{version}.tar.xz
+Source:         http://download.gnome.org/sources/%{name}/3.16/%{name}-%{version}.tar.xz
 # disable wacom for ppc/ppc64 (used on RHEL)
 Patch0:         %{name}-3.5.4-ppc-no-wacom.patch
 
 # respect menus-have-icons and buttons-have-icons settings
-Patch2:         %{name}-3.14-respect-menus-buttons-icons.patch
+Patch1:         %{name}-3.14-respect-menus-buttons-icons.patch
 
 BuildRequires:  gtk3-devel >= %{gtk3_version}
 BuildRequires:  gnome-desktop3-devel >= %{gnome_desktop_version}
@@ -78,7 +78,7 @@ Conflicts: gnome-shell < 3.13.92
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.14.
+buttons and menus in GNOME 3.16.
 
 A daemon to share settings from GNOME to other applications. It also
 handles global keybindings, as well as a number of desktop-wide settings.
@@ -98,7 +98,7 @@ developing applications that use %{name}.
 %patch0 -p1 -b .ppc-no-wacom
 %endif
 
-%patch2 -p1 -b .menus-buttons-icons
+%patch1 -p1 -b .menus-buttons-icons
 
 autoreconf -i -f
 
@@ -134,7 +134,8 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor >&/dev/null || :
 glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 %files -f %{name}.lang
-%doc AUTHORS COPYING NEWS
+%license COPYING
+%doc AUTHORS NEWS
 
 # list plugins explicitly, so we notice if one goes missing
 # some of these don't have a separate gschema
@@ -215,9 +216,6 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libdir}/gnome-settings-daemon-3.0/orientation.gnome-settings-plugin
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.orientation.gschema.xml
 
-%{_libdir}/gnome-settings-daemon-3.0/libcursor.so
-%{_libdir}/gnome-settings-daemon-3.0/cursor.gnome-settings-plugin
-
 %{_libdir}/gnome-settings-daemon-3.0/libsharing.so
 %{_libdir}/gnome-settings-daemon-3.0/sharing.gnome-settings-plugin
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.sharing.gschema.xml
@@ -253,7 +251,6 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %endif
 %{_libexecdir}/gsd-test-a11y-keyboard
 %{_libexecdir}/gsd-test-a11y-settings
-%{_libexecdir}/gsd-test-cursor
 %{_libexecdir}/gsd-test-datetime
 %{_libexecdir}/gsd-test-housekeeping
 %{_libexecdir}/gsd-test-input-helper
@@ -270,15 +267,30 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-xsettings
 
 %changelog
-* Fri May 01 2015 David King <amigadave@amigadave.com> - 3.14.4-1
-- Update to 3.14.4
+* Tue May 12 2015 Kalev Lember <kalevlember@gmail.com> - 3.16.2-1
+- Update to 3.16.2
 
-* Tue Mar 24 2015 Rui Matos <rmatos@redhat.com> - 3.14.3-1
-- Update to 3.14.3
-- Remove upstreamed patch
+* Tue Apr 14 2015 Kalev Lember <kalevlember@gmail.com> - 3.16.1-1
+- Update to 3.16.1
 
-* Tue Jan 20 2015 Bastien Nocera <bnocera@redhat.com> 3.14.2-2
-- Fix disabled touchscreens when resuming from suspend (#1173849)
+* Mon Mar 23 2015 Kalev Lember <kalevlember@gmail.com> - 3.16.0-1
+- Update to 3.16.0
+
+* Tue Mar 17 2015 Kalev Lember <kalevlember@gmail.com> - 3.15.92-1
+- Update to 3.15.92
+
+* Tue Mar 03 2015 Kalev Lember <kalevlember@gmail.com> - 3.15.91-1
+- Update to 3.15.91
+- Use the %%license macro for the COPYING file
+
+* Tue Feb 17 2015 Richard Hughes <rhughes@redhat.com> - 3.15.90-1
+- Update to 3.15.90
+
+* Thu Jan 22 2015 Richard Hughes <rhughes@redhat.com> - 3.15.4-1
+- Update to 3.15.4
+
+* Thu Nov 27 2014 Kalev Lember <kalevlember@gmail.com> - 3.15.1-1
+- Update to 3.15.1
 
 * Tue Nov 11 2014 Kalev Lember <kalevlember@gmail.com> - 3.14.2-1
 - Update to 3.14.2
