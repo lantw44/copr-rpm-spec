@@ -8,7 +8,7 @@
 
 Name:       chromium
 Version:    43.0.2357.81
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -24,12 +24,6 @@ Source2:    chromium-browser.desktop
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
 
-# Chromium cannot be compiled by GCC 5.1
-# https://code.google.com/p/chromium/issues/detail?id=466760
-# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=65801
-%if 0%{?fedora} >= 22
-BuildRequires: clang
-%endif
 # Basic tools and libraries
 BuildRequires: ninja-build, bison, gperf
 BuildRequires: libgcc(x86-32), glibc(x86-32)
@@ -99,10 +93,6 @@ Requires:   hicolor-icon-theme
 
 find third_party/icu -type f '!' -regex '.*\.\(gyp\|gypi\|isolate\)' -delete
 
-%if 0%{?fedora} >= 22
-export CC=clang CXX=clang++
-%endif
-
 GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Duse_system_expat=1 \
     -Duse_system_flac=1 \
@@ -134,12 +124,7 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Dlinux_link_pulseaudio=1 \
     -Dicu_use_data_file_flag=0 \
     -Dlibspeechd_h_prefix=speech-dispatcher/ \
-%if 0%{?fedora} >= 22
-    -Dclang=1 \
-    -Dclang_use_chrome_plugins=0 \
-%else
     -Dclang=0 \
-%endif
     -Dwerror= \
     -Ddisable_fatal_linker_warnings=1 \
     -Dgoogle_api_key=AIzaSyCcK3laItm4Ik9bm6IeGFC6tVgy4eut0_o \
@@ -148,6 +133,17 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
 
 ./build/download_nacl_toolchains.py --packages \
     nacl_x86_glibc,nacl_x86_newlib,pnacl_newlib,pnacl_translator sync --extract
+
+# Workaround the GCC 5.1 -Wno-narrowing regression
+# https://code.google.com/p/chromium/issues/detail?id=466760
+# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=65801
+%if 0%{?fedora} >= 22
+sed -i 's|-std=gnu++11|-std=gnu++03|' out/Release/obj/third_party/cld_2/*.ninja
+sed -i 's|0xFFFFFFFF|-1|' \
+    third_party/WebKit/Source/core/dom/NodeFilter.h \
+    third_party/WebKit/Source/core/dom/NodeFilter.idl \
+    third_party/WebKit/Source/core/html/canvas/WebGL2RenderingContextBase.idl
+%endif
 
 ninja-build -C out/Release chrome chrome_sandbox chromedriver
 
@@ -225,6 +221,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue May 26 2015 - Ting-Wei Lan <lantw44@gmail.com> - 43.0.2357.81-2
+- Revert the clang build because it causes C++11 ABI problems on Fedora 23
+- Workaround GCC 5.1 issues by using C++03 mode to compile problematic files
+- Workaround GCC 5.1 issues by replacing wrong signed integer usage
+
 * Tue May 26 2015 - Ting-Wei Lan <lantw44@gmail.com> - 43.0.2357.81-1
 - Update to 43.0.2357.81
 
