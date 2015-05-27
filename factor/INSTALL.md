@@ -1,1 +1,1 @@
-`yum install yafu`
+`dnf install yafu`

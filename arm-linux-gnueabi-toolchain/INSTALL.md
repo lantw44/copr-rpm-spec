@@ -1,4 +1,4 @@
-`yum install arm-linux-gnueabi-{binutils,gcc,glibc}`
+`dnf install arm-linux-gnueabi-{binutils,gcc,glibc}`
 
 GDB is not included because `gdb` package provided by Fedora can also be used to
 debug GNU/Linux programs running on ARM.
