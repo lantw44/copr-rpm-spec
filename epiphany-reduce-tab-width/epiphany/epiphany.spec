@@ -1,6 +1,6 @@
 Name: epiphany
 Epoch: 1
-Version: 3.16.1
+Version: 3.16.2
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
@@ -12,8 +12,6 @@ Source0: http://download.gnome.org/sources/epiphany/3.16/%{name}-%{version}.tar.
 Patch0: epiphany-default-bookmarks.patch
 # DRI3 is currently only used in Fedora. It breaks DuckDuckGo, YouTube, et. al.
 Patch1: epiphany-disable-DRI3.patch
-# Fix the build, backported from upstream
-Patch2: 0001-Fix-a-syntax-error-in-Esperanto-translation.patch
 # Reduce the minimum tab width
 Patch3: epiphany-reduce-tab-width.patch
 
@@ -92,7 +90,6 @@ installing the epiphany application itself.
 %setup -q
 %patch0 -p1 -b .default-bookmarks
 %patch1 -p1 -b .disable-dri3
-%patch2 -p1
 %patch3 -p1 -b .reduce-tab-width
 %patch101 -p1
 %patch102 -p1
@@ -155,6 +152,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_mandir}/man*/*
 
 %changelog
+* Tue Jun 23 2015 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.16.2-1
+- Update to 3.16.2
+
 * Tue May 12 2015 Kalev Lember <kalevlember@gmail.com> - 1:3.16.1-1
 - Update to 3.16.1
 
