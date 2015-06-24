@@ -6,9 +6,12 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
+# I don't want to modify patches provided by others
+%global _default_patch_fuzz 2
+
 Name:       chromium
 Version:    43.0.2357.130
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -21,9 +24,18 @@ Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/c
 Source1:    chromium-browser.sh
 Source2:    chromium-browser.desktop
 
+# Add a modified upstream patch from Arch Linux to allow disabling 'Ok Google'
+# hotwording feature
+# https://code.google.com/p/chromium/issues/detail?id=491435
+Patch0:     chromium-disable-hotwording.patch
+
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
 
+# Make sure we don't encounter GCC 5.1 bug
+%if 0%{?fedora} >= 22
+BuildRequires: gcc >= 5.1.1-2
+%endif
 # Basic tools and libraries
 BuildRequires: ninja-build, bison, gperf
 BuildRequires: libgcc(x86-32), glibc(x86-32)
@@ -68,6 +80,7 @@ Requires:   hicolor-icon-theme
 
 %prep
 %setup -q
+%patch0 -p1
 
 
 %build
@@ -127,23 +140,13 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Dclang=0 \
     -Dwerror= \
     -Ddisable_fatal_linker_warnings=1 \
+    -Denable_hotwording=0 \
     -Dgoogle_api_key=AIzaSyCcK3laItm4Ik9bm6IeGFC6tVgy4eut0_o \
     -Dgoogle_default_client_id=82546407293.apps.googleusercontent.com \
     -Dgoogle_default_client_secret=GuvPB069ONrHxN7Y_y0txLKn \
 
 ./build/download_nacl_toolchains.py --packages \
     nacl_x86_glibc,nacl_x86_newlib,pnacl_newlib,pnacl_translator sync --extract
-
-# Workaround the GCC 5.1 -Wno-narrowing regression
-# https://code.google.com/p/chromium/issues/detail?id=466760
-# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=65801
-%if 0%{?fedora} >= 22
-sed -i 's|-std=gnu++11|-std=gnu++03|' out/Release/obj/third_party/cld_2/*.ninja
-sed -i 's|0xFFFFFFFF|-1|' \
-    third_party/WebKit/Source/core/dom/NodeFilter.h \
-    third_party/WebKit/Source/core/dom/NodeFilter.idl \
-    third_party/WebKit/Source/core/html/canvas/WebGL2RenderingContextBase.idl
-%endif
 
 ninja-build -C out/Release chrome chrome_sandbox chromedriver
 
@@ -221,6 +224,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Jun 24 2015 - Ting-Wei Lan <lantw44@gmail.com> - 43.0.2357.130-2
+- Remove workaround for GCC 5.1
+- Disable 'Ok Google' hotwording feature
+
 * Tue Jun 23 2015 - Ting-Wei Lan <lantw44@gmail.com> - 43.0.2357.130-1
 - Update to 43.0.2357.130
 
