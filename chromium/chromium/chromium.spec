@@ -10,8 +10,8 @@
 %global _default_patch_fuzz 2
 
 Name:       chromium
-Version:    43.0.2357.130
-Release:    2%{?dist}
+Version:    43.0.2357.132
+Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -224,6 +224,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Jul 08 2015 - Ting-Wei Lan <lantw44@gmail.com> - 43.0.2357.132-1
+- Update to 43.0.2357.132
+
 * Wed Jun 24 2015 - Ting-Wei Lan <lantw44@gmail.com> - 43.0.2357.130-2
 - Remove workaround for GCC 5.1
 - Disable 'Ok Google' hotwording feature
