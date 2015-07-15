@@ -74,7 +74,7 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
-* Wed Jul 12 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.1.2-1
+* Sun Jul 12 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.1.2-1
 - Update to 4.1.2
 
 * Wed Jul 01 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.1.1-1
