@@ -10,7 +10,7 @@
 %global _default_patch_fuzz 2
 
 Name:       chromium
-Version:    43.0.2357.132
+Version:    43.0.2357.134
 Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -224,6 +224,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Jul 15 2015 - Ting-Wei Lan <lantw44@gmail.com> - 43.0.2357.134-1
+- Update to 43.0.2357.134
+
 * Wed Jul 08 2015 - Ting-Wei Lan <lantw44@gmail.com> - 43.0.2357.132-1
 - Update to 43.0.2357.132
 
