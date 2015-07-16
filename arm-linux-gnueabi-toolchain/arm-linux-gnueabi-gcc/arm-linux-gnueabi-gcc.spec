@@ -19,8 +19,8 @@
 %endif
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    5.1.0
-Release:    2%{?dist}
+Version:    5.2.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
@@ -109,7 +109,7 @@ make %{?_smp_mflags} all-gcc all-target-libgcc
     --enable-languages=c,c++,fortran,objc,obj-c++ \
 %endif
 %if 0%{?fedora} <= 22
-    --with-default-libstdcxx-abi=c++98 \
+    --with-default-libstdcxx-abi=gcc4-compatible \
 %endif
     --enable-libmulflap \
     --enable-libgomp \
@@ -307,6 +307,9 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Fri Jul 17 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.2.0-1
+- Update to new stable release 5.2.0
+
 * Thu Apr 23 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.1.0-2
 - Fix the usage of Fedora macro
 
