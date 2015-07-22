@@ -6,11 +6,8 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
-# I don't want to modify patches provided by others
-%global _default_patch_fuzz 2
-
 Name:       chromium
-Version:    43.0.2357.134
+Version:    44.0.2403.89
 Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -23,11 +20,6 @@ Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/c
 # https://repos.fedorapeople.org/repos/spot/chromium/
 Source1:    chromium-browser.sh
 Source2:    chromium-browser.desktop
-
-# Add a modified upstream patch from Arch Linux to allow disabling 'Ok Google'
-# hotwording feature
-# https://code.google.com/p/chromium/issues/detail?id=491435
-Patch0:     chromium-disable-hotwording.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -48,7 +40,8 @@ BuildRequires: pkgconfig(gnome-keyring-1)
 BuildRequires: expat-devel
 BuildRequires: flac-devel
 BuildRequires: harfbuzz-devel
-BuildRequires: libicu-devel
+# Chromium requires icu 55
+# BuildRequires: libicu-devel
 BuildRequires: jsoncpp-devel
 BuildRequires: libevent-devel
 BuildRequires: libjpeg-turbo-devel
@@ -80,7 +73,6 @@ Requires:   hicolor-icon-theme
 
 %prep
 %setup -q
-%patch0 -p1
 
 
 %build
@@ -88,7 +80,7 @@ Requires:   hicolor-icon-theme
     -Duse_system_expat=1 \
     -Duse_system_flac=1 \
     -Duse_system_harfbuzz=1 \
-    -Duse_system_icu=1 \
+    -Duse_system_icu=0 \
     -Duse_system_jsoncpp=1 \
     -Duse_system_libevent=1 \
     -Duse_system_libjpeg=1 \
@@ -104,13 +96,13 @@ Requires:   hicolor-icon-theme
     -Duse_system_speex=1 \
     -Duse_system_zlib=1
 
-find third_party/icu -type f '!' -regex '.*\.\(gyp\|gypi\|isolate\)' -delete
+# find third_party/icu -type f '!' -regex '.*\.\(gyp\|gypi\|isolate\)' -delete
 
 GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Duse_system_expat=1 \
     -Duse_system_flac=1 \
     -Duse_system_harfbuzz=1 \
-    -Duse_system_icu=1 \
+    -Duse_system_icu=0 \
     -Duse_system_jsoncpp=1 \
     -Duse_system_libevent=1 \
     -Duse_system_libjpeg=1 \
@@ -135,7 +127,7 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Dlinux_link_libpci=1 \
     -Dlinux_link_libspeechd=1 \
     -Dlinux_link_pulseaudio=1 \
-    -Dicu_use_data_file_flag=0 \
+    -Dicu_use_data_file_flag=1 \
     -Dlibspeechd_h_prefix=speech-dispatcher/ \
     -Dclang=0 \
     -Dwerror= \
@@ -165,7 +157,7 @@ install -m 644 out/Release/chrome.1 %{buildroot}%{_mandir}/man1/chromium-browser
 install -m 755 out/Release/chrome %{buildroot}%{chromiumdir}/chromium-browser
 install -m 4755 out/Release/chrome_sandbox %{buildroot}%{chromiumdir}/chrome-sandbox
 install -m 755 out/Release/chromedriver %{buildroot}%{chromiumdir}/
-install -m 755 out/Release/libffmpegsumo.so %{buildroot}%{chromiumdir}/
+install -m 644 out/Release/icudtl.dat %{buildroot}%{chromiumdir}/
 install -m 755 out/Release/nacl_helper %{buildroot}%{chromiumdir}/
 install -m 755 out/Release/nacl_helper_bootstrap %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/nacl_irt_x86_64.nexe %{buildroot}%{chromiumdir}/
@@ -210,7 +202,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/chromium-browser
 %{chromiumdir}/chrome-sandbox
 %{chromiumdir}/chromedriver
-%{chromiumdir}/libffmpegsumo.so
+%{chromiumdir}/icudtl.dat
 %{chromiumdir}/nacl_helper
 %{chromiumdir}/nacl_helper_bootstrap
 %{chromiumdir}/nacl_irt_x86_64.nexe
@@ -224,6 +216,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Jul 23 2015 - Ting-Wei Lan <lantw44@gmail.com> - 44.0.2403.89-1
+- Update to 44.0.2403.89
+- Temporarily disable the use of system icu because it needs icu 55
+
 * Wed Jul 15 2015 - Ting-Wei Lan <lantw44@gmail.com> - 43.0.2357.134-1
 - Update to 43.0.2357.134
 
