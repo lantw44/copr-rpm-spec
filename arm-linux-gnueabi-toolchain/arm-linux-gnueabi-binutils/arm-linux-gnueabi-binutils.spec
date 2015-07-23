@@ -3,8 +3,8 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-binutils
-Version:    2.25
-Release:    2%{?dist}
+Version:    2.25.1
+Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 Group:      Development/Tools
@@ -79,6 +79,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Thu Jul 23 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.25.1-1
+- Update to 2.25.1
+
 * Fri Mar 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.25-2
 - Rebuilt for Fedora 22 and 23
 
