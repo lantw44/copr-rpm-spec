@@ -7,7 +7,7 @@
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
 Name:       chromium
-Version:    44.0.2403.89
+Version:    44.0.2403.107
 Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -216,6 +216,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Jul 25 2015 - Ting-Wei Lan <lantw44@gmail.com> - 44.0.2403.107-1
+- Update to 44.0.2403.107
+
 * Thu Jul 23 2015 - Ting-Wei Lan <lantw44@gmail.com> - 44.0.2403.89-1
 - Update to 44.0.2403.89
 - Temporarily disable the use of system icu because it needs icu 55
