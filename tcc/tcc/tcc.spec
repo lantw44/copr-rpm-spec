@@ -12,7 +12,7 @@
 
 Name:       %{pkg_fullname}
 Version:    0.9.26
-Release:    6%{?dist}
+Release:    7%{?dist}
 Summary:    Tiny C Compiler
 
 Group:      Development/Languages
@@ -83,6 +83,9 @@ fi
 %doc Changelog README TODO VERSION tcc-doc.html
 
 %changelog
+* Tue Jul 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-7
+- Rebuilt for Fedora 23 and 24
+
 * Sun May 17 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-6
 - Use license marco to install the license file
 
