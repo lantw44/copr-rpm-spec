@@ -3,8 +3,8 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    4.1.3
-Release:    2%{?dist}
+Version:    4.1.4
+Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
 %define kversion        %(echo %{version} | sed 's/\.0$//')
@@ -74,6 +74,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Tue Aug 04 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.1.4-1
+- Update to 4.1.4
+
 * Tue Jul 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.1.3-2
 - Rebuilt for Fedora 23 and 24
 
