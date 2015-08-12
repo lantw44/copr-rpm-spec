@@ -11,8 +11,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.21
-Release:    3%{?dist}
+Version:    2.22
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -151,7 +151,6 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/glob.h
 %{cross_sysroot}/usr/include/gnu-versions.h
 %{cross_sysroot}/usr/include/gnu/lib-names.h
-%{cross_sysroot}/usr/include/gnu/lib-names-soft.h
 %{cross_sysroot}/usr/include/gnu/libc-version.h
 %{cross_sysroot}/usr/include/gnu/stubs.h
 %{cross_sysroot}/usr/include/grp.h
@@ -421,6 +420,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/bin/sprof
 %{cross_sysroot}/usr/bin/tzselect
 %{cross_sysroot}/usr/bin/xtrace
+%{cross_sysroot}/usr/include/gnu/lib-names-soft.h
 %{cross_sysroot}/usr/include/gnu/stubs-soft.h
 %{cross_sysroot}/usr/lib/?crt1.o
 %{cross_sysroot}/usr/lib/audit
@@ -478,6 +478,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Wed Aug 12 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.22-1
+- Update to 2.22
+
 * Tue Jul 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.21-3
 - Rebuilt for Fedora 23 and 24
 
