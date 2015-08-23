@@ -8,7 +8,7 @@
 
 Name:       chromium
 Version:    44.0.2403.157
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -20,6 +20,9 @@ Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/c
 # https://repos.fedorapeople.org/repos/spot/chromium/
 Source1:    chromium-browser.sh
 Source2:    chromium-browser.desktop
+
+# Add a patch from Arch Linux to allowing building with GLIBC 2.22
+Patch0:     chromium-boringssl-glibc-2.22.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -73,6 +76,7 @@ Requires:   hicolor-icon-theme
 
 %prep
 %setup -q
+%patch0 -p1 -d third_party/boringssl/src
 
 
 %build
@@ -216,6 +220,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Aug 23 2015 - Ting-Wei Lan <lantw44@gmail.com> - 44.0.2403.157-2
+- Fix GLIBC 2.22 build issue on Fedora 23 and later
+
 * Fri Aug 21 2015 - Ting-Wei Lan <lantw44@gmail.com> - 44.0.2403.157-1
 - Update to 44.0.2403.157
 
