@@ -7,8 +7,8 @@
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
 Name:       chromium
-Version:    44.0.2403.157
-Release:    2%{?dist}
+Version:    45.0.2454.85
+Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -49,10 +49,8 @@ BuildRequires: jsoncpp-devel
 BuildRequires: libevent-devel
 BuildRequires: libjpeg-turbo-devel
 BuildRequires: libpng-devel
-# Chromium requires libvpx 1.4
-%if 0%{?fedora} >= 23
-BuildRequires: libvpx-devel
-%endif
+# Chromium requires libvpx 1.4.0
+# BuildRequires: libvpx-devel
 BuildRequires: libwebp-devel
 BuildRequires: openssl-devel
 BuildRequires: opus-devel
@@ -89,11 +87,7 @@ Requires:   hicolor-icon-theme
     -Duse_system_libevent=1 \
     -Duse_system_libjpeg=1 \
     -Duse_system_libpng=1 \
-%if 0%{?fedora} >= 23
-    -Duse_system_libvpx=1 \
-%else
     -Duse_system_libvpx=0 \
-%endif
     -Duse_system_libwebp=1 \
     -Duse_system_opus=1 \
     -Duse_system_snappy=1 \
@@ -111,11 +105,7 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Duse_system_libevent=1 \
     -Duse_system_libjpeg=1 \
     -Duse_system_libpng=1 \
-%if 0%{?fedora} >= 23
-    -Duse_system_libvpx=1 \
-%else
     -Duse_system_libvpx=0 \
-%endif
     -Duse_system_libwebp=1 \
     -Duse_system_opus=1 \
     -Duse_system_snappy=1 \
@@ -220,6 +210,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Sep 02 2015 - Ting-Wei Lan <lantw44@gmail.com> - 45.0.2454.85-1
+- Update to 45.0.2454.85
+- Temporarily disable the use of system libvpx because it needs libvpx 1.4.0
+
 * Sun Aug 23 2015 - Ting-Wei Lan <lantw44@gmail.com> - 44.0.2403.157-2
 - Fix GLIBC 2.22 build issue on Fedora 23 and later
 
