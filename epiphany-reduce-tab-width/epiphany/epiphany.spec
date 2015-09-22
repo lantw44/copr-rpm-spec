@@ -1,6 +1,6 @@
 Name: epiphany
 Epoch: 1
-Version: 3.16.2
+Version: 3.16.3
 Release: 2%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
@@ -10,37 +10,34 @@ Source0: http://download.gnome.org/sources/epiphany/3.16/%{name}-%{version}.tar.
 
 # Fedora bookmarks
 Patch0: epiphany-default-bookmarks.patch
-# DRI3 is currently only used in Fedora. It breaks DuckDuckGo, YouTube, et. al.
-Patch1: epiphany-disable-DRI3.patch
-
-Patch2: 1001-webapp-Open-links-to-the-same-base-domain-inside-the.patch
-Patch3: 1002-Fix-translations-in-the-search-provider.patch
-Patch4: 1003-ephy-web-view-Clean-up-after-outliving-web-extension.patch
-Patch5: 1004-Be-more-careful-with-weak-pointers.patch
-
+# Patches that are upstream on gnome-3-16 branch
+Patch1: 0001-Updated-Portuguese-translation.patch
+Patch2: 0002-overview-Move-the-overview-CSS-to-about.css-and-gene.patch
+Patch3: 0003-Don-t-overwrite-page-titles-in-history.patch
+# Patches that are upstream on master branch
+Patch4: 0004-EphyWebView-Decode-URI-before-setting-the-loading-or.patch
+Patch5: 0005-Display-decoded-URIs-in-the-location-entry-completio.patch
+Patch6: 0006-Display-decoded-URIs-in-the-bookmark-properties-dial.patch
+Patch7: 0007-Add-ephy_tree_model_node_add_column_full.patch
+Patch8: 0008-Add-ephy_node_view_add_column_full.patch
+Patch9: 0009-Display-decoded-URIs-in-the-bookmarks-editor.patch
+Patch10: 0010-Display-decoded-URIs-in-the-history-dialog.patch
+Patch11: 0011-Fixup-for-display-decoded-URIs-in-bookmarks-editor.patch
+Patch12: 0012-Fixup-for-display-decoded-URIs-in-the-history-dialog.patch
+Patch13: 0013-EphyWebView-add-get_display_address.patch
+Patch14: 0014-Show-decoded-URI-in-the-new-web-application-dialog.patch
+Patch15: 0015-EphyWindow-store-a-decoded-address-not-a-percent-enc.patch
+# Patches that need to be upstreamed as of 2015-09-19
+Patch16: 0016-Don-t-crash-on-escaped-null-characters.patch
+Patch17: 0017-Hide-floating-bar-on-mouseover.patch
+# This one is also upstream on the master branch
+Patch18: 0018-ephy-location-entry-update-padding-for-latest-Adwait.patch
+# This one is not needed upstream due to theme changes in master
+Patch19: 0019-Use-GdTwoLinesRenderer-for-location-entry-completion.patch
+# This one is upstream on gnome-3-16 branch
+Patch20: 0020-Fix-clearing-all-passwords-from-the-clear-data-dialo.patch
 # Reduce the minimum tab width
-Patch6: epiphany-reduce-tab-width.patch
-
-# There is a large queue of unreviewed patches upstream, so we'll carry more
-# patches than we really ought to until it comes under control.
-# Patches from https://git.gnome.org/browse/epiphany/log/?h=wip/mcatanzaro/fedora-needs-upstreamed
-
-# These patches make Ephy understand URLs that contain non-Western characters.
-# These should be upstreamed. Still need to fix the download widget.
-Patch101: 0001-nautilus-floating-bar-Show-correctly-UTF-8-URL.patch
-Patch102: 0002-ephy-title-box-Show-correctly-UTF-8-URL.patch
-Patch103: 0003-Properly-display-UTF-8-URLs-in-the-location-entry.patch
-Patch104: 0004-Display-unescaped-URIs-in-the-location-entry-complet.patch
-Patch105: 0005-Display-unescaped-URIs-in-the-bookmark-properties-di.patch
-Patch106: 0006-Add-ephy_tree_model_node_add_column_full.patch
-Patch107: 0007-Add-ephy_node_view_add_column_full.patch
-Patch108: 0008-Display-unescaped-URLs-in-the-bookmarks-editor.patch
-Patch109: 0009-Display-unescaped-URIs-in-the-history-dialog.patch
-
-# Miscellaneous patches that ought to go upstream in one form or another.
-Patch110: 0010-nautilus-floating-bar-hide-on-hover.patch
-Patch111: 0011-ephy-location-entry-update-padding-for-latest-Adwait.patch
-Patch112: 0012-Use-GdTwoLinesRenderer-for-location-entry-completion.patch
+Patch21: epiphany-reduce-tab-width.patch
 
 BuildRequires: desktop-file-utils
 BuildRequires: gcr-devel >= 3.5.5
@@ -93,26 +90,7 @@ This package provides a runtime for web applications without actually
 installing the epiphany application itself.
 
 %prep
-%setup -q
-%patch0 -p1 -b .default-bookmarks
-%patch1 -p1 -b .disable-dri3
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1 -b .reduce-tab-width
-%patch101 -p1
-%patch102 -p1
-%patch103 -p1
-%patch104 -p1
-%patch105 -p1
-%patch106 -p1
-%patch107 -p1
-%patch108 -p1
-%patch109 -p1
-%patch110 -p1
-%patch111 -p1
-%patch112 -p1
+%autosetup -p1
 
 # For Use-GdTwoLinesRenderer-for-location-entry-completion.patch
 autoreconf -fi
@@ -162,6 +140,12 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_mandir}/man*/*
 
 %changelog
+* Tue Sep 22 2015 Michael Catanzaro <mcatanzaro@igalia.com> 1:3.16.3-2
+- Fix clearing passwords from the clear data dialog
+
+* Sat Sep 19 2015 Michael Catanzaro <mcatanzaro@igalia.com> 1:3.16.3-1
+- Update to 3.16.3, and refresh patchset. Notably fixing rbz#1264650.
+
 * Thu Jul 02 2015 Michael Catanzaro <mcatanzaro@igalia.com> 1:3.16.2-2
 - Add patches for various bugs, notably #1156124
 
