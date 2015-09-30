@@ -3,8 +3,8 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    4.2.1
-Release:    2%{?dist}
+Version:    4.2.2
+Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
 %define debug_package   %{nil}
@@ -75,6 +75,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Wed Sep 30 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.2.2-1
+- Update to 4.2.2
+
 * Tue Sep 22 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.2.1-2
 - Disable debuginfo package because RPM 4.13 does not allow empty debuginfo
   package. This fixes the build on Fedora 23 and 24.
