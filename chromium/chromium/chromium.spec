@@ -7,7 +7,7 @@
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
 Name:       chromium
-Version:    45.0.2454.101
+Version:    46.0.2490.71
 Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -20,9 +20,6 @@ Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/c
 # https://repos.fedorapeople.org/repos/spot/chromium/
 Source1:    chromium-browser.sh
 Source2:    chromium-browser.desktop
-
-# Add a patch from Arch Linux to allowing building with GLIBC 2.22
-Patch0:     chromium-boringssl-glibc-2.22.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -52,10 +49,12 @@ BuildRequires: libpng-devel
 # Chromium requires libvpx 1.4.0
 # BuildRequires: libvpx-devel
 BuildRequires: libwebp-devel
+BuildRequires: pkgconfig(libxslt), pkgconfig(libxml-2.0)
 BuildRequires: openssl-devel
 BuildRequires: opus-devel
 BuildRequires: snappy-devel
 BuildRequires: speex-devel
+BuildRequires: yasm
 BuildRequires: zlib-devel
 # linux_link_*
 BuildRequires: brlapi-devel
@@ -65,8 +64,9 @@ BuildRequires: speech-dispatcher-devel
 BuildRequires: pulseaudio-libs-devel
 # install desktop files
 BuildRequires: desktop-file-utils
-Requires:   desktop-file-utils
-Requires:   hicolor-icon-theme
+Requires(post):   desktop-file-utils
+Requires(postun): desktop-file-utils
+Requires:         hicolor-icon-theme
 
 
 %description
@@ -74,8 +74,7 @@ Requires:   hicolor-icon-theme
 
 %prep
 %setup -q
-%patch0 -p1 -d third_party/boringssl/src
-
+touch chrome/test/data/webui/i18n_process_css_test.html
 
 %build
 ./build/linux/unbundle/replace_gyp_files.py \
@@ -89,9 +88,11 @@ Requires:   hicolor-icon-theme
     -Duse_system_libpng=1 \
     -Duse_system_libvpx=0 \
     -Duse_system_libwebp=1 \
+    -Duse_system_libxml=1 \
     -Duse_system_opus=1 \
     -Duse_system_snappy=1 \
     -Duse_system_speex=1 \
+    -Duse_system_yasm=1 \
     -Duse_system_zlib=1
 
 # find third_party/icu -type f '!' -regex '.*\.\(gyp\|gypi\|isolate\)' -delete
@@ -107,9 +108,11 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Duse_system_libpng=1 \
     -Duse_system_libvpx=0 \
     -Duse_system_libwebp=1 \
+    -Duse_system_libxml=1 \
     -Duse_system_opus=1 \
     -Duse_system_snappy=1 \
     -Duse_system_speex=1 \
+    -Duse_system_yasm=1 \
     -Duse_system_zlib=1 \
     -Duse_gconf=0 \
     -Dlinux_use_bundled_gold=0 \
@@ -127,6 +130,9 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Dwerror= \
     -Ddisable_fatal_linker_warnings=1 \
     -Denable_hotwording=0 \
+    -Dlogging_like_official_build=1 \
+    -Dtracing_like_official_build=1 \
+    -Dfieldtrial_testing_like_official_build=1 \
     -Dgoogle_api_key=AIzaSyCcK3laItm4Ik9bm6IeGFC6tVgy4eut0_o \
     -Dgoogle_default_client_id=82546407293.apps.googleusercontent.com \
     -Dgoogle_default_client_secret=GuvPB069ONrHxN7Y_y0txLKn \
@@ -161,8 +167,9 @@ install -m 644 out/Release/*.pak %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/locales/*.pak %{buildroot}%{chromiumdir}/locales/
 for i in 22 24 32 48 64 128 256; do
     if [ ${i} = 32 ]; then ext=xpm; else ext=png; fi
+    if [ ${i} = 32 ]; then dir=linux/; else dir=; fi
     mkdir -p %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps
-    install -m 644 chrome/app/theme/chromium/product_logo_$i.${ext} \
+    install -m 644 chrome/app/theme/chromium/${dir}product_logo_$i.${ext} \
         %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/chromium-browser.${ext}
 done
 
@@ -193,6 +200,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/icons/hicolor/128x128/apps/chromium-browser.png
 %{_datadir}/icons/hicolor/256x256/apps/chromium-browser.png
 %{_mandir}/man1/chromium-browser.1.gz
+%dir %{chromiumdir}
 %{chromiumdir}/chromium-browser
 %{chromiumdir}/chrome-sandbox
 %{chromiumdir}/chromedriver
@@ -203,6 +211,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/natives_blob.bin
 %{chromiumdir}/snapshot_blob.bin
 %{chromiumdir}/*.pak
+%dir %{chromiumdir}/locales
 %{chromiumdir}/locales/*.pak
 %license LICENSE
 %doc AUTHORS
@@ -210,6 +219,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Oct 14 2015 - Ting-Wei Lan <lantw44@gmail.com> - 46.0.2490.71-1
+- Update to 46.0.2490.71
+- Make desktop-file-utils dependency more correct
+- Own directories that are only used by this package
+
 * Fri Sep 25 2015 - Ting-Wei Lan <lantw44@gmail.com> - 45.0.2454.101-1
 - Update to 45.0.2454.101
 
