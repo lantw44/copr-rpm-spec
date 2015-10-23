@@ -7,7 +7,7 @@
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
 Name:       chromium
-Version:    46.0.2490.71
+Version:    46.0.2490.80
 Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -219,6 +219,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Oct 23 2015 - Ting-Wei Lan <lantw44@gmail.com> - 46.0.2490.80-1
+- Update to 46.0.2490.80
+
 * Wed Oct 14 2015 - Ting-Wei Lan <lantw44@gmail.com> - 46.0.2490.71-1
 - Update to 46.0.2490.71
 - Make desktop-file-utils dependency more correct
