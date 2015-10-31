@@ -1,58 +1,38 @@
+%global webkitgtk4_version 2.9.5
+
 Name: epiphany
 Epoch: 1
-Version: 3.16.3
-Release: 2%{?dist}.1
+Version: 3.18.0
+Release: 4%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv2+ and CC-BY-SA
 URL: https://wiki.gnome.org/Apps/Web
-Source0: http://download.gnome.org/sources/epiphany/3.16/%{name}-%{version}.tar.xz
+Source0: https://download.gnome.org/sources/epiphany/3.18/%{name}-%{version}.tar.xz
 
 # Fedora bookmarks
 Patch0: epiphany-default-bookmarks.patch
-# Patches that are upstream on gnome-3-16 branch
-Patch1: 0001-Updated-Portuguese-translation.patch
-Patch2: 0002-overview-Move-the-overview-CSS-to-about.css-and-gene.patch
-Patch3: 0003-Don-t-overwrite-page-titles-in-history.patch
-# Patches that are upstream on master branch
-Patch4: 0004-EphyWebView-Decode-URI-before-setting-the-loading-or.patch
-Patch5: 0005-Display-decoded-URIs-in-the-location-entry-completio.patch
-Patch6: 0006-Display-decoded-URIs-in-the-bookmark-properties-dial.patch
-Patch7: 0007-Add-ephy_tree_model_node_add_column_full.patch
-Patch8: 0008-Add-ephy_node_view_add_column_full.patch
-Patch9: 0009-Display-decoded-URIs-in-the-bookmarks-editor.patch
-Patch10: 0010-Display-decoded-URIs-in-the-history-dialog.patch
-Patch11: 0011-Fixup-for-display-decoded-URIs-in-bookmarks-editor.patch
-Patch12: 0012-Fixup-for-display-decoded-URIs-in-the-history-dialog.patch
-Patch13: 0013-EphyWebView-add-get_display_address.patch
-Patch14: 0014-Show-decoded-URI-in-the-new-web-application-dialog.patch
-Patch15: 0015-EphyWindow-store-a-decoded-address-not-a-percent-enc.patch
-# Patches that need to be upstreamed as of 2015-09-19
-Patch16: 0016-Don-t-crash-on-escaped-null-characters.patch
-Patch17: 0017-Hide-floating-bar-on-mouseover.patch
-# This one is also upstream on the master branch
-Patch18: 0018-ephy-location-entry-update-padding-for-latest-Adwait.patch
-# This one is not needed upstream due to theme changes in master
-Patch19: 0019-Use-GdTwoLinesRenderer-for-location-entry-completion.patch
-# This one is upstream on gnome-3-16 branch
-Patch20: 0020-Fix-clearing-all-passwords-from-the-clear-data-dialo.patch
+# https://bugzilla.gnome.org/show_bug.cgi?id=742590
+Patch1: 0001-Hide-floating-bar-on-mouseover.patch
+# https://bugzilla.gnome.org/show_bug.cgi?id=755814
+Patch2: 0001-Fix-failure-to-load-web-extension-with-Wl-z-now.patch
 # Reduce the minimum tab width
-Patch21: epiphany-reduce-tab-width.patch
+Patch3: epiphany-reduce-tab-width.patch
 
 BuildRequires: desktop-file-utils
 BuildRequires: gcr-devel >= 3.5.5
 BuildRequires: glib2-devel >= 2.38.0
 BuildRequires: gtk3-devel >= 3.13.0
-BuildRequires: webkitgtk4-devel >= 2.5.2
+BuildRequires: webkitgtk4-devel >= %{webkitgtk4_version}
 BuildRequires: libxml2-devel, libxslt-devel
 BuildRequires: iso-codes-devel
-BuildRequires: gnome-common
 BuildRequires: gnome-desktop3-devel
 BuildRequires: libsecret-devel >= 0.14
 BuildRequires: gettext-devel
 BuildRequires: avahi-gobject-devel
 BuildRequires: intltool
 BuildRequires: itstool
+BuildRequires: libappstream-glib-devel
 BuildRequires: libnotify-devel
 BuildRequires: libsoup-devel
 BuildRequires: libwnck3-devel
@@ -84,6 +64,7 @@ application.
 Summary: Epiphany runtime suitable for web applications
 Requires: gsettings-desktop-schemas
 Requires: iso-codes
+Requires: webkitgtk4%{?_isa} >= %{webkitgtk4_version}
 
 %description runtime
 This package provides a runtime for web applications without actually
@@ -91,9 +72,6 @@ installing the epiphany application itself.
 
 %prep
 %autosetup -p1
-
-# For Use-GdTwoLinesRenderer-for-location-entry-completion.patch
-autoreconf -fi
 
 %build
 %configure --with-distributor-name=Fedora
@@ -128,7 +106,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_datadir}/dbus-1/services/org.gnome.Epiphany.service
 
 %files runtime
-%license COPYING COPYING.README
+%license COPYING
 %doc README NEWS AUTHORS
 %{_datadir}/glib-2.0/schemas/org.gnome.epiphany.gschema.xml
 %{_datadir}/glib-2.0/schemas/org.gnome.Epiphany.enums.xml
@@ -140,17 +118,43 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_mandir}/man*/*
 
 %changelog
-* Tue Sep 22 2015 Michael Catanzaro <mcatanzaro@igalia.com> 1:3.16.3-2
-- Fix clearing passwords from the clear data dialog
+* Fri Oct 02 2015 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.18.0-4
+- Fix the web extension by overlinking instead of disabling RELRO.
 
-* Sat Sep 19 2015 Michael Catanzaro <mcatanzaro@igalia.com> 1:3.16.3-1
-- Update to 3.16.3, and refresh patchset. Notably fixing rbz#1264650.
+* Thu Oct 01 2015 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.18.0-3
+- Bump NVR
 
-* Thu Jul 02 2015 Michael Catanzaro <mcatanzaro@igalia.com> 1:3.16.2-2
-- Add patches for various bugs, notably #1156124
+* Wed Sep 30 2015 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.18.0-2
+- Stop using full relro to fix the web extension.
 
-* Tue Jun 23 2015 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.16.2-1
-- Update to 3.16.2
+* Tue Sep 22 2015 Kalev Lember <klember@redhat.com> - 1:3.18.0-1
+- Update to 3.18.0
+
+* Wed Sep 09 2015 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.17.91-2
+- Restore floating bar patch
+
+* Wed Sep 09 2015 Kalev Lember <klember@redhat.com> - 1:3.17.91-1
+- Update to 3.17.91
+- Drop upstreamed patches
+- Set minimum required webkitgtk4 version
+
+* Sun Aug 02 2015 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.17.2-1
+- Update to 3.17.2
+
+* Wed Jul 22 2015 David King <amigadave@amigadave.com> - 1:3.17.1-2
+- Bump for new gnome-desktop3
+
+* Tue Jun 23 2015 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.17.1-1
+- Update to 3.17.1.
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:3.16.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Wed Jun 03 2015 David King <amigadave@amigadave.com> - 1:3.16.1-3
+- Avoid an undefined symbol in the web extension (#1227948)
+
+* Wed May 27 2015 Michael Catanzaro <mcatanzaro@igalia.com> 1:3.16.1-2
+- Drop DRI3 patch since Fedora has switched back to DRI2.
 
 * Tue May 12 2015 Kalev Lember <kalevlember@gmail.com> - 1:3.16.1-1
 - Update to 3.16.1
