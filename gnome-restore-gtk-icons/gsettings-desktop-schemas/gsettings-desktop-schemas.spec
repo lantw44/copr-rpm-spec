@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           gsettings-desktop-schemas
-Version:        3.16.1
+Version:        3.18.1
 Release:        1%{?dist}.1
 Summary:        A collection of GSettings schemas (Copr: lantw44/gnome-restore-gtk-icons)
 
@@ -10,7 +10,7 @@ License:        LGPLv2+
 # no homepage exists for this component
 URL:            http://bugzilla.gnome.org/enter_bug.cgi?product=gsettings-desktop-schemas
 #VCS: git:git://git.gnome.org/gsettings-desktop-schemas
-Source:         http://download.gnome.org/sources/%{name}/3.16/%{name}-%{version}.tar.xz
+Source:         http://download.gnome.org/sources/%{name}/3.18/%{name}-%{version}.tar.xz
 # revert settings related to icons and buttons
 Patch0:         %{name}-3.16-revert-icons-settings.patch
 
@@ -23,7 +23,7 @@ Requires: glib2 >= 2.31.0
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.16.
+buttons and menus in GNOME 3.18.
 
 gsettings-desktop-schemas contains a collection of GSettings schemas for
 settings shared by various components of a desktop.
@@ -48,7 +48,7 @@ make %{?_smp_mflags}
 
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
+%make_install
 
 %find_lang %{name} --with-gnome
 
@@ -77,6 +77,19 @@ fi
 
 
 %changelog
+* Fri Oct 23 2015 Kalev Lember <klember@redhat.com> - 3.18.1-1
+- Update to 3.18.1
+
+* Mon Sep 21 2015 Kalev Lember <klember@redhat.com> - 3.18.0-1
+- Update to 3.18.0
+
+* Mon Sep 14 2015 Kalev Lember <klember@redhat.com> - 3.17.92-1
+- Update to 3.17.92
+- Use make_install macro
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.16.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Tue Apr 14 2015 Kalev Lember <kalevlember@gmail.com> - 3.16.1-1
 - Update to 3.16.1
 

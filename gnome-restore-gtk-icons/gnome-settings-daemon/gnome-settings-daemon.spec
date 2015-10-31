@@ -6,7 +6,7 @@
 %global geocode_glib_version 3.10.0
 
 Name:           gnome-settings-daemon
-Version:        3.16.3
+Version:        3.18.1
 Release:        1%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
@@ -14,53 +14,50 @@ Group:          System Environment/Daemons
 License:        GPLv2+
 URL:            http://download.gnome.org/sources/%{name}
 #VCS: git:git://git.gnome.org/gnome-settings-daemon
-Source:         http://download.gnome.org/sources/%{name}/3.16/%{name}-%{version}.tar.xz
+Source:         http://download.gnome.org/sources/%{name}/3.18/%{name}-%{version}.tar.xz
 # disable wacom for ppc/ppc64 (used on RHEL)
 Patch0:         %{name}-3.5.4-ppc-no-wacom.patch
-
 # respect menus-have-icons and buttons-have-icons settings
 Patch1:         %{name}-3.14-respect-menus-buttons-icons.patch
 
-BuildRequires:  gtk3-devel >= %{gtk3_version}
-BuildRequires:  gnome-desktop3-devel >= %{gnome_desktop_version}
-BuildRequires:  xorg-x11-proto-devel libXxf86misc-devel
-BuildRequires:  pulseaudio-libs-devel
-BuildRequires:  libgnomekbd-devel
-BuildRequires:  libnotify-devel
+BuildRequires:  pkgconfig(colord) >= 1.0.2
+BuildRequires:  pkgconfig(fontconfig)
+BuildRequires:  pkgconfig(geoclue-2.0) >= %{geoclue_version}
+BuildRequires:  pkgconfig(geocode-glib-1.0) >= %{geocode_glib_version}
+BuildRequires:  pkgconfig(gnome-desktop-3.0) >= %{gnome_desktop_version}
+BuildRequires:  pkgconfig(gsettings-desktop-schemas) >= %{gsettings_desktop_schemas_version}
+BuildRequires:  pkgconfig(gtk+-3.0) >= %{gtk3_version}
+BuildRequires:  pkgconfig(gudev-1.0)
+BuildRequires:  pkgconfig(gweather-3.0) >= %{libgweather_version}
+BuildRequires:  pkgconfig(lcms2) >= 2.2
+BuildRequires:  pkgconfig(libcanberra-gtk3)
+BuildRequires:  pkgconfig(libnm-glib)
+BuildRequires:  pkgconfig(libnm-util)
+BuildRequires:  pkgconfig(libnotify)
+BuildRequires:  pkgconfig(libpulse)
+BuildRequires:  pkgconfig(libpulse-mainloop-glib)
+BuildRequires:  pkgconfig(librsvg-2.0)
+BuildRequires:  pkgconfig(nss)
+BuildRequires:  pkgconfig(polkit-gobject-1)
+BuildRequires:  pkgconfig(upower-glib)
+BuildRequires:  pkgconfig(x11)
+BuildRequires:  pkgconfig(xi)
+BuildRequires:  pkgconfig(xtst)
 BuildRequires:  gettext intltool
-BuildRequires:  fontconfig-devel
-BuildRequires:  geoclue2-devel >= %{geoclue_version}
-BuildRequires:  geocode-glib-devel >= %{geocode_glib_version}
-BuildRequires:  libcanberra-devel
-BuildRequires:  polkit-devel
 BuildRequires:  autoconf automake libtool
-BuildRequires:  libxklavier-devel
-BuildRequires:  gsettings-desktop-schemas-devel >= %{gsettings_desktop_schemas_version}
-BuildRequires:  PackageKit-glib-devel
 BuildRequires:  cups-devel
-BuildRequires:  upower-devel
-BuildRequires:  libgudev1-devel
-BuildRequires:  libgweather-devel >= %{libgweather_version}
-BuildRequires:  librsvg2-devel
-BuildRequires:  nss-devel
-BuildRequires:  colord-devel >= 0.1.12
-BuildRequires:  lcms2-devel >= 2.2
-BuildRequires:  libXi-devel libXfixes-devel
-BuildRequires:  systemd-devel
-BuildRequires:  libXtst-devel
 %if 0%{?fedora}
-BuildRequires:  libwayland-client-devel
+BuildRequires:  pkgconfig(wayland-client)
 %endif
 BuildRequires:  libxslt
 BuildRequires:  docbook-style-xsl
-BuildRequires:  xkeyboard-config-devel
-BuildRequires:  NetworkManager-glib-devel
 %ifnarch s390 s390x %{?rhel:ppc ppc64}
-BuildRequires:  libwacom-devel >= 0.7
-BuildRequires:  xorg-x11-drv-wacom-devel
+BuildRequires:  pkgconfig(libwacom) >= 0.7
+BuildRequires:  pkgconfig(xorg-wacom)
 %endif
 
 Requires: colord
+Requires: iio-sensor-proxy
 Requires: geoclue2 >= %{geoclue_version}
 Requires: geocode-glib%{?_isa} >= %{geocode_glib_version}
 Requires: gnome-desktop3%{?_isa} >= %{gnome_desktop_version}
@@ -78,7 +75,7 @@ Conflicts: gnome-shell < 3.13.92
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.16.
+buttons and menus in GNOME 3.18.
 
 A daemon to share settings from GNOME to other applications. It also
 handles global keybindings, as well as a number of desktop-wide settings.
@@ -112,7 +109,7 @@ make %{?_smp_mflags}
 
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
+%make_install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
 %find_lang %{name} --with-gnome
@@ -267,8 +264,31 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-xsettings
 
 %changelog
-* Mon Aug 24 2015 Kalev Lember <klember@redhat.com> - 3.16.3-1
-- Update to 3.16.3
+* Mon Oct 12 2015 Kalev Lember <klember@redhat.com> - 3.18.1-1
+- Update to 3.18.1
+
+* Mon Sep 21 2015 Kalev Lember <klember@redhat.com> - 3.18.0-1
+- Update to 3.18.0
+
+* Mon Sep 14 2015 Kalev Lember <klember@redhat.com> - 3.17.92-1
+- Update to 3.17.92
+
+* Mon Aug 17 2015 Kalev Lember <klember@redhat.com> - 3.17.90-1
+- Update to 3.17.90
+- Use make_install macro
+
+* Wed Jul 22 2015 David King <amigadave@amigadave.com> - 3.17.3-1
+- Update to 3.17.3
+- Use pkgconfig for BuildRequires
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.17.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Thu Jun 11 2015 Richard Hughes <rhughes@redhat.com> - 3.17.2-2
+- Add runtime dep on iio-sensor-proxy for the ambient light sensor
+
+* Fri Jun 05 2015 Kalev Lember <kalevlember@gmail.com> - 3.17.2-1
+- Update to 3.17.2
 
 * Tue May 12 2015 Kalev Lember <kalevlember@gmail.com> - 3.16.2-1
 - Update to 3.16.2
