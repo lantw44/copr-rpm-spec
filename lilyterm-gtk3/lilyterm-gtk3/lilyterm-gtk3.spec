@@ -3,7 +3,7 @@
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.4.20150208git%{shortcommit}%{?dist}
+Release:        0.5.20150208git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 Group:          User Interface/X
@@ -48,14 +48,16 @@ lot of features:
 %setup -qn LilyTerm-%{commit}
 %patch0 -p0
 rename lilyterm lilyterm-gtk3 data/lilyterm.*
+sed -i -e '/AUTHORS COPYING ChangeLog/,/COPYING/d' data/Makefile
 
 %build
 %configure --with-gtk=3.0
-make
+echo "EXAMPLES_DIR = %{_pkgdocdir}/examples" >> .config
+make STRIP=:
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT STRIP=:
 sed -i -e 's/LilyTerm/LilyTermGtk3/' -e 's/lilyterm/lilyterm-gtk3/' \
   ${RPM_BUILD_ROOT}%{_datadir}/applications/%{name}.desktop
 desktop-file-install                                       \
@@ -80,9 +82,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/pixmaps/%{name}.*
 %{_mandir}/man*/%{name}.*.*
+%dir %{_pkgdocdir}/examples
+%{_pkgdocdir}/examples/%{name}.conf
 
 
 %changelog
+* Sun Nov 01 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.5.20150208gitf600c08
+- Disable binary striping when running make
+- Disable installation of common documentation when running make install
+
 * Tue Jul 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.4.20150208gitf600c08
 - Rebuilt for Fedora 23 and 24
 
