@@ -3,7 +3,7 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    4.2.5
+Version:    4.3.0
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -65,6 +65,7 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/linux/*.h
 %{cross_sysroot}/usr/include/misc/*.h
 %{cross_sysroot}/usr/include/mtd/*.h
+%{cross_sysroot}/usr/include/rdma/hfi/hfi1_user.h
 %{cross_sysroot}/usr/include/rdma/*.h
 %{cross_sysroot}/usr/include/scsi/fc/*.h
 %{cross_sysroot}/usr/include/scsi/*.h
@@ -75,6 +76,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Mon Nov 02 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.3.0-1
+- Update to 4.3
+
 * Tue Oct 27 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.2.5-1
 - Update to 4.2.5
 
