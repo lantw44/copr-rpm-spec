@@ -8,7 +8,7 @@
 
 Name:       chromium
 Version:    46.0.2490.86
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -41,12 +41,14 @@ BuildRequires: expat-devel
 BuildRequires: flac-devel
 BuildRequires: harfbuzz-devel
 # Chromium requires icu 55
-# BuildRequires: libicu-devel
+%if 0%{?fedora} >= 24
+BuildRequires: libicu-devel
+%endif
 BuildRequires: jsoncpp-devel
 BuildRequires: libevent-devel
 BuildRequires: libjpeg-turbo-devel
 BuildRequires: libpng-devel
-# Chromium requires libvpx 1.4.0
+# Chromium requires libvpx 1.5.0
 # BuildRequires: libvpx-devel
 BuildRequires: libwebp-devel
 BuildRequires: pkgconfig(libxslt), pkgconfig(libxml-2.0)
@@ -81,7 +83,11 @@ touch chrome/test/data/webui/i18n_process_css_test.html
     -Duse_system_expat=1 \
     -Duse_system_flac=1 \
     -Duse_system_harfbuzz=1 \
+%if 0%{?fedora} >= 24
+    -Duse_system_icu=1 \
+%else
     -Duse_system_icu=0 \
+%endif
     -Duse_system_jsoncpp=1 \
     -Duse_system_libevent=1 \
     -Duse_system_libjpeg=1 \
@@ -95,13 +101,19 @@ touch chrome/test/data/webui/i18n_process_css_test.html
     -Duse_system_yasm=1 \
     -Duse_system_zlib=1
 
-# find third_party/icu -type f '!' -regex '.*\.\(gyp\|gypi\|isolate\)' -delete
+%if 0%{?fedora} >= 24
+find third_party/icu -type f '!' -regex '.*\.\(gyp\|gypi\|isolate\)' -delete
+%endif
 
 GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Duse_system_expat=1 \
     -Duse_system_flac=1 \
     -Duse_system_harfbuzz=1 \
+%if 0%{?fedora} >= 24
+    -Duse_system_icu=1 \
+%else
     -Duse_system_icu=0 \
+%endif
     -Duse_system_jsoncpp=1 \
     -Duse_system_libevent=1 \
     -Duse_system_libjpeg=1 \
@@ -124,7 +136,11 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Dlinux_link_libpci=1 \
     -Dlinux_link_libspeechd=1 \
     -Dlinux_link_pulseaudio=1 \
+%if 0%{?fedora} >= 24
+    -Dicu_use_data_file_flag=0 \
+%else
     -Dicu_use_data_file_flag=1 \
+%endif
     -Dlibspeechd_h_prefix=speech-dispatcher/ \
     -Dclang=0 \
     -Dwerror= \
@@ -157,7 +173,9 @@ install -m 644 out/Release/chrome.1 %{buildroot}%{_mandir}/man1/chromium-browser
 install -m 755 out/Release/chrome %{buildroot}%{chromiumdir}/chromium-browser
 install -m 4755 out/Release/chrome_sandbox %{buildroot}%{chromiumdir}/chrome-sandbox
 install -m 755 out/Release/chromedriver %{buildroot}%{chromiumdir}/
+%if 0%{?fedora} < 24
 install -m 644 out/Release/icudtl.dat %{buildroot}%{chromiumdir}/
+%endif
 install -m 755 out/Release/nacl_helper %{buildroot}%{chromiumdir}/
 install -m 755 out/Release/nacl_helper_bootstrap %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/nacl_irt_x86_64.nexe %{buildroot}%{chromiumdir}/
@@ -204,7 +222,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/chromium-browser
 %{chromiumdir}/chrome-sandbox
 %{chromiumdir}/chromedriver
+%if 0%{?fedora} < 24
 %{chromiumdir}/icudtl.dat
+%endif
 %{chromiumdir}/nacl_helper
 %{chromiumdir}/nacl_helper_bootstrap
 %{chromiumdir}/nacl_irt_x86_64.nexe
@@ -219,6 +239,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Nov 13 2015 - Ting-Wei Lan <lantw44@gmail.com> - 46.0.2490.86-2
+- Use system icu on Fedora 24 or later
+
 * Wed Nov 11 2015 - Ting-Wei Lan <lantw44@gmail.com> - 46.0.2490.86-1
 - Update to 46.0.2490.86
 
