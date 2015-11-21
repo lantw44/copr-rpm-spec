@@ -20,7 +20,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    5.2.0
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
@@ -307,6 +307,9 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Sat Nov 21 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.2.0-3
+- Rebuilt for hardening flags
+
 * Tue Jul 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.2.0-2
 - Rebuilt for Fedora 23 and 24
 

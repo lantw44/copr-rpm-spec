@@ -1,6 +1,6 @@
 Name:       yafu
 Version:    1.34
-Release:    3%{?dist}
+Release:    4%{?dist}
 Summary:    Automated integer factorization
 
 Group:      Applications/Engineering
@@ -28,7 +28,7 @@ utilize multi- or many-core processors (including SNFS, GNFS, SIQS, and ECM).
 sed -i 's|-lmsieve|-lmsieve -lz|' Makefile
 
 %ifarch x86_64
-make %{?_smp_mflags} x86_64 NFS=1 USE_SSE41=1
+make %{?_smp_mflags} x86_64 NFS=1 USE_SSE41=1 CC="gcc %{optflags} %{__global_ldflags}"
 %else
 false
 %endif
@@ -46,6 +46,9 @@ install -m 755 yafu %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Nov 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 1.34-4
+- Rebuilt for hardening flags
+
 * Tue Jul 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 1.34-3
 - Rebuilt for Fedora 23 and 24
 
