@@ -1,6 +1,6 @@
 Name:           guix
-Version:        0.8.3
-Release:        2%{?dist}
+Version:        0.9.0
+Release:        1%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -14,10 +14,12 @@ Source0:        ftp://alpha.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 BuildRequires:  pkgconfig(guile-2.0)
 BuildRequires:  pkgconfig(sqlite3)
 BuildRequires:  bzip2-devel, libgcrypt-devel, gettext
-BuildRequires:  emacs, emacs-geiser, bash-completion
+BuildRequires:  emacs, emacs-geiser, emacs-magit, bash-completion
+BuildRequires:  guile-json, gnutls-guile
 BuildRequires:  systemd
 
 Requires:       gzip, bzip2, xz
+Requires:       /usr/lib64/libgcrypt.so
 Requires:       emacs-filesystem >= %{_emacs_version}
 Requires(post): /usr/sbin/useradd
 Requires(post): /usr/sbin/usermod
@@ -29,6 +31,9 @@ Requires(post): systemd
 Requires(preun): info
 Requires(preun): systemd
 Requires(postun): systemd
+
+Recommends:     guile-json, gnutls-guile
+Suggests:       emacs, emacs-geiser, emacs-magit
 
 Obsoletes:      %{name}-emacs <= 0.8.3-1
 Obsoletes:      %{name}-emacs-el <= 0.8.3-1
@@ -49,24 +54,31 @@ composed.
 
 
 %build
-%configure --disable-rpath --with-bash-completion-dir=%{completionsdir}
+%configure --disable-rpath \
+    --with-bash-completion-dir=%{completionsdir} \
+    --with-lispdir=%{_emacs_sitelispdir}/guix
 make %{?_smp_mflags}
 
 
 %check
-# Remove the check that don't work because of depending on external resources
-sed -i 's|tests/builders.scm||' Makefile
-# Using user namespaces in mock is not allowed
-sed -i 's|tests/syscalls.scm||' Makefile
-sed -i 's|tests/containers.scm||' Makefile
-# I don't know why this fails on my machine
-sed -i 's|tests/guix-package-net.sh||' Makefile
+# guix-environment-container.sh doesn't work on tmpfs
+if [ "`stat -c %%T -f`" = "tmpfs" ]; then
+    sed -i 's|tests/guix-environment-container.sh||' Makefile
+fi
+
+# user namespace is not supported in chroot
+if unshare -Ur true; then :; else
+    sed -i 's|tests/syscalls.scm||' Makefile
+    sed -i 's|tests/containers.scm||' Makefile
+    sed -i 's|tests/guix-environment-container.sh||' Makefile
+fi
+
 make %{?_smp_mflags} check
 
 
 %install
 make install DESTDIR=%{buildroot} systemdservicedir=%{_unitdir}
-%{_emacs_bytecompile} %{buildroot}%{_emacs_sitelispdir}/guix*.el
+%{_emacs_bytecompile} %{buildroot}%{_emacs_sitelispdir}/guix/guix*.el
 %find_lang guix
 %find_lang guix-packages
 
@@ -75,7 +87,7 @@ make install DESTDIR=%{buildroot} systemdservicedir=%{_unitdir}
 /sbin/install-info %{_infodir}/%{name}.info.gz %{_infodir}/dir || :
 if [ "$1" = 1 ]; then
     /usr/sbin/groupadd -r %{guix_group}
-    /usr/sbin/useradd -M -N -g %{guix_group} -d /gnu/store -s /sbin/nologin \
+    /usr/sbin/useradd -r -M -N -g %{guix_group} -d /gnu/store -s /sbin/nologin \
         -c "Guix build user" %{guix_user}
     /usr/bin/gpasswd -a %{guix_user} %{guix_group} >/dev/null
 elif [ "$1" -gt 1 ]; then
@@ -180,6 +192,9 @@ fi
 %dir %{_datadir}/guile/site/2.0/guix/scripts
 %{_datadir}/guile/site/2.0/guix/scripts/*.scm
 %{_datadir}/guile/site/2.0/guix/scripts/*.go
+%dir %{_datadir}/guile/site/2.0/guix/scripts/container
+%{_datadir}/guile/site/2.0/guix/scripts/container/*.scm
+%{_datadir}/guile/site/2.0/guix/scripts/container/*.go
 %dir %{_datadir}/guile/site/2.0/guix/scripts/import
 %{_datadir}/guile/site/2.0/guix/scripts/import/*.scm
 %{_datadir}/guile/site/2.0/guix/scripts/import/*.go
@@ -188,10 +203,15 @@ fi
 %{_datadir}/guile/site/2.0/guix/build-system/*.go
 %{_infodir}/%{name}.info*
 %{_infodir}/images/bootstrap-graph.png.gz
+%{_infodir}/images/coreutils-bag-graph.png.gz
+%{_infodir}/images/coreutils-graph.png.gz
 %{_infodir}/images/coreutils-size-map.png.gz
+%{_infodir}/images/dmd-graph.png.gz
+%{_infodir}/images/service-graph.png.gz
 %exclude %{_infodir}/dir
 %{_mandir}/man1/guix-archive.1*
 %{_mandir}/man1/guix-build.1*
+%{_mandir}/man1/guix-challenge.1*
 %{_mandir}/man1/guix-daemon.1*
 %{_mandir}/man1/guix-download.1*
 %{_mandir}/man1/guix-edit.1*
@@ -208,13 +228,19 @@ fi
 %{_mandir}/man1/guix-system.1*
 %{_mandir}/man1/guix.1*
 %{completionsdir}/guix
-%{_emacs_sitelispdir}/guix*.elc
-%{_emacs_sitelispdir}/guix*.el
+%dir %{_emacs_sitelispdir}/guix
+%{_emacs_sitelispdir}/guix/guix*.elc
+%{_emacs_sitelispdir}/guix/guix*.el
 %{_unitdir}/guix-daemon.service
 
 
 
 %changelog
+* Sun Nov 22 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.0-1
+- Update to 0.9.0
+- Don't clutter the system site-lisp directory
+- The build user of guix-daemon should be a system account
+
 * Sat Oct 10 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.8.3-2
 - Remove group tag, which is not required
 - Use pkgconfig in BuildRequires

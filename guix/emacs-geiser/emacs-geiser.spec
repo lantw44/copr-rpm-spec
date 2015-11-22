@@ -2,10 +2,11 @@
 %global pkgname Geiser
 
 Name:           emacs-%{pkg}
-Version:        0.7
-Release:        3%{?dist}
+Version:        0.8.1
+Release:        1%{?dist}
 Summary:        Geiser is an Emacs environment to hack and have fun in Scheme
 
+Group:          Applications/Editors
 License:        BSD
 URL:            http://nongnu.org/geiser
 Source0:        http://download.sv.gnu.org/releases/geiser/%{version}/%{pkg}-%{version}.tar.gz
@@ -30,7 +31,7 @@ keep the Lisp Machine Spirit alive.
 
 
 %build
-%configure
+%configure --with-lispdir=%{_emacs_sitelispdir}/geiser
 make %{?_smp_mflags}
 
 
@@ -50,19 +51,24 @@ fi
 
 %files
 %license COPYING
-%doc AUTHORS ChangeLog NEWS README THANKS
+%doc AUTHORS ChangeLog NEWS README README.elpa THANKS
 %{_bindir}/geiser-racket
 %{_infodir}/geiser.info.gz
 %{_datadir}/geiser/
-%{_emacs_sitelispdir}/geiser.el
-%{_emacs_sitelispdir}/geiser.elc
-%{_emacs_sitelispdir}/geiser-*.el
-%{_emacs_sitelispdir}/geiser-*.elc
+%dir %{_emacs_sitelispdir}/geiser
+%{_emacs_sitelispdir}/geiser/geiser.el
+%{_emacs_sitelispdir}/geiser/geiser.elc
+%{_emacs_sitelispdir}/geiser/geiser-*.el
+%{_emacs_sitelispdir}/geiser/geiser-*.elc
 %exclude %{_infodir}/dir
 
 
 
 %changelog
+* Thu Nov 05 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.8.1-1
+- Update to 0.8.1
+- Don't clutter the system site-lisp directory
+
 * Sat Oct 10 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.7-3
 - Add the missing emacs(bin) Requires
 - Use info instead of /sbin/install-info in Requires
