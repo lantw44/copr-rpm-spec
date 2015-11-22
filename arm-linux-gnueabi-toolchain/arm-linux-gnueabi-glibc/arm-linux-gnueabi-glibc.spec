@@ -12,7 +12,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.22
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -107,6 +107,29 @@ chmod +x %{__ar_no_strip}
 
 
 %files
+%license COPYING COPYING.LIB LICENSES
+%doc BUGS CONFORMANCE
+%doc ChangeLog
+%doc ChangeLog.1 ChangeLog.2 ChangeLog.3 ChangeLog.4 ChangeLog.5
+%doc ChangeLog.6 ChangeLog.7 ChangeLog.8 ChangeLog.9 ChangeLog.10
+%doc ChangeLog.11 ChangeLog.12 ChangeLog.13 ChangeLog.14 ChangeLog.15
+%doc ChangeLog.16 ChangeLog.17
+%doc ChangeLog.old-ports
+%doc ChangeLog.old-ports-aarch64
+%doc ChangeLog.old-ports-aix
+%doc ChangeLog.old-ports-alpha
+%doc ChangeLog.old-ports-am33
+%doc ChangeLog.old-ports-arm
+%doc ChangeLog.old-ports-cris
+%doc ChangeLog.old-ports-hppa
+%doc ChangeLog.old-ports-ia64
+%doc ChangeLog.old-ports-linux-generic
+%doc ChangeLog.old-ports-m68k
+%doc ChangeLog.old-ports-microblaze
+%doc ChangeLog.old-ports-mips
+%doc ChangeLog.old-ports-powerpc
+%doc ChangeLog.old-ports-tile
+%doc NAMESPACE NEWS PROJECTS README WUR-REPORT
 %{cross_sysroot}/usr/include/_G_config.h
 %{cross_sysroot}/usr/include/a.out.h
 %{cross_sysroot}/usr/include/aio.h
@@ -478,6 +501,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Sun Nov 22 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.22-2
+- Install license files and documentation
+
 * Wed Aug 12 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.22-1
 - Update to 2.22
 

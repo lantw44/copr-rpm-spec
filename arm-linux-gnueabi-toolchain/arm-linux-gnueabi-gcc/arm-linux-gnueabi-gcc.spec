@@ -20,7 +20,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    5.2.0
-Release:    3%{?dist}
+Release:    4%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
@@ -195,6 +195,8 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %files
+%license COPYING COPYING.LIB COPYING.RUNTIME COPYING3 COPYING3.LIB
+%doc ChangeLog ChangeLog.jit ChangeLog.tree-ssa MAINTAINERS NEWS README
 %{_bindir}/%{cross_triplet}-cpp
 %{_bindir}/%{cross_triplet}-gcc
 %{_bindir}/%{cross_triplet}-gcc-ar
@@ -307,6 +309,9 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Sun Nov 22 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.2.0-4
+- Install license files and documentation
+
 * Sat Nov 21 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.2.0-3
 - Rebuilt for hardening flags
 

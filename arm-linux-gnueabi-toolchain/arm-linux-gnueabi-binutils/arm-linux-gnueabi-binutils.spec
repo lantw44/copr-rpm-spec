@@ -4,7 +4,7 @@
 
 Name:       %{cross_triplet}-binutils
 Version:    2.25.1
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 Group:      Development/Tools
@@ -47,6 +47,8 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %files
+%license COPYING COPYING.LIB COPYING3 COPYING3.LIB
+%doc ChangeLog MAINTAINERS README
 %{_bindir}/%{cross_triplet}-addr2line
 %{_bindir}/%{cross_triplet}-ar
 %{_bindir}/%{cross_triplet}-as
@@ -79,6 +81,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Sun Nov 22 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.25.1-3
+- Install license files and documentation
+
 * Tue Jul 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.25.1-2
 - Rebuilt for Fedora 23 and 24
 
