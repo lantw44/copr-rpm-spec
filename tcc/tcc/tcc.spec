@@ -12,11 +12,11 @@
 
 Name:       %{pkg_fullname}
 Version:    0.9.26
-Release:    7%{?dist}
+Release:    8%{?dist}
 Summary:    Tiny C Compiler
 
 Group:      Development/Languages
-License:    LGPL
+License:    LGPLv2
 URL:        http://bellard.org/tcc
 Source0:    http://download.savannah.gnu.org/releases/tinycc/%{pkg_name}-%{version}.tar.bz2
 
@@ -32,7 +32,12 @@ It can also run C source code as a script.
 %build
 ./configure --prefix=%{_prefix} --libdir=%{_libdir} \
             --cc=%{use_cc} --enable-cross
-make %{?_smp_mflags}
+make %{?_smp_mflags} \
+%ifarch x86_64 amd64
+%if %{use_gcc}
+    CC="gcc %{optflags} %{__global_ldflags}"
+%endif
+%endif
 
 %install
 make install DESTDIR=%{buildroot}
@@ -62,27 +67,33 @@ fi
 %endif
 %{_bindir}/x86_64-win32-tcc
 %{_includedir}/libtcc.h
-%{_libdir}/libtcc.a
+%attr(644, -, -) %{_libdir}/libtcc.a
 %{_libdir}/tcc/include/*.h
-%{_libdir}/tcc/libtcc1.a
+%attr(644, -, -) %{_libdir}/tcc/libtcc1.a
 %ifnarch i386 i486 i586 i686
 %{_libdir}/tcc/i386/include/*.h
-%{_libdir}/tcc/i386/libtcc1.a
+%attr(644, -, -) %{_libdir}/tcc/i386/libtcc1.a
 %endif
 %{_libdir}/tcc/win32/include/*.h
 %{_libdir}/tcc/win32/include/sec_api/*.h
 %{_libdir}/tcc/win32/include/sec_api/sys/*.h
 %{_libdir}/tcc/win32/include/sys/*.h
 %{_libdir}/tcc/win32/include/winapi/*.h
-%{_libdir}/tcc/win32/lib/32/libtcc1.a
-%{_libdir}/tcc/win32/lib/64/libtcc1.a
+%attr(644, -, -) %{_libdir}/tcc/win32/lib/32/libtcc1.a
+%attr(644, -, -) %{_libdir}/tcc/win32/lib/64/libtcc1.a
 %{_libdir}/tcc/win32/lib/*.def
-%{_mandir}/man1/tcc.1.gz
-%{_infodir}/tcc-doc.info.gz
+%attr(644, -, -) %{_mandir}/man1/tcc.1.gz
+%attr(644, -, -) %{_infodir}/tcc-doc.info.gz
 %license COPYING
 %doc Changelog README TODO VERSION tcc-doc.html
 
 %changelog
+* Sat Nov 21 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-8
+- Fix the license tag
+- Enable hardening flags on x86_64
+- Don't set executable permissions on static libraries, man pages,
+  info pages
+
 * Tue Jul 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-7
 - Rebuilt for Fedora 23 and 24
 
