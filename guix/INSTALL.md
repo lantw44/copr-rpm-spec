@@ -1,10 +1,10 @@
-The post-install script will create an user and a group called `guix-builder`.
+The post-install script will create an user and a group called `guixbuild`.
 
 If you want more users for building packages, add more users to the
-`guix-builder` group.
+`guixbuild` group.
 
 Start the `guix-daemon` by using systemd or manually running command
-`guix-daemon --build-users-group=guix-builder` as root. `guix-daemon`
+`guix-daemon --build-users-group=guixbuild` as root. `guix-daemon`
 will create most necessary files and directories when you first using it.
 
 If you want to use prebuilt packages provided by

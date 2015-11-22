@@ -1,1 +1,2 @@
-[GNU Guix](http://www.gnu.org/software/guix/) packages with systemd service file
+[GNU Guix](http://www.gnu.org/software/guix/): A purely functional package
+manager for the GNU system.
