@@ -1,6 +1,6 @@
 Name:       qelly
 Version:    1.0
-Release:    0.4.beta%{?dist}
+Release:    0.5.beta%{?dist}
 Summary:    Qelly is a Qt port of Nally
 
 %global     real_name     Qelly
@@ -11,8 +11,7 @@ License:    GPLv3
 URL:        https://github.com/uranusjr/Qelly
 Source0:    https://github.com/uranusjr/Qelly/archive/v%{real_version}.tar.gz
 
-BuildRequires: qt-devel, libqxt-devel
-Requires:   qt, libqxt
+BuildRequires: qt-devel, libqxt-devel, chrpath
 
 %description
 Qelly (pronounced as the English name "Kelly") is a Qt port of Nally, the
@@ -26,12 +25,13 @@ name), but more features from other Telnet/SSH clients are also planned.
 %setup -q -n %{real_name}-%{real_version}
 
 %build
-qmake-qt4
+%{_qt4_qmake}
 make %{?_smp_mflags}
 
 
 %install
 mkdir -p %{buildroot}/usr/bin
+chrpath -d "bin/Qelly"
 install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
 
 %files
@@ -41,6 +41,11 @@ install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
 %doc AUTHORS CHANGES README.md
 
 %changelog
+* Mon Nov 23 2015 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.5.beta
+- Disable RPATH
+- Use qmake macro
+- Remove non-needed Requires
+
 * Tue Jul 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.4.beta
 - Rebuilt for Fedora 23 and 24
 
