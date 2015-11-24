@@ -1,6 +1,6 @@
 Name:           guix
 Version:        0.9.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -19,7 +19,7 @@ BuildRequires:  guile-json, gnutls-guile
 BuildRequires:  systemd
 
 Requires:       gzip, bzip2, xz
-Requires:       /usr/lib64/libgcrypt.so
+Requires:       %{_libdir}/libgcrypt.so
 Requires:       emacs-filesystem >= %{_emacs_version}
 Requires(post): /usr/sbin/useradd
 Requires(post): /usr/sbin/usermod
@@ -202,6 +202,7 @@ fi
 %{_datadir}/guile/site/2.0/guix/build-system/*.scm
 %{_datadir}/guile/site/2.0/guix/build-system/*.go
 %{_infodir}/%{name}.info*
+%dir %{_infodir}/images
 %{_infodir}/images/bootstrap-graph.png.gz
 %{_infodir}/images/coreutils-bag-graph.png.gz
 %{_infodir}/images/coreutils-graph.png.gz
@@ -236,6 +237,10 @@ fi
 
 
 %changelog
+* Tue Nov 24 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.0-2
+- Own /usr/share/info/images because no other packages use it
+- Use _libdir macro instead of hard-coding /usr/lib64
+
 * Sun Nov 22 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.0-1
 - Update to 0.9.0
 - Don't clutter the system site-lisp directory

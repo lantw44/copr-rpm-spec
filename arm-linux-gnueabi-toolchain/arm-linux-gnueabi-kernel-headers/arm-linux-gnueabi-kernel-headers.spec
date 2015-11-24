@@ -4,7 +4,7 @@
 
 Name:       %{cross_triplet}-kernel-headers
 Version:    4.3.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
 %define debug_package   %{nil}
@@ -14,6 +14,9 @@ Group:      Development/System
 License:    GPLv2
 URL:        https://www.kernel.org/
 Source0:    https://www.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
+
+BuildRequires: %{cross_triplet}-filesystem
+Requires:   %{cross_triplet}-filesystem
 
 %description
 
@@ -36,46 +39,88 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %files
-%{cross_sysroot}/usr/include/asm-generic/*.h
-%{cross_sysroot}/usr/include/drm/*.h
-%{cross_sysroot}/usr/include/linux/android/binder.h
-%{cross_sysroot}/usr/include/linux/byteorder/*.h
-%{cross_sysroot}/usr/include/linux/caif/*.h
-%{cross_sysroot}/usr/include/linux/can/*.h
-%{cross_sysroot}/usr/include/linux/dvb/*.h
-%{cross_sysroot}/usr/include/linux/hdlc/*.h
-%{cross_sysroot}/usr/include/linux/hsi/*.h
-%{cross_sysroot}/usr/include/linux/iio/*.h
-%{cross_sysroot}/usr/include/linux/isdn/*.h
-%{cross_sysroot}/usr/include/linux/mmc/*.h
-%{cross_sysroot}/usr/include/linux/netfilter/ipset/*.h
-%{cross_sysroot}/usr/include/linux/netfilter/*.h
-%{cross_sysroot}/usr/include/linux/netfilter_arp/*.h
-%{cross_sysroot}/usr/include/linux/netfilter_bridge/*.h
-%{cross_sysroot}/usr/include/linux/netfilter_ipv4/*.h
-%{cross_sysroot}/usr/include/linux/netfilter_ipv6/*.h
-%{cross_sysroot}/usr/include/linux/nfsd/*.h
-%{cross_sysroot}/usr/include/linux/raid/*.h
-%{cross_sysroot}/usr/include/linux/spi/*.h
-%{cross_sysroot}/usr/include/linux/sunrpc/*.h
-%{cross_sysroot}/usr/include/linux/tc_act/*.h
-%{cross_sysroot}/usr/include/linux/tc_ematch/*.h
-%{cross_sysroot}/usr/include/linux/usb/*.h
-%{cross_sysroot}/usr/include/linux/wimax/*.h
-%{cross_sysroot}/usr/include/linux/*.h
-%{cross_sysroot}/usr/include/misc/*.h
-%{cross_sysroot}/usr/include/mtd/*.h
-%{cross_sysroot}/usr/include/rdma/hfi/hfi1_user.h
-%{cross_sysroot}/usr/include/rdma/*.h
-%{cross_sysroot}/usr/include/scsi/fc/*.h
-%{cross_sysroot}/usr/include/scsi/*.h
-%{cross_sysroot}/usr/include/sound/*.h
-%{cross_sysroot}/usr/include/video/*.h
-%{cross_sysroot}/usr/include/xen/*.h
+%dir %{cross_sysroot}/usr/include/asm
 %{cross_sysroot}/usr/include/asm/*.h
+%dir %{cross_sysroot}/usr/include/asm-generic
+%{cross_sysroot}/usr/include/asm-generic/*.h
+%dir %{cross_sysroot}/usr/include/drm
+%{cross_sysroot}/usr/include/drm/*.h
+%dir %{cross_sysroot}/usr/include/linux
+%dir %{cross_sysroot}/usr/include/linux/android
+%{cross_sysroot}/usr/include/linux/android/binder.h
+%dir %{cross_sysroot}/usr/include/linux/byteorder
+%{cross_sysroot}/usr/include/linux/byteorder/*.h
+%dir %{cross_sysroot}/usr/include/linux/caif
+%{cross_sysroot}/usr/include/linux/caif/*.h
+%dir %{cross_sysroot}/usr/include/linux/can
+%{cross_sysroot}/usr/include/linux/can/*.h
+%dir %{cross_sysroot}/usr/include/linux/dvb
+%{cross_sysroot}/usr/include/linux/dvb/*.h
+%dir %{cross_sysroot}/usr/include/linux/hdlc
+%{cross_sysroot}/usr/include/linux/hdlc/*.h
+%dir %{cross_sysroot}/usr/include/linux/hsi
+%{cross_sysroot}/usr/include/linux/hsi/*.h
+%dir %{cross_sysroot}/usr/include/linux/iio
+%{cross_sysroot}/usr/include/linux/iio/*.h
+%dir %{cross_sysroot}/usr/include/linux/isdn
+%{cross_sysroot}/usr/include/linux/isdn/*.h
+%dir %{cross_sysroot}/usr/include/linux/mmc
+%{cross_sysroot}/usr/include/linux/mmc/*.h
+%dir %{cross_sysroot}/usr/include/linux/netfilter
+%{cross_sysroot}/usr/include/linux/netfilter/*.h
+%dir %{cross_sysroot}/usr/include/linux/netfilter/ipset
+%{cross_sysroot}/usr/include/linux/netfilter/ipset/*.h
+%dir %{cross_sysroot}/usr/include/linux/netfilter_arp
+%{cross_sysroot}/usr/include/linux/netfilter_arp/*.h
+%dir %{cross_sysroot}/usr/include/linux/netfilter_bridge
+%{cross_sysroot}/usr/include/linux/netfilter_bridge/*.h
+%dir %{cross_sysroot}/usr/include/linux/netfilter_ipv4
+%{cross_sysroot}/usr/include/linux/netfilter_ipv4/*.h
+%dir %{cross_sysroot}/usr/include/linux/netfilter_ipv6
+%{cross_sysroot}/usr/include/linux/netfilter_ipv6/*.h
+%dir %{cross_sysroot}/usr/include/linux/nfsd
+%{cross_sysroot}/usr/include/linux/nfsd/*.h
+%dir %{cross_sysroot}/usr/include/linux/raid
+%{cross_sysroot}/usr/include/linux/raid/*.h
+%dir %{cross_sysroot}/usr/include/linux/spi
+%{cross_sysroot}/usr/include/linux/spi/*.h
+%dir %{cross_sysroot}/usr/include/linux/sunrpc
+%{cross_sysroot}/usr/include/linux/sunrpc/*.h
+%dir %{cross_sysroot}/usr/include/linux/tc_act
+%{cross_sysroot}/usr/include/linux/tc_act/*.h
+%dir %{cross_sysroot}/usr/include/linux/tc_ematch
+%{cross_sysroot}/usr/include/linux/tc_ematch/*.h
+%dir %{cross_sysroot}/usr/include/linux/usb
+%{cross_sysroot}/usr/include/linux/usb/*.h
+%dir %{cross_sysroot}/usr/include/linux/wimax
+%{cross_sysroot}/usr/include/linux/wimax/*.h
+%dir %{cross_sysroot}/usr/include/linux
+%{cross_sysroot}/usr/include/linux/*.h
+%dir %{cross_sysroot}/usr/include/misc
+%{cross_sysroot}/usr/include/misc/*.h
+%dir %{cross_sysroot}/usr/include/mtd
+%{cross_sysroot}/usr/include/mtd/*.h
+%dir %{cross_sysroot}/usr/include/rdma
+%{cross_sysroot}/usr/include/rdma/*.h
+%dir %{cross_sysroot}/usr/include/rdma/hfi
+%{cross_sysroot}/usr/include/rdma/hfi/hfi1_user.h
+%dir %{cross_sysroot}/usr/include/scsi
+%{cross_sysroot}/usr/include/scsi/*.h
+%dir %{cross_sysroot}/usr/include/scsi/fc
+%{cross_sysroot}/usr/include/scsi/fc/*.h
+%dir %{cross_sysroot}/usr/include/sound
+%{cross_sysroot}/usr/include/sound/*.h
+%dir %{cross_sysroot}/usr/include/video
+%{cross_sysroot}/usr/include/video/*.h
+%dir %{cross_sysroot}/usr/include/xen
+%{cross_sysroot}/usr/include/xen/*.h
 
 
 %changelog
+* Tue Nov 24 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.3.0-2
+- Own all directories
+- Require the filesystem sub-package
+
 * Mon Nov 02 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.3.0-1
 - Update to 4.3
 

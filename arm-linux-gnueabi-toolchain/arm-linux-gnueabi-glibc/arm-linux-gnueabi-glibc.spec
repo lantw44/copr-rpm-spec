@@ -12,7 +12,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.22
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -20,8 +20,10 @@ License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
 URL:        https://www.gnu.org/software/libc
 Source0:    https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 
+BuildRequires: %{cross_triplet}-filesystem
 BuildRequires: %{cross_triplet}-gcc-pass1
 BuildRequires: %{cross_triplet}-kernel-headers
+Requires:   %{cross_triplet}-filesystem
 Requires:   %{cross_triplet}-kernel-headers
 
 %if !%{headers_only}
@@ -138,6 +140,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/ar.h
 %{cross_sysroot}/usr/include/argp.h
 %{cross_sysroot}/usr/include/argz.h
+%dir %{cross_sysroot}/usr/include/arpa
 %{cross_sysroot}/usr/include/arpa/ftp.h
 %{cross_sysroot}/usr/include/arpa/inet.h
 %{cross_sysroot}/usr/include/arpa/nameser.h
@@ -173,6 +176,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/getopt.h
 %{cross_sysroot}/usr/include/glob.h
 %{cross_sysroot}/usr/include/gnu-versions.h
+%dir %{cross_sysroot}/usr/include/gnu
 %{cross_sysroot}/usr/include/gnu/lib-names.h
 %{cross_sysroot}/usr/include/gnu/libc-version.h
 %{cross_sysroot}/usr/include/gnu/stubs.h
@@ -197,6 +201,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/mntent.h
 %{cross_sysroot}/usr/include/monetary.h
 %{cross_sysroot}/usr/include/mqueue.h
+%dir %{cross_sysroot}/usr/include/net
 %{cross_sysroot}/usr/include/net/ethernet.h
 %{cross_sysroot}/usr/include/net/if.h
 %{cross_sysroot}/usr/include/net/if_arp.h
@@ -207,11 +212,16 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/net/ppp-comp.h
 %{cross_sysroot}/usr/include/net/ppp_defs.h
 %{cross_sysroot}/usr/include/net/route.h
+%dir %{cross_sysroot}/usr/include/netash
 %{cross_sysroot}/usr/include/netash/ash.h
+%dir %{cross_sysroot}/usr/include/netatalk
 %{cross_sysroot}/usr/include/netatalk/at.h
+%dir %{cross_sysroot}/usr/include/netax25
 %{cross_sysroot}/usr/include/netax25/ax25.h
 %{cross_sysroot}/usr/include/netdb.h
+%dir %{cross_sysroot}/usr/include/neteconet
 %{cross_sysroot}/usr/include/neteconet/ec.h
+%dir %{cross_sysroot}/usr/include/netinet
 %{cross_sysroot}/usr/include/netinet/ether.h
 %{cross_sysroot}/usr/include/netinet/icmp6.h
 %{cross_sysroot}/usr/include/netinet/if_ether.h
@@ -225,11 +235,17 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/netinet/ip_icmp.h
 %{cross_sysroot}/usr/include/netinet/tcp.h
 %{cross_sysroot}/usr/include/netinet/udp.h
+%dir %{cross_sysroot}/usr/include/netipx
 %{cross_sysroot}/usr/include/netipx/ipx.h
+%dir %{cross_sysroot}/usr/include/netiucv
 %{cross_sysroot}/usr/include/netiucv/iucv.h
+%dir %{cross_sysroot}/usr/include/netpacket
 %{cross_sysroot}/usr/include/netpacket/packet.h
+%dir %{cross_sysroot}/usr/include/netrom
 %{cross_sysroot}/usr/include/netrom/netrom.h
+%dir %{cross_sysroot}/usr/include/netrose
 %{cross_sysroot}/usr/include/netrose/rose.h
+%dir %{cross_sysroot}/usr/include/nfs
 %{cross_sysroot}/usr/include/nfs/nfs.h
 %{cross_sysroot}/usr/include/nl_types.h
 %{cross_sysroot}/usr/include/nss.h
@@ -237,6 +253,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/paths.h
 %{cross_sysroot}/usr/include/poll.h
 %{cross_sysroot}/usr/include/printf.h
+%dir %{cross_sysroot}/usr/include/protocols
 %{cross_sysroot}/usr/include/protocols/routed.h
 %{cross_sysroot}/usr/include/protocols/rwhod.h
 %{cross_sysroot}/usr/include/protocols/talkd.h
@@ -268,6 +285,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/string.h
 %{cross_sysroot}/usr/include/strings.h
 %{cross_sysroot}/usr/include/stropts.h
+%dir %{cross_sysroot}/usr/include/sys
 %{cross_sysroot}/usr/include/sys/acct.h
 %{cross_sysroot}/usr/include/sys/auxv.h
 %{cross_sysroot}/usr/include/sys/bitypes.h
@@ -484,6 +502,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/lib/libthread_db.so
 %{cross_sysroot}/usr/lib/libutil.a
 %{cross_sysroot}/usr/lib/libutil.so
+%dir %{cross_sysroot}/usr/libexec/getconf
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V6_ILP32_OFF32
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V6_ILP32_OFFBIG
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V7_ILP32_OFF32
@@ -494,6 +513,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/sbin/nscd
 %{cross_sysroot}/usr/sbin/zdump
 %{cross_sysroot}/usr/sbin/zic
+%dir %{cross_sysroot}/usr/share/i18n
 %{cross_sysroot}/usr/share/i18n/charmaps
 %{cross_sysroot}/usr/share/i18n/locales
 %{cross_sysroot}/var/db/Makefile
@@ -501,6 +521,10 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Tue Nov 24 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.22-3
+- Own the i18n and the getconf directory
+- Require the filesystem sub-package
+
 * Sun Nov 22 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.22-2
 - Install license files and documentation
 

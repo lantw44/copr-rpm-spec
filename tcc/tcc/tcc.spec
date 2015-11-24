@@ -12,7 +12,7 @@
 
 Name:       %{pkg_fullname}
 Version:    0.9.26
-Release:    8%{?dist}
+Release:    9%{?dist}
 Summary:    Tiny C Compiler
 
 Group:      Development/Languages
@@ -68,17 +68,30 @@ fi
 %{_bindir}/x86_64-win32-tcc
 %{_includedir}/libtcc.h
 %attr(644, -, -) %{_libdir}/libtcc.a
+%dir %{_libdir}/tcc
+%dir %{_libdir}/tcc/include
 %{_libdir}/tcc/include/*.h
 %attr(644, -, -) %{_libdir}/tcc/libtcc1.a
 %ifnarch i386 i486 i586 i686
+%dir %{_libdir}/tcc/i386
+%dir %{_libdir}/tcc/i386/include
 %{_libdir}/tcc/i386/include/*.h
 %attr(644, -, -) %{_libdir}/tcc/i386/libtcc1.a
 %endif
+%dir %{_libdir}/tcc/win32
+%dir %{_libdir}/tcc/win32/include
+%dir %{_libdir}/tcc/win32/include/sec_api
+%dir %{_libdir}/tcc/win32/include/sys
+%dir %{_libdir}/tcc/win32/include/sec_api/sys
+%dir %{_libdir}/tcc/win32/include/winapi
 %{_libdir}/tcc/win32/include/*.h
 %{_libdir}/tcc/win32/include/sec_api/*.h
 %{_libdir}/tcc/win32/include/sec_api/sys/*.h
 %{_libdir}/tcc/win32/include/sys/*.h
 %{_libdir}/tcc/win32/include/winapi/*.h
+%dir %{_libdir}/tcc/win32/lib
+%dir %{_libdir}/tcc/win32/lib/32
+%dir %{_libdir}/tcc/win32/lib/64
 %attr(644, -, -) %{_libdir}/tcc/win32/lib/32/libtcc1.a
 %attr(644, -, -) %{_libdir}/tcc/win32/lib/64/libtcc1.a
 %{_libdir}/tcc/win32/lib/*.def
@@ -88,6 +101,9 @@ fi
 %doc Changelog README TODO VERSION tcc-doc.html
 
 %changelog
+* Tue Nov 24 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-9
+- Own directories under /usr/lib{,64}/tcc
+
 * Sat Nov 21 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-8
 - Fix the license tag
 - Enable hardening flags on x86_64

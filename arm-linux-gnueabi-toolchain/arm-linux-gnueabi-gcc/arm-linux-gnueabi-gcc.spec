@@ -20,7 +20,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    5.2.0
-Release:    4%{?dist}
+Release:    5%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
@@ -30,7 +30,9 @@ Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
 
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel, isl-devel
 BuildRequires: gmp-devel, mpfr-devel, libmpc-devel, elfutils-libelf-devel
+BuildRequires: %{cross_triplet}-filesystem
 BuildRequires: %{cross_triplet}-binutils
+Requires:   %{cross_triplet}-filesystem
 Requires:   %{cross_triplet}-binutils
 
 %if %{cross_stage} == "pass2"
@@ -246,6 +248,9 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{_bindir}/%{cross_triplet}-c++
 %{_bindir}/%{cross_triplet}-g++
 %{_bindir}/%{cross_triplet}-gfortran
+%dir %{_prefix}/%{cross_triplet}
+%dir %{_prefix}/%{cross_triplet}/include
+%dir %{_prefix}/%{cross_triplet}/include/c++
 %{_prefix}/%{cross_triplet}/include/c++/%{version}
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/omp.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/openacc.h
@@ -309,6 +314,10 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Tue Nov 24 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.2.0-5
+- Own the directory of C++ headers
+- Require the filesystem sub-package
+
 * Sun Nov 22 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.2.0-4
 - Install license files and documentation
 

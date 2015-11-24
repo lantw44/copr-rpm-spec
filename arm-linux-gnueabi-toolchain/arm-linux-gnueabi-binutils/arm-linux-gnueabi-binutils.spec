@@ -4,7 +4,7 @@
 
 Name:       %{cross_triplet}-binutils
 Version:    2.25.1
-Release:    3%{?dist}
+Release:    4%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 Group:      Development/Tools
@@ -13,6 +13,8 @@ URL:        https://www.gnu.org/software/binutils
 Source0:    https://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
 
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel
+BuildRequires: %{cross_triplet}-filesystem
+Requires:   %{cross_triplet}-filesystem
 
 %description
 
@@ -81,6 +83,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Tue Nov 24 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.25.1-4
+- Require the filesystem sub-package
+
 * Sun Nov 22 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.25.1-3
 - Install license files and documentation
 
