@@ -2,8 +2,8 @@
 
 Name: epiphany
 Epoch: 1
-Version: 3.18.0
-Release: 4%{?dist}.1
+Version: 3.18.1
+Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv2+ and CC-BY-SA
@@ -14,10 +14,8 @@ Source0: https://download.gnome.org/sources/epiphany/3.18/%{name}-%{version}.tar
 Patch0: epiphany-default-bookmarks.patch
 # https://bugzilla.gnome.org/show_bug.cgi?id=742590
 Patch1: 0001-Hide-floating-bar-on-mouseover.patch
-# https://bugzilla.gnome.org/show_bug.cgi?id=755814
-Patch2: 0001-Fix-failure-to-load-web-extension-with-Wl-z-now.patch
 # Reduce the minimum tab width
-Patch3: epiphany-reduce-tab-width.patch
+Patch2: epiphany-reduce-tab-width.patch
 
 BuildRequires: desktop-file-utils
 BuildRequires: gcr-devel >= 3.5.5
@@ -118,6 +116,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_mandir}/man*/*
 
 %changelog
+* Fri Nov 20 2015 Kalev Lember <klember@redhat.com> - 1:3.18.1-1
+- Update to 3.18.1
+
 * Fri Oct 02 2015 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.18.0-4
 - Fix the web extension by overlinking instead of disabling RELRO.
 
