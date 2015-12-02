@@ -8,7 +8,7 @@
 
 Name:       chromium
 Version:    47.0.2526.73
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -20,6 +20,11 @@ Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/c
 # https://repos.fedorapeople.org/repos/spot/chromium/
 Source1:    chromium-browser.sh
 Source2:    chromium-browser.desktop
+
+# Add a patch from Arch Linux
+# https://code.google.com/p/chromium/issues/detail?id=480415
+# https://projects.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=37c3842
+Patch0:     chromium-fix-print-preview-on-en_GB-locale.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -48,7 +53,7 @@ BuildRequires: jsoncpp-devel
 BuildRequires: libevent-devel
 BuildRequires: libjpeg-turbo-devel
 BuildRequires: libpng-devel
-# Chromium requires libvpx 1.5.0
+# Chromium requires libvpx 1.5.0 and some non-default options
 # BuildRequires: libvpx-devel
 BuildRequires: libwebp-devel
 BuildRequires: pkgconfig(libxslt), pkgconfig(libxml-2.0)
@@ -76,7 +81,11 @@ Requires:         hicolor-icon-theme
 
 %prep
 %setup -q
+%patch0 -p1
 touch chrome/test/data/webui/i18n_process_css_test.html
+# https://code.google.com/p/chromium/issues/detail?id=541273
+# https://projects.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=37c3842
+sed -i "/'target_name': 'libvpx'/s/libvpx/&_new/" build/linux/unbundle/libvpx.gyp
 
 %build
 ./build/linux/unbundle/replace_gyp_files.py \
@@ -239,6 +248,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Dec 02 2015 - Ting-Wei Lan <lantw44@gmail.com> - 47.0.2526.73-2
+- Apply patch that fixes print preview with the en_GB locale
+
 * Wed Dec 02 2015 - Ting-Wei Lan <lantw44@gmail.com> - 47.0.2526.73-1
 - Update to 47.0.2526.73
 
