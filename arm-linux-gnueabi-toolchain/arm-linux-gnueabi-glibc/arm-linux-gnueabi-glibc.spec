@@ -12,7 +12,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.22
-Release:    3%{?dist}
+Release:    4%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -21,15 +21,14 @@ URL:        https://www.gnu.org/software/libc
 Source0:    https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 
 BuildRequires: %{cross_triplet}-filesystem
-BuildRequires: %{cross_triplet}-gcc-pass1
+BuildRequires: %{cross_triplet}-gcc-stage1
 BuildRequires: %{cross_triplet}-kernel-headers
 Requires:   %{cross_triplet}-filesystem
 Requires:   %{cross_triplet}-kernel-headers
+Provides:   %{cross_triplet}-glibc-stage1
 
 %if !%{headers_only}
-BuildRequires: %{cross_triplet}-gcc-pass2
-Provides:   %{cross_triplet}-glibc-headers = %{version}
-Obsoletes:  %{cross_triplet}-glibc-headers <= %{version}
+BuildRequires: %{cross_triplet}-gcc-stage2
 %endif
 
 %description
@@ -521,6 +520,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Sat Dec 05 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.22-4
+- Fix the build with dnf on Fedora 24
+
 * Tue Nov 24 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.22-3
 - Own the i18n and the getconf directory
 - Require the filesystem sub-package

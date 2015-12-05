@@ -19,8 +19,8 @@
 %endif
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    5.2.0
-Release:    5%{?dist}
+Version:    5.3.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
@@ -34,22 +34,20 @@ BuildRequires: %{cross_triplet}-filesystem
 BuildRequires: %{cross_triplet}-binutils
 Requires:   %{cross_triplet}-filesystem
 Requires:   %{cross_triplet}-binutils
+Provides:   %{cross_triplet}-gcc-stage1 = %{version}
 
 %if %{cross_stage} == "pass2"
-BuildRequires: %{cross_triplet}-glibc-headers
-Requires:   %{cross_triplet}-glibc-headers
-Provides:   %{cross_triplet}-gcc-pass1 = %{version}
-Obsoletes:  %{cross_triplet}-gcc-pass1 <= %{version}
+BuildRequires: %{cross_triplet}-glibc-stage1
+Requires:   %{cross_triplet}-glibc-stage1
+Provides:   %{cross_triplet}-gcc-stage2 = %{version}
 %endif
 
 %if %{cross_stage} == "final"
 BuildRequires: %{cross_triplet}-glibc
 BuildRequires: gcc-gnat, libstdc++-static
 Requires:   %{cross_triplet}-glibc
-Provides:   %{cross_triplet}-gcc-pass1 = %{version}
-Provides:   %{cross_triplet}-gcc-pass2 = %{version}
-Obsoletes:  %{cross_triplet}-gcc-pass1 <= %{version}
-Obsoletes:  %{cross_triplet}-gcc-pass2 <= %{version}
+Provides:   %{cross_triplet}-gcc-stage2 = %{version}
+Provides:   %{cross_triplet}-gcc-stage3 = %{version}
 %endif
 
 %description
@@ -286,6 +284,7 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{cross_sysroot}/lib/libssp_nonshared.a
 %{cross_sysroot}/lib/libssp.so
 %{cross_sysroot}/lib/libssp.so.0*
+%{cross_sysroot}/lib/libstdc++fs.a
 %{cross_sysroot}/lib/libstdc++.a
 %{cross_sysroot}/lib/libstdc++.so
 %{cross_sysroot}/lib/libstdc++.so.6
@@ -314,6 +313,10 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Sat Dec 05 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.3.0-1
+- Update to new stable release 5.3.0
+- Fix glibc build with dnf on Fedora 24
+
 * Tue Nov 24 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.2.0-5
 - Own the directory of C++ headers
 - Require the filesystem sub-package
