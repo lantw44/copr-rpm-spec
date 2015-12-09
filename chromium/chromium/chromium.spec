@@ -7,8 +7,8 @@
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
 Name:       chromium
-Version:    47.0.2526.73
-Release:    2%{?dist}
+Version:    47.0.2526.80
+Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -248,6 +248,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Dec 09 2015 - Ting-Wei Lan <lantw44@gmail.com> - 47.0.2526.80-1
+- Update to 47.0.2526.80
+
 * Wed Dec 02 2015 - Ting-Wei Lan <lantw44@gmail.com> - 47.0.2526.73-2
 - Apply patch that fixes print preview with the en_GB locale
 
