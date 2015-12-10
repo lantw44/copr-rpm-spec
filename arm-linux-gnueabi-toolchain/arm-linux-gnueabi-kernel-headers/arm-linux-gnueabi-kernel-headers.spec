@@ -3,8 +3,8 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    4.3.0
-Release:    2%{?dist}
+Version:    4.3.1
+Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
 %define debug_package   %{nil}
@@ -117,6 +117,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Fri Dec 11 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.3.1-1
+- Update to 4.3.1
+
 * Tue Nov 24 2015 Ting-Wei Lan <lantw44@gmail.com> - 4.3.0-2
 - Own all directories
 - Require the filesystem sub-package
