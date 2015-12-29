@@ -18,9 +18,19 @@
 %define enable_ada      0
 %endif
 
+%if %{cross_arch} == "arm"
+  %define lib_dir_name        lib
+%else
+  %if %{cross_arch} == "arm64"
+    %define lib_dir_name      lib64
+  %else
+    %define lib_dir_name      lib
+  %endif
+%endif
+
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    5.3.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
@@ -79,12 +89,26 @@ WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc \
     --target=%{cross_triplet} \
     --with-local-prefix=%{cross_sysroot} \
     --with-sysroot=%{cross_sysroot} \
+    --with-linker-hash-style=gnu \
     --with-system-zlib \
     --with-isl \
     --disable-nls \
     --enable-lto \
+    --enable-multilib \
     --enable-__cxa_atexit \
+    --enable-initfini-array \
     --enable-linker-build-id \
+    --enable-gnu-unique-object \
+    --enable-gnu-indirect-function \
+%if %{cross_arch} == "arm"
+%if %(echo %{cross_triplet} | sed 's/.*-\([a-z]*\)$/\1/') == "gnueabihf"
+    --with-tune=cortex-a8 \
+    --with-arch=armv7-a \
+    --with-float=hard \
+    --with-fpu=vfpv3-d16 \
+    --with-abi=aapcs-linux \
+%endif
+%endif
 %if %{cross_stage} == "pass1"
     --with-newlib \
     --enable-languages=c \
@@ -133,15 +157,17 @@ make install-gcc DESTDIR=%{buildroot}
 %endif
 %if %{cross_stage} == "pass2"
 make install-gcc install-target-libgcc DESTDIR=%{buildroot}
-mkdir -p %{buildroot}%{cross_sysroot}/lib
-mv %{buildroot}%{_prefix}/%{cross_triplet}/lib/* %{buildroot}%{cross_sysroot}/lib
-rmdir %{buildroot}%{_prefix}/%{cross_triplet}/lib
+mkdir -p %{buildroot}%{cross_sysroot}/%{lib_dir_name}
+mv %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}/* \
+    %{buildroot}%{cross_sysroot}/%{lib_dir_name}
+rmdir %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}
 %endif
 %if %{cross_stage} == "final"
 make install DESTDIR=%{buildroot}
-mkdir -p %{buildroot}%{cross_sysroot}/lib
-mv %{buildroot}%{_prefix}/%{cross_triplet}/lib/* %{buildroot}%{cross_sysroot}/lib
-rmdir %{buildroot}%{_prefix}/%{cross_triplet}/lib
+mkdir -p %{buildroot}%{cross_sysroot}/%{lib_dir_name}
+mv %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}/* \
+    %{buildroot}%{cross_sysroot}/%{lib_dir_name}
+rmdir %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}
 %endif
 
 find %{buildroot} -name '*.la' -delete
@@ -222,6 +248,8 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %if %{cross_arch} == "arm"
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/unwind-arm-common.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/mmintrin.h
+%endif
+%if %{cross_arch} == "arm" || %{cross_arch} == "arm64"
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/arm_neon.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/arm_acle.h
 %endif
@@ -236,11 +264,14 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/unwind.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/crtbegin*.o
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/crtend*.o
+%if %{cross_arch} == "arm64"
+%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/crtfastmath.o
+%endif
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/libgcc.a
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/libgcc_eh.a
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/libgcov.a
-%{cross_sysroot}/lib/libgcc_s.so
-%{cross_sysroot}/lib/libgcc_s.so.1
+%{cross_sysroot}/%{lib_dir_name}/libgcc_s.so
+%{cross_sysroot}/%{lib_dir_name}/libgcc_s.so.1
 %endif
 %if %{cross_stage} == "final"
 %{_bindir}/%{cross_triplet}-c++
@@ -262,36 +293,36 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{_libexecdir}/gcc/%{cross_triplet}/%{version}/cc1obj
 %{_libexecdir}/gcc/%{cross_triplet}/%{version}/cc1objplus
 %{_libexecdir}/gcc/%{cross_triplet}/%{version}/f951
-%{cross_sysroot}/lib/libasan.a
-%{cross_sysroot}/lib/libasan_preinit.o
-%{cross_sysroot}/lib/libasan.so*
-%{cross_sysroot}/lib/libatomic.a
-%{cross_sysroot}/lib/libatomic.so*
-%{cross_sysroot}/lib/libgfortran.a
-%{cross_sysroot}/lib/libgfortran.so*
-%{cross_sysroot}/lib/libgfortran.spec
-%{cross_sysroot}/lib/libgomp.a
-%{cross_sysroot}/lib/libgomp.so*
-%{cross_sysroot}/lib/libgomp.spec
-%{cross_sysroot}/lib/libgomp-plugin-host_nonshm.so*
-%{cross_sysroot}/lib/libitm.a
-%{cross_sysroot}/lib/libitm.so*
-%{cross_sysroot}/lib/libitm.spec
-%{cross_sysroot}/lib/libobjc.a
-%{cross_sysroot}/lib/libobjc.so*
-%{cross_sysroot}/lib/libsanitizer.spec
-%{cross_sysroot}/lib/libssp.a
-%{cross_sysroot}/lib/libssp_nonshared.a
-%{cross_sysroot}/lib/libssp.so
-%{cross_sysroot}/lib/libssp.so.0*
-%{cross_sysroot}/lib/libstdc++fs.a
-%{cross_sysroot}/lib/libstdc++.a
-%{cross_sysroot}/lib/libstdc++.so
-%{cross_sysroot}/lib/libstdc++.so.6
-%{cross_sysroot}/lib/libstdc++.so.6.*.*
-%{cross_sysroot}/lib/libsupc++.a
-%{cross_sysroot}/lib/libubsan.a
-%{cross_sysroot}/lib/libubsan.so*
+%{cross_sysroot}/%{lib_dir_name}/libasan.a
+%{cross_sysroot}/%{lib_dir_name}/libasan_preinit.o
+%{cross_sysroot}/%{lib_dir_name}/libasan.so*
+%{cross_sysroot}/%{lib_dir_name}/libatomic.a
+%{cross_sysroot}/%{lib_dir_name}/libatomic.so*
+%{cross_sysroot}/%{lib_dir_name}/libgfortran.a
+%{cross_sysroot}/%{lib_dir_name}/libgfortran.so*
+%{cross_sysroot}/%{lib_dir_name}/libgfortran.spec
+%{cross_sysroot}/%{lib_dir_name}/libgomp.a
+%{cross_sysroot}/%{lib_dir_name}/libgomp.so*
+%{cross_sysroot}/%{lib_dir_name}/libgomp.spec
+%{cross_sysroot}/%{lib_dir_name}/libgomp-plugin-host_nonshm.so*
+%{cross_sysroot}/%{lib_dir_name}/libitm.a
+%{cross_sysroot}/%{lib_dir_name}/libitm.so*
+%{cross_sysroot}/%{lib_dir_name}/libitm.spec
+%{cross_sysroot}/%{lib_dir_name}/libobjc.a
+%{cross_sysroot}/%{lib_dir_name}/libobjc.so*
+%{cross_sysroot}/%{lib_dir_name}/libsanitizer.spec
+%{cross_sysroot}/%{lib_dir_name}/libssp.a
+%{cross_sysroot}/%{lib_dir_name}/libssp_nonshared.a
+%{cross_sysroot}/%{lib_dir_name}/libssp.so
+%{cross_sysroot}/%{lib_dir_name}/libssp.so.0*
+%{cross_sysroot}/%{lib_dir_name}/libstdc++fs.a
+%{cross_sysroot}/%{lib_dir_name}/libstdc++.a
+%{cross_sysroot}/%{lib_dir_name}/libstdc++.so
+%{cross_sysroot}/%{lib_dir_name}/libstdc++.so.6
+%{cross_sysroot}/%{lib_dir_name}/libstdc++.so.6.*.*
+%{cross_sysroot}/%{lib_dir_name}/libsupc++.a
+%{cross_sysroot}/%{lib_dir_name}/libubsan.a
+%{cross_sysroot}/%{lib_dir_name}/libubsan.so*
 %if %{enable_ada}
 %{_bindir}/%{cross_triplet}-gnat
 %{_bindir}/%{cross_triplet}-gnatbind
@@ -313,6 +344,10 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Mon Dec 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.3.0-2
+- Sync configure options with Fedora
+- Support arm-linux-gnueabihf and aarch64-linux-gnu
+
 * Sat Dec 05 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.3.0-1
 - Update to new stable release 5.3.0
 - Fix glibc build with dnf on Fedora 24

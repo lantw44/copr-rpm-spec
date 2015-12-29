@@ -10,9 +10,40 @@
 %define pkg_suffix      %{nil}
 %endif
 
+%if %{cross_arch} == "arm"
+  %define arm_type      %(echo %{cross_triplet} | sed 's/.*-\\([a-z]*\\)$/\\1/')
+  %if %{arm_type} == "gnueabi"
+    %define loader_suffix     %{nil}
+    %define loader_version    3
+    %define gnu_hdr_suffix    -soft
+    %define lib_dir_name      lib
+  %else
+    %if %{arm_type} == "gnueabihf"
+      %define loader_suffix   -armhf
+      %define loader_version  3
+      %define gnu_hdr_suffix  -hard
+      %define lib_dir_name    lib
+    %else
+      %{error:Unsupported ARM processor type}
+    %endif
+  %endif
+%else
+  %if %{cross_arch} == "arm64"
+    %define loader_suffix     -aarch64
+    %define loader_version    1
+    %define gnu_hdr_suffix    -lp64
+    %define lib_dir_name      lib64
+  %else
+    %define loader_suffix     %{nil}
+    %define loader_version    0
+    %define gnu_hdr_suffix    %{nil}
+    %define lib_dir_name      lib
+  %endif
+%endif
+
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.22
-Release:    4%{?dist}
+Release:    5%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -53,6 +84,7 @@ RANLIB=%{_bindir}/%{cross_triplet}-ranlib \
     --enable-kernel=2.6.32 \
     --enable-shared \
     --enable-add-ons \
+    --enable-multi-arch \
     --enable-obsolete-rpc \
     --disable-profile \
     --with-headers=%{cross_sysroot}/usr/include \
@@ -78,10 +110,11 @@ cd %{_builddir}/glibc-build
 make install-headers install_root=%{buildroot}%{cross_sysroot} \
     install-bootstrap-headers=yes
 touch %{buildroot}%{cross_sysroot}/usr/include/gnu/stubs.h
-mkdir -p %{buildroot}%{cross_sysroot}/usr/lib
-cp csu/crt1.o csu/crti.o csu/crtn.o %{buildroot}%{cross_sysroot}/usr/lib
+mkdir -p %{buildroot}%{cross_sysroot}/usr/%{lib_dir_name}
+cp csu/crt1.o csu/crti.o csu/crtn.o \
+    %{buildroot}%{cross_sysroot}/usr/%{lib_dir_name}
 %{cross_triplet}-gcc -nostdlib -nostartfiles -shared -x c /dev/null \
-    -o %{buildroot}%{cross_sysroot}/usr/lib/libc.so
+    -o %{buildroot}%{cross_sysroot}/usr/%{lib_dir_name}/libc.so
 %else
 make install install_root=%{buildroot}%{cross_sysroot}
 rm -rf %{buildroot}%{cross_sysroot}/usr/share/man
@@ -301,7 +334,9 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/sys/gmon.h
 %{cross_sysroot}/usr/include/sys/gmon_out.h
 %{cross_sysroot}/usr/include/sys/inotify.h
+%if %{cross_arch} == "arm"
 %{cross_sysroot}/usr/include/sys/io.h
+%endif
 %{cross_sysroot}/usr/include/sys/ioctl.h
 %{cross_sysroot}/usr/include/sys/ipc.h
 %{cross_sysroot}/usr/include/sys/kd.h
@@ -390,57 +425,61 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/wctype.h
 %{cross_sysroot}/usr/include/wordexp.h
 %{cross_sysroot}/usr/include/xlocale.h
-%{cross_sysroot}/usr/lib/crt1.o
-%{cross_sysroot}/usr/lib/crti.o
-%{cross_sysroot}/usr/lib/crtn.o
-%{cross_sysroot}/usr/lib/libc.so
+%{cross_sysroot}/usr/%{lib_dir_name}/crt1.o
+%{cross_sysroot}/usr/%{lib_dir_name}/crti.o
+%{cross_sysroot}/usr/%{lib_dir_name}/crtn.o
+%{cross_sysroot}/usr/%{lib_dir_name}/libc.so
 %if !%{headers_only}
 %{cross_sysroot}/etc/rpc
-%{cross_sysroot}/lib/ld-%{version}.so
-%{cross_sysroot}/lib/ld-linux.so.3
-%{cross_sysroot}/lib/libBrokenLocale-%{version}.so
-%{cross_sysroot}/lib/libBrokenLocale.so.1
-%{cross_sysroot}/lib/libSegFault.so
-%{cross_sysroot}/lib/libanl-%{version}.so
-%{cross_sysroot}/lib/libanl.so.1
-%{cross_sysroot}/lib/libc-%{version}.so
-%{cross_sysroot}/lib/libc.so.6
-%{cross_sysroot}/lib/libcidn-%{version}.so
-%{cross_sysroot}/lib/libcidn.so.1
-%{cross_sysroot}/lib/libcrypt-%{version}.so
-%{cross_sysroot}/lib/libcrypt.so.1
-%{cross_sysroot}/lib/libdl-%{version}.so
-%{cross_sysroot}/lib/libdl.so.2
-%{cross_sysroot}/lib/libm-%{version}.so
-%{cross_sysroot}/lib/libm.so.6
-%{cross_sysroot}/lib/libmemusage.so
-%{cross_sysroot}/lib/libnsl-%{version}.so
-%{cross_sysroot}/lib/libnsl.so.1
-%{cross_sysroot}/lib/libnss_compat-%{version}.so
-%{cross_sysroot}/lib/libnss_compat.so.2
-%{cross_sysroot}/lib/libnss_db-%{version}.so
-%{cross_sysroot}/lib/libnss_db.so.2
-%{cross_sysroot}/lib/libnss_dns-%{version}.so
-%{cross_sysroot}/lib/libnss_dns.so.2
-%{cross_sysroot}/lib/libnss_files-%{version}.so
-%{cross_sysroot}/lib/libnss_files.so.2
-%{cross_sysroot}/lib/libnss_hesiod-%{version}.so
-%{cross_sysroot}/lib/libnss_hesiod.so.2
-%{cross_sysroot}/lib/libnss_nis-%{version}.so
-%{cross_sysroot}/lib/libnss_nis.so.2
-%{cross_sysroot}/lib/libnss_nisplus-%{version}.so
-%{cross_sysroot}/lib/libnss_nisplus.so.2
-%{cross_sysroot}/lib/libpcprofile.so
-%{cross_sysroot}/lib/libpthread-%{version}.so
-%{cross_sysroot}/lib/libpthread.so.0
-%{cross_sysroot}/lib/libresolv-%{version}.so
-%{cross_sysroot}/lib/libresolv.so.2
-%{cross_sysroot}/lib/librt-%{version}.so
-%{cross_sysroot}/lib/librt.so.1
-%{cross_sysroot}/lib/libthread_db-1.0.so
-%{cross_sysroot}/lib/libthread_db.so.1
-%{cross_sysroot}/lib/libutil-%{version}.so
-%{cross_sysroot}/lib/libutil.so.1
+%if %{cross_arch} == "arm64"
+%{cross_sysroot}/lib/ld-linux%{loader_suffix}.so.%{loader_version}
+%else
+%{cross_sysroot}/%{lib_dir_name}/ld-linux%{loader_suffix}.so.%{loader_version}
+%endif
+%{cross_sysroot}/%{lib_dir_name}/ld-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libBrokenLocale-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libBrokenLocale.so.1
+%{cross_sysroot}/%{lib_dir_name}/libSegFault.so
+%{cross_sysroot}/%{lib_dir_name}/libanl-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libanl.so.1
+%{cross_sysroot}/%{lib_dir_name}/libc-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libc.so.6
+%{cross_sysroot}/%{lib_dir_name}/libcidn-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libcidn.so.1
+%{cross_sysroot}/%{lib_dir_name}/libcrypt-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libcrypt.so.1
+%{cross_sysroot}/%{lib_dir_name}/libdl-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libdl.so.2
+%{cross_sysroot}/%{lib_dir_name}/libm-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libm.so.6
+%{cross_sysroot}/%{lib_dir_name}/libmemusage.so
+%{cross_sysroot}/%{lib_dir_name}/libnsl-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libnsl.so.1
+%{cross_sysroot}/%{lib_dir_name}/libnss_compat-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libnss_compat.so.2
+%{cross_sysroot}/%{lib_dir_name}/libnss_db-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libnss_db.so.2
+%{cross_sysroot}/%{lib_dir_name}/libnss_dns-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libnss_dns.so.2
+%{cross_sysroot}/%{lib_dir_name}/libnss_files-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libnss_files.so.2
+%{cross_sysroot}/%{lib_dir_name}/libnss_hesiod-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libnss_hesiod.so.2
+%{cross_sysroot}/%{lib_dir_name}/libnss_nis-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libnss_nis.so.2
+%{cross_sysroot}/%{lib_dir_name}/libnss_nisplus-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libnss_nisplus.so.2
+%{cross_sysroot}/%{lib_dir_name}/libpcprofile.so
+%{cross_sysroot}/%{lib_dir_name}/libpthread-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libpthread.so.0
+%{cross_sysroot}/%{lib_dir_name}/libresolv-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libresolv.so.2
+%{cross_sysroot}/%{lib_dir_name}/librt-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/librt.so.1
+%{cross_sysroot}/%{lib_dir_name}/libthread_db-1.0.so
+%{cross_sysroot}/%{lib_dir_name}/libthread_db.so.1
+%{cross_sysroot}/%{lib_dir_name}/libutil-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libutil.so.1
 %{cross_sysroot}/sbin/ldconfig
 %{cross_sysroot}/sbin/sln
 %{cross_sysroot}/usr/bin/catchsegv
@@ -460,54 +499,62 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/bin/sprof
 %{cross_sysroot}/usr/bin/tzselect
 %{cross_sysroot}/usr/bin/xtrace
-%{cross_sysroot}/usr/include/gnu/lib-names-soft.h
-%{cross_sysroot}/usr/include/gnu/stubs-soft.h
-%{cross_sysroot}/usr/lib/?crt1.o
-%{cross_sysroot}/usr/lib/audit
-%{cross_sysroot}/usr/lib/gconv
-%{cross_sysroot}/usr/lib/libBrokenLocale.a
-%{cross_sysroot}/usr/lib/libBrokenLocale.so
-%{cross_sysroot}/usr/lib/libanl.a
-%{cross_sysroot}/usr/lib/libanl.so
-%{cross_sysroot}/usr/lib/libc.a
-%{cross_sysroot}/usr/lib/libc_nonshared.a
-%{cross_sysroot}/usr/lib/libcidn.so
-%{cross_sysroot}/usr/lib/libcrypt.a
-%{cross_sysroot}/usr/lib/libcrypt.so
-%{cross_sysroot}/usr/lib/libdl.a
-%{cross_sysroot}/usr/lib/libdl.so
-%{cross_sysroot}/usr/lib/libg.a
-%{cross_sysroot}/usr/lib/libieee.a
-%{cross_sysroot}/usr/lib/libm.a
-%{cross_sysroot}/usr/lib/libm.so
-%{cross_sysroot}/usr/lib/libmcheck.a
-%{cross_sysroot}/usr/lib/libnsl.a
-%{cross_sysroot}/usr/lib/libnsl.so
-%{cross_sysroot}/usr/lib/libnss_compat.so
-%{cross_sysroot}/usr/lib/libnss_db.so
-%{cross_sysroot}/usr/lib/libnss_dns.so
-%{cross_sysroot}/usr/lib/libnss_files.so
-%{cross_sysroot}/usr/lib/libnss_hesiod.so
-%{cross_sysroot}/usr/lib/libnss_nis.so
-%{cross_sysroot}/usr/lib/libnss_nisplus.so
-%{cross_sysroot}/usr/lib/libpthread.a
-%{cross_sysroot}/usr/lib/libpthread.so
-%{cross_sysroot}/usr/lib/libpthread_nonshared.a
-%{cross_sysroot}/usr/lib/libresolv.a
-%{cross_sysroot}/usr/lib/libresolv.so
-%{cross_sysroot}/usr/lib/librpcsvc.a
-%{cross_sysroot}/usr/lib/librt.a
-%{cross_sysroot}/usr/lib/librt.so
-%{cross_sysroot}/usr/lib/libthread_db.so
-%{cross_sysroot}/usr/lib/libutil.a
-%{cross_sysroot}/usr/lib/libutil.so
+%{cross_sysroot}/usr/include/gnu/lib-names%{gnu_hdr_suffix}.h
+%{cross_sysroot}/usr/include/gnu/stubs%{gnu_hdr_suffix}.h
+%{cross_sysroot}/usr/%{lib_dir_name}/?crt1.o
+%{cross_sysroot}/usr/%{lib_dir_name}/audit
+%{cross_sysroot}/usr/%{lib_dir_name}/gconv
+%{cross_sysroot}/usr/%{lib_dir_name}/libBrokenLocale.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libBrokenLocale.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libanl.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libanl.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libc.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libc_nonshared.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libcidn.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libcrypt.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libcrypt.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libdl.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libdl.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libg.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libieee.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libm.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libm.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libmcheck.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libnsl.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libnsl.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libnss_compat.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libnss_db.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libnss_dns.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libnss_files.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libnss_hesiod.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libnss_nis.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libnss_nisplus.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libpthread.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libpthread.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libpthread_nonshared.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libresolv.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libresolv.so
+%{cross_sysroot}/usr/%{lib_dir_name}/librpcsvc.a
+%{cross_sysroot}/usr/%{lib_dir_name}/librt.a
+%{cross_sysroot}/usr/%{lib_dir_name}/librt.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libthread_db.so
+%{cross_sysroot}/usr/%{lib_dir_name}/libutil.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libutil.so
 %dir %{cross_sysroot}/usr/libexec/getconf
+%if %{cross_arch} == "arm"
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V6_ILP32_OFF32
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V6_ILP32_OFFBIG
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V7_ILP32_OFF32
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V7_ILP32_OFFBIG
 %{cross_sysroot}/usr/libexec/getconf/XBS5_ILP32_OFF32
 %{cross_sysroot}/usr/libexec/getconf/XBS5_ILP32_OFFBIG
+%else
+%if %{cross_arch} == "arm64"
+%{cross_sysroot}/usr/libexec/getconf/POSIX_V6_LP64_OFF64
+%{cross_sysroot}/usr/libexec/getconf/POSIX_V7_LP64_OFF64
+%{cross_sysroot}/usr/libexec/getconf/XBS5_LP64_OFF64
+%endif
+%endif
 %{cross_sysroot}/usr/sbin/iconvconfig
 %{cross_sysroot}/usr/sbin/nscd
 %{cross_sysroot}/usr/sbin/zdump
@@ -520,6 +567,10 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Dec 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.22-5
+- Sync configure options with Fedora
+- Support arm-linux-gnueabihf and aarch64-linux-gnu
+
 * Sat Dec 05 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.22-4
 - Fix the build with dnf on Fedora 24
 

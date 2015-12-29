@@ -4,7 +4,7 @@
 
 Name:       %{cross_triplet}-binutils
 Version:    2.25.1
-Release:    4%{?dist}
+Release:    5%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 Group:      Development/Tools
@@ -29,6 +29,7 @@ Requires:   %{cross_triplet}-filesystem
     --build=%{_target_platform} \
     --target=%{cross_triplet} \
     --program-prefix=%{cross_triplet}- \
+    --enable-64-bit-bfd \
     --enable-ld=default \
     --enable-gold=yes \
     --enable-multilib \
@@ -83,6 +84,10 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Mon Dec 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.25.1-5
+- Sync configure options with Fedora
+- Support arm-linux-gnueabihf and aarch64-linux-gnu
+
 * Tue Nov 24 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.25.1-4
 - Require the filesystem sub-package
 
