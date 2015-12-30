@@ -13,7 +13,7 @@
 %endif
 
 Name:       %{cross_triplet}-filesystem
-Version:    2
+Version:    3
 Release:    1%{?dist}
 Summary:    Cross compilation toolchain filesystem layout (%{cross_triplet})
 
@@ -46,6 +46,9 @@ mkdir %{buildroot}%{cross_sysroot}/sbin
 mkdir %{buildroot}%{cross_sysroot}/usr
 mkdir %{buildroot}%{cross_sysroot}/usr/bin
 mkdir %{buildroot}%{cross_sysroot}/usr/include
+%if %{cross_arch} == "arm64"
+mkdir %{buildroot}%{cross_sysroot}/usr/lib
+%endif
 mkdir %{buildroot}%{cross_sysroot}/usr/%{lib_dir_name}
 mkdir %{buildroot}%{cross_sysroot}/usr/libexec
 mkdir %{buildroot}%{cross_sysroot}/usr/sbin
@@ -68,6 +71,9 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 %dir %{cross_sysroot}/usr
 %dir %{cross_sysroot}/usr/bin
 %dir %{cross_sysroot}/usr/include
+%if %{cross_arch} == "arm64"
+%dir %{cross_sysroot}/usr/lib
+%endif
 %dir %{cross_sysroot}/usr/%{lib_dir_name}
 %dir %{cross_sysroot}/usr/libexec
 %dir %{cross_sysroot}/usr/sbin
@@ -78,6 +84,9 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 
 
 %changelog
+* Tue Dec 29 2015 Ting-Wei Lan <lantw44@gmail.com> - 3-1
+- ld needs a empty /usr/lib directory
+
 * Tue Dec 29 2015 Ting-Wei Lan <lantw44@gmail.com> - 2-1
 - Support aarch64-linux-gnu
 - /usr/etc is not needed
