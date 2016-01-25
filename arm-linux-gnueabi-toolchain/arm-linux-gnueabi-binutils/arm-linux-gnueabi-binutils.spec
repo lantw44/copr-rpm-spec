@@ -3,8 +3,8 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-binutils
-Version:    2.25.1
-Release:    5%{?dist}
+Version:    2.26
+Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 Group:      Development/Tools
@@ -79,11 +79,15 @@ rm -rf %{buildroot}%{_infodir}
 %{_prefix}/%{cross_triplet}/bin/objcopy
 %{_prefix}/%{cross_triplet}/bin/objdump
 %{_prefix}/%{cross_triplet}/bin/ranlib
+%{_prefix}/%{cross_triplet}/bin/readelf
 %{_prefix}/%{cross_triplet}/bin/strip
 %{_prefix}/%{cross_triplet}/lib/ldscripts
 
 
 %changelog
+* Mon Jan 25 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.26-1
+- Update to 2.26
+
 * Mon Dec 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.25.1-5
 - Sync configure options with Fedora
 - Support arm-linux-gnueabihf and aarch64-linux-gnu
