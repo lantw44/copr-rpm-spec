@@ -8,7 +8,7 @@
 
 Name:       chromium
 Version:    48.0.2564.82
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -25,6 +25,10 @@ Source2:    chromium-browser.desktop
 # https://code.google.com/p/chromium/issues/detail?id=480415
 # https://projects.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=37c3842
 Patch0:     chromium-fix-print-preview-on-en_GB-locale.patch
+
+# Add another patch from Arch Linux to fix icu 56 build issue
+# https://projects.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=d820900
+Patch1:     chromium-use-non-versioned-icu-namespace.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -80,8 +84,7 @@ Requires:         hicolor-icon-theme
 
 
 %prep
-%setup -q
-%patch0 -p1
+%autosetup -p1
 touch chrome/test/data/webui/i18n_process_css_test.html
 # https://code.google.com/p/chromium/issues/detail?id=541273
 # https://projects.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=37c3842
@@ -248,6 +251,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Jan 23 2016 - Ting-Wei Lan <lantw44@gmail.com> - 48.0.2564.82-2
+- Fix build issue for icu 56
+- Use autosetup macro
+
 * Thu Jan 21 2016 - Ting-Wei Lan <lantw44@gmail.com> - 48.0.2564.82-1
 - Update to 48.0.2564.82
 
