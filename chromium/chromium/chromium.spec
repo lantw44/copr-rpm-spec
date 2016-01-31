@@ -7,8 +7,8 @@
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
 Name:       chromium
-Version:    48.0.2564.82
-Release:    2%{?dist}
+Version:    48.0.2564.97
+Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -251,6 +251,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Jan 28 2016 - Ting-Wei Lan <lantw44@gmail.com> - 48.0.2564.97-1
+- Update to 48.0.2564.97
+
 * Sat Jan 23 2016 - Ting-Wei Lan <lantw44@gmail.com> - 48.0.2564.82-2
 - Fix build issue for icu 56
 - Use autosetup macro
