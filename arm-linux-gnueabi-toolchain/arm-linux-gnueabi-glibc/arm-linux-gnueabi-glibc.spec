@@ -42,8 +42,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.22
-Release:    5%{?dist}
+Version:    2.23
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -340,7 +340,6 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/sys/ioctl.h
 %{cross_sysroot}/usr/include/sys/ipc.h
 %{cross_sysroot}/usr/include/sys/kd.h
-%{cross_sysroot}/usr/include/sys/kdaemon.h
 %{cross_sysroot}/usr/include/sys/klog.h
 %{cross_sysroot}/usr/include/sys/mman.h
 %{cross_sysroot}/usr/include/sys/mount.h
@@ -567,6 +566,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Tue Mar 01 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.23-1
+- Update to 2.23
+
 * Mon Dec 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.22-5
 - Sync configure options with Fedora
 - Support arm-linux-gnueabihf and aarch64-linux-gnu
