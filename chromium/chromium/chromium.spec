@@ -8,7 +8,7 @@
 
 Name:       chromium
 Version:    48.0.2564.116
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -29,6 +29,10 @@ Patch0:     chromium-fix-print-preview-on-en_GB-locale.patch
 # Add another patch from Arch Linux to fix icu 56 build issue
 # https://projects.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=d820900
 Patch1:     chromium-use-non-versioned-icu-namespace.patch
+
+# Add a patch to fix GCC 6 build issue
+# https://bugzilla.redhat.com/show_bug.cgi?id=1270322#c24
+Patch2:     chromium-gcc6.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -251,6 +255,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Mar 03 2016 - Ting-Wei Lan <lantw44@gmail.com> - 48.0.2564.116-2
+- Fix GCC 6 build issue on Fedora 24 and later
+
 * Fri Feb 19 2016 - Ting-Wei Lan <lantw44@gmail.com> - 48.0.2564.116-1
 - Update to 48.0.2564.116
 
