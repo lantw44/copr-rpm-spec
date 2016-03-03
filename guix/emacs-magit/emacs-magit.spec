@@ -12,20 +12,20 @@
 %endif
 
 Name:           emacs-%{pkg}
-Version:        2.3.1
+Version:        2.5.0
 Release:        1%{?dist}
 Summary:        Emacs interface to the most common Git operations
 
 Group:          Applications/Editors
-License:        GPLv3+ and GFDL+
+License:        GPLv3+
 URL:            http://magit.vc
 
 Source0:        https://github.com/magit/magit/releases/download/%{version}/magit-%{version}.tar.gz
 
 BuildArch:      noarch
-BuildRequires:  emacs, emacs-dash, git-core, texinfo
+BuildRequires:  emacs, emacs-dash, emacs-with-editor, git-core, texinfo
 Requires:       emacs(bin) >= %{emacs_version}
-Requires:       emacs-dash
+Requires:       emacs-dash, emacs-with-editor
 
 Obsoletes:      emacs-%{pkg}-el < 2.3.1-1
 Provides:       emacs-%{pkg}-el < 2.3.1-1
@@ -41,12 +41,12 @@ common operations convenient.
 %build
 make \
     MAKEINFO='makeinfo --no-split' \
-    LOAD_PATH='-L %{emacs_lispdir}/dash -L %{_builddir}/magit-%{version}/lisp -L .'
+    LOAD_PATH='-L %{emacs_lispdir}/dash -L %{emacs_lispdir}/with-editor -L %{_builddir}/magit-%{version}/lisp -L .'
 
 %install
 %make_install \
     PREFIX=%{_prefix} docdir=%{_pkgdocdir} \
-    LOAD_PATH='-L %{emacs_lispdir}/dash -L %{_builddir}/magit-%{version}/lisp -L .'
+    LOAD_PATH='-L %{emacs_lispdir}/dash -L %{emacs_lispdir}/with-editor -L %{_builddir}/magit-%{version}/lisp -L .'
 
 # clean up after magit's installer's assumptions
 mkdir -p $RPM_BUILD_ROOT%{emacs_startdir}
@@ -54,20 +54,17 @@ mv $RPM_BUILD_ROOT%{emacs_lispdir}/magit/magit-autoloads.el \
     $RPM_BUILD_ROOT%{emacs_startdir}/emacs-magit-mode.el
 gzip -9 $RPM_BUILD_ROOT%{_infodir}/magit.info
 gzip -9 $RPM_BUILD_ROOT%{_infodir}/magit-popup.info
-gzip -9 $RPM_BUILD_ROOT%{_infodir}/with-editor.info
 
 
 %post
 /sbin/install-info /usr/share/info/magit.info.gz /usr/share/info/dir
 /sbin/install-info /usr/share/info/magit-popup.info.gz /usr/share/info/dir
-/sbin/install-info /usr/share/info/with-editor.info.gz /usr/share/info/dir
 
 
 %preun
 if [ "$1" = 0 ]; then
     /sbin/install-info --delete /usr/share/info/magit.info.gz /usr/share/info/dir
     /sbin/install-info --delete /usr/share/info/magit-popup.info.gz /usr/share/info/dir
-    /sbin/install-info --delete /usr/share/info/with-editor.info.gz /usr/share/info/dir
 fi
 
 
@@ -79,12 +76,14 @@ fi
 %{emacs_startdir}/emacs-magit-mode.el
 %{_infodir}/magit.info.gz
 %{_infodir}/magit-popup.info.gz
-%{_infodir}/with-editor.info.gz
 %dir %{emacs_lispdir}/%{pkg}
 %{_pkgdocdir}/AUTHORS.md
 
 
 %changelog
+* Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.5.0-1
+- Update to upstream version 2.5.0
+
 * Sat Nov 21 2015 Ting-Wei Lan <lantw44@gmail.com> - 2.3.1-1
 - Update to upstream version 2.3.1
 
