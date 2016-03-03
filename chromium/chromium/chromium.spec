@@ -7,8 +7,8 @@
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
 Name:       chromium
-Version:    48.0.2564.116
-Release:    2%{?dist}
+Version:    49.0.2623.75
+Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -20,19 +20,6 @@ Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/c
 # https://repos.fedorapeople.org/repos/spot/chromium/
 Source1:    chromium-browser.sh
 Source2:    chromium-browser.desktop
-
-# Add a patch from Arch Linux
-# https://code.google.com/p/chromium/issues/detail?id=480415
-# https://projects.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=37c3842
-Patch0:     chromium-fix-print-preview-on-en_GB-locale.patch
-
-# Add another patch from Arch Linux to fix icu 56 build issue
-# https://projects.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=d820900
-Patch1:     chromium-use-non-versioned-icu-namespace.patch
-
-# Add a patch to fix GCC 6 build issue
-# https://bugzilla.redhat.com/show_bug.cgi?id=1270322#c24
-Patch2:     chromium-gcc6.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -49,6 +36,7 @@ BuildRequires: pkgconfig(gtk+-2.0), pkgconfig(libexif), pkgconfig(nss)
 BuildRequires: pkgconfig(xtst), pkgconfig(xscrnsaver)
 BuildRequires: pkgconfig(dbus-1), pkgconfig(libudev)
 BuildRequires: pkgconfig(gnome-keyring-1)
+BuildRequires: pkgconfig(libffi)
 # use_system_*
 BuildRequires: expat-devel
 BuildRequires: flac-devel
@@ -143,6 +131,7 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Duse_system_yasm=1 \
     -Duse_system_zlib=1 \
     -Duse_gconf=0 \
+    -Duse_sysroot=0 \
     -Dlinux_use_bundled_gold=0 \
     -Dlinux_use_bundled_binutils=0 \
     -Dlinux_link_gsettings=1 \
@@ -255,6 +244,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Mar 03 2016 - Ting-Wei Lan <lantw44@gmail.com> - 49.0.2623.75-1
+- Update to 49.0.2623.75
+
 * Thu Mar 03 2016 - Ting-Wei Lan <lantw44@gmail.com> - 48.0.2564.116-2
 - Fix GCC 6 build issue on Fedora 24 and later
 
