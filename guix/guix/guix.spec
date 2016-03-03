@@ -1,6 +1,6 @@
 Name:           guix
 Version:        0.9.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -237,6 +237,9 @@ fi
 
 
 %changelog
+* Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.9.0-3
+- Rebuilt for Fedora 24 and 25
+
 * Tue Nov 24 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.0-2
 - Own /usr/share/info/images because no other packages use it
 - Use _libdir macro instead of hard-coding /usr/lib64

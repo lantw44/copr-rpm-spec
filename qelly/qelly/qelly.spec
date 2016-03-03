@@ -1,6 +1,6 @@
 Name:       qelly
 Version:    1.0
-Release:    0.5.beta%{?dist}
+Release:    0.6.beta%{?dist}
 Summary:    Qelly is a Qt port of Nally
 
 %global     real_name     Qelly
@@ -41,6 +41,9 @@ install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
 %doc AUTHORS CHANGES README.md
 
 %changelog
+* Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.6.beta
+- Rebuilt for Fedora 24 and 25
+
 * Mon Nov 23 2015 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.5.beta
 - Disable RPATH
 - Use qmake macro

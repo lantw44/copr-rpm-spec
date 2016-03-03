@@ -14,7 +14,7 @@
 
 Name:       %{cross_triplet}-filesystem
 Version:    3
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    Cross compilation toolchain filesystem layout (%{cross_triplet})
 
 Group:      Development/System
@@ -84,6 +84,9 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 
 
 %changelog
+* Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 3-2
+- Rebuilt for Fedora 24 and 25
+
 * Tue Dec 29 2015 Ting-Wei Lan <lantw44@gmail.com> - 3-1
 - ld needs a empty /usr/lib directory
 

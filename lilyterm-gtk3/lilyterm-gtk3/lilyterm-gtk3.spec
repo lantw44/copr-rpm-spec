@@ -3,7 +3,7 @@
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.5.20150208git%{shortcommit}%{?dist}
+Release:        0.6.20150208git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 Group:          User Interface/X
@@ -87,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.6.20150208gitf600c08
+- Rebuilt for Fedora 24 and 25
+
 * Sun Nov 01 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.5.20150208gitf600c08
 - Disable binary striping when running make
 - Disable installation of common documentation when running make install

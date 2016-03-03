@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    5.3.0
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
@@ -344,6 +344,9 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 5.3.0-3
+- Rebuilt for Fedora 24 and 25
+
 * Mon Dec 28 2015 Ting-Wei Lan <lantw44@gmail.com> - 5.3.0-2
 - Sync configure options with Fedora
 - Support arm-linux-gnueabihf and aarch64-linux-gnu

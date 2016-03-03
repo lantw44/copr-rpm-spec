@@ -1,6 +1,6 @@
 Name:           guile-json
 Version:        0.4.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        JSON module for Guile
 
 License:        LGPLv3+
@@ -51,5 +51,8 @@ make %{?_smp_mflags}
 
 
 %changelog
+* Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.4.0-2
+- Rebuilt for Fedora 24 and 25
+
 * Sat Nov 21 2015 Ting-Wei Lan <lantw44@gmail.com> - 0.4.0-1
 - Initial packaging

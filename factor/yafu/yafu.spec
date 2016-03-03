@@ -1,6 +1,6 @@
 Name:       yafu
 Version:    1.34
-Release:    4%{?dist}
+Release:    5%{?dist}
 Summary:    Automated integer factorization
 
 Group:      Applications/Engineering
@@ -46,6 +46,9 @@ install -m 755 yafu %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 1.34-5
+- Rebuilt for Fedora 24 and 25
+
 * Fri Nov 20 2015 Ting-Wei Lan <lantw44@gmail.com> - 1.34-4
 - Rebuilt for hardening flags
 
