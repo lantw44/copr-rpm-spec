@@ -3,8 +3,8 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    4.4.3
-Release:    2%{?dist}
+Version:    4.4.4
+Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
 %define debug_package   %{nil}
@@ -117,6 +117,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Fri Mar 04 2016 Ting-Wei Lan <lantw44@gmail.com> - 4.4.4-1
+- Update to 4.4.4
+
 * Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 4.4.3-2
 - Rebuilt for Fedora 24 and 25
 
