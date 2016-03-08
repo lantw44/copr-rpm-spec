@@ -8,7 +8,7 @@
 
 Name:       chromium
 Version:    49.0.2623.75
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -27,6 +27,12 @@ ExclusiveArch: x86_64
 # Make sure we don't encounter GCC 5.1 bug
 %if 0%{?fedora} >= 22
 BuildRequires: gcc >= 5.1.1-2
+%endif
+# Chromium crashes when compiling with GCC 6
+# https://github.com/RussianFedora/chromium/issues/4
+# http://koji.russianfedora.pro/koji/buildinfo?buildID=2754
+%if 0%{?fedora} >= 24
+BuildRequires: clang
 %endif
 # Basic tools and libraries
 BuildRequires: ninja-build, bison, gperf
@@ -109,6 +115,10 @@ sed -i "/'target_name': 'libvpx'/s/libvpx/&_new/" build/linux/unbundle/libvpx.gy
 find third_party/icu -type f '!' -regex '.*\.\(gyp\|gypi\|isolate\)' -delete
 %endif
 
+%if 0%{?fedora} >= 24
+export CC=clang CXX=clang++
+%endif
+
 GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Duse_system_expat=1 \
     -Duse_system_flac=1 \
@@ -147,7 +157,12 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Dicu_use_data_file_flag=1 \
 %endif
     -Dlibspeechd_h_prefix=speech-dispatcher/ \
+%if 0%{?fedora} >= 24
+    -Dclang=1 \
+    -Dclang_use_chrome_plugins=0 \
+%else
     -Dclang=0 \
+%endif
     -Dwerror= \
     -Ddisable_fatal_linker_warnings=1 \
     -Denable_hotwording=0 \
@@ -244,6 +259,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Mar 08 2016 - Ting-Wei Lan <lantw44@gmail.com> - 49.0.2623.75-2
+- Workaround GCC 6 crashes by compiling with clang on Fedora 24 or later
+
 * Thu Mar 03 2016 - Ting-Wei Lan <lantw44@gmail.com> - 49.0.2623.75-1
 - Update to 49.0.2623.75
 
