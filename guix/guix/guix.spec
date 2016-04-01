@@ -1,6 +1,6 @@
 Name:           guix
-Version:        0.9.0
-Release:        3%{?dist}
+Version:        0.10.0
+Release:        1%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -13,12 +13,13 @@ Source0:        ftp://alpha.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 
 BuildRequires:  pkgconfig(guile-2.0)
 BuildRequires:  pkgconfig(sqlite3)
-BuildRequires:  bzip2-devel, libgcrypt-devel, gettext
+BuildRequires:  bzip2-devel, libgcrypt-devel, gettext, help2man, graphviz
 BuildRequires:  emacs, emacs-geiser, emacs-magit, bash-completion
 BuildRequires:  guile-json, gnutls-guile
 BuildRequires:  systemd
 
 Requires:       gzip, bzip2, xz
+Requires:       %{_bindir}/dot
 Requires:       %{_libdir}/libgcrypt.so
 Requires:       emacs-filesystem >= %{_emacs_version}
 Requires(post): /usr/sbin/useradd
@@ -78,7 +79,15 @@ make %{?_smp_mflags} check
 
 %install
 make install DESTDIR=%{buildroot} systemdservicedir=%{_unitdir}
+# drop useless upstart service file
+rm %{buildroot}%{_libdir}/upstart/system/guix-daemon.conf
+rmdir %{buildroot}%{_libdir}/upstart/system
+rmdir %{buildroot}%{_libdir}/upstart
+# move the autoload script
+mkdir -p %{buildroot}%{_emacs_sitestartdir}
 %{_emacs_bytecompile} %{buildroot}%{_emacs_sitelispdir}/guix/guix*.el
+mv %{buildroot}%{_emacs_sitelispdir}/guix/guix-autoloads.el \
+    %{buildroot}%{_emacs_sitestartdir}/guix.el
 %find_lang guix
 %find_lang guix-packages
 
@@ -110,7 +119,7 @@ fi
 
 %files -f guix.lang -f guix-packages.lang
 %license COPYING
-%doc AUTHORS ChangeLog NEWS README ROADMAP THANKS TODO
+%doc AUTHORS ChangeLog CODE-OF-CONDUCT NEWS README ROADMAP THANKS TODO
 %{_bindir}/guix
 %{_bindir}/guix-daemon
 %{_sbindir}/guix-register
@@ -175,6 +184,7 @@ fi
 %dir %{_datadir}/guile/site/2.0/gnu/system/examples
 %{_datadir}/guile/site/2.0/gnu/system/examples/bare-bones.tmpl
 %{_datadir}/guile/site/2.0/gnu/system/examples/desktop.tmpl
+%{_datadir}/guile/site/2.0/gnu/system/examples/lightweight-desktop.tmpl
 %{_datadir}/guile/site/2.0/guix.scm
 %{_datadir}/guile/site/2.0/guix.go
 %dir %{_datadir}/guile/site/2.0/guix
@@ -204,11 +214,12 @@ fi
 %{_infodir}/%{name}.info*
 %dir %{_infodir}/images
 %{_infodir}/images/bootstrap-graph.png.gz
+%{_infodir}/images/bootstrap-packages.png.gz
 %{_infodir}/images/coreutils-bag-graph.png.gz
 %{_infodir}/images/coreutils-graph.png.gz
 %{_infodir}/images/coreutils-size-map.png.gz
-%{_infodir}/images/dmd-graph.png.gz
 %{_infodir}/images/service-graph.png.gz
+%{_infodir}/images/shepherd-graph.png.gz
 %exclude %{_infodir}/dir
 %{_mandir}/man1/guix-archive.1*
 %{_mandir}/man1/guix-build.1*
@@ -232,11 +243,17 @@ fi
 %dir %{_emacs_sitelispdir}/guix
 %{_emacs_sitelispdir}/guix/guix*.elc
 %{_emacs_sitelispdir}/guix/guix*.el
+%{_emacs_sitestartdir}/guix.el
 %{_unitdir}/guix-daemon.service
 
 
 
 %changelog
+* Fri Apr 01 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.10.0-1
+- Update to 0.10.0
+- Add help2man to BuildRequires
+- Add dot to both BuildRequires and Requires
+
 * Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.9.0-3
 - Rebuilt for Fedora 24 and 25
 
