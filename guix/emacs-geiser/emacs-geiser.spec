@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.8.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Geiser is an Emacs environment to hack and have fun in Scheme
 
 Group:          Applications/Editors
@@ -37,6 +37,8 @@ make %{?_smp_mflags}
 
 %install
 make install DESTDIR=%{buildroot}
+mkdir -p %{buildroot}%{_datadir}/guile/site
+ln -s %{_datadir}/geiser/guile/geiser %{buildroot}%{_datadir}/guile/site/geiser
 
 
 %post
@@ -55,6 +57,7 @@ fi
 %{_bindir}/geiser-racket
 %{_infodir}/geiser.info.gz
 %{_datadir}/geiser/
+%{_datadir}/guile/site/geiser
 %dir %{_emacs_sitelispdir}/geiser
 %{_emacs_sitelispdir}/geiser/geiser.el
 %{_emacs_sitelispdir}/geiser/geiser.elc
@@ -65,6 +68,9 @@ fi
 
 
 %changelog
+* Fri Apr 01 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.8.1-3
+- Add geiser to the load path of guile
+
 * Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.8.1-2
 - Rebuilt for Fedora 24 and 25
 
