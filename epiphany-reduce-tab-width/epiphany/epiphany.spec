@@ -2,7 +2,7 @@
 
 Name: epiphany
 Epoch: 1
-Version: 3.18.5
+Version: 3.18.6
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
@@ -116,6 +116,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_mandir}/man*/*
 
 %changelog
+* Fri Apr 08 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.18.6-1
+- Update to 3.18.6
+
 * Thu Mar 17 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.18.5-1
 - Update to 3.18.5
 
