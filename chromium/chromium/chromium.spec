@@ -6,8 +6,30 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
+# https://bugs.chromium.org/p/chromium/issues/detail?id=584920
+%if 0
+%bcond_without system_icu
+%else
+%bcond_with system_icu
+%endif
+
+%if 0%{?fedora} >= 24
+%bcond_without system_libvpx
+%else
+%bcond_with system_libvpx
+%endif
+
+# Chromium crashes when compiling with GCC 6
+# https://github.com/RussianFedora/chromium/issues/4
+# http://koji.russianfedora.pro/koji/buildinfo?buildID=2754
+%if 0%{?fedora} >= 24
+%bcond_without clang
+%else
+%bcond_with clang
+%endif
+
 Name:       chromium
-Version:    49.0.2623.112
+Version:    50.0.2661.75
 Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -28,15 +50,12 @@ ExclusiveArch: x86_64
 %if 0%{?fedora} >= 22
 BuildRequires: gcc >= 5.1.1-2
 %endif
-# Chromium crashes when compiling with GCC 6
-# https://github.com/RussianFedora/chromium/issues/4
-# http://koji.russianfedora.pro/koji/buildinfo?buildID=2754
-%if 0%{?fedora} >= 24
+%if %{with clang}
 BuildRequires: clang
 %endif
 # Basic tools and libraries
 BuildRequires: ninja-build, bison, gperf
-BuildRequires: libgcc(x86-32), glibc(x86-32)
+BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
 BuildRequires: libcap-devel, cups-devel, minizip-devel, alsa-lib-devel
 BuildRequires: pkgconfig(gtk+-2.0), pkgconfig(libexif), pkgconfig(nss)
 BuildRequires: pkgconfig(xtst), pkgconfig(xscrnsaver)
@@ -48,7 +67,7 @@ BuildRequires: expat-devel
 BuildRequires: flac-devel
 BuildRequires: harfbuzz-devel
 # Chromium requires icu 55
-%if 0%{?fedora} >= 24
+%if %{with system_icu}
 BuildRequires: libicu-devel
 %endif
 BuildRequires: jsoncpp-devel
@@ -56,7 +75,9 @@ BuildRequires: libevent-devel
 BuildRequires: libjpeg-turbo-devel
 BuildRequires: libpng-devel
 # Chromium requires libvpx 1.5.0 and some non-default options
-# BuildRequires: libvpx-devel
+%if %{with system_libvpx}
+BuildRequires: libvpx-devel
+%endif
 BuildRequires: libwebp-devel
 BuildRequires: pkgconfig(libxslt), pkgconfig(libxml-2.0)
 BuildRequires: openssl-devel
@@ -93,7 +114,7 @@ sed -i "/'target_name': 'libvpx'/s/libvpx/&_new/" build/linux/unbundle/libvpx.gy
     -Duse_system_expat=1 \
     -Duse_system_flac=1 \
     -Duse_system_harfbuzz=1 \
-%if 0%{?fedora} >= 24
+%if %{with system_icu}
     -Duse_system_icu=1 \
 %else
     -Duse_system_icu=0 \
@@ -102,7 +123,11 @@ sed -i "/'target_name': 'libvpx'/s/libvpx/&_new/" build/linux/unbundle/libvpx.gy
     -Duse_system_libevent=1 \
     -Duse_system_libjpeg=1 \
     -Duse_system_libpng=1 \
+%if %{with system_libvpx}
+    -Duse_system_libvpx=1 \
+%else
     -Duse_system_libvpx=0 \
+%endif
     -Duse_system_libwebp=1 \
     -Duse_system_libxml=1 \
     -Duse_system_opus=1 \
@@ -111,11 +136,11 @@ sed -i "/'target_name': 'libvpx'/s/libvpx/&_new/" build/linux/unbundle/libvpx.gy
     -Duse_system_yasm=1 \
     -Duse_system_zlib=1
 
-%if 0%{?fedora} >= 24
+%if %{with system_icu}
 find third_party/icu -type f '!' -regex '.*\.\(gyp\|gypi\|isolate\)' -delete
 %endif
 
-%if 0%{?fedora} >= 24
+%if %{with clang}
 export CC=clang CXX=clang++
 %endif
 
@@ -123,7 +148,7 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Duse_system_expat=1 \
     -Duse_system_flac=1 \
     -Duse_system_harfbuzz=1 \
-%if 0%{?fedora} >= 24
+%if %{with system_icu}
     -Duse_system_icu=1 \
 %else
     -Duse_system_icu=0 \
@@ -132,7 +157,11 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Duse_system_libevent=1 \
     -Duse_system_libjpeg=1 \
     -Duse_system_libpng=1 \
+%if %{with system_libvpx}
+    -Duse_system_libvpx=1 \
+%else
     -Duse_system_libvpx=0 \
+%endif
     -Duse_system_libwebp=1 \
     -Duse_system_libxml=1 \
     -Duse_system_opus=1 \
@@ -151,13 +180,13 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
     -Dlinux_link_libpci=1 \
     -Dlinux_link_libspeechd=1 \
     -Dlinux_link_pulseaudio=1 \
-%if 0%{?fedora} >= 24
+%if %{with system_icu}
     -Dicu_use_data_file_flag=0 \
 %else
     -Dicu_use_data_file_flag=1 \
 %endif
     -Dlibspeechd_h_prefix=speech-dispatcher/ \
-%if 0%{?fedora} >= 24
+%if %{with clang}
     -Dclang=1 \
     -Dclang_use_chrome_plugins=0 \
 %else
@@ -193,7 +222,7 @@ install -m 644 out/Release/chrome.1 %{buildroot}%{_mandir}/man1/chromium-browser
 install -m 755 out/Release/chrome %{buildroot}%{chromiumdir}/chromium-browser
 install -m 4755 out/Release/chrome_sandbox %{buildroot}%{chromiumdir}/chrome-sandbox
 install -m 755 out/Release/chromedriver %{buildroot}%{chromiumdir}/
-%if 0%{?fedora} < 24
+%if !%{with system_libicu}
 install -m 644 out/Release/icudtl.dat %{buildroot}%{chromiumdir}/
 %endif
 install -m 755 out/Release/nacl_helper %{buildroot}%{chromiumdir}/
@@ -203,6 +232,11 @@ install -m 644 out/Release/natives_blob.bin %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/snapshot_blob.bin %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/*.pak %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/locales/*.pak %{buildroot}%{chromiumdir}/locales/
+for i in 16 32; do
+    mkdir -p %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps
+    install -m 644 chrome/app/theme/default_100_percent/chromium/product_logo_$i.png \
+        %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/chromium-browser.png
+done
 for i in 22 24 32 48 64 128 256; do
     if [ ${i} = 32 ]; then ext=xpm; else ext=png; fi
     if [ ${i} = 32 ]; then dir=linux/; else dir=; fi
@@ -230,8 +264,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %files
 %{_bindir}/chromium-browser
 %{_datadir}/applications/chromium-browser.desktop
+%{_datadir}/icons/hicolor/16x16/apps/chromium-browser.png
 %{_datadir}/icons/hicolor/22x22/apps/chromium-browser.png
 %{_datadir}/icons/hicolor/24x24/apps/chromium-browser.png
+%{_datadir}/icons/hicolor/32x32/apps/chromium-browser.png
 %{_datadir}/icons/hicolor/32x32/apps/chromium-browser.xpm
 %{_datadir}/icons/hicolor/48x48/apps/chromium-browser.png
 %{_datadir}/icons/hicolor/64x64/apps/chromium-browser.png
@@ -242,7 +278,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/chromium-browser
 %{chromiumdir}/chrome-sandbox
 %{chromiumdir}/chromedriver
-%if 0%{?fedora} < 24
+%if !%{with system_libicu}
 %{chromiumdir}/icudtl.dat
 %endif
 %{chromiumdir}/nacl_helper
@@ -259,6 +295,13 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Apr 14 2016 - Ting-Wei Lan <lantw44@gmail.com> - 50.0.2661.75-1
+- Update to 50.0.2661.75
+- Use bcond_with and bcond_without macros
+- Install png-format logos for size 16 and 32
+- Unbundle libvpx on Fedora 24 or later
+- Temporarily disable the use of system icu because it needs a private header
+
 * Sat Apr 09 2016 - Ting-Wei Lan <lantw44@gmail.com> - 49.0.2623.112-1
 - Update to 49.0.2623.112
 
