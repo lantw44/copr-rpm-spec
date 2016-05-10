@@ -43,13 +43,14 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.23
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
 URL:        https://www.gnu.org/software/libc
 Source0:    https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
+Patch0:     glibc-suppress-gcc-6-warning.patch
 
 BuildRequires: %{cross_triplet}-filesystem
 BuildRequires: %{cross_triplet}-gcc-stage1
@@ -66,7 +67,7 @@ BuildRequires: %{cross_triplet}-gcc-stage2
 
 
 %prep
-%setup -qn glibc-%{version}
+%autosetup -p1 -n glibc-%{version}
 
 
 %build
@@ -566,6 +567,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Sun May 08 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.23-3
+- Fix GCC 6 build issue
+
 * Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.23-2
 - Rebuilt for Fedora 24 and 25
 

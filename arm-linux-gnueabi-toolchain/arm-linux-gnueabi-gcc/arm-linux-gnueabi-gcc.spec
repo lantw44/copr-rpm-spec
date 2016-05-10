@@ -29,8 +29,8 @@
 %endif
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    5.3.0
-Release:    3%{?dist}
+Version:    6.1.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
@@ -264,9 +264,7 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/unwind.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/crtbegin*.o
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/crtend*.o
-%if %{cross_arch} == "arm64"
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/crtfastmath.o
-%endif
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/libgcc.a
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/libgcc_eh.a
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/libgcov.a
@@ -288,7 +286,6 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/sanitizer
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/finclude
 %{_prefix}/lib/gcc/%{cross_triplet}/%{version}/libcaf_single.a
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/libgfortranbegin.a
 %{_libexecdir}/gcc/%{cross_triplet}/%{version}/cc1plus
 %{_libexecdir}/gcc/%{cross_triplet}/%{version}/cc1obj
 %{_libexecdir}/gcc/%{cross_triplet}/%{version}/cc1objplus
@@ -304,7 +301,6 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{cross_sysroot}/%{lib_dir_name}/libgomp.a
 %{cross_sysroot}/%{lib_dir_name}/libgomp.so*
 %{cross_sysroot}/%{lib_dir_name}/libgomp.spec
-%{cross_sysroot}/%{lib_dir_name}/libgomp-plugin-host_nonshm.so*
 %{cross_sysroot}/%{lib_dir_name}/libitm.a
 %{cross_sysroot}/%{lib_dir_name}/libitm.so*
 %{cross_sysroot}/%{lib_dir_name}/libitm.spec
@@ -323,6 +319,14 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{cross_sysroot}/%{lib_dir_name}/libsupc++.a
 %{cross_sysroot}/%{lib_dir_name}/libubsan.a
 %{cross_sysroot}/%{lib_dir_name}/libubsan.so*
+%{cross_sysroot}/%{lib_dir_name}/libvtv.a
+%{cross_sysroot}/%{lib_dir_name}/libvtv.so*
+%if %{cross_arch} == "arm64"
+%{cross_sysroot}/%{lib_dir_name}/liblsan.a
+%{cross_sysroot}/%{lib_dir_name}/liblsan.so*
+%{cross_sysroot}/%{lib_dir_name}/libtsan.a
+%{cross_sysroot}/%{lib_dir_name}/libtsan.so*
+%endif
 %if %{enable_ada}
 %{_bindir}/%{cross_triplet}-gnat
 %{_bindir}/%{cross_triplet}-gnatbind
@@ -344,6 +348,10 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Sun May 08 2016 Ting-Wei Lan <lantw44@gmail.com> - 6.1.0-1
+- Update to new stable release 6.1.0
+- Drop support for Fedora 23 and older versions
+
 * Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 5.3.0-3
 - Rebuilt for Fedora 24 and 25
 
