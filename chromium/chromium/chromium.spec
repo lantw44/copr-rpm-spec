@@ -29,7 +29,7 @@
 %endif
 
 Name:       chromium
-Version:    50.0.2661.94
+Version:    50.0.2661.102
 Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -295,6 +295,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu May 12 2016 - Ting-Wei Lan <lantw44@gmail.com> - 50.0.2661.102-1
+- Update to 50.0.2661.102
+
 * Fri Apr 29 2016 - Ting-Wei Lan <lantw44@gmail.com> - 50.0.2661.94-1
 - Update to 50.0.2661.94
 
