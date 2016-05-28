@@ -1,9 +1,9 @@
-%global commit f600c0863c8e095f8669890fef0f29f6e969fa0c
+%global commit faa10ed25d291b63892ec43f38bf78f9b507678d
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.6.20150208git%{shortcommit}%{?dist}
+Release:        0.7.20160527git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 Group:          User Interface/X
@@ -87,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat May 28 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.7.20160527gitfaa10ed
+- Update to the latest git snapshot
+
 * Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.6.20150208gitf600c08
 - Rebuilt for Fedora 24 and 25
 
