@@ -29,7 +29,7 @@
 %endif
 
 Name:       chromium
-Version:    50.0.2661.102
+Version:    51.0.2704.63
 Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -42,6 +42,10 @@ Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/c
 # https://repos.fedorapeople.org/repos/spot/chromium/
 Source1:    chromium-browser.sh
 Source2:    chromium-browser.desktop
+
+# Add a patch from Arch Linux to fix libpng problem
+# https://projects.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=14bce0f
+Patch0:     chromium-PNGImageDecoder.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -105,9 +109,6 @@ Requires:         hicolor-icon-theme
 %prep
 %autosetup -p1
 touch chrome/test/data/webui/i18n_process_css_test.html
-# https://code.google.com/p/chromium/issues/detail?id=541273
-# https://projects.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=37c3842
-sed -i "/'target_name': 'libvpx'/s/libvpx/&_new/" build/linux/unbundle/libvpx.gyp
 
 %build
 ./build/linux/unbundle/replace_gyp_files.py \
@@ -295,6 +296,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu May 26 2016 - Ting-Wei Lan <lantw44@gmail.com> - 51.0.2704.63-1
+- Update to 51.0.2704.63
+
 * Thu May 12 2016 - Ting-Wei Lan <lantw44@gmail.com> - 50.0.2661.102-1
 - Update to 50.0.2661.102
 
