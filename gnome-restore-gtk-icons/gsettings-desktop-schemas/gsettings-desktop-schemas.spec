@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           gsettings-desktop-schemas
-Version:        3.18.1
+Version:        3.20.0
 Release:        1%{?dist}.1
 Summary:        A collection of GSettings schemas (Copr: lantw44/gnome-restore-gtk-icons)
 
@@ -10,7 +10,7 @@ License:        LGPLv2+
 # no homepage exists for this component
 URL:            http://bugzilla.gnome.org/enter_bug.cgi?product=gsettings-desktop-schemas
 #VCS: git:git://git.gnome.org/gsettings-desktop-schemas
-Source:         http://download.gnome.org/sources/%{name}/3.18/%{name}-%{version}.tar.xz
+Source:         http://download.gnome.org/sources/%{name}/3.20/%{name}-%{version}.tar.xz
 # revert settings related to icons and buttons
 Patch0:         %{name}-3.16-revert-icons-settings.patch
 
@@ -18,12 +18,17 @@ BuildRequires: glib2-devel >= 2.31.0
 BuildRequires: intltool
 BuildRequires: gobject-introspection-devel
 
+# Older versions need the "scroll-method" key that was removed in 3.19.3
+Conflicts: control-center < 1:3.19.3
+Conflicts: gnome-settings-daemon < 3.19.3
+Conflicts: mutter < 3.19.3
+
 Requires: glib2 >= 2.31.0
 
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.18.
+buttons and menus in GNOME 3.20.
 
 gsettings-desktop-schemas contains a collection of GSettings schemas for
 settings shared by various components of a desktop.
@@ -77,6 +82,30 @@ fi
 
 
 %changelog
+* Tue Mar 22 2016 Kalev Lember <klember@redhat.com> - 3.20.0-1
+- Update to 3.20.0
+
+* Thu Mar 17 2016 Richard Hughes <rhughes@redhat.com> - 3.19.92-1
+- Update to 3.19.92
+
+* Wed Feb 17 2016 Richard Hughes <rhughes@redhat.com> - 3.19.90-1
+- Update to 3.19.90
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.19.3-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Thu Dec 17 2015 Kalev Lember <klember@redhat.com> - 3.19.3-2
+- Conflict with mutter < 3.19.3
+
+* Tue Dec 15 2015 Kalev Lember <klember@redhat.com> - 3.19.3-1
+- Update to 3.19.3
+
+* Thu Dec 10 2015 Kalev Lember <klember@redhat.com> - 3.19.2-2
+- Revert natural scrolling for mice
+
+* Wed Nov 25 2015 Florian Müllner <fmuellner@redhat.com> - 3.19.2-1
+- Update to 3.19.2
+
 * Fri Oct 23 2015 Kalev Lember <klember@redhat.com> - 3.18.1-1
 - Update to 3.18.1
 

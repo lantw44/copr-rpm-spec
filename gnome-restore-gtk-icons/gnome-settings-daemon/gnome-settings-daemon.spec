@@ -1,24 +1,25 @@
 %global gtk3_version 3.15.3
 %global gnome_desktop_version 3.11.1
 %global libgweather_version 3.9.5
-%global gsettings_desktop_schemas_version 3.15.4
-%global geoclue_version 2.1.2
+%global gsettings_desktop_schemas_version 3.19.3
+%global geoclue_version 2.3.1
 %global geocode_glib_version 3.10.0
 
 Name:           gnome-settings-daemon
-Version:        3.18.3
-Release:        1%{?dist}.1
+Version:        3.20.1
+Release:        3%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 Group:          System Environment/Daemons
 License:        GPLv2+
 URL:            http://download.gnome.org/sources/%{name}
 #VCS: git:git://git.gnome.org/gnome-settings-daemon
-Source:         http://download.gnome.org/sources/%{name}/3.18/%{name}-%{version}.tar.xz
+Source:         http://download.gnome.org/sources/%{name}/3.20/%{name}-%{version}.tar.xz
 # disable wacom for ppc/ppc64 (used on RHEL)
 Patch0:         %{name}-3.5.4-ppc-no-wacom.patch
+Patch1:         0001-gvc-mixer-control-Really-fix-double-free-when-settin.patch
 # respect menus-have-icons and buttons-have-icons settings
-Patch1:         %{name}-3.14-respect-menus-buttons-icons.patch
+Patch2:         %{name}-3.14-respect-menus-buttons-icons.patch
 
 BuildRequires:  pkgconfig(colord) >= 1.0.2
 BuildRequires:  pkgconfig(fontconfig)
@@ -31,11 +32,12 @@ BuildRequires:  pkgconfig(gudev-1.0)
 BuildRequires:  pkgconfig(gweather-3.0) >= %{libgweather_version}
 BuildRequires:  pkgconfig(lcms2) >= 2.2
 BuildRequires:  pkgconfig(libcanberra-gtk3)
-BuildRequires:  pkgconfig(libnm-glib)
-BuildRequires:  pkgconfig(libnm-util)
+BuildRequires:  pkgconfig(libgeoclue-2.0)
+BuildRequires:  pkgconfig(libnm)
 BuildRequires:  pkgconfig(libnotify)
 BuildRequires:  pkgconfig(libpulse)
 BuildRequires:  pkgconfig(libpulse-mainloop-glib)
+BuildRequires:  pkgconfig(alsa)
 BuildRequires:  pkgconfig(librsvg-2.0)
 BuildRequires:  pkgconfig(nss)
 BuildRequires:  pkgconfig(polkit-gobject-1)
@@ -75,7 +77,7 @@ Conflicts: gnome-shell < 3.13.92
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.18.
+buttons and menus in GNOME 3.20.
 
 A daemon to share settings from GNOME to other applications. It also
 handles global keybindings, as well as a number of desktop-wide settings.
@@ -95,7 +97,11 @@ developing applications that use %{name}.
 %patch0 -p1 -b .ppc-no-wacom
 %endif
 
-%patch1 -p1 -b .menus-buttons-icons
+pushd plugins/media-keys/gvc
+%patch1 -p1 -b .crasher
+popd
+
+%patch2 -p1 -b .menus-buttons-icons
 
 autoreconf -i -f
 
@@ -239,8 +245,6 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %files devel
 %{_includedir}/gnome-settings-daemon-3.0
 %{_libdir}/pkgconfig/gnome-settings-daemon.pc
-%dir %{_datadir}/gnome-settings-daemon-3.0
-%{_datadir}/gnome-settings-daemon-3.0/input-device-example.sh
 %ifnarch s390 s390x %{?rhel:ppc ppc64}
 %{_libexecdir}/gsd-list-wacom
 %{_libexecdir}/gsd-test-wacom
@@ -264,8 +268,38 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-xsettings
 
 %changelog
-* Fri Mar 18 2016 Bastien Nocera <bnocera@redhat.com> 3.18.3-1
-- Update to 3.18.3
+* Sun Apr 17 2016 Bastien Nocera <bnocera@redhat.com> - 3.20.1-3
+- Fix crasher in newly enabled audio device selection dialogue
+
+* Sun Apr 17 2016 Bastien Nocera <bnocera@redhat.com> - 3.20.1-2
+- Require alsa to enable the audio device selection dialogue
+
+* Wed Apr 13 2016 Kalev Lember <klember@redhat.com> - 3.20.1-1
+- Update to 3.20.1
+
+* Tue Mar 22 2016 Kalev Lember <klember@redhat.com> - 3.20.0-1
+- Update to 3.20.0
+
+* Thu Mar 17 2016 Kalev Lember <klember@redhat.com> - 3.19.92-1
+- Update to 3.19.92
+
+* Fri Mar 04 2016 Kalev Lember <klember@redhat.com> - 3.19.91-1
+- Update to 3.19.91
+
+* Wed Feb 17 2016 Richard Hughes <rhughes@redhat.com> - 3.19.90-1
+- Update to 3.19.90
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.19.5-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Wed Jan 20 2016 Kalev Lember <klember@redhat.com> - 3.19.5-1
+- Update to 3.19.5
+
+* Thu Dec 17 2015 Kalev Lember <klember@redhat.com> - 3.19.4-1
+- Update to 3.19.4
+
+* Tue Dec 15 2015 Kalev Lember <klember@redhat.com> - 3.19.3-1
+- Update to 3.19.3
 
 * Tue Nov 10 2015 Kalev Lember <klember@redhat.com> - 3.18.2-1
 - Update to 3.18.2
