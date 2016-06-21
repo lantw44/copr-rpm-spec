@@ -1,26 +1,25 @@
-%global webkitgtk4_version 2.8.0
+%global gtk3_version 3.19.1
+%global webkitgtk4_version 2.11.4
 
 Name: epiphany
 Epoch: 1
-Version: 3.18.6
+Version: 3.20.3
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv2+ and CC-BY-SA
 URL: https://wiki.gnome.org/Apps/Web
-Source0: https://download.gnome.org/sources/epiphany/3.18/%{name}-%{version}.tar.xz
+Source0: https://download.gnome.org/sources/epiphany/3.20/%{name}-%{version}.tar.xz
 
 # Fedora bookmarks
 Patch0: epiphany-default-bookmarks.patch
-# https://bugzilla.gnome.org/show_bug.cgi?id=742590
-Patch1: 0001-Hide-floating-bar-on-mouseover.patch
 # Reduce the minimum tab width
-Patch2: epiphany-reduce-tab-width.patch
+Patch1: epiphany-3.20-reduce-tab-width.patch
 
 BuildRequires: desktop-file-utils
 BuildRequires: gcr-devel >= 3.5.5
 BuildRequires: glib2-devel >= 2.38.0
-BuildRequires: gtk3-devel >= 3.13.0
+BuildRequires: gtk3-devel >= %{gtk3_version}
 BuildRequires: webkitgtk4-devel >= %{webkitgtk4_version}
 BuildRequires: libxml2-devel, libxslt-devel
 BuildRequires: iso-codes-devel
@@ -61,6 +60,7 @@ application.
 %package runtime
 Summary: Epiphany runtime suitable for web applications
 Requires: gsettings-desktop-schemas
+Requires: gtk3%{?_isa} >= %{gtk3_version}
 Requires: iso-codes
 Requires: webkitgtk4%{?_isa} >= %{webkitgtk4_version}
 
@@ -116,20 +116,35 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_mandir}/man*/*
 
 %changelog
-* Fri Apr 08 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.18.6-1
-- Update to 3.18.6
+* Mon Jun 20 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.20.3-1
+- Update to 3.20.3
 
-* Thu Mar 17 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.18.5-1
-- Update to 3.18.5
+* Thu May 12 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.20.2-2
+- Improve default bookmarks patch
 
-* Fri Feb 19 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.18.4-1
-- Update to 3.18.4
+* Mon May 09 2016 Kalev Lember <klember@redhat.com> - 1:3.20.2-1
+- Update to 3.20.2
 
-* Fri Jan 08 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.18.3-1
-- Update to 3.18.3
+* Wed Apr 13 2016 Kalev Lember <klember@redhat.com> - 1:3.20.1-1
+- Update to 3.20.1
 
-* Thu Dec 10 2015 David King <amigadave@amigadave.com> - 1:3.18.2-1
-- Update to 3.18.2
+* Tue Mar 22 2016 Kalev Lember <klember@redhat.com> - 1:3.20.0-1
+- Update to 3.20.0
+
+* Tue Mar 15 2016 Richard Hughes <rhughes@redhat.com> - 1:3.19.92-1
+- Update to 3.19.92
+
+* Tue Mar 01 2016 Richard Hughes <rhughes@redhat.com> - 1:3.19.91-1
+- Update to 3.19.91
+
+* Tue Feb 16 2016 Richard Hughes <rhughes@redhat.com> - 1:3.19.90-1
+- Update to 3.19.90
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.19.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Thu Dec 10 2015 Kalev Lember <klember@redhat.com> - 1:3.19.1-1
+- Update to 3.19.1
 
 * Fri Nov 20 2015 Kalev Lember <klember@redhat.com> - 1:3.18.1-1
 - Update to 3.18.1
