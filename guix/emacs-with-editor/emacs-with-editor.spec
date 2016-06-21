@@ -2,7 +2,7 @@
 %global pkgname With-Editor
 
 Name:           emacs-%{pkg}
-Version:        2.5.0
+Version:        2.5.1
 Release:        1%{?dist}
 Summary:        Use the Emacsclient as the editor of child processes
 
@@ -27,8 +27,8 @@ call home.
 
 
 %build
-touch dir
-make MAKEINFO='makeinfo --no-split' EFLAGS='-L %{_emacs_sitelispdir}/dash' all
+make MAKEINFO='makeinfo --no-split' INSTALL_INFO='true' \
+    EFLAGS='-L %{_emacs_sitelispdir}/dash' all
 
 
 %install
@@ -52,7 +52,8 @@ fi
 
 
 %files
-%doc README.md
+%license COPYING
+%doc AUTHORS.md README.md with-editor.org
 %dir %{_emacs_sitelispdir}/with-editor
 %{_emacs_sitelispdir}/with-editor/with-editor.el
 %{_emacs_sitelispdir}/with-editor/with-editor.elc
@@ -61,5 +62,10 @@ fi
 
 
 %changelog
+* Tue Jun 21 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.5.1-1
+- Update to 2.5.1
+- Include license file and all documents
+- Disable Texinfo dir file generation in Makefile, which is useless
+
 * Fri Mar 04 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.5.0-1
 - Initial packaging
