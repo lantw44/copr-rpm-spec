@@ -3,7 +3,7 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    4.6.4
+Version:    4.7.0
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -16,6 +16,7 @@ URL:        https://www.kernel.org/
 Source0:    https://www.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
 
 BuildRequires: %{cross_triplet}-filesystem
+BuildRequires: perl
 Requires:   %{cross_triplet}-filesystem
 
 %description
@@ -117,6 +118,10 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Mon Jul 25 2016 Ting-Wei Lan <lantw44@gmail.com> - 4.7.0-1
+- Update to 4.7
+- Perl have to be listed in BuildRequires on Fedora 25
+
 * Tue Jul 12 2016 Ting-Wei Lan <lantw44@gmail.com> - 4.6.4-1
 - Update to 4.6.4
 
