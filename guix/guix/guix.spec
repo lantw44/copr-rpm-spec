@@ -1,5 +1,5 @@
 Name:           guix
-Version:        0.10.0
+Version:        0.11.0
 Release:        1%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
@@ -13,7 +13,8 @@ Source0:        ftp://alpha.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 
 BuildRequires:  pkgconfig(guile-2.0)
 BuildRequires:  pkgconfig(sqlite3)
-BuildRequires:  bzip2-devel, libgcrypt-devel, gettext, help2man, graphviz
+BuildRequires:  zlib-devel, bzip2-devel, libgcrypt-devel
+BuildRequires:  gettext, help2man, graphviz
 BuildRequires:  emacs, emacs-geiser, emacs-magit, bash-completion
 BuildRequires:  guile-json, gnutls-guile
 BuildRequires:  systemd
@@ -185,6 +186,11 @@ fi
 %{_datadir}/guile/site/2.0/gnu/system/examples/bare-bones.tmpl
 %{_datadir}/guile/site/2.0/gnu/system/examples/desktop.tmpl
 %{_datadir}/guile/site/2.0/gnu/system/examples/lightweight-desktop.tmpl
+%{_datadir}/guile/site/2.0/gnu/tests.scm
+%{_datadir}/guile/site/2.0/gnu/tests.go
+%dir %{_datadir}/guile/site/2.0/gnu/tests
+%{_datadir}/guile/site/2.0/gnu/tests/*.scm
+%{_datadir}/guile/site/2.0/gnu/tests/*.go
 %{_datadir}/guile/site/2.0/guix.scm
 %{_datadir}/guile/site/2.0/guix.go
 %dir %{_datadir}/guile/site/2.0/guix
@@ -249,6 +255,9 @@ fi
 
 
 %changelog
+* Thu Aug 04 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.11.0-1
+- Update to 0.11.0
+
 * Fri Apr 01 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.10.0-1
 - Update to 0.10.0
 - Add help2man to BuildRequires
