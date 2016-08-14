@@ -29,19 +29,37 @@
 %endif
 
 Name:       chromium
-Version:    52.0.2743.82
+Version:    52.0.2743.116
 Release:    2%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
 License:    BSD and LGPLv2+
 URL:        https://www.chromium.org
-Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/chromium-%{version}.tar.xz
+
+# Unfortunately, Fedora Copr forbids uploading sources with patent-encumbered
+# ffmpeg code even if they are never compiled and linked to target binraies,
+# so we must repackage upstream tarballs to satisfy this requirement. However,
+# we cannot simply delete all code of ffmpeg because this will disable support
+# for some commonly-used free codecs such as Ogg Theora. Instead, helper
+# scripts included in official Fedora packages are copied, modified, and used
+# to automate the repackaging work.
+#
+# If you don't use Fedora services, you can uncomment the following line and
+# use the upstream source tarball instead of the repackaged one.
+# Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/chromium-%{version}.tar.xz
+#
+# The repackaged source tarball used here is produced by:
+# ./chromium-latest.py --stable --ffmpegclean
+Source0:    chromium-%{version}-clean.tar.xz
+Source1:    chromium-latest.py
+Source2:    chromium-ffmpeg-clean.sh
+Source3:    chromium-ffmpeg-free-sources.py
 
 # The following two source files are copied and modified from
 # https://repos.fedorapeople.org/repos/spot/chromium/
-Source1:    chromium-browser.sh
-Source2:    chromium-browser.desktop
+Source10:   chromium-browser.sh
+Source11:   chromium-browser.desktop
 
 # Add a patch from Arch Linux to fix libpng problem
 # https://projects.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=14bce0f
@@ -107,6 +125,8 @@ Requires(post):   desktop-file-utils
 Requires(postun): desktop-file-utils
 Requires:         hicolor-icon-theme
 
+Obsoletes:     chromium-libs, chromium-libs-media, chromedriver
+Provides:      chromium-libs, chromium-libs-media, chromedriver
 
 %description
 
@@ -221,9 +241,9 @@ mkdir -p %{buildroot}%{chromiumdir}/locales
 mkdir -p %{buildroot}%{_mandir}/man1
 mkdir -p %{buildroot}%{_datadir}/applications
 sed -e "s|@@CHROMIUMDIR@@|%{chromiumdir}|" -e "s|@@BUILDTARGET@@|`cat /etc/redhat-release`|" \
-    %{SOURCE1} > chromium-browser.sh
+    %{SOURCE10} > chromium-browser.sh
 install -m 755 chromium-browser.sh %{buildroot}%{_bindir}/chromium-browser
-desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE2}
+desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE11}
 install -m 644 out/Release/chrome.1 %{buildroot}%{_mandir}/man1/chromium-browser.1
 install -m 755 out/Release/chrome %{buildroot}%{chromiumdir}/chromium-browser
 install -m 4755 out/Release/chrome_sandbox %{buildroot}%{chromiumdir}/chrome-sandbox
@@ -301,6 +321,13 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Aug 13 2016 - Ting-Wei Lan <lantw44@gmail.com> - 52.0.2743.116-2
+- Repackage upstream sources to delete patent-encumbered ffmpeg sources
+- Allow replacing official packages with this package
+
+* Wed Aug 10 2016 - Ting-Wei Lan <lantw44@gmail.com> - 52.0.2743.116-1
+- Update to 52.0.2743.116
+
 * Fri Jul 22 2016 - Ting-Wei Lan <lantw44@gmail.com> - 52.0.2743.82-2
 - Fix build issue for cups 2.2
 
