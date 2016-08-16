@@ -3,7 +3,7 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-binutils
-Version:    2.26.1
+Version:    2.27
 Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
@@ -85,6 +85,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Tue Aug 16 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.27-1
+- Update to 2.27
+
 * Wed Jun 29 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.26.1-1
 - Update to 2.26.1
 
