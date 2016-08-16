@@ -42,15 +42,14 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.23
-Release:    3%{?dist}
+Version:    2.24
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
 URL:        https://www.gnu.org/software/libc
 Source0:    https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
-Patch0:     glibc-suppress-gcc-6-warning.patch
 
 BuildRequires: %{cross_triplet}-filesystem
 BuildRequires: %{cross_triplet}-gcc-stage1
@@ -567,6 +566,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Tue Aug 16 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.24-1
+- Update to 2.24
+
 * Sun May 08 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.23-3
 - Fix GCC 6 build issue
 
