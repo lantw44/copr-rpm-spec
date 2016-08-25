@@ -29,7 +29,7 @@
 %endif
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    6.1.0
+Version:    6.2.0
 Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
@@ -319,8 +319,6 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{cross_sysroot}/%{lib_dir_name}/libsupc++.a
 %{cross_sysroot}/%{lib_dir_name}/libubsan.a
 %{cross_sysroot}/%{lib_dir_name}/libubsan.so*
-%{cross_sysroot}/%{lib_dir_name}/libvtv.a
-%{cross_sysroot}/%{lib_dir_name}/libvtv.so*
 %if %{cross_arch} == "arm64"
 %{cross_sysroot}/%{lib_dir_name}/liblsan.a
 %{cross_sysroot}/%{lib_dir_name}/liblsan.so*
@@ -348,6 +346,9 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Thu Aug 25 2016 Ting-Wei Lan <lantw44@gmail.com> - 6.2.0-1
+- Update to new stable release 6.2.0
+
 * Sun May 08 2016 Ting-Wei Lan <lantw44@gmail.com> - 6.1.0-1
 - Update to new stable release 6.1.0
 - Drop support for Fedora 23 and older versions
