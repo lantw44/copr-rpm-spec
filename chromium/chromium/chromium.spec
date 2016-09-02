@@ -29,8 +29,8 @@
 %endif
 
 Name:       chromium
-Version:    52.0.2743.116
-Release:    2%{?dist}
+Version:    53.0.2785.89
+Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -61,14 +61,10 @@ Source3:    chromium-ffmpeg-free-sources.py
 Source10:   chromium-browser.sh
 Source11:   chromium-browser.desktop
 
-# Add a patch from Arch Linux to fix libpng problem
-# https://projects.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=14bce0f
-Patch0:     chromium-PNGImageDecoder.patch
-
 # Add a patch from Fedora to fix cups problem
 # http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=098c7ea
 # http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=4bca8d3
-Patch1:     chromium-cups22.patch
+Patch0:     chromium-cups22.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -321,6 +317,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Sep 02 2016 - Ting-Wei Lan <lantw44@gmail.com> - 53.0.2785.89-1
+- Update to 53.0.2785.89
+
 * Sat Aug 13 2016 - Ting-Wei Lan <lantw44@gmail.com> - 52.0.2743.116-2
 - Repackage upstream sources to delete patent-encumbered ffmpeg sources
 - Allow replacing official packages with this package
