@@ -30,7 +30,7 @@
 
 Name:       chromium
 Version:    53.0.2785.92
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -60,6 +60,11 @@ Source3:    chromium-ffmpeg-free-sources.py
 # https://repos.fedorapeople.org/repos/spot/chromium/
 Source10:   chromium-browser.sh
 Source11:   chromium-browser.desktop
+
+# The following two source files are copied verbatim from
+# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/tree/
+Source12:   chromium-browser.xml
+Source13:   chromium-browser.appdata.xml
 
 # Add a patch from Fedora to fix cups problem
 # http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=098c7ea
@@ -117,6 +122,8 @@ BuildRequires: speech-dispatcher-devel
 BuildRequires: pulseaudio-libs-devel
 # install desktop files
 BuildRequires: desktop-file-utils
+# install AppData files
+BuildRequires: libappstream-glib
 Requires(post):   desktop-file-utils
 Requires(postun): desktop-file-utils
 Requires:         hicolor-icon-theme
@@ -227,7 +234,7 @@ GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
 ./build/download_nacl_toolchains.py --packages \
     nacl_x86_glibc,nacl_x86_newlib,pnacl_newlib,pnacl_translator sync --extract
 
-ninja-build -C out/Release chrome chrome_sandbox chromedriver
+ninja-build %{_smp_mflags} -C out/Release chrome chrome_sandbox chromedriver
 
 
 %install
@@ -235,11 +242,16 @@ ninja-build -C out/Release chrome chrome_sandbox chromedriver
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{chromiumdir}/locales
 mkdir -p %{buildroot}%{_mandir}/man1
+mkdir -p %{buildroot}%{_datadir}/appdata
 mkdir -p %{buildroot}%{_datadir}/applications
+mkdir -p %{buildroot}%{_datadir}/gnome-control-center/default-apps
 sed -e "s|@@CHROMIUMDIR@@|%{chromiumdir}|" -e "s|@@BUILDTARGET@@|`cat /etc/redhat-release`|" \
     %{SOURCE10} > chromium-browser.sh
 install -m 755 chromium-browser.sh %{buildroot}%{_bindir}/chromium-browser
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE11}
+install -m 644 %{SOURCE12} %{buildroot}%{_datadir}/gnome-control-center/default-apps/
+appstream-util validate-relax --nonet %{SOURCE13}
+install -m 644 %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 install -m 644 out/Release/chrome.1 %{buildroot}%{_mandir}/man1/chromium-browser.1
 install -m 755 out/Release/chrome %{buildroot}%{chromiumdir}/chromium-browser
 install -m 4755 out/Release/chrome_sandbox %{buildroot}%{chromiumdir}/chrome-sandbox
@@ -285,7 +297,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 %files
 %{_bindir}/chromium-browser
+%{_datadir}/appdata/chromium-browser.appdata.xml
 %{_datadir}/applications/chromium-browser.desktop
+%{_datadir}/gnome-control-center/default-apps/chromium-browser.xml
 %{_datadir}/icons/hicolor/16x16/apps/chromium-browser.png
 %{_datadir}/icons/hicolor/22x22/apps/chromium-browser.png
 %{_datadir}/icons/hicolor/24x24/apps/chromium-browser.png
@@ -317,6 +331,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Sep 08 2016 - Ting-Wei Lan <lantw44@gmail.com> - 53.0.2785.92-2
+- Use _smp_mflags to set the number of parallel jobs
+- Import gnome-control-center a default-apps file and an AppData file from
+  the official Fedora package
+
 * Sat Sep 03 2016 - Ting-Wei Lan <lantw44@gmail.com> - 53.0.2785.92-1
 - Update to 53.0.2785.92
 
