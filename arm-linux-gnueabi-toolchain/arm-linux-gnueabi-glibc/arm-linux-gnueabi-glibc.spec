@@ -43,7 +43,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.24
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -59,7 +59,7 @@ Requires:   %{cross_triplet}-kernel-headers
 Provides:   %{cross_triplet}-glibc-stage1
 
 %if !%{headers_only}
-BuildRequires: %{cross_triplet}-gcc-stage2
+BuildRequires: %{cross_triplet}-gcc-stage2, perl
 %endif
 
 %description
@@ -566,6 +566,10 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Sat Sep 10 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.24-2
+- Rebuilt for Fedora 25 and 26
+- Add perl to BuildRequires because it is required to build mtrace
+
 * Tue Aug 16 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.24-1
 - Update to 2.24
 

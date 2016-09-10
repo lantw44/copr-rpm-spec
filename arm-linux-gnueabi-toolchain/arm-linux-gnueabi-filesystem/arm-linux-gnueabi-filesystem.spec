@@ -14,7 +14,7 @@
 
 Name:       %{cross_triplet}-filesystem
 Version:    3
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    Cross compilation toolchain filesystem layout (%{cross_triplet})
 
 Group:      Development/System
@@ -84,6 +84,9 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 
 
 %changelog
+* Sat Sep 10 2016 Ting-Wei Lan <lantw44@gmail.com> - 3-3
+- Rebuilt for Fedora 25 and 26
+
 * Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 3-2
 - Rebuilt for Fedora 24 and 25
 

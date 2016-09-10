@@ -12,7 +12,7 @@
 
 Name:       %{pkg_fullname}
 Version:    0.9.26
-Release:    10%{?dist}
+Release:    11%{?dist}
 Summary:    Tiny C Compiler
 
 Group:      Development/Languages
@@ -101,6 +101,9 @@ fi
 %doc Changelog README TODO VERSION tcc-doc.html
 
 %changelog
+* Sat Sep 10 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-11
+- Rebuilt for Fedora 25 and 26
+
 * Thu Mar 03 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-10
 - Rebuilt for Fedora 24 and 25
 

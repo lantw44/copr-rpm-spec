@@ -1,6 +1,6 @@
 Name:           guix
 Version:        0.11.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -255,6 +255,9 @@ fi
 
 
 %changelog
+* Sat Sep 10 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.11.0-2
+- Rebuilt for Fedora 25 and 26
+
 * Thu Aug 04 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.11.0-1
 - Update to 0.11.0
 

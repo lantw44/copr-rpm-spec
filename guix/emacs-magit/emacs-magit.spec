@@ -13,7 +13,7 @@
 
 Name:           emacs-%{pkg}
 Version:        2.7.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Emacs interface to the most common Git operations
 
 Group:          Applications/Editors
@@ -81,6 +81,9 @@ fi
 
 
 %changelog
+* Sat Sep 10 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.7.0-2
+- Rebuilt for Fedora 25 and 26
+
 * Tue Jun 21 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.7.0-1
 - Update to upstream version 2.7.0
 

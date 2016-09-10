@@ -1,9 +1,9 @@
-%global commit faa10ed25d291b63892ec43f38bf78f9b507678d
+%global commit 2a91a00e139a9e731c983649c197f373c855c77f
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.7.20160527git%{shortcommit}%{?dist}
+Release:        0.8.20160904git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 Group:          User Interface/X
@@ -87,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Sep 10 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.8.20160904git2a91a00
+- Update to the latest git snapshot
+
 * Sat May 28 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.7.20160527gitfaa10ed
 - Update to the latest git snapshot
 
