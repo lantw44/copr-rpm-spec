@@ -6,8 +6,8 @@
 %global geocode_glib_version 3.10.0
 
 Name:           gnome-settings-daemon
-Version:        3.20.1
-Release:        3%{?dist}.1
+Version:        3.20.2
+Release:        1%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 Group:          System Environment/Daemons
@@ -17,9 +17,8 @@ URL:            http://download.gnome.org/sources/%{name}
 Source:         http://download.gnome.org/sources/%{name}/3.20/%{name}-%{version}.tar.xz
 # disable wacom for ppc/ppc64 (used on RHEL)
 Patch0:         %{name}-3.5.4-ppc-no-wacom.patch
-Patch1:         0001-gvc-mixer-control-Really-fix-double-free-when-settin.patch
 # respect menus-have-icons and buttons-have-icons settings
-Patch2:         %{name}-3.14-respect-menus-buttons-icons.patch
+Patch1:         %{name}-3.14-respect-menus-buttons-icons.patch
 
 BuildRequires:  pkgconfig(colord) >= 1.0.2
 BuildRequires:  pkgconfig(fontconfig)
@@ -97,11 +96,7 @@ developing applications that use %{name}.
 %patch0 -p1 -b .ppc-no-wacom
 %endif
 
-pushd plugins/media-keys/gvc
-%patch1 -p1 -b .crasher
-popd
-
-%patch2 -p1 -b .menus-buttons-icons
+%patch1 -p1 -b .menus-buttons-icons
 
 autoreconf -i -f
 
@@ -268,6 +263,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-xsettings
 
 %changelog
+* Wed Oct 12 2016 Kalev Lember <klember@redhat.com> - 3.20.2-1
+- Update to 3.20.2
+
 * Sun Apr 17 2016 Bastien Nocera <bnocera@redhat.com> - 3.20.1-3
 - Fix crasher in newly enabled audio device selection dialogue
 
