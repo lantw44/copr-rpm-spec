@@ -6,30 +6,33 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
-# https://bugs.chromium.org/p/chromium/issues/detail?id=584920
-%if 0
-%bcond_without system_icu
-%else
-%bcond_with system_icu
-%endif
-
 %if 0%{?fedora} >= 24
 %bcond_without system_libvpx
 %else
 %bcond_with system_libvpx
 %endif
 
-# Chromium crashes when compiling with GCC 6
-# https://github.com/RussianFedora/chromium/issues/4
-# http://koji.russianfedora.pro/koji/buildinfo?buildID=2754
-%if 0%{?fedora} >= 24
+%if 0
 %bcond_without clang
 %else
 %bcond_with clang
 %endif
 
+# https://github.com/dabeaz/ply/issues/66
+%if 0%{?fedora} >= 24
+%bcond_without system_ply
+%else
+%bcond_with system_ply
+%endif
+
+# Allow building with symbols to ease debugging
+%bcond_without symbol
+
+# Allow disabling unconditional build dependency on clang
+%bcond_without require_clang
+
 Name:       chromium
-Version:    53.0.2785.143
+Version:    54.0.2840.59
 Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -66,10 +69,30 @@ Source11:   chromium-browser.desktop
 Source12:   chromium-browser.xml
 Source13:   chromium-browser.appdata.xml
 
-# Add a patch from Fedora to fix cups problem
-# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=098c7ea
-# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=4bca8d3
-Patch0:     chromium-cups22.patch
+# Add a patch from Fedora to fix crash
+# https://bugzilla.redhat.com/show_bug.cgi?id=1361157
+# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=ed93147
+Patch0:     chromium-unset-madv_free.patch
+
+# Add a patch from Fedora to fix GN build
+# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=0df9641
+Patch1:     chromium-last-commit-position.patch
+
+# Add a patch from upstream to fix undefined reference error
+# https://codereview.chromium.org/2291783002
+Patch2:     chromium-fix-undefined-reference.patch
+
+# Building with GCC 6 requires -fno-delete-null-pointer-checks to avoid crashes
+# Unfortunately, it is not possible to add additional compiler flags with
+# environment variables or command-line arguments when building with GN, so we
+# must patch the build file here.
+# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=7fe5f2bb
+# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68853
+# https://bugs.debian.org/833524
+# https://anonscm.debian.org/cgit/pkg-chromium/pkg-chromium.git/commit/?id=dfd37f3
+# https://bugs.chromium.org/p/v8/issues/detail?id=3782
+# https://codereview.chromium.org/2310513002
+Patch3:     chromium-use-no-delete-null-pointer-checks-with-gcc.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -78,11 +101,12 @@ ExclusiveArch: x86_64
 %if 0%{?fedora} >= 22
 BuildRequires: gcc >= 5.1.1-2
 %endif
-%if %{with clang}
+# Chromium 54 requires clang to enable nacl support
+%if %{with clang} || %{with require_clang}
 BuildRequires: clang
 %endif
 # Basic tools and libraries
-BuildRequires: ninja-build, bison, gperf
+BuildRequires: ninja-build, bison, gperf, hwdata
 BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
 BuildRequires: libcap-devel, cups-devel, minizip-devel, alsa-lib-devel
 BuildRequires: pkgconfig(gtk+-2.0), pkgconfig(libexif), pkgconfig(nss)
@@ -90,16 +114,26 @@ BuildRequires: pkgconfig(xtst), pkgconfig(xscrnsaver)
 BuildRequires: pkgconfig(dbus-1), pkgconfig(libudev)
 BuildRequires: pkgconfig(gnome-keyring-1)
 BuildRequires: pkgconfig(libffi)
-# use_system_*
-BuildRequires: expat-devel
+# remove_bundled_libraries.py --do-remove
+BuildRequires: python2-rpm-macros
+BuildRequires: python-beautifulsoup4
+BuildRequires: python-html5lib
+%if 0%{?fedora} >= 24
+BuildRequires: python2-jinja2
+%else
+BuildRequires: python-jinja2
+%endif
+%if 0%{?fedora} >= 26
+BuildRequires: python2-markupsafe
+%else
+BuildRequires: python-markupsafe
+%endif
+%if %{with system_ply}
+BuildRequires: python2-ply
+%endif
+# replace_gn_files.py --system-libraries
 BuildRequires: flac-devel
 BuildRequires: harfbuzz-devel
-# Chromium requires icu 55
-%if %{with system_icu}
-BuildRequires: libicu-devel
-%endif
-BuildRequires: jsoncpp-devel
-BuildRequires: libevent-devel
 BuildRequires: libjpeg-turbo-devel
 BuildRequires: libpng-devel
 # Chromium requires libvpx 1.5.0 and some non-default options
@@ -108,15 +142,11 @@ BuildRequires: libvpx-devel
 %endif
 BuildRequires: libwebp-devel
 BuildRequires: pkgconfig(libxslt), pkgconfig(libxml-2.0)
-BuildRequires: openssl-devel
-BuildRequires: opus-devel
+BuildRequires: re2-devel
 BuildRequires: snappy-devel
-BuildRequires: speex-devel
 BuildRequires: yasm
 BuildRequires: zlib-devel
-# linux_link_*
-BuildRequires: brlapi-devel
-BuildRequires: gpsd-devel
+# use_*
 BuildRequires: pciutils-devel
 BuildRequires: speech-dispatcher-devel
 BuildRequires: pulseaudio-libs-devel
@@ -136,105 +166,220 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
 
 %prep
 %autosetup -p1
-touch chrome/test/data/webui/i18n_process_css_test.html
 
-%build
-./build/linux/unbundle/replace_gyp_files.py \
-    -Duse_system_expat=1 \
-    -Duse_system_flac=1 \
-    -Duse_system_harfbuzz=1 \
-%if %{with system_icu}
-    -Duse_system_icu=1 \
-%else
-    -Duse_system_icu=0 \
+./build/linux/unbundle/remove_bundled_libraries.py --do-remove \
+    base/third_party/dmg_fp \
+    base/third_party/dynamic_annotations \
+    base/third_party/icu \
+    base/third_party/libevent \
+    base/third_party/nspr \
+    base/third_party/superfasthash \
+    base/third_party/symbolize \
+    base/third_party/valgrind \
+    base/third_party/xdg_mime \
+    base/third_party/xdg_user_dirs \
+    breakpad/src/third_party/curl \
+    chrome/third_party/mozilla_security_manager \
+    courgette/third_party \
+    native_client/src/third_party/dlmalloc \
+    native_client/src/third_party/valgrind \
+    net/third_party/mozilla_security_manager \
+    net/third_party/nss \
+    third_party/adobe \
+    third_party/analytics \
+    third_party/angle \
+    third_party/angle/src/common/third_party/numerics \
+    third_party/angle/src/third_party/compiler \
+    third_party/angle/src/third_party/libXNVCtrl \
+    third_party/angle/src/third_party/murmurhash \
+    third_party/angle/src/third_party/trace_event \
+    third_party/boringssl \
+    third_party/brotli \
+    third_party/cacheinvalidation \
+    third_party/catapult \
+    third_party/catapult/third_party/polymer \
+    third_party/catapult/third_party/py_vulcanize \
+    third_party/catapult/third_party/py_vulcanize/third_party/rcssmin \
+    third_party/catapult/third_party/py_vulcanize/third_party/rjsmin \
+    third_party/catapult/tracing/third_party/d3 \
+    third_party/catapult/tracing/third_party/gl-matrix \
+    third_party/catapult/tracing/third_party/jszip \
+    third_party/catapult/tracing/third_party/mannwhitneyu \
+    third_party/ced \
+    third_party/cld_2 \
+    third_party/cld_3 \
+    third_party/cros_system_api \
+    third_party/cython/python_flags.py \
+    third_party/devscripts \
+    third_party/dom_distiller_js \
+    third_party/ffmpeg \
+    third_party/fips181 \
+    third_party/flatbuffers \
+    third_party/flot \
+    third_party/google_input_tools \
+    third_party/google_input_tools/third_party/closure_library \
+    third_party/google_input_tools/third_party/closure_library/third_party/closure \
+    third_party/hunspell \
+    third_party/iccjpeg \
+    third_party/icu \
+    third_party/jstemplate \
+    third_party/khronos \
+    third_party/leveldatabase \
+    third_party/libaddressinput \
+    third_party/libjingle \
+    third_party/libphonenumber \
+    third_party/libsecret \
+    third_party/libsrtp \
+    third_party/libudev \
+    third_party/libusb \
+%if !%{with system_libvpx}
+    third_party/libvpx \
+    third_party/libvpx/source/libvpx/third_party/googletest \
+    third_party/libvpx/source/libvpx/third_party/libwebm \
+    third_party/libvpx/source/libvpx/third_party/libyuv \
+    third_party/libvpx/source/libvpx/third_party/x86inc \
 %endif
-    -Duse_system_jsoncpp=1 \
-    -Duse_system_libevent=1 \
-    -Duse_system_libjpeg=1 \
-    -Duse_system_libpng=1 \
+    third_party/libwebm \
+    third_party/libxml/chromium \
+    third_party/libXNVCtrl \
+    third_party/libyuv \
+    third_party/lss \
+    third_party/lzma_sdk \
+    third_party/mesa \
+    third_party/modp_b64 \
+    third_party/mt19937ar \
+    third_party/openh264 \
+    third_party/openmax_dl \
+    third_party/opus \
+    third_party/ots \
+    third_party/pdfium \
+    third_party/pdfium/third_party/agg23 \
+    third_party/pdfium/third_party/base \
+    third_party/pdfium/third_party/bigint \
+    third_party/pdfium/third_party/freetype \
+    third_party/pdfium/third_party/lcms2-2.6 \
+    third_party/pdfium/third_party/libjpeg \
+    third_party/pdfium/third_party/libopenjpeg20 \
+    third_party/pdfium/third_party/libpng16 \
+    third_party/pdfium/third_party/libtiff \
+    third_party/pdfium/third_party/zlib_v128 \
+%if !%{with system_ply}
+    third_party/ply \
+%endif
+    third_party/polymer \
+    third_party/protobuf \
+    third_party/protobuf/third_party/six \
+    third_party/qcms \
+    third_party/sfntly \
+    third_party/skia \
+    third_party/smhasher \
+    third_party/speech-dispatcher \
+    third_party/sqlite \
+    third_party/tcmalloc \
+    third_party/usb_ids \
+    third_party/usrsctp \
+    third_party/web-animations-js \
+    third_party/webdriver \
+    third_party/WebKit \
+    third_party/webrtc \
+    third_party/widevine \
+    third_party/woff2 \
+    third_party/x86inc \
+    third_party/xdg-utils \
+    third_party/yasm/run_yasm.py \
+    third_party/zlib/google \
+    url/third_party/mozilla \
+    v8/src/third_party/valgrind
+
+./build/linux/unbundle/replace_gn_files.py --system-libraries \
+    flac \
+    harfbuzz-ng \
+    libjpeg \
+    libpng \
 %if %{with system_libvpx}
-    -Duse_system_libvpx=1 \
-%else
-    -Duse_system_libvpx=0 \
+    libvpx \
 %endif
-    -Duse_system_libwebp=1 \
-    -Duse_system_libxml=1 \
-    -Duse_system_opus=1 \
-    -Duse_system_snappy=1 \
-    -Duse_system_speex=1 \
-    -Duse_system_yasm=1 \
-    -Duse_system_zlib=1
-
-%if %{with system_icu}
-find third_party/icu -type f '!' -regex '.*\.\(gyp\|gypi\|isolate\)' -delete
-%endif
-
-%if %{with clang}
-export CC=clang CXX=clang++
-%endif
-
-GYP_GENERATORS=ninja ./build/gyp_chromium --depth=. \
-    -Duse_system_expat=1 \
-    -Duse_system_flac=1 \
-    -Duse_system_harfbuzz=1 \
-%if %{with system_icu}
-    -Duse_system_icu=1 \
-%else
-    -Duse_system_icu=0 \
-%endif
-    -Duse_system_jsoncpp=1 \
-    -Duse_system_libevent=1 \
-    -Duse_system_libjpeg=1 \
-    -Duse_system_libpng=1 \
-%if %{with system_libvpx}
-    -Duse_system_libvpx=1 \
-%else
-    -Duse_system_libvpx=0 \
-%endif
-    -Duse_system_libwebp=1 \
-    -Duse_system_libxml=1 \
-    -Duse_system_opus=1 \
-    -Duse_system_snappy=1 \
-    -Duse_system_speex=1 \
-    -Duse_system_yasm=1 \
-    -Duse_system_zlib=1 \
-    -Duse_gconf=0 \
-    -Duse_sysroot=0 \
-    -Dlinux_use_bundled_gold=0 \
-    -Dlinux_use_bundled_binutils=0 \
-    -Dlinux_link_gsettings=1 \
-    -Dlinux_link_kerberos=1 \
-    -Dlinux_link_libbrlapi=1 \
-    -Dlinux_link_libgps=1 \
-    -Dlinux_link_libpci=1 \
-    -Dlinux_link_libspeechd=1 \
-    -Dlinux_link_pulseaudio=1 \
-%if %{with system_icu}
-    -Dicu_use_data_file_flag=0 \
-%else
-    -Dicu_use_data_file_flag=1 \
-%endif
-    -Dlibspeechd_h_prefix=speech-dispatcher/ \
-%if %{with clang}
-    -Dclang=1 \
-    -Dclang_use_chrome_plugins=0 \
-%else
-    -Dclang=0 \
-%endif
-    -Dwerror= \
-    -Ddisable_fatal_linker_warnings=1 \
-    -Denable_hotwording=0 \
-    -Dlogging_like_official_build=1 \
-    -Dtracing_like_official_build=1 \
-    -Dfieldtrial_testing_like_official_build=1 \
-    -Dgoogle_api_key=AIzaSyCcK3laItm4Ik9bm6IeGFC6tVgy4eut0_o \
-    -Dgoogle_default_client_id=82546407293.apps.googleusercontent.com \
-    -Dgoogle_default_client_secret=GuvPB069ONrHxN7Y_y0txLKn \
+    libwebp \
+    libxml \
+    libxslt \
+    re2 \
+    snappy \
+    yasm \
+    zlib
 
 ./build/download_nacl_toolchains.py --packages \
     nacl_x86_glibc,nacl_x86_newlib,pnacl_newlib,pnacl_translator sync --extract
 
-ninja-build %{_smp_mflags} -C out/Release chrome chrome_sandbox chromedriver
+sed -i "s|'ninja'|'ninja-build'|" tools/gn/bootstrap/bootstrap.py
+sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' device/usb/BUILD.gn
+
+rmdir third_party/jinja2 third_party/markupsafe
+ln -s %{python2_sitelib}/jinja2 third_party/jinja2
+ln -s %{python2_sitearch}/markupsafe third_party/markupsafe
+
+%if %{with system_ply}
+rmdir third_party/ply
+ln -s %{python2_sitelib}/ply third_party/ply
+%endif
+
+
+%build
+%if %{with clang}
+export CC=clang CXX=clang++
+%endif
+
+gn_args=(
+    is_debug=false
+    use_sysroot=false
+    use_cups=true
+    use_gconf=false
+    use_gnome_keyring=true
+    use_kerberos=true
+    use_libpci=true
+    use_pulseaudio=true
+    enable_hotwording=false
+    enable_nacl=true
+    fatal_linker_warnings=false
+    treat_warnings_as_errors=false
+    linux_use_bundled_binutils=false
+    fieldtrial_testing_like_official_build=true
+    'google_api_key="AIzaSyCcK3laItm4Ik9bm6IeGFC6tVgy4eut0_o"'
+    'google_default_client_id="82546407293.apps.googleusercontent.com"'
+    'google_default_client_secret="GuvPB069ONrHxN7Y_y0txLKn"'
+)
+
+gn_args+=(
+%if %{with clang} || %{with require_clang}
+    'clang_base_path="/usr"'
+%endif
+)
+
+gn_args+=(
+%if %{with clang}
+    is_clang=true
+    clang_use_chrome_plugins=false
+%else
+    is_clang=false
+%endif
+)
+
+gn_args+=(
+%if %{with symbol}
+    symbol_level=2
+    remove_webcore_debug_symbols=true
+%else
+    symbol_level=0
+%endif
+)
+
+./tools/gn/bootstrap/bootstrap.py --gn-gen-args "${gn_args[*]}"
+./out/Release/gn gen out/Release --args="${gn_args[*]}"
+
+%if 0%{?ninja_build:1}
+%{ninja_build} -C out/Release chrome chrome_sandbox chromedriver
+%else
+ninja-build -v %{_smp_mflags} -C out/Release chrome chrome_sandbox chromedriver
+%endif
 
 
 %install
@@ -314,9 +459,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/chromium-browser
 %{chromiumdir}/chrome-sandbox
 %{chromiumdir}/chromedriver
-%if !%{with system_libicu}
 %{chromiumdir}/icudtl.dat
-%endif
 %{chromiumdir}/nacl_helper
 %{chromiumdir}/nacl_helper_bootstrap
 %{chromiumdir}/nacl_irt_x86_64.nexe
@@ -331,6 +474,18 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Oct 20 2016 - Ting-Wei Lan <lantw44@gmail.com> - 54.0.2840.59-1
+- Update to 54.0.2840.59
+- Use ninja_build macro if available
+- Fix GCC 6 crashes caused by problems in build flags
+- Disable the clang build, but BuildRequires is still kept to support nacl
+- Move all downloading and patching tasks to prep section
+- Switch to GN build system because GYP is no longer supported
+- Bundle icu because replace_gn_files.py doesn't support unbundling it
+- Bundle libevent because there seems to be a known problem
+- Unbundle python2-jinja2, python2-markupsafe, python2-ply by using symlinks
+- Unbundle python-beautifulsoup4, python-html5lib in catapult
+
 * Fri Sep 30 2016 - Ting-Wei Lan <lantw44@gmail.com> - 53.0.2785.143-1
 - Update to 53.0.2785.143
 
