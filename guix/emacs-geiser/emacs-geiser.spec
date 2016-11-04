@@ -2,8 +2,8 @@
 %global pkgname Geiser
 
 Name:           emacs-%{pkg}
-Version:        0.8.1
-Release:        4%{?dist}
+Version:        0.9
+Release:        1%{?dist}
 Summary:        Geiser is an Emacs environment to hack and have fun in Scheme
 
 Group:          Applications/Editors
@@ -68,6 +68,9 @@ fi
 
 
 %changelog
+* Fri Nov 04 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.9-1
+- Update to 0.9
+
 * Sat Sep 10 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.8.1-4
 - Rebuilt for Fedora 25 and 26
 
