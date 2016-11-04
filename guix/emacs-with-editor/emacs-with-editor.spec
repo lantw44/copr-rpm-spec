@@ -2,8 +2,8 @@
 %global pkgname With-Editor
 
 Name:           emacs-%{pkg}
-Version:        2.5.1
-Release:        2%{?dist}
+Version:        2.5.5
+Release:        1%{?dist}
 Summary:        Use the Emacsclient as the editor of child processes
 
 Group:          Applications/Editors
@@ -62,6 +62,9 @@ fi
 
 
 %changelog
+* Fri Nov 04 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.5.5-1
+- Update to 2.5.5
+
 * Sat Sep 10 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.5.1-2
 - Rebuilt for Fedora 25 and 26
 
