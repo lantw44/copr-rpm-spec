@@ -1,11 +1,19 @@
 Name:           guix
 Version:        0.11.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
 URL:            https://www.gnu.org/software/guix
 Source0:        ftp://alpha.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+
+# Add a patch from upstream to fix build issue on Guile 2.0.13
+# http://git.savannah.gnu.org/cgit/guix.git/commit/?id=5a88b2d
+Patch0:         guix-guile-2.2-compat.patch
+
+# Add a patch from upstream to delete compiled files on interrupt
+# http://git.savannah.gnu.org/cgit/guix.git/commit/?id=402bb3b
+Patch1:         guix-delete-go-files-SIGINT.patch
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
@@ -52,7 +60,7 @@ composed.
 
 
 %prep
-%setup -q
+%autosetup -p1
 
 
 %build
@@ -255,6 +263,10 @@ fi
 
 
 %changelog
+* Fri Nov 04 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.11.0-3
+- Use autosetup macro
+- Fix build failure on Guile 2.0.13
+
 * Sat Sep 10 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.11.0-2
 - Rebuilt for Fedora 25 and 26
 
