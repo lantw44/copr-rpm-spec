@@ -32,7 +32,7 @@
 %bcond_without require_clang
 
 Name:       chromium
-Version:    54.0.2840.90
+Version:    54.0.2840.100
 Release:    1%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -474,6 +474,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Nov 11 2016 - Ting-Wei Lan <lantw44@gmail.com> - 54.0.2840.100-1
+- Update to 54.0.2840.100
+
 * Thu Nov 03 2016 - Ting-Wei Lan <lantw44@gmail.com> - 54.0.2840.90-1
 - Update to 54.0.2840.90
 
