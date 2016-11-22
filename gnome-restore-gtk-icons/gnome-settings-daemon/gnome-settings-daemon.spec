@@ -1,25 +1,24 @@
 %global gtk3_version 3.15.3
 %global gnome_desktop_version 3.11.1
 %global libgweather_version 3.9.5
-%global gsettings_desktop_schemas_version 3.19.3
-%global geoclue_version 2.3.1
+%global gsettings_desktop_schemas_version 3.20.0
 %global geocode_glib_version 3.10.0
+%global geoclue_version 2.3.1
 
 Name:           gnome-settings-daemon
-Version:        3.20.2
+Version:        3.22.1
 Release:        1%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
-Group:          System Environment/Daemons
 License:        GPLv2+
-URL:            http://download.gnome.org/sources/%{name}
-#VCS: git:git://git.gnome.org/gnome-settings-daemon
-Source:         http://download.gnome.org/sources/%{name}/3.20/%{name}-%{version}.tar.xz
+URL:            https://download.gnome.org/sources/%{name}
+Source0:        https://download.gnome.org/sources/%{name}/3.22/%{name}-%{version}.tar.xz
 # disable wacom for ppc/ppc64 (used on RHEL)
 Patch0:         %{name}-3.5.4-ppc-no-wacom.patch
 # respect menus-have-icons and buttons-have-icons settings
 Patch1:         %{name}-3.14-respect-menus-buttons-icons.patch
 
+BuildRequires:  pkgconfig(alsa)
 BuildRequires:  pkgconfig(colord) >= 1.0.2
 BuildRequires:  pkgconfig(fontconfig)
 BuildRequires:  pkgconfig(geoclue-2.0) >= %{geoclue_version}
@@ -36,7 +35,6 @@ BuildRequires:  pkgconfig(libnm)
 BuildRequires:  pkgconfig(libnotify)
 BuildRequires:  pkgconfig(libpulse)
 BuildRequires:  pkgconfig(libpulse-mainloop-glib)
-BuildRequires:  pkgconfig(alsa)
 BuildRequires:  pkgconfig(librsvg-2.0)
 BuildRequires:  pkgconfig(nss)
 BuildRequires:  pkgconfig(polkit-gobject-1)
@@ -83,7 +81,6 @@ handles global keybindings, as well as a number of desktop-wide settings.
 
 %package        devel
 Summary:        Development files for %{name}
-Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description    devel
@@ -263,8 +260,21 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-xsettings
 
 %changelog
-* Wed Oct 12 2016 Kalev Lember <klember@redhat.com> - 3.20.2-1
-- Update to 3.20.2
+* Wed Oct 12 2016 Kalev Lember <klember@redhat.com> - 3.22.1-1
+- Update to 3.22.1
+
+* Thu Sep 22 2016 Kalev Lember <klember@redhat.com> - 3.22.0-1
+- Update to 3.22.0
+
+* Wed Sep 14 2016 Kalev Lember <klember@redhat.com> - 3.21.92.1-1
+- Update to 3.21.92.1
+
+* Wed Sep 14 2016 Kalev Lember <klember@redhat.com> - 3.21.92-1
+- Update to 3.21.92
+- Don't set group tags
+
+* Fri Aug 26 2016 Kalev Lember <klember@redhat.com> - 3.21.90-1
+- Update to 3.21.90
 
 * Sun Apr 17 2016 Bastien Nocera <bnocera@redhat.com> - 3.20.1-3
 - Fix crasher in newly enabled audio device selection dialogue

@@ -1,16 +1,15 @@
 %global debug_package %{nil}
 
 Name:           gsettings-desktop-schemas
-Version:        3.20.0
+Version:        3.22.0
 Release:        1%{?dist}.1
 Summary:        A collection of GSettings schemas (Copr: lantw44/gnome-restore-gtk-icons)
 
-Group:          System Environment/Libraries
 License:        LGPLv2+
 # no homepage exists for this component
 URL:            http://bugzilla.gnome.org/enter_bug.cgi?product=gsettings-desktop-schemas
 #VCS: git:git://git.gnome.org/gsettings-desktop-schemas
-Source:         http://download.gnome.org/sources/%{name}/3.20/%{name}-%{version}.tar.xz
+Source0:        http://download.gnome.org/sources/%{name}/3.22/%{name}-%{version}.tar.xz
 # revert settings related to icons and buttons
 Patch0:         %{name}-3.16-revert-icons-settings.patch
 
@@ -35,7 +34,6 @@ settings shared by various components of a desktop.
 
 %package        devel
 Summary:        Development files for %{name}
-Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description    devel
@@ -82,6 +80,19 @@ fi
 
 
 %changelog
+* Wed Sep 21 2016 Kalev Lember <klember@redhat.com> - 3.22.0-1
+- Update to 3.22.0
+- Don't set group tags
+
+* Fri Aug 19 2016 Florian Müllner <fmuellner@redhat.com> - 3.21.4-1
+- Update to 3.21.4
+
+* Wed Jun 22 2016 Florian Müllner <fmuellner@redhat.com> - 3.21.3-1
+- Update to 3.21.3
+
+* Thu May 26 2016 Florian Müllner <fmuellner@redhat.com> - 3.21.2-1
+- Update to 3.21.2
+
 * Tue Mar 22 2016 Kalev Lember <klember@redhat.com> - 3.20.0-1
 - Update to 3.20.0
 
