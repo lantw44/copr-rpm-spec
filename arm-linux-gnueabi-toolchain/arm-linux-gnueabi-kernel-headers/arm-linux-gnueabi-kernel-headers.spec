@@ -3,12 +3,12 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    4.8.9
+Version:    4.8.10
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
 %define debug_package   %{nil}
-%define kversion        %(echo %{version} | sed 's/\.0$//')
+%define kversion        %(echo %{version} | sed 's/\\.0$//')
 
 Group:      Development/System
 License:    GPLv2
@@ -118,6 +118,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Tue Nov 22 2016 Ting-Wei Lan <lantw44@gmail.com> - 4.8.10-1
+- Update to 4.8.10
+
 * Sat Nov 19 2016 Ting-Wei Lan <lantw44@gmail.com> - 4.8.9-1
 - Update to 4.8.9
 
