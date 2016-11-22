@@ -1,15 +1,15 @@
 %global gtk3_version 3.19.1
-%global webkitgtk4_version 2.11.4
+%global webkitgtk4_version 2.13.2
 
 Name: epiphany
 Epoch: 1
-Version: 3.20.5
+Version: 3.22.1
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv2+ and CC-BY-SA
 URL: https://wiki.gnome.org/Apps/Web
-Source0: https://download.gnome.org/sources/epiphany/3.20/%{name}-%{version}.tar.xz
+Source0: https://download.gnome.org/sources/epiphany/3.22/%{name}-%{version}.tar.xz
 
 # Fedora bookmarks
 Patch0: epiphany-default-bookmarks.patch
@@ -76,9 +76,12 @@ installing the epiphany application itself.
 make %{?_smp_mflags}
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
-desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
+%make_install
+find $RPM_BUILD_ROOT -name '*.la' -delete
 %find_lang %{name} --with-gnome
+
+%check
+desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 
 %post
 update-desktop-database %{_datadir}/applications &> /dev/null || :
@@ -107,6 +110,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %license COPYING
 %doc README NEWS AUTHORS
 %{_datadir}/glib-2.0/schemas/org.gnome.epiphany.gschema.xml
+%{_datadir}/glib-2.0/schemas/org.gnome.epiphany.host.gschema.xml
 %{_datadir}/glib-2.0/schemas/org.gnome.Epiphany.enums.xml
 %{_datadir}/GConf/gsettings/epiphany.convert
 %{_bindir}/epiphany
@@ -116,20 +120,37 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_mandir}/man*/*
 
 %changelog
-* Mon Nov 21 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.20.5-1
-- Update to 3.20.5
+* Wed Oct 12 2016 Kalev Lember <klember@redhat.com> - 1:3.22.1-1
+- Update to 3.22.1
 
-* Tue Sep 20 2016 Tomas Popela <tpopela@redhat.com> - 1:3.20.4-1
-- Update to 3.20.4
+* Mon Sep 19 2016 Kalev Lember <klember@redhat.com> - 1:3.22.0-1
+- Update to 3.22.0
 
-* Mon Jun 20 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.20.3-1
-- Update to 3.20.3
+* Tue Sep 13 2016 Kalev Lember <klember@redhat.com> - 1:3.21.92-1
+- Update to 3.21.92
 
-* Thu May 12 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.20.2-2
+* Thu Aug 18 2016 Kalev Lember <klember@redhat.com> - 1:3.21.90-1
+- Update to 3.21.90
+- Use make_install macro
+- Move desktop file validation to the check section
+
+* Sun Aug 07 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.21.4-2
+- Don't install libtool archive
+
+* Sun Jul 17 2016 Kalev Lember <klember@redhat.com> - 1:3.21.4-1
+- Update to 3.21.4
+
+* Mon Jun 20 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.21.3-2
+- Bump min WebKitGTK+ version
+
+* Mon Jun 20 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.21.3-1
+- Update to 3.21.3
+
+* Thu May 12 2016 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.21.1-2
 - Improve default bookmarks patch
 
-* Mon May 09 2016 Kalev Lember <klember@redhat.com> - 1:3.20.2-1
-- Update to 3.20.2
+* Tue May 03 2016 Kalev Lember <klember@redhat.com> - 1:3.21.1-1
+- Update to 3.21.1
 
 * Wed Apr 13 2016 Kalev Lember <klember@redhat.com> - 1:3.20.1-1
 - Update to 3.20.1
