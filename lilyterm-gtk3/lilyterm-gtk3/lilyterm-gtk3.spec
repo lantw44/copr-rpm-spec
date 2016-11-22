@@ -1,9 +1,9 @@
-%global commit 2a91a00e139a9e731c983649c197f373c855c77f
+%global commit 8df92d63ed556e6c9e1b817ccbd014c920516c73
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.8.20160904git%{shortcommit}%{?dist}
+Release:        0.9.20161004git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 Group:          User Interface/X
@@ -11,6 +11,7 @@ License:        GPLv3+
 URL:            http://lilyterm.luna.com.tw
 Source0:        https://github.com/Tetralet/LilyTerm/archive/%{commit}/LilyTerm-%{commit}.tar.gz
 Patch0:         lilyterm-gtk3.patch
+Patch1:         lilyterm-gtk3-vte291-regex.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  gtk3-devel
@@ -45,8 +46,7 @@ lot of features:
 
 
 %prep
-%setup -qn LilyTerm-%{commit}
-%patch0 -p0
+%autosetup -n LilyTerm-%{commit} -p0
 rename lilyterm lilyterm-gtk3 data/lilyterm.*
 sed -i -e '/AUTHORS COPYING ChangeLog/,/COPYING/d' data/Makefile
 
@@ -87,6 +87,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov 23 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.9.20161004git8df92d6
+- Update to the last git snapshot supporting GTK+ 3
+- Use autosetup macro
+
 * Sat Sep 10 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.8.20160904git2a91a00
 - Update to the latest git snapshot
 
