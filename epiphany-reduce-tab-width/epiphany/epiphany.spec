@@ -1,9 +1,9 @@
 %global gtk3_version 3.19.1
-%global webkitgtk4_version 2.13.2
+%global webkitgtk4_version 2.14.2
 
 Name: epiphany
 Epoch: 1
-Version: 3.22.1
+Version: 3.22.3
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
@@ -120,6 +120,12 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_mandir}/man*/*
 
 %changelog
+* Thu Nov 24 2016 Kalev Lember <klember@redhat.com> - 1:3.22.3-1
+- Update to 3.22.3
+
+* Wed Nov 23 2016 Kalev Lember <klember@redhat.com> - 1:3.22.2-1
+- Update to 3.22.2
+
 * Wed Oct 12 2016 Kalev Lember <klember@redhat.com> - 1:3.22.1-1
 - Update to 3.22.1
 
