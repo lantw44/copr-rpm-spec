@@ -28,6 +28,7 @@
 # List of changes:
 #  * Rename: clean_ffmpeg.sh -> chromium-ffmpeg-clean.sh.
 #  * The shebang line no longer hardcodes the path to bash.
+#  * Delete gyp* from other_files because GYP support has been removed.
 
 # $1 files
 # $2 verbose
@@ -184,8 +185,6 @@ other_files="	BUILD.gn \
 		COPYING.LGPLv3 \
 		CREDITS \
 		CREDITS.chromium \
-		ffmpeg.gyp \
-		ffmpeg_generated.gypi \
 		ffmpeg_generated.gni \
 		ffmpeg_options.gni \
 		ffmpegsumo.ver \

@@ -25,6 +25,9 @@
 %bcond_with system_ply
 %endif
 
+# Allow testing whether icu can be unbundled
+%bcond_with system_libicu
+
 # Allow building with symbols to ease debugging
 %bcond_without symbol
 
@@ -32,8 +35,8 @@
 %bcond_without require_clang
 
 Name:       chromium
-Version:    54.0.2840.100
-Release:    1%{?dist}
+Version:    55.0.2883.75
+Release:    100%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -77,10 +80,6 @@ Patch0:     chromium-unset-madv_free.patch
 # Add a patch from Fedora to fix GN build
 # http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=0df9641
 Patch1:     chromium-last-commit-position.patch
-
-# Add a patch from upstream to fix undefined reference error
-# https://codereview.chromium.org/2291783002
-Patch2:     chromium-fix-undefined-reference.patch
 
 # Building with GCC 6 requires -fno-delete-null-pointer-checks to avoid crashes
 # Unfortunately, it is not possible to add additional compiler flags with
@@ -134,6 +133,9 @@ BuildRequires: python2-ply
 # replace_gn_files.py --system-libraries
 BuildRequires: flac-devel
 BuildRequires: harfbuzz-devel
+%if %{with system_libicu}
+BuildRequires: libicu-devel
+%endif
 BuildRequires: libjpeg-turbo-devel
 BuildRequires: libpng-devel
 # Chromium requires libvpx 1.5.0 and some non-default options
@@ -209,7 +211,6 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/cld_2 \
     third_party/cld_3 \
     third_party/cros_system_api \
-    third_party/cython/python_flags.py \
     third_party/devscripts \
     third_party/dom_distiller_js \
     third_party/ffmpeg \
@@ -221,7 +222,9 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/google_input_tools/third_party/closure_library/third_party/closure \
     third_party/hunspell \
     third_party/iccjpeg \
+%if !%{with system_libicu}
     third_party/icu \
+%endif
     third_party/jstemplate \
     third_party/khronos \
     third_party/leveldatabase \
@@ -294,6 +297,9 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
 ./build/linux/unbundle/replace_gn_files.py --system-libraries \
     flac \
     harfbuzz-ng \
+%if %{with system_libicu}
+    icu \
+%endif
     libjpeg \
     libpng \
 %if %{with system_libvpx}
@@ -459,7 +465,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/chromium-browser
 %{chromiumdir}/chrome-sandbox
 %{chromiumdir}/chromedriver
+%if !%{with system_libicu}
 %{chromiumdir}/icudtl.dat
+%endif
 %{chromiumdir}/nacl_helper
 %{chromiumdir}/nacl_helper_bootstrap
 %{chromiumdir}/nacl_irt_x86_64.nexe
@@ -474,6 +482,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Dec 06 2016 - Ting-Wei Lan <lantw44@gmail.com> - 55.0.2883.75-100
+- Update to 55.0.2883.75
+- Re-add the option used to unbundle icu
+- Raise release number to 100 to avoid being replaced by official packages
+
 * Fri Nov 11 2016 - Ting-Wei Lan <lantw44@gmail.com> - 54.0.2840.100-1
 - Update to 54.0.2840.100
 
