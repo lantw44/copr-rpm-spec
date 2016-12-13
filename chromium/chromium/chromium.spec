@@ -35,7 +35,7 @@
 %bcond_without require_clang
 
 Name:       chromium
-Version:    55.0.2883.75
+Version:    55.0.2883.87
 Release:    100%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -482,6 +482,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Dec 13 2016 - Ting-Wei Lan <lantw44@gmail.com> - 55.0.2883.87-100
+- Update to 55.0.2883.87
+
 * Tue Dec 06 2016 - Ting-Wei Lan <lantw44@gmail.com> - 55.0.2883.75-100
 - Update to 55.0.2883.75
 - Re-add the option used to unbundle icu
