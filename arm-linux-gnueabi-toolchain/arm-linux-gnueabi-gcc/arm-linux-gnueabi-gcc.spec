@@ -29,8 +29,8 @@
 %endif
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    6.2.0
-Release:    2%{?dist}
+Version:    6.3.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
@@ -346,6 +346,9 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Thu Dec 22 2016 Ting-Wei Lan <lantw44@gmail.com> - 6.3.0-1
+- Update to new stable release 6.3.0
+
 * Sat Sep 10 2016 Ting-Wei Lan <lantw44@gmail.com> - 6.2.0-2
 - Rebuilt for Fedora 25 and 26
 
