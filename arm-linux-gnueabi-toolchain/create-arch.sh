@@ -10,7 +10,7 @@ base_dir="${base_triplet}-toolchain"
 if [ "$#" '!=' "3" ]; then
     echo 'Usage:   create-arch.sh ARCH  TRIPLET             OUTPUT_DIRECTORY'
     echo 'Example: create-arch.sh arm   arm-linux-gnueabihf /home/copr/armhf'
-    echo 'Example: create-arch.sh arm64 aarch-linux-gnu     /home/copr/arm64'
+    echo 'Example: create-arch.sh arm64 aarch64-linux-gnu   /home/copr/arm64'
     exit 1
 fi
 
