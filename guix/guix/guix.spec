@@ -1,19 +1,11 @@
 Name:           guix
-Version:        0.11.0
-Release:        3%{?dist}
+Version:        0.12.0
+Release:        1%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
 URL:            https://www.gnu.org/software/guix
 Source0:        ftp://alpha.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
-
-# Add a patch from upstream to fix build issue on Guile 2.0.13
-# http://git.savannah.gnu.org/cgit/guix.git/commit/?id=5a88b2d
-Patch0:         guix-guile-2.2-compat.patch
-
-# Add a patch from upstream to delete compiled files on interrupt
-# http://git.savannah.gnu.org/cgit/guix.git/commit/?id=402bb3b
-Patch1:         guix-delete-go-files-SIGINT.patch
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
@@ -24,7 +16,7 @@ BuildRequires:  pkgconfig(sqlite3)
 BuildRequires:  zlib-devel, bzip2-devel, libgcrypt-devel
 BuildRequires:  gettext, help2man, graphviz
 BuildRequires:  emacs, emacs-geiser, emacs-magit, bash-completion
-BuildRequires:  guile-json, gnutls-guile
+BuildRequires:  guile-json, guile-ssh, gnutls-guile
 BuildRequires:  systemd
 
 Requires:       gzip, bzip2, xz
@@ -42,7 +34,7 @@ Requires(preun): info
 Requires(preun): systemd
 Requires(postun): systemd
 
-Recommends:     guile-json, gnutls-guile
+Recommends:     guile-json, guile-ssh, gnutls-guile
 Suggests:       emacs, emacs-geiser, emacs-magit
 
 Obsoletes:      %{name}-emacs <= 0.8.3-1
@@ -71,11 +63,6 @@ make %{?_smp_mflags}
 
 
 %check
-# guix-environment-container.sh doesn't work on tmpfs
-if [ "`stat -c %%T -f`" = "tmpfs" ]; then
-    sed -i 's|tests/guix-environment-container.sh||' Makefile
-fi
-
 # user namespace is not supported in chroot
 if unshare -Ur true; then :; else
     sed -i 's|tests/syscalls.scm||' Makefile
@@ -90,6 +77,7 @@ make %{?_smp_mflags} check
 make install DESTDIR=%{buildroot} systemdservicedir=%{_unitdir}
 # drop useless upstart service file
 rm %{buildroot}%{_libdir}/upstart/system/guix-daemon.conf
+rm %{buildroot}%{_libdir}/upstart/system/guix-publish.conf
 rmdir %{buildroot}%{_libdir}/upstart/system
 rmdir %{buildroot}%{_libdir}/upstart
 # move the autoload script
@@ -97,6 +85,8 @@ mkdir -p %{buildroot}%{_emacs_sitestartdir}
 %{_emacs_bytecompile} %{buildroot}%{_emacs_sitelispdir}/guix/guix*.el
 mv %{buildroot}%{_emacs_sitelispdir}/guix/guix-autoloads.el \
     %{buildroot}%{_emacs_sitestartdir}/guix.el
+# own the configuration directory
+mkdir -p %{buildroot}%{_sysconfdir}/guix
 %find_lang guix
 %find_lang guix-packages
 
@@ -112,18 +102,18 @@ elif [ "$1" -gt 1 ]; then
     /usr/sbin/groupmod -n %{guix_group} guix-builder 2>/dev/null || :
     /usr/sbin/usermod -l %{guix_user} -d /gnu/store guix-builder 2>/dev/null || :
 fi
-%systemd_post guix-daemon.service
+%systemd_post guix-daemon.service guix-publish.service
 
 
 %preun
 if [ "$1" = 0 ]; then
     /sbin/install-info --del %{_infodir}/%{name}.info.gz %{_infodir}/dir || :
 fi
-%systemd_preun guix-daemon.service
+%systemd_preun guix-daemon.service guix-publish.service
 
 
 %postun
-%systemd_postun_with_restart guix-daemon.service
+%systemd_postun_with_restart guix-daemon.service guix-publish.service
 
 
 %files -f guix.lang -f guix-packages.lang
@@ -132,6 +122,7 @@ fi
 %{_bindir}/guix
 %{_bindir}/guix-daemon
 %{_sbindir}/guix-register
+%{_libexecdir}/guix/download
 %{_libexecdir}/guix/list-runtime-roots
 %{_libexecdir}/guix/offload
 %{_libexecdir}/guix/substitute
@@ -207,6 +198,9 @@ fi
 %dir %{_datadir}/guile/site/2.0/guix/build
 %{_datadir}/guile/site/2.0/guix/build/*.scm
 %{_datadir}/guile/site/2.0/guix/build/*.go
+%dir %{_datadir}/guile/site/2.0/guix/build-system
+%{_datadir}/guile/site/2.0/guix/build-system/*.scm
+%{_datadir}/guile/site/2.0/guix/build-system/*.go
 %dir %{_datadir}/guile/site/2.0/guix/emacs
 %{_datadir}/guile/site/2.0/guix/emacs/guix-helper.scm
 %{_datadir}/guile/site/2.0/guix/emacs/guix-main.scm
@@ -222,9 +216,8 @@ fi
 %dir %{_datadir}/guile/site/2.0/guix/scripts/import
 %{_datadir}/guile/site/2.0/guix/scripts/import/*.scm
 %{_datadir}/guile/site/2.0/guix/scripts/import/*.go
-%dir %{_datadir}/guile/site/2.0/guix/build-system
-%{_datadir}/guile/site/2.0/guix/build-system/*.scm
-%{_datadir}/guile/site/2.0/guix/build-system/*.go
+%dir %{_datadir}/guile/site/2.0/guix/tests
+%{_datadir}/guile/site/2.0/guix/tests/*.go
 %{_infodir}/%{name}.info*
 %dir %{_infodir}/images
 %{_infodir}/images/bootstrap-graph.png.gz
@@ -254,15 +247,21 @@ fi
 %{_mandir}/man1/guix-system.1*
 %{_mandir}/man1/guix.1*
 %{completionsdir}/guix
+%{_datadir}/zsh/site-functions/_guix
 %dir %{_emacs_sitelispdir}/guix
 %{_emacs_sitelispdir}/guix/guix*.elc
 %{_emacs_sitelispdir}/guix/guix*.el
 %{_emacs_sitestartdir}/guix.el
+%dir %{_sysconfdir}/guix
 %{_unitdir}/guix-daemon.service
+%{_unitdir}/guix-publish.service
 
 
 
 %changelog
+* Sat Dec 31 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.12.0-1
+- Update to 0.12.0
+
 * Fri Nov 04 2016 Ting-Wei Lan <lantw44@gmail.com> - 0.11.0-3
 - Use autosetup macro
 - Fix build failure on Guile 2.0.13
