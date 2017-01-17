@@ -3,7 +3,7 @@
 
 Name: epiphany
 Epoch: 1
-Version: 3.22.4
+Version: 3.22.5
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
@@ -120,6 +120,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_mandir}/man*/*
 
 %changelog
+* Tue Jan 17 2017 Kalev Lember <klember@redhat.com> - 1:3.22.5-1
+- Update to 3.22.5
+
 * Thu Dec 29 2016 Kalev Lember <klember@redhat.com> - 1:3.22.4-1
 - Update to 3.22.4
 
