@@ -1,12 +1,12 @@
 Name:       msieve
-Version:    1.52
-Release:    7%{?dist}
+Version:    1.53
+Release:    1%{?dist}
 Summary:    Msieve is a C library to factor large integers.
 
 Group:      Applications/Engineering
 License:    Public Domain
 URL:        https://sourceforge.net/projects/msieve
-Source0:    https://downloads.sourceforge.net/project/msieve/msieve/Msieve v1.52/msieve152.tar.gz
+Source0:    https://downloads.sourceforge.net/project/msieve/msieve/Msieve v1.53/msieve153_src.tar.gz
 
 BuildRequires: gmp-ecm-devel, zlib-devel
 Requires:   zlib-devel
@@ -21,6 +21,7 @@ latter has helped complete some of the largest public factorizations known.
 
 
 %build
+sed -i 's|-march=native||' Makefile
 make %{?_smp_mflags} all ECM=1 CC="gcc %{optflags} %{__global_ldflags}"
 
 
@@ -39,6 +40,10 @@ install -m 644 libmsieve.a %{buildroot}%{_libdir}
 
 
 %changelog
+* Mon Jan 23 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.53-1
+- Update to 1.53
+- Remove -march=native set in OPT_FLAGS
+
 * Sat Sep 10 2016 Ting-Wei Lan <lantw44@gmail.com> - 1.52-7
 - Rebuilt for Fedora 25 and 26
 
