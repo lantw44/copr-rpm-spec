@@ -35,7 +35,7 @@
 %bcond_without require_clang
 
 Name:       chromium
-Version:    55.0.2883.87
+Version:    56.0.2924.76
 Release:    100%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -72,11 +72,6 @@ Source11:   chromium-browser.desktop
 Source12:   chromium-browser.xml
 Source13:   chromium-browser.appdata.xml
 
-# Add a patch from Fedora to fix crash
-# https://bugzilla.redhat.com/show_bug.cgi?id=1361157
-# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=ed93147
-Patch0:     chromium-unset-madv_free.patch
-
 # Add a patch from Fedora to fix GN build
 # http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=0df9641
 Patch1:     chromium-last-commit-position.patch
@@ -108,7 +103,8 @@ BuildRequires: clang
 BuildRequires: ninja-build, bison, gperf, hwdata
 BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
 BuildRequires: libcap-devel, cups-devel, minizip-devel, alsa-lib-devel
-BuildRequires: pkgconfig(gtk+-2.0), pkgconfig(libexif), pkgconfig(nss)
+BuildRequires: pkgconfig(gtk+-2.0), pkgconfig(gtk+-3.0)
+BuildRequires: pkgconfig(libexif), pkgconfig(nss)
 BuildRequires: pkgconfig(xtst), pkgconfig(xscrnsaver)
 BuildRequires: pkgconfig(dbus-1), pkgconfig(libudev)
 BuildRequires: pkgconfig(gnome-keyring-1)
@@ -222,6 +218,7 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/google_input_tools/third_party/closure_library/third_party/closure \
     third_party/hunspell \
     third_party/iccjpeg \
+    third_party/inspector_protocol \
 %if !%{with system_libicu}
     third_party/icu \
 %endif
@@ -292,7 +289,8 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/yasm/run_yasm.py \
     third_party/zlib/google \
     url/third_party/mozilla \
-    v8/src/third_party/valgrind
+    v8/src/third_party/valgrind \
+    v8/third_party/inspector_protocol
 
 ./build/linux/unbundle/replace_gn_files.py --system-libraries \
     flac \
@@ -318,6 +316,13 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
 
 sed -i "s|'ninja'|'ninja-build'|" tools/gn/bootstrap/bootstrap.py
 sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' device/usb/BUILD.gn
+
+# Workaround build error caused by debugedit
+# https://bugzilla.redhat.com/show_bug.cgi?id=304121
+sed -i '/^#include/s|//|/|' \
+    content/renderer/gpu/compositor_forwarding_message_filter.cc \
+    third_party/webrtc/modules/audio_processing/utility/ooura_fft.cc \
+    third_party/webrtc/modules/audio_processing/utility/ooura_fft_sse2.cc
 
 rmdir third_party/jinja2 third_party/markupsafe
 ln -s %{python2_sitelib}/jinja2 third_party/jinja2
@@ -482,6 +487,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Jan 27 2017 - Ting-Wei Lan <lantw44@gmail.com> - 56.0.2924.76-100
+- Update to 56.0.2924.76
+- Update repackaging scripts
+- Avoid build error when symbol condition is enabled (#304121)
+
 * Tue Dec 13 2016 - Ting-Wei Lan <lantw44@gmail.com> - 55.0.2883.87-100
 - Update to 55.0.2883.87
 

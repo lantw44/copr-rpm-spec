@@ -29,6 +29,7 @@
 #  * Rename: clean_ffmpeg.sh -> chromium-ffmpeg-clean.sh.
 #  * The shebang line no longer hardcodes the path to bash.
 #  * Delete gyp* from other_files because GYP support has been removed.
+#  * Add new header_files and manual_files required by Chromium 56.
 
 # $1 files
 # $2 verbose
@@ -102,7 +103,9 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/rl.h \
 		libavcodec/rnd_avg.h \
 		libavcodec/thread.h \
+		libavcodec/unary.h \
 		libavcodec/version.h \
+		libavcodec/vlc.h \
 		libavcodec/vp3data.h \
 		libavcodec/vp56.h \
 		libavcodec/vp56dsp.h \
@@ -139,6 +142,7 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavutil/cpu.h \
 		libavutil/cpu_internal.h \
 		libavutil/dynarray.h \
+		libavutil/ffmath.h \
 		libavutil/internal.h \
 		libavutil/intfloat.h \
 		libavutil/intreadwrite.h \
@@ -162,6 +166,8 @@ manual_files="	libavcodec/x86/hpeldsp_rnd_template.c \
 		libavcodec/x86/vorbisdsp_init.c \
 		libavcodec/bit_depth_template.c \
 		libavcodec/fft_template.c \
+		libavcodec/flacdsp_lpc_template.c \
+		libavcodec/flacdsp_template.c \
 		libavcodec/h264pred_template.c \
 		libavcodec/hpel_template.c \
 		libavcodec/mdct_template.c \

@@ -28,14 +28,26 @@
 # List of changes:
 #  * Rename: get_free_ffmpeg_source_files.py -> chromium-ffmpeg-free-sources.py.
 #  * The shebang line no longer hardcodes the path to python2.
+#  * Allow conditions without 'ffmpeg_branding == "Chromium"'.
+#  * Add files included by files named with 'autorename_' prefix.
 
 import sys
+import os
 import re
 
 def append_sources (input_sources, output_sources):
 
   # Get the source files.
   source_files = re.findall(r"\"(.*?)\"", input_sources)
+  for source_file in source_files:
+    source_file_basename = os.path.basename(source_file)
+    if source_file_basename.startswith('autorename_'):
+      possible_include_underscore = source_file_basename[11:]
+      possible_include_underscore_count = possible_include_underscore.count('_')
+      possible_includes = [
+        possible_include_underscore.replace('_', '/', i) for i in range(1,
+        possible_include_underscore_count + 1) ]
+      output_sources += possible_includes
   output_sources += source_files
 
 
@@ -66,13 +78,16 @@ def parse_ffmpeg_gyni_file(gyni_path, arch_not_arm):
     for block in blocks:
       conditions = re.findall(r"\(?\((.*?)\)", block[0])
       for condition in conditions:
-        limitations = ['is_linux', 'ffmpeg_branding == "Chromium"']
-        if all(limitation in condition for limitation in limitations):
-          if (arch_not_arm):
-            if ('x64' in condition) or ('x86' in condition):
-              parse_sources (block[1], output_sources, arch_not_arm)
-          else:
+        if not 'is_linux' in condition:
+          continue
+        if 'ffmpeg_branding' in condition and \
+           'ffmpeg_branding == "Chromium"' not in condition:
+          continue
+        if (arch_not_arm):
+          if ('x64' in condition) or ('x86' in condition):
             parse_sources (block[1], output_sources, arch_not_arm)
+        else:
+          parse_sources (block[1], output_sources, arch_not_arm)
 
   print ' '.join(output_sources)
 
