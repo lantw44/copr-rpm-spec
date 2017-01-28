@@ -22,8 +22,8 @@
 # This file is obtained from official Chromium packages distributed by Fedora:
 # http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=8a15fdf
 #
-# This script has been and modified by Ting-Wei Lan <lantw44@gmail.com> for
-# using in lantw44/chromium Copr repository.
+# This script has been modified by Ting-Wei Lan <lantw44@gmail.com> for using
+# in lantw44/chromium Copr repository.
 #
 # List of changes:
 #  * Rename: get_free_ffmpeg_source_files.py -> chromium-ffmpeg-free-sources.py.
