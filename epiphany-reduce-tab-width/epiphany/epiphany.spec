@@ -4,7 +4,7 @@
 Name: epiphany
 Epoch: 1
 Version: 3.22.6
-Release: 1%{?dist}.1
+Release: 2%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv2+ and CC-BY-SA
@@ -13,8 +13,12 @@ Source0: https://download.gnome.org/sources/epiphany/3.22/%{name}-%{version}.tar
 
 # Fedora bookmarks
 Patch0: epiphany-default-bookmarks.patch
+
+# Taken from https://git.gnome.org/browse/epiphany/log/?h=gnome-3-22
+Patch1: epiphany-3.22.6-fixes.patch
+
 # Reduce the minimum tab width
-Patch1: epiphany-3.20-reduce-tab-width.patch
+Patch2: epiphany-3.20-reduce-tab-width.patch
 
 BuildRequires: desktop-file-utils
 BuildRequires: gcr-devel >= 3.5.5
@@ -120,6 +124,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_mandir}/man*/*
 
 %changelog
+* Mon Feb 20 2017 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.22.6-2
+- Add fixes for several upstream bugs, 3.22.7 preview
+
 * Fri Feb 03 2017 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.22.6-1
 - Update to 3.22.6
 
