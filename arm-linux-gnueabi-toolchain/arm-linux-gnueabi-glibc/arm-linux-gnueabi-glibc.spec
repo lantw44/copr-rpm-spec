@@ -42,8 +42,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.24
-Release:    2%{?dist}
+Version:    2.25
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -86,6 +86,8 @@ RANLIB=%{_bindir}/%{cross_triplet}-ranlib \
     --enable-add-ons \
     --enable-multi-arch \
     --enable-obsolete-rpc \
+    --enable-stack-protector=strong \
+    --enable-tunables \
     --disable-profile \
     --with-headers=%{cross_sysroot}/usr/include \
     --with-tls \
@@ -163,7 +165,8 @@ chmod +x %{__ar_no_strip}
 %doc ChangeLog.old-ports-mips
 %doc ChangeLog.old-ports-powerpc
 %doc ChangeLog.old-ports-tile
-%doc NAMESPACE NEWS PROJECTS README WUR-REPORT
+%doc NAMESPACE NEWS README
+%doc README.pretty-printers README.tunables WUR-REPORT
 %{cross_sysroot}/usr/include/_G_config.h
 %{cross_sysroot}/usr/include/a.out.h
 %{cross_sysroot}/usr/include/aio.h
@@ -285,6 +288,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/paths.h
 %{cross_sysroot}/usr/include/poll.h
 %{cross_sysroot}/usr/include/printf.h
+%{cross_sysroot}/usr/include/proc_service.h
 %dir %{cross_sysroot}/usr/include/protocols
 %{cross_sysroot}/usr/include/protocols/routed.h
 %{cross_sysroot}/usr/include/protocols/rwhod.h
@@ -355,6 +359,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/sys/ptrace.h
 %{cross_sysroot}/usr/include/sys/queue.h
 %{cross_sysroot}/usr/include/sys/quota.h
+%{cross_sysroot}/usr/include/sys/random.h
 %{cross_sysroot}/usr/include/sys/raw.h
 %{cross_sysroot}/usr/include/sys/reboot.h
 %{cross_sysroot}/usr/include/sys/resource.h
@@ -566,6 +571,11 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Tue Mar 07 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.25-1
+- Update to 2.25
+- Enable stack protector
+- Enable tunables feature
+
 * Sat Sep 10 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.24-2
 - Rebuilt for Fedora 25 and 26
 - Add perl to BuildRequires because it is required to build mtrace
