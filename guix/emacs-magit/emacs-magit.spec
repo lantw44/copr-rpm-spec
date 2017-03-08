@@ -12,7 +12,7 @@
 %endif
 
 Name:           emacs-%{pkg}
-Version:        2.9.0
+Version:        2.10.3
 Release:        1%{?dist}
 Summary:        Emacs interface to the most common Git operations
 
@@ -81,6 +81,9 @@ fi
 
 
 %changelog
+* Wed Mar 08 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.10.3-1
+- Update to upstream version 2.10.3
+
 * Sat Dec 31 2016 Ting-Wei Lan <lantw44@gmail.com> - 2.9.0-1
 - Update to upstream version 2.9.0
 
