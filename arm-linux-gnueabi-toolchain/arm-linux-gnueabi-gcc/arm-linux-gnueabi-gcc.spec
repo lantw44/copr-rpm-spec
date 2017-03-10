@@ -30,13 +30,14 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    6.3.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 Group:      Development/Languages
 License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
 URL:        https://gcc.gnu.org
 Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
+Patch0:     gcc-fix-empty-string-check.patch
 
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel, isl-devel
 BuildRequires: gmp-devel, mpfr-devel, libmpc-devel, elfutils-libelf-devel
@@ -64,7 +65,7 @@ Provides:   %{cross_triplet}-gcc-stage3 = %{version}
 
 
 %prep
-%setup -qTb 0 -n gcc-%{version}
+%autosetup -p1 -Tb 0 -n gcc-%{version}
 
 
 %build
@@ -346,6 +347,9 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Wed Mar 08 2017 Ting-Wei Lan <lantw44@gmail.com> - 6.3.0-2
+- Fix wrong string check caught by GCC 7
+
 * Thu Dec 22 2016 Ting-Wei Lan <lantw44@gmail.com> - 6.3.0-1
 - Update to new stable release 6.3.0
 
