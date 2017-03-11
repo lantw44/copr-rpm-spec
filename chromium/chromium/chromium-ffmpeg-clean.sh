@@ -87,12 +87,14 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/mathops.h \
 		libavcodec/me_cmp.h \
 		libavcodec/motion_est.h \
+		libavcodec/mpeg12data.h \
 		libavcodec/mpegpicture.h \
 		libavcodec/mpegutils.h \
 		libavcodec/mpegvideo.h \
 		libavcodec/mpegvideodsp.h \
 		libavcodec/mpegvideoencdsp.h \
 		libavcodec/options_table.h \
+		libavcodec/opus_rc.h \
 		libavcodec/pcm_tablegen.h \
 		libavcodec/pixblockdsp.h \
 		libavcodec/pixels.h \
