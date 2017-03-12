@@ -1,6 +1,9 @@
+# Bootstrap binaries provided by guix don't have build IDs
+%global _missing_build_ids_terminate_build 0
+
 Name:           guix
 Version:        0.12.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -259,6 +262,9 @@ fi
 
 
 %changelog
+* Sun Mar 12 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.12.0-3
+- Workaround missing build-id error for Fedora 27
+
 * Wed Mar 08 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.12.0-2
 - Rebuilt for Fedora 26 and 27
 
