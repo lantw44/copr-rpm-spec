@@ -18,6 +18,12 @@
 %bcond_with clang
 %endif
 
+%if 0%{?fedora} < 26
+%bcond_without system_jinja2
+%else
+%bcond_with system_jinja2
+%endif
+
 # https://github.com/dabeaz/ply/issues/66
 %if 0%{?fedora} >= 24
 %bcond_without system_ply
@@ -36,7 +42,7 @@
 
 Name:       chromium
 Version:    57.0.2987.98
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -88,6 +94,13 @@ Patch1:     chromium-last-commit-position.patch
 # https://codereview.chromium.org/2310513002
 Patch3:     chromium-use-no-delete-null-pointer-checks-with-gcc.patch
 
+# Add several patches from Fedora to fix build with GCC 7
+# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=86f726d
+Patch4:     chromium-webkit-fpermissive.patch
+# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=54f615e
+# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=ce69059
+Patch5:     chromium-v8-gcc7.patch
+
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
 
@@ -113,10 +126,12 @@ BuildRequires: pkgconfig(libffi)
 BuildRequires: python2-rpm-macros
 BuildRequires: python-beautifulsoup4
 BuildRequires: python-html5lib
+%if %{with system_jinja2}
 %if 0%{?fedora} >= 24
 BuildRequires: python2-jinja2
 %else
 BuildRequires: python-jinja2
+%endif
 %endif
 %if 0%{?fedora} >= 26
 BuildRequires: python2-markupsafe
@@ -222,6 +237,9 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
 %if !%{with system_libicu}
     third_party/icu \
 %endif
+%if !%{with system_jinja2}
+    third_party/jinja2 \
+%endif
     third_party/jstemplate \
     third_party/khronos \
     third_party/leveldatabase \
@@ -324,8 +342,12 @@ sed -i '/^#include/s|//|/|' \
     third_party/webrtc/modules/audio_processing/utility/ooura_fft.cc \
     third_party/webrtc/modules/audio_processing/utility/ooura_fft_sse2.cc
 
-rmdir third_party/jinja2 third_party/markupsafe
+%if %{with system_jinja2}
+rmdir third_party/jinja2
 ln -s %{python2_sitelib}/jinja2 third_party/jinja2
+%endif
+
+rmdir third_party/markupsafe
 ln -s %{python2_sitearch}/markupsafe third_party/markupsafe
 
 %if %{with system_ply}
@@ -488,6 +510,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Mar 12 2017 - Ting-Wei Lan <lantw44@gmail.com> - 57.0.2987.98-101
+- Fix GCC 7 build issue on Fedora 26 and later
+- Bundle python2-jinja2 on Fedora 26 and later
+
 * Sat Mar 11 2017 - Ting-Wei Lan <lantw44@gmail.com> - 57.0.2987.98-100
 - Update to 57.0.2987.98
 

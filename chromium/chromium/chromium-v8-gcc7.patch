@@ -1,0 +1,82 @@
+diff -up chromium-56.0.2924.87/third_party/WebKit/Source/platform/graphics/gpu/SharedGpuContext.h.gcc7 chromium-56.0.2924.87/third_party/WebKit/Source/platform/graphics/gpu/SharedGpuContext.h
+--- chromium-56.0.2924.87/third_party/WebKit/Source/platform/graphics/gpu/SharedGpuContext.h.gcc7	2017-03-01 11:29:32.681142930 -0500
++++ chromium-56.0.2924.87/third_party/WebKit/Source/platform/graphics/gpu/SharedGpuContext.h	2017-03-01 11:30:19.396536499 -0500
+@@ -5,6 +5,7 @@
+ #include "platform/PlatformExport.h"
+ #include "wtf/ThreadSpecific.h"
+ 
++#include <functional>
+ #include <memory>
+ 
+ namespace gpu {
+diff -up chromium-56.0.2924.87/v8/src/objects-body-descriptors.h.gcc7 chromium-56.0.2924.87/v8/src/objects-body-descriptors.h
+--- chromium-56.0.2924.87/v8/src/objects-body-descriptors.h.gcc7	2017-02-28 16:00:27.313172210 -0500
++++ chromium-56.0.2924.87/v8/src/objects-body-descriptors.h	2017-02-28 16:00:46.016804708 -0500
+@@ -99,7 +99,7 @@ class FixedBodyDescriptor final : public
+ 
+   template <typename StaticVisitor>
+   static inline void IterateBody(HeapObject* obj, int object_size) {
+-    IterateBody(obj);
++    IterateBody<StaticVisitor>(obj);
+   }
+ };
+ 
+diff -up chromium-56.0.2924.87/v8/src/objects.h.gcc7 chromium-56.0.2924.87/v8/src/objects.h
+--- chromium-56.0.2924.87/v8/src/objects.h.gcc7	2017-02-28 15:58:27.368527968 -0500
++++ chromium-56.0.2924.87/v8/src/objects.h	2017-02-28 15:59:25.868379455 -0500
+@@ -3531,22 +3531,10 @@ class HashTable : public HashTableBase {
+  public:
+   typedef Shape ShapeT;
+ 
+-  // Wrapper methods
+-  inline uint32_t Hash(Key key) {
+-    if (Shape::UsesSeed) {
+-      return Shape::SeededHash(key, GetHeap()->HashSeed());
+-    } else {
+-      return Shape::Hash(key);
+-    }
+-  }
+-
+-  inline uint32_t HashForObject(Key key, Object* object) {
+-    if (Shape::UsesSeed) {
+-      return Shape::SeededHashForObject(key, GetHeap()->HashSeed(), object);
+-    } else {
+-      return Shape::HashForObject(key, object);
+-    }
+-  }
++  // Wrapper methods.  Defined in src/objects-inl.h
++  // to break a cycle with src/heap/heap.h.
++  inline uint32_t Hash(Key key);
++  inline uint32_t HashForObject(Key key, Object* object);
+ 
+   // Returns a new HashTable object.
+   MUST_USE_RESULT static Handle<Derived> New(
+diff -up chromium-56.0.2924.87/v8/src/objects-inl.h.gcc7 chromium-56.0.2924.87/v8/src/objects-inl.h
+--- chromium-56.0.2924.87/v8/src/objects-inl.h.gcc7	2017-02-28 15:59:44.293016928 -0500
++++ chromium-56.0.2924.87/v8/src/objects-inl.h	2017-02-28 16:00:18.187351116 -0500
+@@ -39,6 +39,25 @@
+ namespace v8 {
+ namespace internal {
+ 
++template <typename Derived, typename Shape, typename Key>
++uint32_t HashTable<Derived, Shape, Key>::Hash(Key key) {
++  if (Shape::UsesSeed) {
++    return Shape::SeededHash(key, GetHeap()->HashSeed());
++  } else {
++    return Shape::Hash(key);
++  }
++}
++
++template <typename Derived, typename Shape, typename Key>
++uint32_t HashTable<Derived, Shape, Key>::HashForObject(Key key,
++                                                       Object* object) {
++  if (Shape::UsesSeed) {
++    return Shape::SeededHashForObject(key, GetHeap()->HashSeed(), object);
++  } else {
++    return Shape::HashForObject(key, object);
++  }
++}
++
+ PropertyDetails::PropertyDetails(Smi* smi) {
+   value_ = smi->value();
+ }
