@@ -41,8 +41,8 @@
 %bcond_without require_clang
 
 Name:       chromium
-Version:    57.0.2987.98
-Release:    101%{?dist}
+Version:    57.0.2987.110
+Release:    100%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -510,6 +510,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Mar 17 2017 - Ting-Wei Lan <lantw44@gmail.com> - 57.0.2987.110-100
+- Update to 57.0.2987.110
+
 * Sun Mar 12 2017 - Ting-Wei Lan <lantw44@gmail.com> - 57.0.2987.98-101
 - Fix GCC 7 build issue on Fedora 26 and later
 - Bundle python2-jinja2 on Fedora 26 and later
