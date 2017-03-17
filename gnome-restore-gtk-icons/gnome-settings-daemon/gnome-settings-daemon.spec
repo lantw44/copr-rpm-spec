@@ -6,15 +6,13 @@
 %global geoclue_version 2.3.1
 
 Name:           gnome-settings-daemon
-Version:        3.22.1
+Version:        3.22.2
 Release:        1%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        GPLv2+
 URL:            https://download.gnome.org/sources/%{name}
 Source0:        https://download.gnome.org/sources/%{name}/3.22/%{name}-%{version}.tar.xz
-# disable wacom for ppc/ppc64 (used on RHEL)
-Patch0:         %{name}-3.5.4-ppc-no-wacom.patch
 # respect menus-have-icons and buttons-have-icons settings
 Patch1:         %{name}-3.14-respect-menus-buttons-icons.patch
 
@@ -43,14 +41,13 @@ BuildRequires:  pkgconfig(x11)
 BuildRequires:  pkgconfig(xi)
 BuildRequires:  pkgconfig(xtst)
 BuildRequires:  gettext intltool
-BuildRequires:  autoconf automake libtool
 BuildRequires:  cups-devel
 %if 0%{?fedora}
 BuildRequires:  pkgconfig(wayland-client)
 %endif
 BuildRequires:  libxslt
 BuildRequires:  docbook-style-xsl
-%ifnarch s390 s390x %{?rhel:ppc ppc64}
+%ifnarch s390 s390x
 BuildRequires:  pkgconfig(libwacom) >= 0.7
 BuildRequires:  pkgconfig(xorg-wacom)
 %endif
@@ -74,7 +71,7 @@ Conflicts: gnome-shell < 3.13.92
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.20.
+buttons and menus in GNOME 3.22.
 
 A daemon to share settings from GNOME to other applications. It also
 handles global keybindings, as well as a number of desktop-wide settings.
@@ -89,13 +86,7 @@ developing applications that use %{name}.
 
 %prep
 %setup -q
-%if 0%{?rhel}
-%patch0 -p1 -b .ppc-no-wacom
-%endif
-
 %patch1 -p1 -b .menus-buttons-icons
-
-autoreconf -i -f
 
 %build
 %configure --disable-static \
@@ -184,7 +175,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.peripherals.gschema.xml
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.peripherals.wacom.gschema.xml
 
-%ifnarch s390 s390x %{?rhel:ppc ppc64}
+%ifnarch s390 s390x
 %{_libdir}/gnome-settings-daemon-3.0/wacom.gnome-settings-plugin
 %{_libdir}/gnome-settings-daemon-3.0/libgsdwacom.so
 %{_libexecdir}/gsd-wacom-led-helper
@@ -237,7 +228,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %files devel
 %{_includedir}/gnome-settings-daemon-3.0
 %{_libdir}/pkgconfig/gnome-settings-daemon.pc
-%ifnarch s390 s390x %{?rhel:ppc ppc64}
+%ifnarch s390 s390x
 %{_libexecdir}/gsd-list-wacom
 %{_libexecdir}/gsd-test-wacom
 %{_libexecdir}/gsd-test-wacom-osd
@@ -260,6 +251,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-xsettings
 
 %changelog
+* Thu Mar 16 2017 Kalev Lember <klember@redhat.com> - 3.22.2-1
+- Update to 3.22.2
+
 * Wed Oct 12 2016 Kalev Lember <klember@redhat.com> - 3.22.1-1
 - Update to 3.22.1
 
