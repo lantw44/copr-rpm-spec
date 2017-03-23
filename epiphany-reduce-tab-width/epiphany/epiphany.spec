@@ -4,7 +4,7 @@
 Name: epiphany
 Epoch: 1
 Version: 3.22.7
-Release: 1%{?dist}
+Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv2+ and CC-BY-SA
