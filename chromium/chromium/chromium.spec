@@ -6,7 +6,7 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
-%if 0%{?fedora} >= 24
+%if 0
 %bcond_without system_libvpx
 %else
 %bcond_with system_libvpx
@@ -41,7 +41,7 @@
 %bcond_without require_clang
 
 Name:       chromium
-Version:    57.0.2987.133
+Version:    58.0.3029.81
 Release:    100%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -74,32 +74,36 @@ Source10:   chromium-browser.sh
 Source11:   chromium-browser.desktop
 
 # The following two source files are copied verbatim from
-# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/tree/
+# https://src.fedoraproject.org/cgit/rpms/chromium.git/tree/
 Source12:   chromium-browser.xml
 Source13:   chromium-browser.appdata.xml
 
 # Add a patch from Fedora to fix GN build
-# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=0df9641
-Patch1:     chromium-last-commit-position.patch
+# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=0df9641
+Patch10:    chromium-last-commit-position.patch
 
 # Building with GCC 6 requires -fno-delete-null-pointer-checks to avoid crashes
 # Unfortunately, it is not possible to add additional compiler flags with
 # environment variables or command-line arguments when building with GN, so we
 # must patch the build file here.
-# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=7fe5f2bb
+# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=7fe5f2bb
 # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68853
 # https://bugs.debian.org/833524
 # https://anonscm.debian.org/cgit/pkg-chromium/pkg-chromium.git/commit/?id=dfd37f3
 # https://bugs.chromium.org/p/v8/issues/detail?id=3782
 # https://codereview.chromium.org/2310513002
-Patch3:     chromium-use-no-delete-null-pointer-checks-with-gcc.patch
+Patch20:    chromium-use-no-delete-null-pointer-checks-with-gcc.patch
 
 # Add several patches from Fedora to fix build with GCC 7
-# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=86f726d
-Patch4:     chromium-webkit-fpermissive.patch
-# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=54f615e
-# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=ce69059
-Patch5:     chromium-v8-gcc7.patch
+# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=86f726d
+Patch30:    chromium-webkit-fpermissive.patch
+# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=54f615e
+# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=ce69059
+Patch31:    chromium-v8-gcc7.patch
+
+# Add a patch from Gentoo to fix build error when bootstrapping GN
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=cdbb5d1
+Patch40:    chromium-gn-bootstrap.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -113,7 +117,7 @@ BuildRequires: gcc >= 5.1.1-2
 BuildRequires: clang
 %endif
 # Basic tools and libraries
-BuildRequires: ninja-build, bison, gperf, hwdata
+BuildRequires: ninja-build, nodejs, bison, gperf, hwdata
 BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
 BuildRequires: libcap-devel, cups-devel, minizip-devel, alsa-lib-devel
 BuildRequires: pkgconfig(gtk+-2.0), pkgconfig(gtk+-3.0)
@@ -266,6 +270,8 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/mesa \
     third_party/modp_b64 \
     third_party/mt19937ar \
+    third_party/node \
+    third_party/node/node_modules/vulcanize/third_party/UglifyJS2 \
     third_party/openh264 \
     third_party/openmax_dl \
     third_party/opus \
@@ -354,6 +360,9 @@ ln -s %{python2_sitearch}/markupsafe third_party/markupsafe
 rmdir third_party/ply
 ln -s %{python2_sitelib}/ply third_party/ply
 %endif
+
+mkdir -p third_party/node/linux/node-linux-x64/bin
+ln -s %{_bindir}/node third_party/node/linux/node-linux-x64/bin/node
 
 
 %build
@@ -510,6 +519,12 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Apr 20 2017 - Ting-Wei Lan <lantw44@gmail.com> - 58.0.3029.81-100
+- Update to 58.0.3029.81
+- Bundle libvpx because it needs symbols from unreleased version
+- Replace all HTTP links in comments with HTTPS links
+- Group patch files by using 2-digit numbers
+
 * Thu Mar 30 2017 - Ting-Wei Lan <lantw44@gmail.com> - 57.0.2987.133-100
 - Update to 57.0.2987.133
 
