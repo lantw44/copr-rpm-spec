@@ -3,7 +3,7 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    4.10.13
+Version:    4.11.0
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -47,6 +47,7 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %dir %{cross_sysroot}/usr/include/drm
 %{cross_sysroot}/usr/include/drm/*.h
 %dir %{cross_sysroot}/usr/include/linux
+%{cross_sysroot}/usr/include/linux/*.h
 %dir %{cross_sysroot}/usr/include/linux/android
 %{cross_sysroot}/usr/include/linux/android/binder.h
 %dir %{cross_sysroot}/usr/include/linux/byteorder
@@ -95,8 +96,6 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/linux/usb/*.h
 %dir %{cross_sysroot}/usr/include/linux/wimax
 %{cross_sysroot}/usr/include/linux/wimax/*.h
-%dir %{cross_sysroot}/usr/include/linux
-%{cross_sysroot}/usr/include/linux/*.h
 %dir %{cross_sysroot}/usr/include/misc
 %{cross_sysroot}/usr/include/misc/*.h
 %dir %{cross_sysroot}/usr/include/mtd
@@ -105,6 +104,7 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/rdma/*.h
 %dir %{cross_sysroot}/usr/include/rdma/hfi
 %{cross_sysroot}/usr/include/rdma/hfi/hfi1_user.h
+%{cross_sysroot}/usr/include/rdma/hfi/hfi1_ioctl.h
 %dir %{cross_sysroot}/usr/include/scsi
 %{cross_sysroot}/usr/include/scsi/*.h
 %dir %{cross_sysroot}/usr/include/scsi/fc
@@ -118,6 +118,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Tue May 02 2017 Ting-Wei Lan <lantw44@gmail.com> - 4.11.0-1
+- Update to 4.11
+
 * Thu Apr 27 2017 Ting-Wei Lan <lantw44@gmail.com> - 4.10.13-1
 - Update to 4.10.13
 
