@@ -12,12 +12,6 @@
 %define pkg_suffix      %{nil}
 %endif
 
-%if 0%{?fedora} >= 22
-%define enable_ada      1
-%else
-%define enable_ada      0
-%endif
-
 %if %{cross_arch} == "arm"
   %define lib_dir_name        lib
 %else
@@ -28,16 +22,19 @@
   %endif
 %endif
 
+%bcond_without ada
+
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    6.3.0
-Release:    2%{?dist}
+Version:    7.1.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
+
+%define major_version   %(echo %{version} | sed 's/\\..*$//')
 
 Group:      Development/Languages
 License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
 URL:        https://gcc.gnu.org
 Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
-Patch0:     gcc-fix-empty-string-check.patch
 
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel, isl-devel
 BuildRequires: gmp-devel, mpfr-devel, libmpc-devel, elfutils-libelf-devel
@@ -90,6 +87,7 @@ WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc \
     --target=%{cross_triplet} \
     --with-local-prefix=%{cross_sysroot} \
     --with-sysroot=%{cross_sysroot} \
+    --with-gcc-major-version-only \
     --with-linker-hash-style=gnu \
     --with-system-zlib \
     --with-isl \
@@ -128,7 +126,7 @@ make %{?_smp_mflags} all-gcc
 make %{?_smp_mflags} all-gcc all-target-libgcc
 %endif
 %if %{cross_stage} == "final"
-%if %{enable_ada}
+%if %{with ada}
     --enable-languages=c,c++,fortran,objc,obj-c++,ada \
 %else
     --enable-languages=c,c++,fortran,objc,obj-c++ \
@@ -174,15 +172,15 @@ rmdir %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}
 find %{buildroot} -name '*.la' -delete
 rm -rf %{buildroot}%{_mandir}
 rm -rf %{buildroot}%{_infodir}
-rm -rf %{buildroot}%{_datadir}/gcc-%{version}/python
-rm -f %{buildroot}%{_bindir}/%{cross_triplet}-gcc-%{version}
+rm -rf %{buildroot}%{_datadir}/gcc-%{major_version}/python
+rm -f %{buildroot}%{_bindir}/%{cross_triplet}-gcc-%{major_version}
 rm -f %{buildroot}%{_libdir}/libcc1.so*
-rm -rf %{buildroot}%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/install-tools
-rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{version}/install-tools/fixincl
-rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{version}/install-tools/fixinc.sh
-rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{version}/install-tools/mkheaders
-rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{version}/install-tools/mkinstalldirs
-rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{version}/install-tools
+rm -rf %{buildroot}%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/install-tools
+rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools/fixincl
+rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools/fixinc.sh
+rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools/mkheaders
+rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools/mkinstalldirs
+rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools
 
 # Don't strip libgcc.a and libgcov.a - based on Fedora Project cross-gcc.spec
 %define __ar_no_strip $RPM_BUILD_DIR/gcc-%{version}/ar-no-strip
@@ -230,45 +228,49 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{_bindir}/%{cross_triplet}-gcc-nm
 %{_bindir}/%{cross_triplet}-gcc-ranlib
 %{_bindir}/%{cross_triplet}-gcov
+%{_bindir}/%{cross_triplet}-gcov-dump
 %{_bindir}/%{cross_triplet}-gcov-tool
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include-fixed/README
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include-fixed/limits.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include-fixed/syslimits.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/stddef.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/stdarg.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/stdfix.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/varargs.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/float.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/stdbool.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/iso646.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/stdint.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/stdint-gcc.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/stdalign.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/stdnoreturn.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/stdatomic.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/README
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/limits.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/syslimits.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stddef.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdarg.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdfix.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/varargs.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/float.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdbool.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/iso646.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdint.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdint-gcc.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdalign.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdnoreturn.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdatomic.h
 %if %{cross_arch} == "arm"
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/unwind-arm-common.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/mmintrin.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/unwind-arm-common.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/mmintrin.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_cmse.h
 %endif
 %if %{cross_arch} == "arm" || %{cross_arch} == "arm64"
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/arm_neon.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/arm_acle.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_neon.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_acle.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_fp16.h
 %endif
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/plugin
-%{_libexecdir}/gcc/%{cross_triplet}/%{version}/cc1
-%{_libexecdir}/gcc/%{cross_triplet}/%{version}/collect2
-%{_libexecdir}/gcc/%{cross_triplet}/%{version}/lto1
-%{_libexecdir}/gcc/%{cross_triplet}/%{version}/lto-wrapper
-%{_libexecdir}/gcc/%{cross_triplet}/%{version}/liblto_plugin.so*
-%{_libexecdir}/gcc/%{cross_triplet}/%{version}/plugin/gengtype
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/plugin
+%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/cc1
+%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/collect2
+%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/lto1
+%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/lto-wrapper
+%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/liblto_plugin.so*
+%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/plugin/gengtype
 %if %{cross_stage} != "pass1"
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/unwind.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/crtbegin*.o
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/crtend*.o
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/crtfastmath.o
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/libgcc.a
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/libgcc_eh.a
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/libgcov.a
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/gcov.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/unwind.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/crtbegin*.o
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/crtend*.o
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/crtfastmath.o
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/libgcc.a
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/libgcc_eh.a
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/libgcov.a
 %{cross_sysroot}/%{lib_dir_name}/libgcc_s.so
 %{cross_sysroot}/%{lib_dir_name}/libgcc_s.so.1
 %endif
@@ -279,18 +281,18 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %dir %{_prefix}/%{cross_triplet}
 %dir %{_prefix}/%{cross_triplet}/include
 %dir %{_prefix}/%{cross_triplet}/include/c++
-%{_prefix}/%{cross_triplet}/include/c++/%{version}
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/omp.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/openacc.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/objc
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/ssp
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/include/sanitizer
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/finclude
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/libcaf_single.a
-%{_libexecdir}/gcc/%{cross_triplet}/%{version}/cc1plus
-%{_libexecdir}/gcc/%{cross_triplet}/%{version}/cc1obj
-%{_libexecdir}/gcc/%{cross_triplet}/%{version}/cc1objplus
-%{_libexecdir}/gcc/%{cross_triplet}/%{version}/f951
+%{_prefix}/%{cross_triplet}/include/c++/%{major_version}
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/omp.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/openacc.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/objc
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/ssp
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/sanitizer
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/finclude
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/libcaf_single.a
+%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/cc1plus
+%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/cc1obj
+%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/cc1objplus
+%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/f951
 %{cross_sysroot}/%{lib_dir_name}/libasan.a
 %{cross_sysroot}/%{lib_dir_name}/libasan_preinit.o
 %{cross_sysroot}/%{lib_dir_name}/libasan.so*
@@ -320,13 +322,20 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{cross_sysroot}/%{lib_dir_name}/libsupc++.a
 %{cross_sysroot}/%{lib_dir_name}/libubsan.a
 %{cross_sysroot}/%{lib_dir_name}/libubsan.so*
+%if %{cross_arch} == "arm"
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/cilk
+%{cross_sysroot}/%{lib_dir_name}/libcilkrts.a
+%{cross_sysroot}/%{lib_dir_name}/libcilkrts.so*
+%{cross_sysroot}/%{lib_dir_name}/libcilkrts.spec
+%endif
 %if %{cross_arch} == "arm64"
 %{cross_sysroot}/%{lib_dir_name}/liblsan.a
 %{cross_sysroot}/%{lib_dir_name}/liblsan.so*
 %{cross_sysroot}/%{lib_dir_name}/libtsan.a
+%{cross_sysroot}/%{lib_dir_name}/libtsan_preinit.o
 %{cross_sysroot}/%{lib_dir_name}/libtsan.so*
 %endif
-%if %{enable_ada}
+%if %{with ada}
 %{_bindir}/%{cross_triplet}-gnat
 %{_bindir}/%{cross_triplet}-gnatbind
 %{_bindir}/%{cross_triplet}-gnatchop
@@ -339,14 +348,19 @@ chmod +x %{__rpmdeps_skip_sysroot}
 %{_bindir}/%{cross_triplet}-gnatname
 %{_bindir}/%{cross_triplet}-gnatprep
 %{_bindir}/%{cross_triplet}-gnatxref
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/adainclude
-%{_prefix}/lib/gcc/%{cross_triplet}/%{version}/adalib
-%{_libexecdir}/gcc/%{cross_triplet}/%{version}/gnat1
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/adainclude
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/adalib
+%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/gnat1
 %endif
 %endif
 
 
 %changelog
+* Wed May 03 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.1.0-1
+- Update to new stable release 7.1.0
+- Use bcond_without macro to conditionally enable Ada support
+- Use only major version number in filesystem paths
+
 * Wed Mar 08 2017 Ting-Wei Lan <lantw44@gmail.com> - 6.3.0-2
 - Fix wrong string check caught by GCC 7
 
