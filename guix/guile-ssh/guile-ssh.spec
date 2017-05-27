@@ -1,11 +1,14 @@
 Name:           guile-ssh
-Version:        0.10.2
-Release:        2%{?dist}
+Version:        0.11.1
+Release:        1%{?dist}
 Summary:        A library that provides access to the SSH protocol for GNU Guile
 
 License:        GPLv3+
 URL:            https://github.com/artyom-poptsov/guile-ssh
 Source0:        https://github.com/artyom-poptsov/guile-ssh/archive/v%{version}.tar.gz
+
+%global guile_source_dir %{_datadir}/guile/site/2.0
+%global guile_ccache_dir %{_libdir}/guile/2.0/site-ccache
 
 BuildRequires:  autoconf, automake, libtool, texinfo
 BuildRequires:  pkgconfig(guile-2.0), pkgconfig(libssh)
@@ -28,6 +31,14 @@ autoreconf -fi
 make %{?_smp_mflags}
 
 
+%check
+# try a few more times before failing
+for i in {1..24}; do
+    make %{?_smp_mflags} check && exit 0
+done
+exit 1
+
+
 %install
 %make_install
 rm %{buildroot}%{_libdir}/libguile-ssh.la
@@ -46,21 +57,27 @@ fi
 %files
 %license COPYING
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
-%dir %{_libdir}/guile/2.0/site-ccache/ssh
-%{_libdir}/guile/2.0/site-ccache/ssh/*.go
-%dir %{_libdir}/guile/2.0/site-ccache/ssh/dist
-%{_libdir}/guile/2.0/site-ccache/ssh/dist/*.go
+%{_bindir}/sssh.scm
+%{_bindir}/ssshd.scm
 %{_libdir}/libguile-ssh.so*
+%dir %{guile_source_dir}/ssh
+%dir %{guile_ccache_dir}/ssh
+%{guile_source_dir}/ssh/*.scm
+%{guile_ccache_dir}/ssh/*.go
+%dir %{guile_source_dir}/ssh/dist
+%dir %{guile_ccache_dir}/ssh/dist
+%{guile_source_dir}/ssh/dist/*.scm
+%{guile_ccache_dir}/ssh/dist/*.go
 %{_datadir}/%{name}
-%dir %{_datadir}/guile/site/2.0/ssh
-%{_datadir}/guile/site/2.0/ssh/*.scm
-%dir %{_datadir}/guile/site/2.0/ssh/dist
-%{_datadir}/guile/site/2.0/ssh/dist/*.scm
 %{_infodir}/%{name}.info.gz
 %exclude %{_infodir}/dir
 
 
 %changelog
+* Thu May 25 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.11.1-1
+- Update to 0.11.1
+- Add a check section to run tests
+
 * Wed Mar 08 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.10.2-2
 - Rebuilt for Fedora 26 and 27
 
