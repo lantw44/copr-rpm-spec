@@ -2,48 +2,49 @@
 %global _missing_build_ids_terminate_build 0
 
 Name:           guix
-Version:        0.12.0
-Release:        3%{?dist}
+Version:        0.13.0
+Release:        1%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
 URL:            https://www.gnu.org/software/guix
-Source0:        ftp://alpha.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://alpha.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source1:        https://alpha.gnu.org/gnu/guix/bootstrap/aarch64-linux/20170217/guile-2.0.14.tar.xz#/aarch64-linux-20170217-guile-2.0.14.tar.xz
+Source2:        https://alpha.gnu.org/gnu/guix/bootstrap/armhf-linux/20150101/guile-2.0.11.tar.xz#/armhf-linux-20150101-guile-2.0.11.tar.xz
+Source3:        https://alpha.gnu.org/gnu/guix/bootstrap/i686-linux/20131110/guile-2.0.9.tar.xz#/i686-linux-20131110-guile-2.0.9.tar.xz
+Source4:        https://alpha.gnu.org/gnu/guix/bootstrap/mips64el-linux/20131110/guile-2.0.9.tar.xz#/mips64el-linux-20131110-guile-2.0.9.tar.xz
+Source5:        https://alpha.gnu.org/gnu/guix/bootstrap/x86_64-linux/20131110/guile-2.0.9.tar.xz#/x86_64-linux-20131110-guile-2.0.9.tar.xz
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
 %global completionsdir    %(pkg-config --variable=completionsdir bash-completion)
+%global guile_source_dir  %{_datadir}/guile/site/2.0
+%global guile_ccache_dir  %{_libdir}/guile/2.0/site-ccache
+%global guix_profile_root %{_localstatedir}/guix/profiles/per-user/root/guix-profile
 
 BuildRequires:  pkgconfig(guile-2.0)
 BuildRequires:  pkgconfig(sqlite3)
 BuildRequires:  zlib-devel, bzip2-devel, libgcrypt-devel
 BuildRequires:  gettext, help2man, graphviz
-BuildRequires:  emacs, emacs-geiser, emacs-magit, bash-completion
+BuildRequires:  bash-completion
 BuildRequires:  guile-json, guile-ssh, gnutls-guile
 BuildRequires:  systemd
+
+%{?systemd_requires}
 
 Requires:       gzip, bzip2, xz
 Requires:       %{_bindir}/dot
 Requires:       %{_libdir}/libgcrypt.so
-Requires:       emacs-filesystem >= %{_emacs_version}
 Requires(post): /usr/sbin/useradd
 Requires(post): /usr/sbin/usermod
 Requires(post): /usr/sbin/groupadd
 Requires(post): /usr/sbin/groupmod
 Requires(post): /usr/bin/gpasswd
 Requires(post): info
-Requires(post): systemd
 Requires(preun): info
-Requires(preun): systemd
-Requires(postun): systemd
 
 Recommends:     guile-json, guile-ssh, gnutls-guile
-Suggests:       emacs, emacs-geiser, emacs-magit
-
-Obsoletes:      %{name}-emacs <= 0.8.3-1
-Obsoletes:      %{name}-emacs-el <= 0.8.3-1
-Provides:       %{name}-emacs <= 0.8.3-1
-Provides:       %{name}-emacs-el <= 0.8.3-1
+Suggests:       emacs-guix
 
 %description
 GNU Guix is a purely functional package manager for the GNU system. In addition
@@ -56,13 +57,28 @@ composed.
 
 %prep
 %autosetup -p1
+echo '3939909f24dcb955621aa7f81ecde6844bea8a083969c2d275c55699af123ebe  %{SOURCE1}' | sha256sum -c
+echo 'e551d05d4d385d6706ab8d574856a087758294dc90ab4c06e70a157a685e23d6  %{SOURCE2}' | sha256sum -c
+echo 'b757cd46bf13ecac83fb8e955fb50096ac2d17bb610ca8eb816f29302a00a846  %{SOURCE3}' | sha256sum -c
+echo '994680f0001346864aa2c2cc5110f380ee7518dcd701c614291682b8e948f73b  %{SOURCE4}' | sha256sum -c
+echo '037b103522a2d0d7d69c7ffd8de683dfe5bb4b59c1fafd70b4ffd397fd2f57f0  %{SOURCE5}' | sha256sum -c
+cp %{SOURCE1} gnu/packages/bootstrap/aarch64-linux/guile-2.0.14.tar.xz
+cp %{SOURCE2} gnu/packages/bootstrap/armhf-linux/guile-2.0.11.tar.xz
+cp %{SOURCE3} gnu/packages/bootstrap/i686-linux/guile-2.0.9.tar.xz
+cp %{SOURCE4} gnu/packages/bootstrap/mips64el-linux/guile-2.0.9.tar.xz
+cp %{SOURCE5} gnu/packages/bootstrap/x86_64-linux/guile-2.0.9.tar.xz
 
 
 %build
 %configure --disable-rpath \
     --with-bash-completion-dir=%{completionsdir} \
-    --with-lispdir=%{_emacs_sitelispdir}/guix
-make %{?_smp_mflags}
+    GUILE=%{_bindir}/guile \
+    GUILD=%{_bindir}/guild
+# try a few more times before failing
+for i in {1..4}; do
+    make %{?_smp_mflags} && exit 0
+done
+exit 1
 
 
 %check
@@ -72,22 +88,39 @@ if unshare -Ur true; then :; else
     sed -i 's|tests/containers.scm||' Makefile
     sed -i 's|tests/guix-environment-container.sh||' Makefile
 fi
-
-make %{?_smp_mflags} check
+# try a few more times before failing
+for i in {1..4}; do
+    make %{?_smp_mflags} check && exit 0
+done
+exit 1
 
 
 %install
 make install DESTDIR=%{buildroot} systemdservicedir=%{_unitdir}
-# drop useless upstart service file
+# rename systemd service files provided by upstream
+mv %{buildroot}%{_unitdir}/guix-daemon{,-latest}.service
+mv %{buildroot}%{_unitdir}/guix-publish{,-latest}.service
+# generate default systemd service files from upstream ones
+sed -e 's|^ExecStart=%{guix_profile_root}/bin|ExecStart=%{_bindir}|' \
+    -e 's|^Description=\(.*\)|Description=\1 (default)|' \
+    -e '/^Environment=/d' %{buildroot}%{_unitdir}/guix-daemon-latest.service \
+    > %{buildroot}%{_unitdir}/guix-daemon.service
+sed -e 's|^ExecStart=%{guix_profile_root}/bin|ExecStart=%{_bindir}|' \
+    -e 's|^Description=\(.*\)|Description=\1 (default)|' \
+    -e '/^Environment=/d' %{buildroot}%{_unitdir}/guix-publish-latest.service \
+    > %{buildroot}%{_unitdir}/guix-publish.service
+# generated files must be different from upstream ones
+! cmp %{buildroot}%{_unitdir}/guix-daemon{,-latest}.service
+! cmp %{buildroot}%{_unitdir}/guix-publish{,-latest}.service
+# edit the description of upstream systemd service files
+sed -i 's|^Description=\(.*\)|Description=\1 (upstream)|' \
+    %{buildroot}%{_unitdir}/guix-daemon-latest.service \
+    %{buildroot}%{_unitdir}/guix-publish-latest.service
+# drop useless upstart service files
 rm %{buildroot}%{_libdir}/upstart/system/guix-daemon.conf
 rm %{buildroot}%{_libdir}/upstart/system/guix-publish.conf
 rmdir %{buildroot}%{_libdir}/upstart/system
 rmdir %{buildroot}%{_libdir}/upstart
-# move the autoload script
-mkdir -p %{buildroot}%{_emacs_sitestartdir}
-%{_emacs_bytecompile} %{buildroot}%{_emacs_sitelispdir}/guix/guix*.el
-mv %{buildroot}%{_emacs_sitelispdir}/guix/guix-autoloads.el \
-    %{buildroot}%{_emacs_sitestartdir}/guix.el
 # own the configuration directory
 mkdir -p %{buildroot}%{_sysconfdir}/guix
 %find_lang guix
@@ -105,18 +138,21 @@ elif [ "$1" -gt 1 ]; then
     /usr/sbin/groupmod -n %{guix_group} guix-builder 2>/dev/null || :
     /usr/sbin/usermod -l %{guix_user} -d /gnu/store guix-builder 2>/dev/null || :
 fi
-%systemd_post guix-daemon.service guix-publish.service
+%systemd_post guix-daemon.service guix-daemon-latest.service
+%systemd_post guix-publish.service guix-publish-latest.service
 
 
 %preun
 if [ "$1" = 0 ]; then
     /sbin/install-info --del %{_infodir}/%{name}.info.gz %{_infodir}/dir || :
 fi
-%systemd_preun guix-daemon.service guix-publish.service
+%systemd_preun guix-daemon.service guix-daemon-latest.service
+%systemd_preun guix-publish.service guix-publish-latest.service
 
 
 %postun
-%systemd_postun_with_restart guix-daemon.service guix-publish.service
+%systemd_postun_with_restart guix-daemon.service guix-daemon-latest.service
+%systemd_postun_with_restart guix-publish.service guix-publish-latest.service
 
 
 %files -f guix.lang -f guix-packages.lang
@@ -130,97 +166,124 @@ fi
 %{_libexecdir}/guix/offload
 %{_libexecdir}/guix/substitute
 %{_libexecdir}/guix-authenticate
+%{guile_source_dir}/gnu.scm
+%{guile_ccache_dir}/gnu.go
+%dir %{guile_source_dir}/gnu
+%dir %{guile_ccache_dir}/gnu
+%{guile_source_dir}/gnu/artwork.scm
+%{guile_ccache_dir}/gnu/artwork.go
+%dir %{guile_source_dir}/gnu/build
+%dir %{guile_ccache_dir}/gnu/build
+%{guile_source_dir}/gnu/build/*.scm
+%{guile_ccache_dir}/gnu/build/*.go
+%{guile_source_dir}/gnu/packages.scm
+%{guile_ccache_dir}/gnu/packages.go
+%dir %{guile_source_dir}/gnu/packages
+%dir %{guile_ccache_dir}/gnu/packages
+%{guile_source_dir}/gnu/packages/*.scm
+%{guile_ccache_dir}/gnu/packages/*.go
+%{guile_source_dir}/gnu/packages/ld-wrapper.in
+%dir %{guile_source_dir}/gnu/packages/aux-files
+%dir %{guile_source_dir}/gnu/packages/aux-files/emacs
+%{guile_source_dir}/gnu/packages/aux-files/emacs/guix-emacs.el
+%dir %{guile_source_dir}/gnu/packages/aux-files/linux-libre
+%{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-i686.conf
+%{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-x86_64.conf
+%dir %{guile_source_dir}/gnu/packages/patches
+%{guile_source_dir}/gnu/packages/patches/*.patch
+%dir %{guile_source_dir}/gnu/packages/bootstrap
+%dir %{guile_source_dir}/gnu/packages/bootstrap/aarch64-linux
+%{guile_source_dir}/gnu/packages/bootstrap/aarch64-linux/tar
+%{guile_source_dir}/gnu/packages/bootstrap/aarch64-linux/xz
+%{guile_source_dir}/gnu/packages/bootstrap/aarch64-linux/mkdir
+%{guile_source_dir}/gnu/packages/bootstrap/aarch64-linux/bash
+%{guile_source_dir}/gnu/packages/bootstrap/aarch64-linux/guile-2.0.14.tar.xz
+%dir %{guile_source_dir}/gnu/packages/bootstrap/armhf-linux
+%{guile_source_dir}/gnu/packages/bootstrap/armhf-linux/tar
+%{guile_source_dir}/gnu/packages/bootstrap/armhf-linux/xz
+%{guile_source_dir}/gnu/packages/bootstrap/armhf-linux/mkdir
+%{guile_source_dir}/gnu/packages/bootstrap/armhf-linux/bash
+%{guile_source_dir}/gnu/packages/bootstrap/armhf-linux/guile-2.0.11.tar.xz
+%dir %{guile_source_dir}/gnu/packages/bootstrap/mips64el-linux
+%{guile_source_dir}/gnu/packages/bootstrap/mips64el-linux/tar
+%{guile_source_dir}/gnu/packages/bootstrap/mips64el-linux/xz
+%{guile_source_dir}/gnu/packages/bootstrap/mips64el-linux/mkdir
+%{guile_source_dir}/gnu/packages/bootstrap/mips64el-linux/bash
+%{guile_source_dir}/gnu/packages/bootstrap/mips64el-linux/guile-2.0.9.tar.xz
+%dir %{guile_source_dir}/gnu/packages/bootstrap/i686-linux
+%{guile_source_dir}/gnu/packages/bootstrap/i686-linux/tar
+%{guile_source_dir}/gnu/packages/bootstrap/i686-linux/xz
+%{guile_source_dir}/gnu/packages/bootstrap/i686-linux/mkdir
+%{guile_source_dir}/gnu/packages/bootstrap/i686-linux/bash
+%{guile_source_dir}/gnu/packages/bootstrap/i686-linux/guile-2.0.9.tar.xz
+%dir %{guile_source_dir}/gnu/packages/bootstrap/x86_64-linux
+%{guile_source_dir}/gnu/packages/bootstrap/x86_64-linux/tar
+%{guile_source_dir}/gnu/packages/bootstrap/x86_64-linux/xz
+%{guile_source_dir}/gnu/packages/bootstrap/x86_64-linux/mkdir
+%{guile_source_dir}/gnu/packages/bootstrap/x86_64-linux/bash
+%{guile_source_dir}/gnu/packages/bootstrap/x86_64-linux/guile-2.0.9.tar.xz
+%{guile_source_dir}/gnu/services.scm
+%{guile_ccache_dir}/gnu/services.go
+%dir %{guile_source_dir}/gnu/services
+%dir %{guile_ccache_dir}/gnu/services
+%{guile_source_dir}/gnu/services/*.scm
+%{guile_ccache_dir}/gnu/services/*.go
+%{guile_source_dir}/gnu/system.scm
+%{guile_ccache_dir}/gnu/system.go
+%dir %{guile_source_dir}/gnu/system
+%dir %{guile_ccache_dir}/gnu/system
+%{guile_source_dir}/gnu/system/*.scm
+%{guile_ccache_dir}/gnu/system/*.go
+%dir %{guile_source_dir}/gnu/system/examples
+%{guile_source_dir}/gnu/system/examples/bare-bones.tmpl
+%{guile_source_dir}/gnu/system/examples/desktop.tmpl
+%{guile_source_dir}/gnu/system/examples/lightweight-desktop.tmpl
+%{guile_source_dir}/gnu/system/examples/vm-image.tmpl
+%{guile_source_dir}/gnu/tests.scm
+%{guile_ccache_dir}/gnu/tests.go
+%dir %{guile_source_dir}/gnu/tests
+%dir %{guile_ccache_dir}/gnu/tests
+%{guile_source_dir}/gnu/tests/*.scm
+%{guile_ccache_dir}/gnu/tests/*.go
+%{guile_source_dir}/guix.scm
+%{guile_ccache_dir}/guix.go
+%dir %{guile_source_dir}/guix
+%dir %{guile_ccache_dir}/guix
+%{guile_source_dir}/guix/*.scm
+%{guile_ccache_dir}/guix/*.go
+%dir %{guile_source_dir}/guix/build
+%dir %{guile_ccache_dir}/guix/build
+%{guile_source_dir}/guix/build/*.scm
+%{guile_ccache_dir}/guix/build/*.go
+%dir %{guile_source_dir}/guix/build-system
+%dir %{guile_ccache_dir}/guix/build-system
+%{guile_source_dir}/guix/build-system/*.scm
+%{guile_ccache_dir}/guix/build-system/*.go
+%dir %{guile_source_dir}/guix/import
+%dir %{guile_ccache_dir}/guix/import
+%{guile_source_dir}/guix/import/*.scm
+%{guile_ccache_dir}/guix/import/*.go
+%dir %{guile_source_dir}/guix/scripts
+%dir %{guile_ccache_dir}/guix/scripts
+%{guile_source_dir}/guix/scripts/*.scm
+%{guile_ccache_dir}/guix/scripts/*.go
+%dir %{guile_source_dir}/guix/scripts/container
+%dir %{guile_ccache_dir}/guix/scripts/container
+%{guile_source_dir}/guix/scripts/container/*.scm
+%{guile_ccache_dir}/guix/scripts/container/*.go
+%dir %{guile_source_dir}/guix/scripts/import
+%dir %{guile_ccache_dir}/guix/scripts/import
+%{guile_source_dir}/guix/scripts/import/*.scm
+%{guile_ccache_dir}/guix/scripts/import/*.go
+%dir %{guile_source_dir}/guix/store
+%dir %{guile_ccache_dir}/guix/store
+%{guile_source_dir}/guix/store/ssh.scm
+%{guile_ccache_dir}/guix/store/ssh.go
+%dir %{guile_ccache_dir}/guix/tests
+%{guile_ccache_dir}/guix/tests/*.go
 %dir %{_datadir}/guix
+%{_datadir}/guix/bayfront.guixsd.org.pub
 %{_datadir}/guix/hydra.gnu.org.pub
-%{_datadir}/guile/site/2.0/gnu.scm
-%{_datadir}/guile/site/2.0/gnu.go
-%dir %{_datadir}/guile/site/2.0/gnu
-%{_datadir}/guile/site/2.0/gnu/artwork.scm
-%{_datadir}/guile/site/2.0/gnu/artwork.go
-%dir %{_datadir}/guile/site/2.0/gnu/build
-%{_datadir}/guile/site/2.0/gnu/build/*.scm
-%{_datadir}/guile/site/2.0/gnu/build/*.go
-%{_datadir}/guile/site/2.0/gnu/packages.scm
-%{_datadir}/guile/site/2.0/gnu/packages.go
-%dir %{_datadir}/guile/site/2.0/gnu/packages
-%{_datadir}/guile/site/2.0/gnu/packages/*.scm
-%{_datadir}/guile/site/2.0/gnu/packages/*.go
-%{_datadir}/guile/site/2.0/gnu/packages/ld-wrapper.in
-%{_datadir}/guile/site/2.0/gnu/packages/linux-libre-*.conf
-%dir %{_datadir}/guile/site/2.0/gnu/packages/patches
-%{_datadir}/guile/site/2.0/gnu/packages/patches/*.patch
-%dir %{_datadir}/guile/site/2.0/gnu/packages/bootstrap
-%dir %{_datadir}/guile/site/2.0/gnu/packages/bootstrap/armhf-linux
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/armhf-linux/tar
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/armhf-linux/xz
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/armhf-linux/mkdir
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/armhf-linux/bash
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/armhf-linux/guile-2.0.11.tar.xz
-%dir %{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/tar
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/xz
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/mkdir
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/bash
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/mips64el-linux/guile-2.0.9.tar.xz
-%dir %{_datadir}/guile/site/2.0/gnu/packages/bootstrap/i686-linux
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/i686-linux/tar
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/i686-linux/xz
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/i686-linux/mkdir
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/i686-linux/bash
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/i686-linux/guile-2.0.9.tar.xz
-%dir %{_datadir}/guile/site/2.0/gnu/packages/bootstrap/x86_64-linux
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/x86_64-linux/tar
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/x86_64-linux/xz
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/x86_64-linux/mkdir
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/x86_64-linux/bash
-%{_datadir}/guile/site/2.0/gnu/packages/bootstrap/x86_64-linux/guile-2.0.9.tar.xz
-%{_datadir}/guile/site/2.0/gnu/services.scm
-%{_datadir}/guile/site/2.0/gnu/services.go
-%dir %{_datadir}/guile/site/2.0/gnu/services
-%{_datadir}/guile/site/2.0/gnu/services/*.scm
-%{_datadir}/guile/site/2.0/gnu/services/*.go
-%{_datadir}/guile/site/2.0/gnu/system.scm
-%{_datadir}/guile/site/2.0/gnu/system.go
-%dir %{_datadir}/guile/site/2.0/gnu/system
-%{_datadir}/guile/site/2.0/gnu/system/*.scm
-%{_datadir}/guile/site/2.0/gnu/system/*.go
-%dir %{_datadir}/guile/site/2.0/gnu/system/examples
-%{_datadir}/guile/site/2.0/gnu/system/examples/bare-bones.tmpl
-%{_datadir}/guile/site/2.0/gnu/system/examples/desktop.tmpl
-%{_datadir}/guile/site/2.0/gnu/system/examples/lightweight-desktop.tmpl
-%{_datadir}/guile/site/2.0/gnu/tests.scm
-%{_datadir}/guile/site/2.0/gnu/tests.go
-%dir %{_datadir}/guile/site/2.0/gnu/tests
-%{_datadir}/guile/site/2.0/gnu/tests/*.scm
-%{_datadir}/guile/site/2.0/gnu/tests/*.go
-%{_datadir}/guile/site/2.0/guix.scm
-%{_datadir}/guile/site/2.0/guix.go
-%dir %{_datadir}/guile/site/2.0/guix
-%{_datadir}/guile/site/2.0/guix/*.scm
-%{_datadir}/guile/site/2.0/guix/*.go
-%dir %{_datadir}/guile/site/2.0/guix/build
-%{_datadir}/guile/site/2.0/guix/build/*.scm
-%{_datadir}/guile/site/2.0/guix/build/*.go
-%dir %{_datadir}/guile/site/2.0/guix/build-system
-%{_datadir}/guile/site/2.0/guix/build-system/*.scm
-%{_datadir}/guile/site/2.0/guix/build-system/*.go
-%dir %{_datadir}/guile/site/2.0/guix/emacs
-%{_datadir}/guile/site/2.0/guix/emacs/guix-helper.scm
-%{_datadir}/guile/site/2.0/guix/emacs/guix-main.scm
-%dir %{_datadir}/guile/site/2.0/guix/import
-%{_datadir}/guile/site/2.0/guix/import/*.scm
-%{_datadir}/guile/site/2.0/guix/import/*.go
-%dir %{_datadir}/guile/site/2.0/guix/scripts
-%{_datadir}/guile/site/2.0/guix/scripts/*.scm
-%{_datadir}/guile/site/2.0/guix/scripts/*.go
-%dir %{_datadir}/guile/site/2.0/guix/scripts/container
-%{_datadir}/guile/site/2.0/guix/scripts/container/*.scm
-%{_datadir}/guile/site/2.0/guix/scripts/container/*.go
-%dir %{_datadir}/guile/site/2.0/guix/scripts/import
-%{_datadir}/guile/site/2.0/guix/scripts/import/*.scm
-%{_datadir}/guile/site/2.0/guix/scripts/import/*.go
-%dir %{_datadir}/guile/site/2.0/guix/tests
-%{_datadir}/guile/site/2.0/guix/tests/*.go
 %{_infodir}/%{name}.info*
 %dir %{_infodir}/images
 %{_infodir}/images/bootstrap-graph.png.gz
@@ -251,17 +314,27 @@ fi
 %{_mandir}/man1/guix.1*
 %{completionsdir}/guix
 %{_datadir}/zsh/site-functions/_guix
-%dir %{_emacs_sitelispdir}/guix
-%{_emacs_sitelispdir}/guix/guix*.elc
-%{_emacs_sitelispdir}/guix/guix*.el
-%{_emacs_sitestartdir}/guix.el
 %dir %{_sysconfdir}/guix
 %{_unitdir}/guix-daemon.service
+%{_unitdir}/guix-daemon-latest.service
 %{_unitdir}/guix-publish.service
+%{_unitdir}/guix-publish-latest.service
 
 
 
 %changelog
+* Sat May 27 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.13.0-1
+- Update to 0.13.0
+- Use HTTPS to download the source
+- Use systemd_requires macro
+- Allow building without access to internet
+- Move provides and obsoletes of old emacs sub-packages to emacs-guix
+- Remove emacs interface because it has been moved to a separate package
+- Rename systemd service files provided by upstream because they include
+  references to the guix profile of root user
+- Generate default systemd service files from upstream ones to minimize the
+  difference between them
+
 * Sun Mar 12 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.12.0-3
 - Workaround missing build-id error for Fedora 27
 
