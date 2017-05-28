@@ -1,6 +1,6 @@
 Name:           guile-ssh
 Version:        0.11.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A library that provides access to the SSH protocol for GNU Guile
 
 License:        GPLv3+
@@ -32,6 +32,11 @@ make %{?_smp_mflags}
 
 
 %check
+# session.scm test doesn't work with libssh 0.7.5
+# https://github.com/artyom-poptsov/guile-ssh/issues/4
+%if 0%{?fedora} >= 26
+sed -i 's|session.scm||' tests/Makefile
+%endif
 # try a few more times before failing
 for i in {1..24}; do
     make %{?_smp_mflags} check && exit 0
@@ -74,6 +79,9 @@ fi
 
 
 %changelog
+* Sun May 28 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.11.1-2
+- Disable session.scm test for libssh 0.7.5
+
 * Thu May 25 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.11.1-1
 - Update to 0.11.1
 - Add a check section to run tests
