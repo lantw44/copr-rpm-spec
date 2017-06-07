@@ -31,6 +31,20 @@
 %bcond_with system_ply
 %endif
 
+# Require libxml2 > 2.9.4 for XML_PARSE_NOXXE
+%if 0
+%bcond_without system_libxml2
+%else
+%bcond_with system_libxml2
+%endif
+
+# Require harfbuzz >= 1.4.2 for hb_variation_t
+%if 0%{?fedora} >= 26
+%bcond_without system_harfbuzz
+%else
+%bcond_with system)harfbuzz
+%endif
+
 # Allow testing whether icu can be unbundled
 %bcond_with system_libicu
 
@@ -41,7 +55,7 @@
 %bcond_without require_clang
 
 Name:       chromium
-Version:    58.0.3029.110
+Version:    59.0.3071.86
 Release:    100%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -96,14 +110,16 @@ Patch20:    chromium-use-no-delete-null-pointer-checks-with-gcc.patch
 
 # Add several patches from Fedora to fix build with GCC 7
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=86f726d
-Patch30:    chromium-webkit-fpermissive.patch
-# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=54f615e
+Patch30:    chromium-blink-fpermissive.patch
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=ce69059
-Patch31:    chromium-v8-gcc7.patch
+Patch31:    chromium-blink-gcc7.patch
+# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=54f615e
+Patch32:    chromium-v8-gcc7.patch
 
-# Add a patch from Gentoo to fix build error when bootstrapping GN
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=cdbb5d1
-Patch40:    chromium-gn-bootstrap.patch
+# Add patches from upstream to fix dmabuf problems (obtained from Arch Linux)
+# https://git.archlinux.org/svntogit/packages.git/commit/?id=4ca5afc
+Patch40:    chromium-dmabuf-ioctl.patch
+Patch41:    chromium-dmabuf-kernel-version.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -113,8 +129,9 @@ ExclusiveArch: x86_64
 BuildRequires: gcc >= 5.1.1-2
 %endif
 # Chromium 54 requires clang to enable nacl support
+# Chromium 59 requires llvm-ar to enable nacl support
 %if %{with clang} || %{with require_clang}
-BuildRequires: clang
+BuildRequires: clang, llvm
 %endif
 # Basic tools and libraries
 BuildRequires: ninja-build, nodejs, bison, gperf, hwdata
@@ -147,10 +164,13 @@ BuildRequires: python2-ply
 %endif
 # replace_gn_files.py --system-libraries
 BuildRequires: flac-devel
+%if %{with system_harfbuzz}
 BuildRequires: harfbuzz-devel
+%endif
 %if %{with system_libicu}
 BuildRequires: libicu-devel
 %endif
+BuildRequires: libdrm-devel
 BuildRequires: libjpeg-turbo-devel
 BuildRequires: libpng-devel
 # Chromium requires libvpx 1.5.0 and some non-default options
@@ -158,7 +178,10 @@ BuildRequires: libpng-devel
 BuildRequires: libvpx-devel
 %endif
 BuildRequires: libwebp-devel
-BuildRequires: pkgconfig(libxslt), pkgconfig(libxml-2.0)
+%if %{with system_libxml2}
+BuildRequires: pkgconfig(libxml-2.0)
+%endif
+BuildRequires: pkgconfig(libxslt)
 BuildRequires: re2-devel
 BuildRequires: snappy-devel
 BuildRequires: yasm
@@ -232,9 +255,13 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/fips181 \
     third_party/flatbuffers \
     third_party/flot \
+    third_party/freetype \
     third_party/google_input_tools \
     third_party/google_input_tools/third_party/closure_library \
     third_party/google_input_tools/third_party/closure_library/third_party/closure \
+%if !%{with system_harfbuzz}
+    third_party/harfbuzz-ng \
+%endif
     third_party/hunspell \
     third_party/iccjpeg \
     third_party/inspector_protocol \
@@ -262,7 +289,11 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/libvpx/source/libvpx/third_party/x86inc \
 %endif
     third_party/libwebm \
+%if %{with system_libxml2}
     third_party/libxml/chromium \
+%else
+    third_party/libxml \
+%endif
     third_party/libXNVCtrl \
     third_party/libyuv \
     third_party/lss \
@@ -280,13 +311,12 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/pdfium/third_party/agg23 \
     third_party/pdfium/third_party/base \
     third_party/pdfium/third_party/bigint \
+    third_party/pdfium/third_party/build \
     third_party/pdfium/third_party/freetype \
     third_party/pdfium/third_party/lcms2-2.6 \
-    third_party/pdfium/third_party/libjpeg \
     third_party/pdfium/third_party/libopenjpeg20 \
     third_party/pdfium/third_party/libpng16 \
     third_party/pdfium/third_party/libtiff \
-    third_party/pdfium/third_party/zlib_v128 \
 %if !%{with system_ply}
     third_party/ply \
 %endif
@@ -299,6 +329,10 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/smhasher \
     third_party/speech-dispatcher \
     third_party/sqlite \
+    third_party/swiftshader \
+    third_party/swiftshader/third_party/llvm-subzero \
+    third_party/swiftshader/third_party/pnacl-subzero \
+    third_party/swiftshader/third_party/subzero \
     third_party/tcmalloc \
     third_party/usb_ids \
     third_party/usrsctp \
@@ -318,17 +352,22 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
 
 ./build/linux/unbundle/replace_gn_files.py --system-libraries \
     flac \
+%if %{with system_harfbuzz}
     harfbuzz-ng \
+%endif
 %if %{with system_libicu}
     icu \
 %endif
+    libdrm \
     libjpeg \
     libpng \
 %if %{with system_libvpx}
     libvpx \
 %endif
     libwebp \
+%if %{with system_libxml2}
     libxml \
+%endif
     libxslt \
     re2 \
     snappy \
@@ -429,6 +468,7 @@ ninja-build -v %{_smp_mflags} -C out/Release chrome chrome_sandbox chromedriver
 %define chromiumdir %{_libdir}/chromium-browser
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{chromiumdir}/locales
+mkdir -p %{buildroot}%{chromiumdir}/swiftshader
 mkdir -p %{buildroot}%{_mandir}/man1
 mkdir -p %{buildroot}%{_datadir}/appdata
 mkdir -p %{buildroot}%{_datadir}/applications
@@ -454,6 +494,7 @@ install -m 644 out/Release/natives_blob.bin %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/snapshot_blob.bin %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/*.pak %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/locales/*.pak %{buildroot}%{chromiumdir}/locales/
+install -m 755 out/Release/swiftshader/*.so %{buildroot}%{chromiumdir}/swiftshader/
 for i in 16 32; do
     mkdir -p %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps
     install -m 644 chrome/app/theme/default_100_percent/chromium/product_logo_$i.png \
@@ -513,12 +554,22 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/*.pak
 %dir %{chromiumdir}/locales
 %{chromiumdir}/locales/*.pak
+%dir %{chromiumdir}/swiftshader
+%{chromiumdir}/swiftshader/libEGL.so
+%{chromiumdir}/swiftshader/libGLESv2.so
 %license LICENSE
 %doc AUTHORS
 
 
 
 %changelog
+* Wed Jun 07 2017 - Ting-Wei Lan <lantw44@gmail.com> - 59.0.3071.86-100
+- Update to 59.0.3071.86
+- Use xz -9 to compress the repackaged source tarball
+- Bundle libxml2 because it depends on an unreleased version
+- Bundle harfbuzz on Fedora 25 and older
+- Unbundle libdrm
+
 * Wed May 10 2017 - Ting-Wei Lan <lantw44@gmail.com> - 58.0.3029.110-100
 - Update to 58.0.3029.110
 

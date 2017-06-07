@@ -32,6 +32,7 @@
 #  * MD5 hash checking is replaced by SHA512 hash checking.
 #  * xz -9 command is replaced by xz -0 command to reduce memory requirement.
 #  * Function nacl_versions and download_chrome_latest_rpm are removed.
+#  * Switch back to xz -9 but with -T 0 replaced by -T 2.
 
 try:
   import argparse
@@ -297,6 +298,6 @@ if __name__ == '__main__':
   if (not args.prep):
     print "Compressing cleaned tree, please wait..."
     os.chdir(chromium_root_dir)
-    os.system("tar --exclude=\.svn -cf - chromium-%s | xz -0 -T 0 -f > %s" % (chromium_version, chromium_clean_xz_file))
+    os.system("tar --exclude=\.svn -cf - chromium-%s | xz -9 -T 2 -f > %s" % (chromium_version, chromium_clean_xz_file))
 
   print "Finished!"
