@@ -42,7 +42,7 @@
 %if 0%{?fedora} >= 26
 %bcond_without system_harfbuzz
 %else
-%bcond_with system)harfbuzz
+%bcond_with system_harfbuzz
 %endif
 
 # Allow testing whether icu can be unbundled
