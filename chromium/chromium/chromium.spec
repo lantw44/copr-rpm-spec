@@ -377,7 +377,6 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
 ./build/download_nacl_toolchains.py --packages \
     nacl_x86_glibc,nacl_x86_newlib,pnacl_newlib,pnacl_translator sync --extract
 
-sed -i "s|'ninja'|'ninja-build'|" tools/gn/bootstrap/bootstrap.py
 sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' device/usb/BUILD.gn
 
 # Workaround build error caused by debugedit
@@ -460,7 +459,7 @@ gn_args+=(
 %if 0%{?ninja_build:1}
 %{ninja_build} -C out/Release chrome chrome_sandbox chromedriver
 %else
-ninja-build -v %{_smp_mflags} -C out/Release chrome chrome_sandbox chromedriver
+ninja -v %{_smp_mflags} -C out/Release chrome chrome_sandbox chromedriver
 %endif
 
 
