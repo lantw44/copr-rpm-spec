@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        1.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Buffer interface library for Emacs
 
 Group:          Applications/Editors
@@ -28,6 +28,9 @@ buffers, functions, etc.).
 %setup -q -n bui.el-%{version}
 
 
+%build
+
+
 %install
 mkdir -p %{buildroot}%{_emacs_sitelispdir}
 install -m 755 -d %{buildroot}%{_emacs_sitelispdir}/bui
@@ -46,5 +49,8 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/bui/
 
 
 %changelog
+* Fri Jun 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-2
+- Add an empty build section to avoid rpmlint warning
+
 * Sat May 27 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-1
 - Initial packaging
