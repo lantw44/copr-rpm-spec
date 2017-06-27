@@ -55,7 +55,7 @@
 %bcond_without require_clang
 
 Name:       chromium
-Version:    59.0.3071.109
+Version:    59.0.3071.115
 Release:    100%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -81,6 +81,11 @@ Source0:    chromium-%{version}-clean.tar.xz
 Source1:    chromium-latest.py
 Source2:    chromium-ffmpeg-clean.sh
 Source3:    chromium-ffmpeg-free-sources.py
+
+# Upstream source tarball doesn't include third_party/freetype/src directory
+# https://git.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=b1ce01f
+# https://groups.google.com/a/chromium.org/d/msg/chromium-packagers/wuInaKJkosg/kMfIV_7wDgAJ
+Source4:    https://chromium.googlesource.com/chromium/src/third_party/freetype2/+archive/5a3490e054bda8a318ebde482c7fb30213cab3d9.tar.gz
 
 # The following two source files are copied and modified from
 # https://repos.fedorapeople.org/repos/spot/chromium/
@@ -206,6 +211,10 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
 
 %prep
 %autosetup -p1
+
+# Add missing source files from a git checkout
+mkdir third_party/freetype/src
+tar -xf %{SOURCE4} -C third_party/freetype/src
 
 ./build/linux/unbundle/remove_bundled_libraries.py --do-remove \
     base/third_party/dmg_fp \
@@ -562,6 +571,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Jun 27 2017 - Ting-Wei Lan <lantw44@gmail.com> - 59.0.3071.115-100
+- Update to 59.0.3071.115
+- Workaround missing third_party/freetype/src directory
+
 * Wed Jun 21 2017 - Ting-Wei Lan <lantw44@gmail.com> - 59.0.3071.109-100
 - Update to 59.0.3071.109
 
