@@ -1,8 +1,8 @@
 diff --git a/src/ephy-notebook.c b/src/ephy-notebook.c
-index 0768dee..0ebab67 100644
+index c95f04f..42ef33b 100644
 --- a/src/ephy-notebook.c
 +++ b/src/ephy-notebook.c
-@@ -35,7 +35,7 @@
+@@ -37,7 +37,7 @@
  #include <glib/gi18n.h>
  #include <gtk/gtk.h>
  
@@ -10,8 +10,8 @@ index 0768dee..0ebab67 100644
 +#define TAB_WIDTH_N_CHARS 5
  
  #define AFTER_ALL_TABS -1
- #define NOT_IN_APP_WINDOWS -2
-@@ -614,12 +614,12 @@ build_tab_label (EphyNotebook *nb, EphyEmbed *embed)
+ 
+@@ -705,12 +705,12 @@ build_tab_label (EphyNotebook *nb, EphyEmbed *embed)
    GtkWidget *box;
    EphyWebView *view;
  

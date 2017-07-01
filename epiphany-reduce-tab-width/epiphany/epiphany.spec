@@ -1,43 +1,47 @@
-%global gtk3_version 3.19.1
-%global webkitgtk4_version 2.14.2
+%global glib2_version 2.46.0
+%global gtk3_version 3.22.13
+%global webkitgtk4_version 2.15.90
 
 Name: epiphany
 Epoch: 1
-Version: 3.22.7
+Version: 3.24.2
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
-License: GPLv2+ and CC-BY-SA
+License: GPLv3+ and CC-BY-SA
 URL: https://wiki.gnome.org/Apps/Web
-Source0: https://download.gnome.org/sources/epiphany/3.22/%{name}-%{version}.tar.xz
+Source0: https://download.gnome.org/sources/epiphany/3.24/%{name}-%{version}.tar.xz
 
 # Fedora bookmarks
 Patch0: epiphany-default-bookmarks.patch
 
 # Reduce the minimum tab width
-Patch2: epiphany-3.20-reduce-tab-width.patch
+Patch2: epiphany-3.24-reduce-tab-width.patch
 
 BuildRequires: desktop-file-utils
-BuildRequires: gcr-devel >= 3.5.5
-BuildRequires: glib2-devel >= 2.38.0
-BuildRequires: gtk3-devel >= %{gtk3_version}
-BuildRequires: webkitgtk4-devel >= %{webkitgtk4_version}
-BuildRequires: libxml2-devel, libxslt-devel
-BuildRequires: iso-codes-devel
-BuildRequires: gnome-desktop3-devel
-BuildRequires: libsecret-devel >= 0.14
 BuildRequires: gettext-devel
-BuildRequires: avahi-gobject-devel
-BuildRequires: intltool
 BuildRequires: itstool
+BuildRequires: iso-codes-devel
 BuildRequires: libappstream-glib-devel
-BuildRequires: libnotify-devel
-BuildRequires: libsoup-devel
-BuildRequires: libwnck3-devel
-BuildRequires: nss-devel
-BuildRequires: gsettings-desktop-schemas-devel
-BuildRequires: gobject-introspection-devel
-BuildRequires: sqlite-devel
+BuildRequires: pkgconfig(cairo) >= 1.2
+BuildRequires: pkgconfig(gcr-3) >= 3.5.5
+BuildRequires: pkgconfig(gdk-3.0) >= %{gtk3_version}
+BuildRequires: pkgconfig(gdk-pixbuf-2.0) >= 2.14
+BuildRequires: pkgconfig(gio-unix-2.0) >= %{glib2_version}
+BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
+BuildRequires: pkgconfig(gnome-desktop-3.0) >= %{glib2_version}
+BuildRequires: pkgconfig(gtk+-3.0) >= %{gtk3_version}
+BuildRequires: pkgconfig(gtk+-unix-print-3.0) >= %{gtk3_version}
+BuildRequires: pkgconfig(icu-uc) >= 4.6
+BuildRequires: pkgconfig(json-glib-1.0) >= 1.2.0
+BuildRequires: pkgconfig(libnotify) >= 0.5.1
+BuildRequires: pkgconfig(libsecret-1) >= 0.14
+BuildRequires: pkgconfig(libsoup-2.4) >= 2.48.0
+BuildRequires: pkgconfig(libxml-2.0) >= 2.6.12
+BuildRequires: pkgconfig(libxslt) >= 1.1.7
+BuildRequires: pkgconfig(sqlite3) >= 3.0
+BuildRequires: pkgconfig(webkit2gtk-4.0) >= %{webkitgtk4_version}
+BuildRequires: pkgconfig(webkit2gtk-web-extension-4.0) >= %{webkitgtk4_version}
 
 Requires: %{name}-runtime%{?_isa} = %{epoch}:%{version}-%{release}
 
@@ -84,54 +88,61 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %check
 desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 
-%post
-update-desktop-database %{_datadir}/applications &> /dev/null || :
-
-%postun
-update-desktop-database %{_datadir}/applications &> /dev/null || :
-
-%postun runtime
-if [ $1 -eq 0 ]; then
-  glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
-fi
-
-%posttrans runtime
-glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
-
 %files -f %{name}.lang
 %{_libexecdir}/epiphany-search-provider
-%{_datadir}/appdata/epiphany.appdata.xml
-%{_datadir}/applications/epiphany.desktop
+%{_datadir}/appdata/org.gnome.Epiphany.appdata.xml
+%{_datadir}/applications/org.gnome.Epiphany.desktop
 %dir %{_datadir}/gnome-shell/
 %dir %{_datadir}/gnome-shell/search-providers/
 %{_datadir}/gnome-shell/search-providers/epiphany-search-provider.ini
-%{_datadir}/dbus-1/services/org.gnome.Epiphany.service
+%{_datadir}/dbus-1/services/org.gnome.EpiphanySearchProvider.service
 
 %files runtime
 %license COPYING
 %doc README NEWS AUTHORS
+%{_datadir}/icons/hicolor/*/apps/org.gnome.Epiphany*
 %{_datadir}/glib-2.0/schemas/org.gnome.epiphany.gschema.xml
-%{_datadir}/glib-2.0/schemas/org.gnome.epiphany.host.gschema.xml
 %{_datadir}/glib-2.0/schemas/org.gnome.Epiphany.enums.xml
-%{_datadir}/GConf/gsettings/epiphany.convert
 %{_bindir}/epiphany
-%{_bindir}/ephy-profile-migrator
+%{_libexecdir}/epiphany/ephy-profile-migrator
 %{_libdir}/epiphany/
 %{_datadir}/epiphany
 %{_mandir}/man*/*
 
 %changelog
-* Tue Mar 21 2017 Kalev Lember <klember@redhat.com> - 1:3.22.7-1
-- Update to 3.22.7
+* Wed May 10 2017 Kalev Lember <klember@redhat.com> - 1:3.24.2-1
+- Update to 3.24.2
 
-* Mon Feb 20 2017 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.22.6-2
-- Add fixes for several upstream bugs, 3.22.7 preview
+* Tue Apr 11 2017 Kalev Lember <klember@redhat.com> - 1:3.24.1-1
+- Update to 3.24.1
 
-* Fri Feb 03 2017 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.22.6-1
-- Update to 3.22.6
+* Tue Mar 21 2017 Kalev Lember <klember@redhat.com> - 1:3.24.0-1
+- Update to 3.24.0
 
-* Tue Jan 17 2017 Kalev Lember <klember@redhat.com> - 1:3.22.5-1
-- Update to 3.22.5
+* Thu Mar 16 2017 Kalev Lember <klember@redhat.com> - 1:3.23.93-1
+- Update to 3.23.93
+
+* Sat Mar 11 2017 Richard Hughes <rhughes@redhat.com> - 1:3.23.92-1
+- Update to 3.23.92
+
+* Tue Feb 28 2017 Richard Hughes <rhughes@redhat.com> - 1:3.23.91.1-1
+- Update to 3.23.91.1
+
+* Tue Feb 14 2017 Richard Hughes <rhughes@redhat.com> - 1:3.23.90-1
+- Update to 3.23.90
+
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.23.5-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Fri Feb 03 2017 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.23.5-1
+- Update to 3.23.5
+
+* Tue Jan 17 2017 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.23.4-1
+- Update to 3.23.4
+
+* Tue Jan 03 2017 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.23.3-1
+- Update to 3.23.3.
+- Spec cleanups.
 
 * Thu Dec 29 2016 Kalev Lember <klember@redhat.com> - 1:3.22.4-1
 - Update to 3.22.4
