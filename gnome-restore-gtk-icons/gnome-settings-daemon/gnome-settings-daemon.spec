@@ -1,20 +1,22 @@
 %global gtk3_version 3.15.3
 %global gnome_desktop_version 3.11.1
 %global libgweather_version 3.9.5
-%global gsettings_desktop_schemas_version 3.20.0
+%global gsettings_desktop_schemas_version 3.23.3
 %global geocode_glib_version 3.10.0
 %global geoclue_version 2.3.1
 
 Name:           gnome-settings-daemon
-Version:        3.22.2
-Release:        1%{?dist}.1
+Version:        3.24.2
+Release:        2%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        GPLv2+
 URL:            https://download.gnome.org/sources/%{name}
-Source0:        https://download.gnome.org/sources/%{name}/3.22/%{name}-%{version}.tar.xz
+Source0:        https://download.gnome.org/sources/%{name}/3.24/%{name}-%{version}.tar.xz
+# Backported from upstream
+Patch1:		0001-Backport-RFKILL-fixes.patch
 # respect menus-have-icons and buttons-have-icons settings
-Patch1:         %{name}-3.14-respect-menus-buttons-icons.patch
+Patch2:         %{name}-3.24-respect-menus-buttons-icons.patch
 
 BuildRequires:  pkgconfig(alsa)
 BuildRequires:  pkgconfig(colord) >= 1.0.2
@@ -63,6 +65,7 @@ Requires: libgweather%{?_isa} >= %{libgweather_version}
 
 Obsoletes: %{name}-updates < 3.13.1
 Obsoletes: drwright < 3.5.0-3
+Obsoletes: gnome-settings-daemon-devel < 3.23.1
 
 # Input sources handling was moved to gnome-shell / mutter; make sure not to
 # break older gnome-shell versions.
@@ -71,7 +74,7 @@ Conflicts: gnome-shell < 3.13.92
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.22.
+buttons and menus in GNOME 3.24.
 
 A daemon to share settings from GNOME to other applications. It also
 handles global keybindings, as well as a number of desktop-wide settings.
@@ -86,7 +89,8 @@ developing applications that use %{name}.
 
 %prep
 %setup -q
-%patch1 -p1 -b .menus-buttons-icons
+%patch1 -p1 -b .backport_rfkill_fixes
+%patch2 -p1 -b .menus-buttons-icons
 
 %build
 %configure --disable-static \
@@ -123,139 +127,133 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %license COPYING
 %doc AUTHORS NEWS
 
-# list plugins explicitly, so we notice if one goes missing
+# list daemons explicitly, so we notice if one goes missing
 # some of these don't have a separate gschema
-%{_libdir}/gnome-settings-daemon-3.0/a11y-keyboard.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/liba11y-keyboard.so
+%{_libexecdir}/gsd-a11y-keyboard
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.A11yKeyboard.desktop
 
-%{_libdir}/gnome-settings-daemon-3.0/clipboard.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libclipboard.so
+%{_libexecdir}/gsd-clipboard
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Clipboard.desktop
 
-%{_libdir}/gnome-settings-daemon-3.0/datetime.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libdatetime.so
-%{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.datetime.gschema.xml
+%{_libexecdir}/gsd-datetime
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Datetime.desktop
 
-%{_libdir}/gnome-settings-daemon-3.0/housekeeping.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libhousekeeping.so
+%{_libexecdir}/gsd-dummy
+
+%{_libexecdir}/gsd-housekeeping
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Housekeeping.desktop
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.housekeeping.gschema.xml
 
-%{_libdir}/gnome-settings-daemon-3.0/keyboard.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libkeyboard.so
-%{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.keyboard.gschema.xml
+%{_libexecdir}/gsd-keyboard
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Keyboard.desktop
 
-%{_libdir}/gnome-settings-daemon-3.0/media-keys.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libmedia-keys.so
+%{_libexecdir}/gsd-media-keys
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.MediaKeys.desktop
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.media-keys.gschema.xml
 
-%{_libdir}/gnome-settings-daemon-3.0/mouse.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libmouse.so
+%{_libexecdir}/gsd-mouse
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Mouse.desktop
+%{_libexecdir}/gsd-locate-pointer
 
 %{_libexecdir}/gsd-backlight-helper
 %{_datadir}/polkit-1/actions/org.gnome.settings-daemon.plugins.power.policy
-%{_libdir}/gnome-settings-daemon-3.0/power.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libpower.so
+%{_libexecdir}/gsd-power
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Power.desktop
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.power.gschema.xml
 
-%{_libdir}/gnome-settings-daemon-3.0/print-notifications.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libprint-notifications.so
-%{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.print-notifications.gschema.xml
+%{_libexecdir}/gsd-print-notifications
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.PrintNotifications.desktop
+%{_libexecdir}/gsd-printer
 
-%{_libdir}/gnome-settings-daemon-3.0/librfkill.so
-%{_libdir}/gnome-settings-daemon-3.0/rfkill.gnome-settings-plugin
+%{_libexecdir}/gsd-rfkill
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Rfkill.desktop
 
-%{_libdir}/gnome-settings-daemon-3.0/screensaver-proxy.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libscreensaver-proxy.so
+%{_libexecdir}/gsd-screensaver-proxy
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.ScreensaverProxy.desktop
 
-%{_libdir}/gnome-settings-daemon-3.0/smartcard.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libsmartcard.so
+%{_libexecdir}/gsd-smartcard
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Smartcard.desktop
 
-%{_libdir}/gnome-settings-daemon-3.0/sound.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libsound.so
+%{_libexecdir}/gsd-sound
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Sound.desktop
 
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.peripherals.gschema.xml
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.peripherals.wacom.gschema.xml
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Wacom.desktop
 
 %ifnarch s390 s390x
-%{_libdir}/gnome-settings-daemon-3.0/wacom.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libgsdwacom.so
+%{_libexecdir}/gsd-wacom
 %{_libexecdir}/gsd-wacom-led-helper
 %{_libexecdir}/gsd-wacom-oled-helper
 %{_datadir}/polkit-1/actions/org.gnome.settings-daemon.plugins.wacom.policy
 %endif
 
-%{_libdir}/gnome-settings-daemon-3.0/xrandr.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libxrandr.so
+%{_libexecdir}/gsd-xrandr
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.XRANDR.desktop
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.xrandr.gschema.xml
 
-%{_libdir}/gnome-settings-daemon-3.0/xsettings.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libxsettings.so
+%{_libexecdir}/gsd-xsettings
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.XSettings.desktop
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.xsettings.gschema.xml
 
-%{_libdir}/gnome-settings-daemon-3.0/a11y-settings.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/liba11y-settings.so
+%{_libexecdir}/gsd-a11y-settings
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.A11ySettings.desktop
 
-%{_libdir}/gnome-settings-daemon-3.0/color.gnome-settings-plugin
-%{_libdir}/gnome-settings-daemon-3.0/libcolor.so
+%{_libexecdir}/gsd-color
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Color.desktop
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.color.gschema.xml
 
-%{_libdir}/gnome-settings-daemon-3.0/liborientation.so
-%{_libdir}/gnome-settings-daemon-3.0/orientation.gnome-settings-plugin
-%{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.orientation.gschema.xml
+%{_libexecdir}/gsd-orientation
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Orientation.desktop
 
-%{_libdir}/gnome-settings-daemon-3.0/libsharing.so
-%{_libdir}/gnome-settings-daemon-3.0/sharing.gnome-settings-plugin
+%{_libexecdir}/gsd-sharing
+%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Sharing.desktop
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.sharing.gschema.xml
 
 %{_libdir}/gnome-settings-daemon-3.0/libgsd.so
 
-%{_libexecdir}/gnome-settings-daemon
-%{_libexecdir}/gnome-settings-daemon-localeexec
-%{_libexecdir}/gsd-locate-pointer
-%{_libexecdir}/gsd-printer
-
 /usr/lib/udev/rules.d/*.rules
 %{_datadir}/gnome-settings-daemon/
-%{_sysconfdir}/xdg/autostart/gnome-settings-daemon.desktop
 %{_datadir}/icons/hicolor/*/apps/gsd-xrandr.*
 %{_datadir}/GConf/gsettings/gnome-settings-daemon.convert
 
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.enums.xml
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.gschema.xml
 
-%{_datadir}/man/man1/gnome-settings-daemon.1.gz
-
-
 %files devel
 %{_includedir}/gnome-settings-daemon-3.0
 %{_libdir}/pkgconfig/gnome-settings-daemon.pc
-%ifnarch s390 s390x
-%{_libexecdir}/gsd-list-wacom
-%{_libexecdir}/gsd-test-wacom
-%{_libexecdir}/gsd-test-wacom-osd
-%endif
-%{_libexecdir}/gsd-test-a11y-keyboard
-%{_libexecdir}/gsd-test-a11y-settings
-%{_libexecdir}/gsd-test-datetime
-%{_libexecdir}/gsd-test-housekeeping
 %{_libexecdir}/gsd-test-input-helper
-%{_libexecdir}/gsd-test-keyboard
-%{_libexecdir}/gsd-test-media-keys
-%{_libexecdir}/gsd-test-mouse
-%{_libexecdir}/gsd-test-orientation
-%{_libexecdir}/gsd-test-print-notifications
-%{_libexecdir}/gsd-test-rfkill
-%{_libexecdir}/gsd-test-screensaver-proxy
-%{_libexecdir}/gsd-test-smartcard
-%{_libexecdir}/gsd-test-sound
-%{_libexecdir}/gsd-test-xrandr
-%{_libexecdir}/gsd-test-xsettings
 
 %changelog
-* Thu Mar 16 2017 Kalev Lember <klember@redhat.com> - 3.22.2-1
-- Update to 3.22.2
+* Thu May 18 2017 Benjamin Berg <bberg@redhat.com> - 3.24.2-2
+- Backport RFKILL related fixes to Fedora 26
 
-* Wed Oct 12 2016 Kalev Lember <klember@redhat.com> - 3.22.1-1
-- Update to 3.22.1
+* Wed May 10 2017 Kalev Lember <klember@redhat.com> - 3.24.2-1
+- Update to 3.24.2
+
+* Wed Apr 12 2017 Kalev Lember <klember@redhat.com> - 3.24.1-1
+- Update to 3.24.1
+
+* Tue Mar 21 2017 Kalev Lember <klember@redhat.com> - 3.24.0-1
+- Update to 3.24.0
+
+* Thu Mar 16 2017 Kalev Lember <klember@redhat.com> - 3.23.92-1
+- Update to 3.23.92
+
+* Wed Feb 15 2017 Richard Hughes <rhughes@redhat.com> - 3.23.90-1
+- Update to 3.23.90
+
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.23.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Thu Jan 12 2017 Bastien Nocera <bnocera@redhat.com> - 3.23.3-1
++ gnome-settings-daemon-3.23.3-1
+- Update to 3.23.3
+
+* Tue Oct 11 2016 Bastien Nocera <bnocera@redhat.com> - 3.23.2-1
++ gnome-settings-daemon-3.23.2-1
+- Update to 3.23.2
 
 * Thu Sep 22 2016 Kalev Lember <klember@redhat.com> - 3.22.0-1
 - Update to 3.22.0

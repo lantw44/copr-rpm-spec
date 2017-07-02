@@ -12,11 +12,11 @@ index 98539c3..0975ee6 100644
  #toolbar-detachable = /desktop/gnome/interface/toolbar_detachable
  #toolbar-icons-size = /desktop/gnome/interface/toolbar_icons_size
 diff --git a/schemas/org.gnome.desktop.interface.gschema.xml.in b/schemas/org.gnome.desktop.interface.gschema.xml.in
-index cf310a9..988d244 100644
+index 9e5fb20..1061e51 100644
 --- a/schemas/org.gnome.desktop.interface.gschema.xml.in
 +++ b/schemas/org.gnome.desktop.interface.gschema.xml.in
 @@ -38,6 +38,20 @@
-         and "text".
+         and “text”.
        </description>
      </key>
 +    <key name="menus-have-icons" type="b">
