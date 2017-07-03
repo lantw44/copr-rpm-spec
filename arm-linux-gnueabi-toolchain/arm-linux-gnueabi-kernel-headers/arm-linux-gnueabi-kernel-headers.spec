@@ -3,7 +3,7 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    4.11.8
+Version:    4.12.0
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -56,8 +56,12 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/linux/caif/*.h
 %dir %{cross_sysroot}/usr/include/linux/can
 %{cross_sysroot}/usr/include/linux/can/*.h
+%dir %{cross_sysroot}/usr/include/linux/cifs
+%{cross_sysroot}/usr/include/linux/cifs/cifs_mount.h
 %dir %{cross_sysroot}/usr/include/linux/dvb
 %{cross_sysroot}/usr/include/linux/dvb/*.h
+%dir %{cross_sysroot}/usr/include/linux/genwqe
+%{cross_sysroot}/usr/include/linux/genwqe/genwqe_card.h
 %dir %{cross_sysroot}/usr/include/linux/hdlc
 %{cross_sysroot}/usr/include/linux/hdlc/*.h
 %dir %{cross_sysroot}/usr/include/linux/hsi
@@ -84,6 +88,8 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/linux/nfsd/*.h
 %dir %{cross_sysroot}/usr/include/linux/raid
 %{cross_sysroot}/usr/include/linux/raid/*.h
+%dir %{cross_sysroot}/usr/include/linux/sched
+%{cross_sysroot}/usr/include/linux/sched/types.h
 %dir %{cross_sysroot}/usr/include/linux/spi
 %{cross_sysroot}/usr/include/linux/spi/*.h
 %dir %{cross_sysroot}/usr/include/linux/sunrpc
@@ -118,6 +124,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Mon Jul 03 2017 Ting-Wei Lan <lantw44@gmail.com> - 4.12.0-1
+- Update to 4.12
+
 * Fri Jun 30 2017 Ting-Wei Lan <lantw44@gmail.com> - 4.11.8-1
 - Update to 4.11.8
 
