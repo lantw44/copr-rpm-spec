@@ -56,7 +56,7 @@
 
 Name:       chromium
 Version:    59.0.3071.115
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -205,6 +205,9 @@ Requires:         hicolor-icon-theme
 
 Obsoletes:     chromium-libs, chromium-libs-media, chromedriver
 Provides:      chromium-libs, chromium-libs-media, chromedriver
+
+%global chromiumdir %{_libdir}/chromium-browser
+%global __provides_exclude_from ^%{chromiumdir}/.*$
 
 %description
 
@@ -473,7 +476,6 @@ ninja -v %{_smp_mflags} -C out/Release chrome chrome_sandbox chromedriver
 
 
 %install
-%define chromiumdir %{_libdir}/chromium-browser
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{chromiumdir}/locales
 mkdir -p %{buildroot}%{chromiumdir}/swiftshader
@@ -571,6 +573,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon Jul 03 2017 - Ting-Wei Lan <lantw44@gmail.com> - 59.0.3071.115-101
+- Filter provides in chromiumdir
+
 * Tue Jun 27 2017 - Ting-Wei Lan <lantw44@gmail.com> - 59.0.3071.115-100
 - Update to 59.0.3071.115
 - Workaround missing third_party/freetype/src directory
