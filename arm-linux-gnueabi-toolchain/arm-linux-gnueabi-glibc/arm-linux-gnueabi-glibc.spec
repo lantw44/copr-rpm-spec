@@ -43,7 +43,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.25
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -61,6 +61,9 @@ Provides:   %{cross_triplet}-glibc-stage1
 %if !%{headers_only}
 BuildRequires: %{cross_triplet}-gcc-stage2, perl
 %endif
+
+%global __provides_exclude_from ^%{cross_sysroot}
+%global __requires_exclude_from ^%{cross_sysroot}
 
 %description
 
@@ -571,6 +574,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Jul 03 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.25-2
+- Filter provides and requires in cross_sysroot
+
 * Tue Mar 07 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.25-1
 - Update to 2.25
 - Enable stack protector

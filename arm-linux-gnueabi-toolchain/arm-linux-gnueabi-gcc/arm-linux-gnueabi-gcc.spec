@@ -26,7 +26,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    7.1.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %define major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -57,6 +57,9 @@ Requires:   %{cross_triplet}-glibc
 Provides:   %{cross_triplet}-gcc-stage2 = %{version}
 Provides:   %{cross_triplet}-gcc-stage3 = %{version}
 %endif
+
+%global __provides_exclude_from ^%{cross_sysroot}
+%global __requires_exclude_from ^%{cross_sysroot}
 
 %description
 
@@ -199,25 +202,6 @@ chmod +x %{__ar_no_strip}
 %undefine __strip
 %define __strip %{__ar_no_strip}
 
-# Disable automatic requirements finding in %{cross_sysroot}
-%define _use_internal_dependency_generator 0
-%define __rpmdeps_command %{__find_requires}
-%define __rpmdeps_skip_sysroot %{_builddir}/gcc-%{version}/rpmdeps-skip-sysroot
-cat > %{__rpmdeps_skip_sysroot} << EOF
-#!/bin/sh
-while read oneline; do
-    case \$oneline in
-        %{buildroot}%{cross_sysroot}*)
-            ;;
-        *)
-            echo \$oneline | %{__rpmdeps_command}
-    esac
-done
-EOF
-chmod +x %{__rpmdeps_skip_sysroot}
-%undefine __find_requires
-%define __find_requires %{__rpmdeps_skip_sysroot}
-
 
 %files
 %license COPYING COPYING.LIB COPYING.RUNTIME COPYING3 COPYING3.LIB
@@ -356,6 +340,9 @@ chmod +x %{__rpmdeps_skip_sysroot}
 
 
 %changelog
+* Mon Jul 03 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.1.0-2
+- Filter provides and requires in cross_sysroot
+
 * Wed May 03 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.1.0-1
 - Update to new stable release 7.1.0
 - Use bcond_without macro to conditionally enable Ada support
