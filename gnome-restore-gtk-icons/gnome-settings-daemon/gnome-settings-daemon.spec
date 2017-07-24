@@ -7,7 +7,7 @@
 
 Name:           gnome-settings-daemon
 Version:        3.24.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        GPLv2+
@@ -15,8 +15,9 @@ URL:            https://download.gnome.org/sources/%{name}
 Source0:        https://download.gnome.org/sources/%{name}/3.24/%{name}-%{version}.tar.xz
 # Backported from upstream
 Patch1:		0001-Backport-RFKILL-fixes.patch
+Patch2:         geoclue-usage-fixes.patch
 # respect menus-have-icons and buttons-have-icons settings
-Patch2:         %{name}-3.24-respect-menus-buttons-icons.patch
+Patch3:         %{name}-3.24-respect-menus-buttons-icons.patch
 
 BuildRequires:  pkgconfig(alsa)
 BuildRequires:  pkgconfig(colord) >= 1.0.2
@@ -90,7 +91,8 @@ developing applications that use %{name}.
 %prep
 %setup -q
 %patch1 -p1 -b .backport_rfkill_fixes
-%patch2 -p1 -b .menus-buttons-icons
+%patch2 -p1
+%patch3 -p1 -b .menus-buttons-icons
 
 %build
 %configure --disable-static \
@@ -226,6 +228,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-input-helper
 
 %changelog
+* Mon Jul 24 2017 Rui Matos <rmatos@redhat.com> - 3.24.3-2
+- Add upstream geoclue usage fixes (rhbz#1473061)
+
 * Sat Jul 22 2017 Rui Matos <rmatos@redhat.com> - 3.24.3-1
 - Update to 3.24.3
 
