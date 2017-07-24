@@ -7,7 +7,7 @@
 
 Name:           gnome-settings-daemon
 Version:        3.24.3
-Release:        2%{?dist}
+Release:        2%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        GPLv2+
