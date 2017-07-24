@@ -6,8 +6,8 @@
 %global geoclue_version 2.3.1
 
 Name:           gnome-settings-daemon
-Version:        3.24.2
-Release:        2%{?dist}.1
+Version:        3.24.3
+Release:        1%{?dist}
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        GPLv2+
@@ -226,6 +226,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-input-helper
 
 %changelog
+* Sat Jul 22 2017 Rui Matos <rmatos@redhat.com> - 3.24.3-1
+- Update to 3.24.3
+
 * Thu May 18 2017 Benjamin Berg <bberg@redhat.com> - 3.24.2-2
 - Backport RFKILL related fixes to Fedora 26
 
