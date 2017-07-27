@@ -55,8 +55,8 @@
 %bcond_without require_clang
 
 Name:       chromium
-Version:    59.0.3071.115
-Release:    101%{?dist}
+Version:    60.0.3112.78
+Release:    100%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -82,11 +82,6 @@ Source1:    chromium-latest.py
 Source2:    chromium-ffmpeg-clean.sh
 Source3:    chromium-ffmpeg-free-sources.py
 
-# Upstream source tarball doesn't include third_party/freetype/src directory
-# https://git.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=b1ce01f
-# https://groups.google.com/a/chromium.org/d/msg/chromium-packagers/wuInaKJkosg/kMfIV_7wDgAJ
-Source4:    https://chromium.googlesource.com/chromium/src/third_party/freetype2/+archive/5a3490e054bda8a318ebde482c7fb30213cab3d9.tar.gz
-
 # The following two source files are copied and modified from
 # https://repos.fedorapeople.org/repos/spot/chromium/
 Source10:   chromium-browser.sh
@@ -100,6 +95,9 @@ Source13:   chromium-browser.appdata.xml
 # Add a patch from Fedora to fix GN build
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=0df9641
 Patch10:    chromium-last-commit-position.patch
+# Add a patch from Gentoo to fix GN build
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=94162f2
+Patch11:    chromium-gn-bootstrap.patch
 
 # Building with GCC 6 requires -fno-delete-null-pointer-checks to avoid crashes
 # Unfortunately, it is not possible to add additional compiler flags with
@@ -120,11 +118,6 @@ Patch30:    chromium-blink-fpermissive.patch
 Patch31:    chromium-blink-gcc7.patch
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=54f615e
 Patch32:    chromium-v8-gcc7.patch
-
-# Add patches from upstream to fix dmabuf problems (obtained from Arch Linux)
-# https://git.archlinux.org/svntogit/packages.git/commit/?id=4ca5afc
-Patch40:    chromium-dmabuf-ioctl.patch
-Patch41:    chromium-dmabuf-kernel-version.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -187,6 +180,7 @@ BuildRequires: libwebp-devel
 BuildRequires: pkgconfig(libxml-2.0)
 %endif
 BuildRequires: pkgconfig(libxslt)
+BuildRequires: opus-devel
 BuildRequires: re2-devel
 BuildRequires: snappy-devel
 BuildRequires: yasm
@@ -214,10 +208,6 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
 
 %prep
 %autosetup -p1
-
-# Add missing source files from a git checkout
-mkdir third_party/freetype/src
-tar -xf %{SOURCE4} -C third_party/freetype/src
 
 ./build/linux/unbundle/remove_bundled_libraries.py --do-remove \
     base/third_party/dmg_fp \
@@ -257,6 +247,7 @@ tar -xf %{SOURCE4} -C third_party/freetype/src
     third_party/catapult/tracing/third_party/gl-matrix \
     third_party/catapult/tracing/third_party/jszip \
     third_party/catapult/tracing/third_party/mannwhitneyu \
+    third_party/catapult/tracing/third_party/oboe \
     third_party/ced \
     third_party/cld_2 \
     third_party/cld_3 \
@@ -268,9 +259,11 @@ tar -xf %{SOURCE4} -C third_party/freetype/src
     third_party/flatbuffers \
     third_party/flot \
     third_party/freetype \
+    third_party/glslang-angle \
     third_party/google_input_tools \
     third_party/google_input_tools/third_party/closure_library \
     third_party/google_input_tools/third_party/closure_library/third_party/closure \
+    third_party/googletest \
 %if !%{with system_harfbuzz}
     third_party/harfbuzz-ng \
 %endif
@@ -292,7 +285,6 @@ tar -xf %{SOURCE4} -C third_party/freetype/src
     third_party/libsecret \
     third_party/libsrtp \
     third_party/libudev \
-    third_party/libusb \
 %if !%{with system_libvpx}
     third_party/libvpx \
     third_party/libvpx/source/libvpx/third_party/googletest \
@@ -317,7 +309,6 @@ tar -xf %{SOURCE4} -C third_party/freetype/src
     third_party/node/node_modules/vulcanize/third_party/UglifyJS2 \
     third_party/openh264 \
     third_party/openmax_dl \
-    third_party/opus \
     third_party/ots \
     third_party/pdfium \
     third_party/pdfium/third_party/agg23 \
@@ -338,23 +329,26 @@ tar -xf %{SOURCE4} -C third_party/freetype/src
     third_party/qcms \
     third_party/sfntly \
     third_party/skia \
+    third_party/skia/third_party/vulkan \
     third_party/smhasher \
     third_party/speech-dispatcher \
+    third_party/spirv-headers \
+    third_party/spirv-tools-angle \
     third_party/sqlite \
     third_party/swiftshader \
     third_party/swiftshader/third_party/llvm-subzero \
-    third_party/swiftshader/third_party/pnacl-subzero \
     third_party/swiftshader/third_party/subzero \
     third_party/tcmalloc \
     third_party/usb_ids \
     third_party/usrsctp \
+    third_party/vulkan \
+    third_party/vulkan-validation-layers \
     third_party/web-animations-js \
     third_party/webdriver \
     third_party/WebKit \
     third_party/webrtc \
     third_party/widevine \
     third_party/woff2 \
-    third_party/x86inc \
     third_party/xdg-utils \
     third_party/yasm/run_yasm.py \
     third_party/zlib/google \
@@ -381,6 +375,7 @@ tar -xf %{SOURCE4} -C third_party/freetype/src
     libxml \
 %endif
     libxslt \
+    opus \
     re2 \
     snappy \
     yasm \
@@ -573,6 +568,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Jul 26 2017 - Ting-Wei Lan <lantw44@gmail.com> - 60.0.3112.78-100
+- Update to 60.0.3112.78
+- Unbundle opus
+
 * Mon Jul 03 2017 - Ting-Wei Lan <lantw44@gmail.com> - 59.0.3071.115-101
 - Filter provides in chromiumdir
 
