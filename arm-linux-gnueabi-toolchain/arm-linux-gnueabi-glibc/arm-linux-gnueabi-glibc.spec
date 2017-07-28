@@ -43,13 +43,16 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.25
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
 URL:        https://www.gnu.org/software/libc
 Source0:    https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
+
+# https://sourceware.org/git/?p=glibc.git;a=patch;h=388b4f1
+Patch0:     glibc-loc1-loc2-locs-nocommon.patch
 
 BuildRequires: %{cross_triplet}-filesystem
 BuildRequires: %{cross_triplet}-gcc-stage1
@@ -574,6 +577,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Jul 03 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.25-3
+- Fix build failure with GNU Binutils 2.29
+
 * Mon Jul 03 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.25-2
 - Filter provides and requires in cross_sysroot
 
