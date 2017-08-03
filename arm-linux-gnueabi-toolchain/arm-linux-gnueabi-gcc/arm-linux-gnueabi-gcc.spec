@@ -26,7 +26,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    7.1.0
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %define major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -58,8 +58,12 @@ Provides:   %{cross_triplet}-gcc-stage2 = %{version}
 Provides:   %{cross_triplet}-gcc-stage3 = %{version}
 %endif
 
-%global __provides_exclude_from ^%{cross_sysroot}
-%global __requires_exclude_from ^%{cross_sysroot}
+%global shared_library_regexp  [^/]*\\.so[.0-9]*$
+%global usr_lib_gcc_dir        %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}
+%global usr_lib_gcc_adalib_dir %{usr_lib_gcc_dir}/adalib
+
+%global __provides_exclude_from ^(%{cross_sysroot}|%{usr_lib_gcc_dir}/%{shared_library_regexp}|%{usr_lib_gcc_adalib_dir}/%{shared_library_regexp})
+%global __requires_exclude_from ^(%{cross_sysroot}|%{usr_lib_gcc_dir}/%{shared_library_regexp}|%{usr_lib_gcc_adalib_dir}/%{shared_library_regexp})
 
 %description
 
@@ -214,9 +218,13 @@ chmod +x %{__ar_no_strip}
 %{_bindir}/%{cross_triplet}-gcov
 %{_bindir}/%{cross_triplet}-gcov-dump
 %{_bindir}/%{cross_triplet}-gcov-tool
+%dir %{_prefix}/lib/gcc/%{cross_triplet}
+%dir %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}
+%dir %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/README
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/limits.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/syslimits.h
+%dir %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stddef.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdarg.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdfix.h
@@ -240,11 +248,14 @@ chmod +x %{__ar_no_strip}
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_fp16.h
 %endif
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/plugin
+%dir %{_libexecdir}/gcc/%{cross_triplet}
+%dir %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/cc1
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/collect2
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/lto1
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/lto-wrapper
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/liblto_plugin.so*
+%dir %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/plugin
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/plugin/gengtype
 %if %{cross_stage} != "pass1"
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/gcov.h
@@ -340,6 +351,10 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Wed Aug 02 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.1.0-3
+- Filter provides and requires in adalib directory to sync with GCC 6 branch
+- Own include, include-fixed, plugin and versioned gcc directories
+
 * Mon Jul 03 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.1.0-2
 - Filter provides and requires in cross_sysroot
 
