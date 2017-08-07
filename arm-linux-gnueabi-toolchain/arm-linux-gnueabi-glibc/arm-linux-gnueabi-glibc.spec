@@ -42,17 +42,14 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.25
-Release:    3%{?dist}
+Version:    2.26
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
 URL:        https://www.gnu.org/software/libc
 Source0:    https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
-
-# https://sourceware.org/git/?p=glibc.git;a=patch;h=388b4f1
-Patch0:     glibc-loc1-loc2-locs-nocommon.patch
 
 BuildRequires: %{cross_triplet}-filesystem
 BuildRequires: %{cross_triplet}-gcc-stage1
@@ -92,6 +89,7 @@ RANLIB=%{_bindir}/%{cross_triplet}-ranlib \
     --enable-add-ons \
     --enable-multi-arch \
     --enable-obsolete-rpc \
+    --enable-obsolete-nsl \
     --enable-stack-protector=strong \
     --enable-tunables \
     --disable-profile \
@@ -399,7 +397,6 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/sys/types.h
 %{cross_sysroot}/usr/include/sys/ucontext.h
 %{cross_sysroot}/usr/include/sys/uio.h
-%{cross_sysroot}/usr/include/sys/ultrasound.h
 %{cross_sysroot}/usr/include/sys/un.h
 %{cross_sysroot}/usr/include/sys/unistd.h
 %{cross_sysroot}/usr/include/sys/user.h
@@ -434,7 +431,6 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/wchar.h
 %{cross_sysroot}/usr/include/wctype.h
 %{cross_sysroot}/usr/include/wordexp.h
-%{cross_sysroot}/usr/include/xlocale.h
 %{cross_sysroot}/usr/%{lib_dir_name}/crt1.o
 %{cross_sysroot}/usr/%{lib_dir_name}/crti.o
 %{cross_sysroot}/usr/%{lib_dir_name}/crtn.o
@@ -577,6 +573,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Thu Aug 03 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.26-1
+- Update to 2.26
+
 * Mon Jul 03 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.25-3
 - Fix build failure with GNU Binutils 2.29
 
