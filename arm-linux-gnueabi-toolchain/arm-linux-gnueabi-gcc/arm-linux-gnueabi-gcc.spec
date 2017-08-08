@@ -26,7 +26,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    7.1.0
-Release:    3%{?dist}
+Release:    4%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %define major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -35,6 +35,12 @@ Group:      Development/Languages
 License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
 URL:        https://gcc.gnu.org
 Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
+
+# https://gcc.gnu.org/git/?p=gcc.git;a=patch;h=5266910
+Patch0:     gcc-struct-ucontext.patch
+
+# https://gcc.gnu.org/git/?p=gcc.git;a=patch;h=67dce05
+Patch1:     gcc-struct-sigaltstack.patch
 
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel, isl-devel
 BuildRequires: gmp-devel, mpfr-devel, libmpc-devel, elfutils-libelf-devel
@@ -351,6 +357,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Tue Aug 08 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.1.0-4
+- Fix build failure with GLIBC 2.26
+
 * Wed Aug 02 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.1.0-3
 - Filter provides and requires in adalib directory to sync with GCC 6 branch
 - Own include, include-fixed, plugin and versioned gcc directories
