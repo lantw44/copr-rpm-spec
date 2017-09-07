@@ -1,13 +1,27 @@
-Index: tools/gn/bootstrap/bootstrap.py
+commit 96c271f8ab2be7ea4199078ea65ac50c6ada4685
+Author: Pawel Hajdan, Jr <phajdan.jr@chromium.org>
+Date:   Wed Jul 26 21:51:54 2017 +0000
+
+    wip
+
 diff --git a/tools/gn/bootstrap/bootstrap.py b/tools/gn/bootstrap/bootstrap.py
-index 6f2f5b1264519ea38cc36fb0b7e2cc24c378ca7a..0b03d2626b358fb90ab39d737679ee47bd60303b 100755
+index 1390560f8e37..ff2ae57c46b0 100755
 --- a/tools/gn/bootstrap/bootstrap.py
 +++ b/tools/gn/bootstrap/bootstrap.py
-@@ -487,6 +487,7 @@ def write_gn_ninja(path, root_gen_dir, options):
-       'base/sys_info.cc',
-       'base/task_runner.cc',
-       'base/task_scheduler/delayed_task_manager.cc',
-+      'base/task_scheduler/environment_config.cc',
-       'base/task_scheduler/post_task.cc',
-       'base/task_scheduler/priority_queue.cc',
-       'base/task_scheduler/scheduler_lock_impl.cc',
+@@ -449,6 +449,7 @@ def write_gn_ninja(path, root_gen_dir, options):
+       'base/metrics/histogram_base.cc',
+       'base/metrics/histogram_functions.cc',
+       'base/metrics/histogram_samples.cc',
++      'base/metrics/histogram_snapshot_manager.cc',
+       'base/metrics/metrics_hashes.cc',
+       'base/metrics/persistent_histogram_allocator.cc',
+       'base/metrics/persistent_memory_allocator.cc',
+@@ -534,7 +535,7 @@ def write_gn_ninja(path, root_gen_dir, options):
+       'base/trace_event/heap_profiler_allocation_context_tracker.cc',
+       'base/trace_event/heap_profiler_allocation_register.cc',
+       'base/trace_event/heap_profiler_event_filter.cc',
+-      'base/trace_event/heap_profiler_event_writer.cc',
++      'base/trace_event/heap_profiler_heap_dump_writer.cc',
+       'base/trace_event/heap_profiler_serialization_state.cc',
+       'base/trace_event/heap_profiler_stack_frame_deduplicator.cc',
+       'base/trace_event/heap_profiler_type_name_deduplicator.cc',

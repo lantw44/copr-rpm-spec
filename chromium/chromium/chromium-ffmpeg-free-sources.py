@@ -78,7 +78,8 @@ def parse_ffmpeg_gyni_file(gyni_path, arch_not_arm):
     for block in blocks:
       conditions = re.findall(r"\(?\((.*?)\)", block[0])
       for condition in conditions:
-        if not 'is_linux' in condition:
+        if not 'is_linux' in condition and \
+           not 'use_linux_config' in condition:
           continue
         if 'ffmpeg_branding' in condition and \
            'ffmpeg_branding == "Chromium"' not in condition:

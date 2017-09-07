@@ -55,7 +55,7 @@
 %bcond_without require_clang
 
 Name:       chromium
-Version:    60.0.3112.113
+Version:    61.0.3163.79
 Release:    100%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -95,9 +95,11 @@ Source13:   chromium-browser.appdata.xml
 # Add a patch from Fedora to fix GN build
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=0df9641
 Patch10:    chromium-last-commit-position.patch
-# Add a patch from Gentoo to fix GN build
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=94162f2
+# Add patches from Gentoo to fix GN build
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=04322d0
 Patch11:    chromium-gn-bootstrap.patch
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=c38ed01
+Patch12:    chromium-safe-math-gcc.patch
 
 # Building with GCC 6 requires -fno-delete-null-pointer-checks to avoid crashes
 # Unfortunately, it is not possible to add additional compiler flags with
@@ -116,8 +118,10 @@ Patch20:    chromium-use-no-delete-null-pointer-checks-with-gcc.patch
 Patch30:    chromium-blink-fpermissive.patch
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=ce69059
 Patch31:    chromium-blink-gcc7.patch
-# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=54f615e
-Patch32:    chromium-v8-gcc7.patch
+
+# Add a patch from Gentoo to fix ATK-related build failure
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=04322d0
+Patch40:    chromium-atk.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -230,10 +234,10 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/adobe \
     third_party/analytics \
     third_party/angle \
-    third_party/angle/src/common/third_party/numerics \
+    third_party/angle/src/common/third_party/base \
+    third_party/angle/src/common/third_party/murmurhash \
     third_party/angle/src/third_party/compiler \
     third_party/angle/src/third_party/libXNVCtrl \
-    third_party/angle/src/third_party/murmurhash \
     third_party/angle/src/third_party/trace_event \
     third_party/boringssl \
     third_party/brotli \
@@ -419,6 +423,7 @@ gn_args=(
     is_debug=false
     is_component_build=false
     use_sysroot=false
+    use_custom_libcxx=false
     use_cups=true
     use_gconf=false
     use_gnome_keyring=true
@@ -568,6 +573,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Sep 07 2017 - Ting-Wei Lan <lantw44@gmail.com> - 61.0.3163.79-100
+- Update to 61.0.3163.79
+
 * Fri Aug 25 2017 - Ting-Wei Lan <lantw44@gmail.com> - 60.0.3112.113-100
 - Update to 60.0.3112.113
 
