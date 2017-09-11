@@ -56,7 +56,7 @@
 
 Name:       chromium
 Version:    61.0.3163.79
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -458,8 +458,7 @@ gn_args+=(
 
 gn_args+=(
 %if %{with symbol}
-    symbol_level=2
-    remove_webcore_debug_symbols=true
+    symbol_level=1
 %else
     symbol_level=0
 %endif
@@ -573,6 +572,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon Sep 11 2017 - Ting-Wei Lan <lantw44@gmail.com> - 61.0.3163.79-101
+- Reduce symbol_level to 1 to fix find-debuginfo.sh on Fedora 26
+
 * Thu Sep 07 2017 - Ting-Wei Lan <lantw44@gmail.com> - 61.0.3163.79-100
 - Update to 61.0.3163.79
 
