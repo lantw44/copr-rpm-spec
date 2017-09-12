@@ -56,7 +56,7 @@
 
 Name:       chromium
 Version:    61.0.3163.79
-Release:    101%{?dist}
+Release:    102%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -123,6 +123,10 @@ Patch31:    chromium-blink-gcc7.patch
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=04322d0
 Patch40:    chromium-atk.patch
 
+# Add a patch from Gentoo to fix build with GLIBC 2.26
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=2901239
+Patch50:    chromium-ucontext-glibc226.patch
+
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
 
@@ -139,6 +143,7 @@ BuildRequires: clang, llvm
 BuildRequires: ninja-build, nodejs, bison, gperf, hwdata
 BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
 BuildRequires: libcap-devel, cups-devel, minizip-devel, alsa-lib-devel
+BuildRequires: mesa-libGL-devel, mesa-libEGL-devel
 BuildRequires: pkgconfig(gtk+-2.0), pkgconfig(gtk+-3.0)
 BuildRequires: pkgconfig(libexif), pkgconfig(nss)
 BuildRequires: pkgconfig(xtst), pkgconfig(xscrnsaver)
@@ -572,6 +577,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon Sep 11 2017 - Ting-Wei Lan <lantw44@gmail.com> - 61.0.3163.79-102
+- Fix GLIBC 2.26 build issue on Fedora 27 and later
+- Add mesa development packages to BuildRequires for Fedora 27 and later
+
 * Mon Sep 11 2017 - Ting-Wei Lan <lantw44@gmail.com> - 61.0.3163.79-101
 - Reduce symbol_level to 1 to fix find-debuginfo.sh on Fedora 26
 
