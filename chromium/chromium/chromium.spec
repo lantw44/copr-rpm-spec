@@ -55,8 +55,8 @@
 %bcond_without require_clang
 
 Name:       chromium
-Version:    61.0.3163.79
-Release:    102%{?dist}
+Version:    61.0.3163.91
+Release:    100%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
 Group:      Applications/Internet
@@ -577,6 +577,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Sep 15 2017 - Ting-Wei Lan <lantw44@gmail.com> - 61.0.3163.91-100
+- Update to 61.0.3163.91
+
 * Mon Sep 11 2017 - Ting-Wei Lan <lantw44@gmail.com> - 61.0.3163.79-102
 - Fix GLIBC 2.26 build issue on Fedora 27 and later
 - Add mesa development packages to BuildRequires for Fedora 27 and later
