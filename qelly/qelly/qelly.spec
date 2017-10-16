@@ -1,6 +1,6 @@
 Name:       qelly
 Version:    1.0
-Release:    0.8.beta%{?dist}
+Release:    0.9.beta%{?dist}
 Summary:    Qelly is a Qt port of Nally
 
 %global     real_name     Qelly
@@ -25,7 +25,7 @@ name), but more features from other Telnet/SSH clients are also planned.
 %setup -q -n %{real_name}-%{real_version}
 
 %build
-%{_qt4_qmake}
+%{qmake_qt4}
 make %{?_smp_mflags}
 
 
@@ -41,6 +41,10 @@ install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
 %doc AUTHORS CHANGES README.md
 
 %changelog
+* Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.9.beta
+- Use qmake_qt4 macro instead of _qt4_qmake macro
+- Fix build failure on Fedora 27 and 28
+
 * Wed Mar 08 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.8.beta
 - Rebuilt for Fedora 26 and 27
 
