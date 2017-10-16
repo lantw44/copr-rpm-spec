@@ -3,7 +3,7 @@
 
 Name:           guix
 Version:        0.13.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -323,6 +323,9 @@ fi
 
 
 %changelog
+* Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.13.0-2
+- Rebuilt for Fedora 27 and 28
+
 * Sat May 27 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.13.0-1
 - Update to 0.13.0
 - Use HTTPS to download the source

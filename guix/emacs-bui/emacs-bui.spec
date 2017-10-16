@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        1.1.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Buffer interface library for Emacs
 
 Group:          Applications/Editors
@@ -49,6 +49,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/bui/
 
 
 %changelog
+* Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-3
+- Rebuilt for Fedora 27 and 28
+
 * Fri Jun 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-2
 - Add an empty build section to avoid rpmlint warning
 

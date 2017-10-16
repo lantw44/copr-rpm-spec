@@ -44,7 +44,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.26
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -574,6 +574,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.26-3
+- Rebuilt for Fedora 27 and 28
+
 * Tue Aug 15 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.26-2
 - Disable debuginfo package for bootstrap build to fix failure on Fedora 27
 

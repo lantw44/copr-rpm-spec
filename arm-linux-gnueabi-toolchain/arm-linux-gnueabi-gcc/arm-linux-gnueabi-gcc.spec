@@ -26,7 +26,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    7.2.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %define major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -351,6 +351,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.2.0-2
+- Rebuilt for Fedora 27 and 28
+
 * Mon Aug 14 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.2.0-1
 - Update to new stable release 7.2.0
 
