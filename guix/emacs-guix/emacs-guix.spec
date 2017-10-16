@@ -2,7 +2,7 @@
 %global pkgname Guix
 
 Name:           emacs-%{pkg}
-Version:        0.3.1
+Version:        0.3.3
 Release:        1%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
@@ -95,5 +95,8 @@ fi
 
 
 %changelog
+* Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.3.3-1
+- Update to 0.3.3
+
 * Sat May 27 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.3.1-1
 - Initial packaging
