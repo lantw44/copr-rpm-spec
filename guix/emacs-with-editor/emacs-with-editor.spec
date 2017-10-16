@@ -2,7 +2,7 @@
 %global pkgname With-Editor
 
 Name:           emacs-%{pkg}
-Version:        2.5.11
+Version:        2.7.0
 Release:        1%{?dist}
 Summary:        Use the Emacsclient as the editor of child processes
 
@@ -62,6 +62,9 @@ fi
 
 
 %changelog
+* Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.7.0-1
+- Update to 2.7.0
+
 * Fri Jun 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.5.11-1
 - Update to 2.5.11
 
