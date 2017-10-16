@@ -3,7 +3,7 @@
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    4.13.6
+Version:    4.13.7
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -124,6 +124,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 4.13.7-1
+- Update to 4.13.7
+
 * Sat Oct 14 2017 Ting-Wei Lan <lantw44@gmail.com> - 4.13.6-1
 - Update to 4.13.6
 
