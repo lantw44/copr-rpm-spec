@@ -1,16 +1,16 @@
-%global glib2_version 2.46.0
+%global glib2_version 2.52.0
 %global gtk3_version 3.22.13
-%global webkitgtk4_version 2.15.90
+%global webkitgtk4_version 2.17.4
 
 Name: epiphany
 Epoch: 1
-Version: 3.24.4
+Version: 3.26.1
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv3+ and CC-BY-SA
 URL: https://wiki.gnome.org/Apps/Web
-Source0: https://download.gnome.org/sources/epiphany/3.24/%{name}-%{version}.tar.xz
+Source0: https://download.gnome.org/sources/epiphany/3.26/%{name}-%{version}.tar.xz
 
 # Fedora bookmarks
 Patch0: epiphany-default-bookmarks.patch
@@ -20,9 +20,10 @@ Patch2: epiphany-3.24-reduce-tab-width.patch
 
 BuildRequires: desktop-file-utils
 BuildRequires: gettext-devel
-BuildRequires: itstool
 BuildRequires: iso-codes-devel
+BuildRequires: itstool
 BuildRequires: libappstream-glib-devel
+BuildRequires: meson
 BuildRequires: pkgconfig(cairo) >= 1.2
 BuildRequires: pkgconfig(gcr-3) >= 3.5.5
 BuildRequires: pkgconfig(gdk-3.0) >= %{gtk3_version}
@@ -32,6 +33,7 @@ BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gnome-desktop-3.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gtk+-3.0) >= %{gtk3_version}
 BuildRequires: pkgconfig(gtk+-unix-print-3.0) >= %{gtk3_version}
+BuildRequires: pkgconfig(hogweed)
 BuildRequires: pkgconfig(icu-uc) >= 4.6
 BuildRequires: pkgconfig(json-glib-1.0) >= 1.2.0
 BuildRequires: pkgconfig(libnotify) >= 0.5.1
@@ -39,6 +41,7 @@ BuildRequires: pkgconfig(libsecret-1) >= 0.14
 BuildRequires: pkgconfig(libsoup-2.4) >= 2.48.0
 BuildRequires: pkgconfig(libxml-2.0) >= 2.6.12
 BuildRequires: pkgconfig(libxslt) >= 1.1.7
+BuildRequires: pkgconfig(nettle)
 BuildRequires: pkgconfig(sqlite3) >= 3.0
 BuildRequires: pkgconfig(webkit2gtk-4.0) >= %{webkitgtk4_version}
 BuildRequires: pkgconfig(webkit2gtk-web-extension-4.0) >= %{webkitgtk4_version}
@@ -77,12 +80,11 @@ installing the epiphany application itself.
 %autosetup -p1
 
 %build
-%configure --with-distributor-name=Fedora
-make %{?_smp_mflags}
+%meson -Ddistributor_name=Fedora
+%meson_build
 
 %install
-%make_install
-find $RPM_BUILD_ROOT -name '*.la' -delete
+%meson_install
 %find_lang %{name} --with-gnome
 
 %check
@@ -110,14 +112,35 @@ desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 %{_mandir}/man*/*
 
 %changelog
-* Tue Sep 05 2017 Kalev Lember <klember@redhat.com> - 1:3.24.4-1
-- Update to 3.24.4
+* Sun Oct 08 2017 Kalev Lember <klember@redhat.com> - 1:3.26.1-1
+- Update to 3.26.1
 
-* Mon Jul 17 2017 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.24.3-1
-- Update to 3.24.3
+* Sun Sep 10 2017 Kalev Lember <klember@redhat.com> - 1:3.26.0-1
+- Update to 3.26.0
 
-* Wed May 10 2017 Kalev Lember <klember@redhat.com> - 1:3.24.2-1
-- Update to 3.24.2
+* Tue Sep 05 2017 Kalev Lember <klember@redhat.com> - 1:3.25.92-1
+- Update to 3.25.92
+
+* Fri Aug 25 2017 Kalev Lember <klember@redhat.com> - 1:3.25.91-1
+- Update to 3.25.91
+
+* Tue Aug 15 2017 Kalev Lember <klember@redhat.com> - 1:3.25.90-1
+- Update to 3.25.90
+
+* Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.25.4-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.25.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Mon Jul 17 2017 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.25.4-1
+- Update to 3.25.4
+
+* Wed May 24 2017 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.25.2-1
+- Update to 3.25.2
+
+* Wed Apr 26 2017 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.25.1-1
+- Update to 3.25.1 with Meson build system
 
 * Tue Apr 11 2017 Kalev Lember <klember@redhat.com> - 1:3.24.1-1
 - Update to 3.24.1
