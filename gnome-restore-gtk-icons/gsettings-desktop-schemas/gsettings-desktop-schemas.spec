@@ -27,7 +27,7 @@ Requires: glib2 >= 2.31.0
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.24.
+buttons and menus in GNOME 3.26.
 
 gsettings-desktop-schemas contains a collection of GSettings schemas for
 settings shared by various components of a desktop.
@@ -42,8 +42,8 @@ and header files for developing applications that use %{name}.
 
 
 %prep
-%setup -q
-%patch0 -p1 -b .revert.icons.settings
+%autosetup -p1
+
 
 %build
 %configure --disable-schemas-compile --enable-introspection=yes
@@ -82,6 +82,12 @@ fi
 %changelog
 * Mon Sep 04 2017 Kalev Lember <klember@redhat.com> - 3.24.1-1
 - Update to 3.24.1
+
+* Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.24.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.24.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
 * Tue Mar 21 2017 Kalev Lember <klember@redhat.com> - 3.24.0-1
 - Update to 3.24.0

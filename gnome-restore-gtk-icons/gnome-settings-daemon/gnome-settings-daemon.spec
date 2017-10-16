@@ -6,18 +6,14 @@
 %global geoclue_version 2.3.1
 
 Name:           gnome-settings-daemon
-Version:        3.24.3
-Release:        3%{?dist}.1
+Version:        3.26.1
+Release:        1%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        GPLv2+
 URL:            https://download.gnome.org/sources/%{name}
-Source0:        https://download.gnome.org/sources/%{name}/3.24/%{name}-%{version}.tar.xz
-# Backported from upstream
-Patch1:		0001-Backport-RFKILL-fixes.patch
-Patch2:         geoclue-usage-fixes.patch
-Patch3:         ambient-light-backlight-fixes.patch
-# respect menus-have-icons and buttons-have-icons settings
+Source0:        https://download.gnome.org/sources/%{name}/3.26/%{name}-%{version}.tar.xz
+
 Patch4:         %{name}-3.24-respect-menus-buttons-icons.patch
 
 BuildRequires:  pkgconfig(alsa)
@@ -25,6 +21,7 @@ BuildRequires:  pkgconfig(colord) >= 1.0.2
 BuildRequires:  pkgconfig(fontconfig)
 BuildRequires:  pkgconfig(geoclue-2.0) >= %{geoclue_version}
 BuildRequires:  pkgconfig(geocode-glib-1.0) >= %{geocode_glib_version}
+BuildRequires:  pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires:  pkgconfig(gnome-desktop-3.0) >= %{gnome_desktop_version}
 BuildRequires:  pkgconfig(gsettings-desktop-schemas) >= %{gsettings_desktop_schemas_version}
 BuildRequires:  pkgconfig(gtk+-3.0) >= %{gtk3_version}
@@ -60,6 +57,7 @@ Requires: colord
 Requires: iio-sensor-proxy
 Requires: geoclue2 >= %{geoclue_version}
 Requires: geocode-glib%{?_isa} >= %{geocode_glib_version}
+Requires: glib2%{?_isa} >= %{glib2_version}
 Requires: gnome-desktop3%{?_isa} >= %{gnome_desktop_version}
 Requires: gsettings-desktop-schemas%{?_isa} >= %{gsettings_desktop_schemas_version}
 Requires: gtk3%{?_isa} >= %{gtk3_version}
@@ -69,14 +67,17 @@ Obsoletes: %{name}-updates < 3.13.1
 Obsoletes: drwright < 3.5.0-3
 Obsoletes: gnome-settings-daemon-devel < 3.23.1
 
-# Input sources handling was moved to gnome-shell / mutter; make sure not to
-# break older gnome-shell versions.
-Conflicts: gnome-shell < 3.13.92
+# The orientation and xrandr plugins were removed in 3.25.4 and their
+# functionality was moved to mutter; this conflict here makes sure not to break
+# older gdm, gnome-session and gnome-shell releases that expect the functionality
+Conflicts: gdm < 1:3.25.4.1
+Conflicts: gnome-session < 3.25.4
+Conflicts: gnome-shell < 3.25.4
 
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.24.
+buttons and menus in GNOME 3.26.
 
 A daemon to share settings from GNOME to other applications. It also
 handles global keybindings, as well as a number of desktop-wide settings.
@@ -90,11 +91,7 @@ The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
 %prep
-%setup -q
-%patch1 -p1 -b .backport_rfkill_fixes
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1 -b .menus-buttons-icons
+%autosetup -p1
 
 %build
 %configure --disable-static \
@@ -192,10 +189,6 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_datadir}/polkit-1/actions/org.gnome.settings-daemon.plugins.wacom.policy
 %endif
 
-%{_libexecdir}/gsd-xrandr
-%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.XRANDR.desktop
-%{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.xrandr.gschema.xml
-
 %{_libexecdir}/gsd-xsettings
 %{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.XSettings.desktop
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.xsettings.gschema.xml
@@ -207,9 +200,6 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Color.desktop
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.color.gschema.xml
 
-%{_libexecdir}/gsd-orientation
-%{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Orientation.desktop
-
 %{_libexecdir}/gsd-sharing
 %{_sysconfdir}/xdg/autostart/org.gnome.SettingsDaemon.Sharing.desktop
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.plugins.sharing.gschema.xml
@@ -218,7 +208,6 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 /usr/lib/udev/rules.d/*.rules
 %{_datadir}/gnome-settings-daemon/
-%{_datadir}/icons/hicolor/*/apps/gsd-xrandr.*
 %{_datadir}/GConf/gsettings/gnome-settings-daemon.convert
 
 %{_datadir}/glib-2.0/schemas/org.gnome.settings-daemon.enums.xml
@@ -230,17 +219,32 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-input-helper
 
 %changelog
-* Mon Aug 28 2017 Rui Matos <rmatos@redhat.com> - 3.24.3-3
-- Add upstream ambient light and backlight usage fixes (rhbz#1322588)
+* Sun Oct 08 2017 Kalev Lember <klember@redhat.com> - 3.26.1-1
+- Update to 3.26.1
 
-* Mon Jul 24 2017 Rui Matos <rmatos@redhat.com> - 3.24.3-2
-- Add upstream geoclue usage fixes (rhbz#1473061)
+* Wed Sep 13 2017 Kalev Lember <klember@redhat.com> - 3.26.0-1
+- Update to 3.26.0
 
-* Sat Jul 22 2017 Rui Matos <rmatos@redhat.com> - 3.24.3-1
-- Update to 3.24.3
+* Tue Sep 05 2017 Kalev Lember <klember@redhat.com> - 3.25.92-1
+- Update to 3.25.92
 
-* Thu May 18 2017 Benjamin Berg <bberg@redhat.com> - 3.24.2-2
-- Backport RFKILL related fixes to Fedora 26
+* Thu Aug 24 2017 Kalev Lember <klember@redhat.com> - 3.25.91-1
+- Update to 3.25.91
+
+* Tue Aug 15 2017 Kalev Lember <klember@redhat.com> - 3.25.90-1
+- Update to 3.25.90
+
+* Mon Jul 31 2017 Kalev Lember <klember@redhat.com> - 3.25.4-2
+- Add explicit conflicts to not break older gdm, gnome-session and gnome-shell
+
+* Mon Jul 31 2017 Kalev Lember <klember@redhat.com> - 3.25.4-1
+- Update to 3.25.4
+
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.25.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Mon Jun 12 2017 Kalev Lember <klember@redhat.com> - 3.25.2-1
+- Update to 3.25.2
 
 * Wed May 10 2017 Kalev Lember <klember@redhat.com> - 3.24.2-1
 - Update to 3.24.2
