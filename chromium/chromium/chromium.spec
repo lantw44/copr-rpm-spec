@@ -32,7 +32,7 @@
 %endif
 
 # Require libxml2 > 2.9.4 for XML_PARSE_NOXXE
-%if 0
+%if 0%{?fedora} >= 27
 %bcond_without system_libxml2
 %else
 %bcond_with system_libxml2
@@ -54,8 +54,12 @@
 # Allow disabling unconditional build dependency on clang
 %bcond_without require_clang
 
+# Allow using compilation flags set by Fedora RPM macros
+# Disabled by default because it causes out-of-memory error on Fedora Copr
+%bcond_with fedora_compilation_flags
+
 Name:       chromium
-Version:    61.0.3163.100
+Version:    62.0.3202.62
 Release:    100%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -96,36 +100,21 @@ Source13:   chromium-browser.appdata.xml
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=0df9641
 Patch10:    chromium-last-commit-position.patch
 # Add patches from Gentoo to fix GN build
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=04322d0
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=199c924
 Patch11:    chromium-gn-bootstrap.patch
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=c38ed01
 Patch12:    chromium-safe-math-gcc.patch
 
-# Building with GCC 6 requires -fno-delete-null-pointer-checks to avoid crashes
-# Unfortunately, it is not possible to add additional compiler flags with
-# environment variables or command-line arguments when building with GN, so we
-# must patch the build file here.
-# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=7fe5f2bb
-# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68853
-# https://bugs.debian.org/833524
-# https://anonscm.debian.org/cgit/pkg-chromium/pkg-chromium.git/commit/?id=dfd37f3
-# https://bugs.chromium.org/p/v8/issues/detail?id=3782
-# https://codereview.chromium.org/2310513002
-Patch20:    chromium-use-no-delete-null-pointer-checks-with-gcc.patch
-
 # Add several patches from Fedora to fix build with GCC 7
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=86f726d
 Patch30:    chromium-blink-fpermissive.patch
-# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=ce69059
-Patch31:    chromium-blink-gcc7.patch
-
-# Add a patch from Gentoo to fix ATK-related build failure
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=04322d0
-Patch40:    chromium-atk.patch
 
 # Add a patch from Gentoo to fix build with GLIBC 2.26
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=2901239
 Patch50:    chromium-ucontext-glibc226.patch
+
+# Don't include C++17 string_view header
+Patch60:    chromium-crc32c-disable-c++17.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -260,6 +249,7 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/ced \
     third_party/cld_2 \
     third_party/cld_3 \
+    third_party/crc32c \
     third_party/cros_system_api \
     third_party/devscripts \
     third_party/dom_distiller_js \
@@ -315,7 +305,7 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/modp_b64 \
     third_party/mt19937ar \
     third_party/node \
-    third_party/node/node_modules/vulcanize/third_party/UglifyJS2 \
+    third_party/node/node_modules/polymer-bundler/lib/third_party/UglifyJS2 \
     third_party/openh264 \
     third_party/openmax_dl \
     third_party/ots \
@@ -325,7 +315,7 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/pdfium/third_party/bigint \
     third_party/pdfium/third_party/build \
     third_party/pdfium/third_party/freetype \
-    third_party/pdfium/third_party/lcms2-2.6 \
+    third_party/pdfium/third_party/lcms \
     third_party/pdfium/third_party/libopenjpeg20 \
     third_party/pdfium/third_party/libpng16 \
     third_party/pdfium/third_party/libtiff \
@@ -338,6 +328,7 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/qcms \
     third_party/sfntly \
     third_party/skia \
+    third_party/skia/third_party/gif \
     third_party/skia/third_party/vulkan \
     third_party/smhasher \
     third_party/speech-dispatcher \
@@ -398,7 +389,6 @@ sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' device/usb/BUILD.gn
 # Workaround build error caused by debugedit
 # https://bugzilla.redhat.com/show_bug.cgi?id=304121
 sed -i '/^#include/s|//|/|' \
-    content/renderer/gpu/compositor_forwarding_message_filter.cc \
     third_party/webrtc/modules/audio_processing/utility/ooura_fft.cc \
     third_party/webrtc/modules/audio_processing/utility/ooura_fft_sse2.cc
 
@@ -420,8 +410,20 @@ ln -s %{_bindir}/node third_party/node/linux/node-linux-x64/bin/node
 
 
 %build
+export AR=ar NM=nm
+
+# Fedora 25 doesn't have __global_cxxflags
+%if %{with fedora_compilation_flags}
+export CFLAGS="$(echo '%{__global_cflags}' | sed 's/-fexceptions//')"
+export CXXFLAGS="$(echo '%{?__global_cxxflags}%{!?__global_cxxflags:%{__global_cflags}}' | sed 's/-fexceptions//')"
+export LDFLAGS='%{__global_ldflags}'
+%endif
+
 %if %{with clang}
 export CC=clang CXX=clang++
+%else
+export CC=gcc CXX=g++
+export CXXFLAGS="$CXXFLAGS -fno-delete-null-pointer-checks"
 %endif
 
 gn_args=(
@@ -441,6 +443,8 @@ gn_args=(
     treat_warnings_as_errors=false
     linux_use_bundled_binutils=false
     fieldtrial_testing_like_official_build=true
+    'custom_toolchain="//build/toolchain/linux/unbundle:default"'
+    'host_toolchain="//build/toolchain/linux/unbundle:default"'
     'google_api_key="AIzaSyCcK3laItm4Ik9bm6IeGFC6tVgy4eut0_o"'
     'google_default_client_id="82546407293.apps.googleusercontent.com"'
     'google_default_client_secret="GuvPB069ONrHxN7Y_y0txLKn"'
@@ -577,6 +581,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Oct 18 2017 - Ting-Wei Lan <lantw44@gmail.com> - 62.0.3202.62-100
+- Update to 62.0.3202.62
+- Unbundle libxml2 on Fedora 27 and later
+- Use environment variables to pass compiler flags
+
 * Fri Sep 22 2017 - Ting-Wei Lan <lantw44@gmail.com> - 61.0.3163.100-100
 - Update to 61.0.3163.100
 
