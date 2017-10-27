@@ -6,18 +6,6 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
-%if 0
-%bcond_without system_libvpx
-%else
-%bcond_with system_libvpx
-%endif
-
-%if 0
-%bcond_without clang
-%else
-%bcond_with clang
-%endif
-
 %if 0%{?fedora} < 26
 %bcond_without system_jinja2
 %else
@@ -48,10 +36,19 @@
 # Allow testing whether icu can be unbundled
 %bcond_with system_libicu
 
+# Allow testing whether libvpx can be unbundled
+%bcond_with system_libvpx
+
 # Allow building with symbols to ease debugging
+# Enabled by default because Fedora Copr has enough memory
 %bcond_without symbol
 
+# Allow compiling with clang
+# Disabled by default becaue gcc is the system compiler
+%bcond_with clang
+
 # Allow disabling unconditional build dependency on clang
+# Enabled by default because nacl always uses clang to compile some files
 %bcond_without require_clang
 
 # Allow using compilation flags set by Fedora RPM macros
@@ -59,7 +56,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    62.0.3202.62
+Version:    62.0.3202.75
 Release:    100%{?dist}
 Summary:    An open-source project that aims to build a safer, faster, and more stable browser
 
@@ -581,6 +578,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Oct 27 2017 - Ting-Wei Lan <lantw44@gmail.com> - 62.0.3202.75-100
+- Update to 62.0.3202.75
+- Replace 'if 0' with single bcond_with because they are unlikely to change
+- Add more comments to bcond_* to explain the meaning of default values
+
 * Wed Oct 18 2017 - Ting-Wei Lan <lantw44@gmail.com> - 62.0.3202.62-100
 - Update to 62.0.3202.62
 - Unbundle libxml2 on Fedora 27 and later
