@@ -30,6 +30,7 @@
 #  * The shebang line no longer hardcodes the path to python2.
 #  * Allow conditions without 'ffmpeg_branding == "Chromium"'.
 #  * Add files included by files named with 'autorename_' prefix.
+#  * Merge changes from the official Fedora package, version 62.0.3202.62.
 
 import sys
 import os
@@ -72,23 +73,29 @@ def parse_ffmpeg_gyni_file(gyni_path, arch_not_arm):
   # Get all the sections.
   sections = re.findall(r"if (.*?})", content, re.DOTALL)
   for section in sections:
-    # Get all the conditions (first group) and sources (second group)for the
+    # Get all the conditions (first group) and sources (second group) for the
     # current section.
     blocks = re.findall(r"(\(.*?\))\s\{(.*?)\}", section, re.DOTALL)
     for block in blocks:
       conditions = re.findall(r"\(?\((.*?)\)", block[0])
+      inserted = False
       for condition in conditions:
-        if not 'is_linux' in condition and \
-           not 'use_linux_config' in condition:
-          continue
-        if 'ffmpeg_branding' in condition and \
-           'ffmpeg_branding == "Chromium"' not in condition:
-          continue
-        if (arch_not_arm):
-          if ('x64' in condition) or ('x86' in condition):
+        if inserted:
+          break
+        limitations = ['ffmpeg_branding == "Chrome"', 'ffmpeg_branding == "ChromeOS"']
+        if ('use_linux_config' in condition or 'is_linux' in condition) and \
+          not any(limitation in condition for limitation in limitations):
+          if (arch_not_arm):
+            if ('x64' in condition) or ('x86' in condition):
+              parse_sources (block[1], output_sources, arch_not_arm)
+              inserted = True
+          else:
             parse_sources (block[1], output_sources, arch_not_arm)
-        else:
-          parse_sources (block[1], output_sources, arch_not_arm)
+            inserted = True
+
+  if len(output_sources) == 0:
+    sys.stderr.write("Something went wrong, no sources parsed!\n")
+    sys.exit(1)
 
   print ' '.join(output_sources)
 

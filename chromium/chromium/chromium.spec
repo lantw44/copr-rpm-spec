@@ -1,7 +1,9 @@
-# This spec file is based on other spec files and PKGBUILDs available from
+# This spec file is based on other spec files, ebuilds, PKGBUILDs available from
 #  [1] https://repos.fedorapeople.org/repos/spot/chromium/
 #  [2] https://copr.fedoraproject.org/coprs/churchyard/chromium-russianfedora-tested/
 #  [3] https://www.archlinux.org/packages/extra/x86_64/chromium/
+#  [4] https://src.fedoraproject.org/rpms/chromium/
+#  [5] https://gitweb.gentoo.org/repo/gentoo.git/tree/www-client/chromium/
 
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
@@ -57,12 +59,11 @@
 
 Name:       chromium
 Version:    62.0.3202.75
-Release:    100%{?dist}
-Summary:    An open-source project that aims to build a safer, faster, and more stable browser
+Release:    101%{?dist}
+Summary:    A WebKit (Blink) powered web browser
 
-Group:      Applications/Internet
-License:    BSD and LGPLv2+
-URL:        https://www.chromium.org
+License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
+URL:        https://www.chromium.org/Home
 
 # Unfortunately, Fedora Copr forbids uploading sources with patent-encumbered
 # ffmpeg code even if they are never compiled and linked to target binraies,
@@ -99,12 +100,6 @@ Patch10:    chromium-last-commit-position.patch
 # Add patches from Gentoo to fix GN build
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=199c924
 Patch11:    chromium-gn-bootstrap.patch
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=c38ed01
-Patch12:    chromium-safe-math-gcc.patch
-
-# Add several patches from Fedora to fix build with GCC 7
-# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=86f726d
-Patch30:    chromium-blink-fpermissive.patch
 
 # Add a patch from Gentoo to fix build with GLIBC 2.26
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=2901239
@@ -157,6 +152,7 @@ BuildRequires: python2-ply
 %endif
 # replace_gn_files.py --system-libraries
 BuildRequires: flac-devel
+BuildRequires: freetype-devel
 %if %{with system_harfbuzz}
 BuildRequires: harfbuzz-devel
 %endif
@@ -192,8 +188,20 @@ Requires(post):   desktop-file-utils
 Requires(postun): desktop-file-utils
 Requires:         hicolor-icon-theme
 
-Obsoletes:     chromium-libs, chromium-libs-media, chromedriver
-Provides:      chromium-libs, chromium-libs-media, chromedriver
+Obsoletes:     chromedriver <= %{version}-%{release}
+Obsoletes:     chromium-common <= %{version}-%{release}
+Obsoletes:     chromium-headless <= %{version}-%{release}
+Obsoletes:     chromium-libs <= %{version}-%{release}
+Obsoletes:     chromium-libs-media <= %{version}-%{release}
+Provides:      chromedriver = %{version}-%{release}
+Provides:      chromium-common = %{version}-%{release}
+Provides:      chromium-headless = %{version}-%{release}
+Provides:      chromium-libs = %{version}-%{release}
+Provides:      chromium-libs-media = %{version}-%{release}
+
+Provides:      chromedriver-stable = %{version}-%{release}
+Conflicts:     chromedriver-testing
+Conflicts:     chromedriver-unstable
 
 %global chromiumdir %{_libdir}/chromium-browser
 %global __provides_exclude_from ^%{chromiumdir}/.*$
@@ -265,10 +273,10 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
 %endif
     third_party/hunspell \
     third_party/iccjpeg \
-    third_party/inspector_protocol \
 %if !%{with system_libicu}
     third_party/icu \
 %endif
+    third_party/inspector_protocol \
 %if !%{with system_jinja2}
     third_party/jinja2 \
 %endif
@@ -283,9 +291,6 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
     third_party/libudev \
 %if !%{with system_libvpx}
     third_party/libvpx \
-    third_party/libvpx/source/libvpx/third_party/googletest \
-    third_party/libvpx/source/libvpx/third_party/libwebm \
-    third_party/libvpx/source/libvpx/third_party/libyuv \
     third_party/libvpx/source/libvpx/third_party/x86inc \
 %endif
     third_party/libwebm \
@@ -355,6 +360,7 @@ Provides:      chromium-libs, chromium-libs-media, chromedriver
 
 ./build/linux/unbundle/replace_gn_files.py --system-libraries \
     flac \
+    freetype \
 %if %{with system_harfbuzz}
     harfbuzz-ng \
 %endif
@@ -428,18 +434,23 @@ gn_args=(
     is_component_build=false
     use_sysroot=false
     use_custom_libcxx=false
+    use_aura=true
     use_cups=true
     use_gconf=false
     use_gnome_keyring=true
+    use_gio=true
     use_kerberos=true
     use_libpci=true
     use_pulseaudio=true
+    enable_hangout_services_extension=false
     enable_hotwording=false
     enable_nacl=true
+    enable_webrtc=true
     fatal_linker_warnings=false
     treat_warnings_as_errors=false
     linux_use_bundled_binutils=false
     fieldtrial_testing_like_official_build=true
+    'system_libdir="%{_lib}"'
     'custom_toolchain="//build/toolchain/linux/unbundle:default"'
     'host_toolchain="//build/toolchain/linux/unbundle:default"'
     'google_api_key="AIzaSyCcK3laItm4Ik9bm6IeGFC6tVgy4eut0_o"'
@@ -540,6 +551,8 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %files
+%license LICENSE
+%doc AUTHORS README.md
 %{_bindir}/chromium-browser
 %{_datadir}/appdata/chromium-browser.appdata.xml
 %{_datadir}/applications/chromium-browser.desktop
@@ -578,6 +591,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Oct 28 2017 - Ting-Wei Lan <lantw44@gmail.com> - 62.0.3202.75-101
+- Merge changes from the official Fedora package
+- Remove group tag because it is deprecated in Fedora
+- Unbundle freetype
+
 * Fri Oct 27 2017 - Ting-Wei Lan <lantw44@gmail.com> - 62.0.3202.75-100
 - Update to 62.0.3202.75
 - Replace 'if 0' with single bcond_with because they are unlikely to change

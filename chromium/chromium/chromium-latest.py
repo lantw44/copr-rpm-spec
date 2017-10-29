@@ -56,7 +56,7 @@ chromium_root_dir = "."
 version_string = "stable"
 
 name = 'Chromium Latest (lantw44/chromium)'
-script_version = 0.8
+script_version = 0.9
 my_description = '{0} {1}'.format(name, script_version)
 
 

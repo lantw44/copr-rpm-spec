@@ -30,31 +30,34 @@
 #  * The shebang line no longer hardcodes the path to bash.
 #  * Delete gyp* from other_files because GYP support has been removed.
 #  * Add new header_files and manual_files required by Chromium 56.
+#  * Merge changes from the official Fedora package, version 62.0.3202.62.
 
 # $1 files
 # $2 verbose
 function copy_files() {
 	for file in $1
 	do
-		dir_name=`echo $file | sed 's%/[^/]*$%/%'`
+		dir_name=$(echo "$file" | sed 's%/[^/]*$%/%')
 		if [[ $dir_name == */* ]]; then
 			tmp_dir_name="tmp_"$dir_name
-			mkdir -p ../tmp_ffmpeg/$tmp_dir_name
+			mkdir -p "../tmp_ffmpeg/$tmp_dir_name"
 		else
 			tmp_dir_name=$file
 		fi
 
 		if [ "$2" -eq 1 ]; then
-			cp $file ../tmp_ffmpeg/$tmp_dir_name
+			cp "$file" "../tmp_ffmpeg/$tmp_dir_name"
 		else
-			cp $file ../tmp_ffmpeg/$tmp_dir_name > /dev/null 2>&1
+			cp "$file" "../tmp_ffmpeg/$tmp_dir_name" > /dev/null 2>&1
 		fi
 	done
 }
 
-where=`pwd`
+where=$(pwd)
 
-generated_files=`./chromium-ffmpeg-free-sources.py $1 $2`
+if ! generated_files=$(./chromium-ffmpeg-free-sources.py "$1" "$2"); then
+	exit 1
+fi
 # As the build system files does not contain the header files, cheat here
 # and generate the header files names from source files. These that does not
 # exist will be later skipped while copying.
@@ -68,27 +71,47 @@ generated_files_headers="$generated_files_headers ${generated_files//.asm/.h}"
 header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/x86/mathops.h \
 		libavcodec/x86/vp56_arith.h \
+		libavcodec/aac.h \
+		libavcodec/aacps.h \
+		libavcodec/aacpsdsp.h \
+		libavcodec/aacsbrdata.h \
+		libavcodec/aac_defines.h \
+		libavcodec/ac3.h \
+		libavcodec/ac3tab.h \
 		libavcodec/avcodec.h \
 		libavcodec/blockdsp.h \
 		libavcodec/bytestream.h \
+		libavcodec/cbrt_data.h \
+		libavcodec/cbrt_tablegen.h \
 		libavcodec/dct.h \
+		libavcodec/dct32.h \
 		libavcodec/error_resilience.h \
 		libavcodec/fdctdsp.h \
 		libavcodec/fft.h \
 		libavcodec/fft-internal.h \
 		libavcodec/fft_table.h \
 		libavcodec/flac.h \
+		libavcodec/flacdsp.h \
 		libavcodec/frame_thread_encoder.h \
 		libavcodec/get_bits.h \
 		libavcodec/h263dsp.h \
 		libavcodec/h264chroma.h \
+		libavcodec/hpeldsp.h \
 		libavcodec/hwaccel.h \
 		libavcodec/idctdsp.h \
 		libavcodec/internal.h \
+		libavcodec/kbdwin.h \
 		libavcodec/mathops.h \
+		libavcodec/mdct15.c \
+		libavcodec/mdct15.h \
 		libavcodec/me_cmp.h \
 		libavcodec/motion_est.h \
 		libavcodec/mpeg12data.h \
+		libavcodec/mpegaudio.h \
+		libavcodec/mpegaudiodecheader.h \
+		libavcodec/mpegaudiodectab.h \
+		libavcodec/mpegaudiodsp.h \
+		libavcodec/mpegaudio_tablegen.h \
 		libavcodec/mpegpicture.h \
 		libavcodec/mpegutils.h \
 		libavcodec/mpegvideo.h \
@@ -105,18 +128,29 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/rectangle.h \
 		libavcodec/rl.h \
 		libavcodec/rnd_avg.h \
+		libavcodec/sbr.h \
+		libavcodec/sbrdsp.h \
+		libavcodec/sinewin.h \
+		libavcodec/sinewin_tablegen.h \
 		libavcodec/thread.h \
 		libavcodec/unary.h \
 		libavcodec/version.h \
+		libavcodec/videodsp.h \
 		libavcodec/vlc.h \
+		libavcodec/vorbisdsp.h \
 		libavcodec/vp3data.h \
+		libavcodec/vp3dsp.h \
 		libavcodec/vp56.h \
 		libavcodec/vp56dsp.h \
 		libavcodec/vp8data.h \
+		libavcodec/vp8dsp.h \
+		libavformat/apetag.h \
 		libavformat/audiointerleave.h \
 		libavformat/avformat.h \
 		libavformat/dv.h \
+		libavformat/img2.h \
 		libavformat/internal.h \
+		libavformat/mov_chan.h \
 		libavformat/pcm.h \
 		libavformat/rdt.h \
 		libavformat/rtp.h \
@@ -146,6 +180,10 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavutil/cpu_internal.h \
 		libavutil/dynarray.h \
 		libavutil/ffmath.h \
+		libavutil/fixed_dsp.h \
+		libavutil/float_dsp.h \
+		libavutil/imgutils.h \
+		libavutil/imgutils_internal.h \
 		libavutil/internal.h \
 		libavutil/intfloat.h \
 		libavutil/intreadwrite.h \
@@ -155,36 +193,105 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavutil/pixfmt.h \
 		libavutil/qsort.h \
 		libavutil/replaygain.h \
+		libavutil/softfloat.h \
+		libavutil/softfloat_tables.h \
 		libavutil/thread.h \
 		libavutil/timer.h \
 		libavutil/timestamp.h \
 		libavutil/version.h \
 		libswresample/swresample.h \
 		libswresample/version.h \
-		compat/va_copy.h "
+		compat/va_copy.h \
+		compat/atomics/gcc/stdatomic.h "
 
-manual_files="	libavcodec/x86/hpeldsp_rnd_template.c \
+manual_files="	libavcodec/aarch64/fft_neon.S \
+		libavcodec/aarch64/h264pred_neon.S \
+		libavcodec/aarch64/hpeldsp_neon.S \
+		libavcodec/aarch64/mdct_neon.S \
+		libavcodec/aarch64/vorbisdsp_neon.S \
+		libavcodec/x86/hpeldsp_rnd_template.c \
 		libavcodec/x86/rnd_template.c \
+		libavcodec/x86/videodsp.asm \
 		libavcodec/x86/videodsp_init.c \
 		libavcodec/x86/vorbisdsp_init.c \
 		libavcodec/bit_depth_template.c \
 		libavcodec/fft_template.c \
-		libavcodec/flacdsp_lpc_template.c \
+		libavcodec/flacdec.c \
+		libavcodec/flacdsp.c \
 		libavcodec/flacdsp_template.c \
+		libavcodec/flacdsp_lpc_template.c \
 		libavcodec/h264pred_template.c \
 		libavcodec/hpel_template.c \
+		libavcodec/hpeldsp.c \
 		libavcodec/mdct_template.c \
 		libavcodec/pel_template.c \
 		libavcodec/utils.c \
+		libavcodec/videodsp.c \
 		libavcodec/videodsp_template.c \
+		libavcodec/vorbisdsp.c \
+		libavcodec/vp3dsp.c \
+		libavcodec/vp8dsp.c \
 		libavformat/options.c \
 		libavformat/pcm.c \
 		libavformat/utils.c \
+		libavutil/aarch64/asm.S \
+		libavutil/aarch64/bswap.h \
+		libavutil/aarch64/float_dsp_neon.S \
+		libavutil/aarch64/timer.h \
 		libavutil/cpu.c \
+		libavutil/fixed_dsp.c \
+		libavutil/float_dsp.c \
+		libavutil/imgutils.c \
 		libavutil/x86/cpu.c \
 		libavutil/x86/float_dsp_init.c \
 		libavutil/x86/x86inc.asm \
 		libavutil/x86/x86util.asm "
+
+mp3_files="	libavcodec/aarch64/mpegaudiodsp_init.c \
+		libavcodec/aarch64/mpegaudiodsp_neon.S \
+		libavcodec/aac_ac3_parser.c \
+		libavcodec/aac_parser.c \
+		libavcodec/aacadtsdec.c \
+		libavcodec/aacps_float.c \
+		libavcodec/aacpsdsp_float.c \
+		libavcodec/aacsbr.c \
+		libavcodec/aactab.c \
+		libavcodec/ac3tab.c \
+		libavcodec/autorename_libavcodec_aacdec.c \
+		libavcodec/autorename_libavcodec_mpegaudiodsp.c \
+		libavcodec/autorename_libavcodec_sbrdsp.c \
+		libavcodec/cbrt_data.c \
+		libavcodec/dct.c \
+		libavcodec/dct32_fixed.c \
+		libavcodec/dct32_float.c \
+		libavcodec/dct32_template.c \
+		libavcodec/kbdwin.c \
+		libavcodec/mpegaudio.c \
+		libavcodec/mpegaudio_parser.c \
+		libavcodec/mpegaudiodec_fixed.c \
+		libavcodec/mpegaudiodec_template.c \
+		libavcodec/mpegaudiodecheader.c \
+		libavcodec/mpegaudiodsp.c \
+		libavcodec/mpegaudiodsp_data.c \
+		libavcodec/mpegaudiodsp_fixed.c \
+		libavcodec/mpegaudiodsp_float.c \
+		libavcodec/mpegaudiodsp_template.c \
+		libavcodec/sbrdsp.c \
+		libavcodec/sbrdsp_template.c \
+		libavcodec/sinewin.c \
+		libavcodec/sinewin_fixed.c \
+		libavcodec/x86/dct_init.c \
+		libavcodec/x86/dct32.asm \
+		libavcodec/x86/imdct36.asm \
+		libavcodec/x86/mpegaudiodsp.c \
+		libavcodec/x86/sbrdsp_init.c \
+		libavcodec/x86/sbrdsp.asm \
+		libavformat/aacdec.c \
+		libavformat/apetag.c \
+		libavformat/img2.c \
+		libavformat/mov.c \
+		libavformat/mov_chan.c \
+		libavformat/mp3dec.c "
 
 other_files="	BUILD.gn \
 		Changelog \
@@ -206,25 +313,27 @@ other_files="	BUILD.gn \
 		RELEASE \
 		xcode_hack.c "
 
-cd $1/third_party/ffmpeg
+cd "$1/third_party/ffmpeg" || exit 1
 
 copy_files "$generated_files" 0
 copy_files "$generated_files_headers" 0
 copy_files "$manual_files" 1
 copy_files "$other_files" 1
 copy_files "$header_files" 1
+copy_files "$mp3_files" 1
 
 mkdir -p ../tmp_ffmpeg/tmp_chromium/config
 cp -r chromium/config ../tmp_ffmpeg/tmp_chromium
 
-cd ../tmp_ffmpeg
-for tmp_directory in $(find . -type d -name 'tmp_*')
-	do
-		new_name=`echo $tmp_directory | sed 's/tmp_//'`
-		mv $tmp_directory $new_name
-	done
+cd ../tmp_ffmpeg || exit 1
 
-cd $where
+while IFS= read -r -d '' tmp_directory
+do
+	new_name=${tmp_directory//tmp_/}
+	mv "$tmp_directory" "$new_name"
+done <  <(find . -type d -name 'tmp_*' -print0)
 
-rm -rf $1/third_party/ffmpeg
-mv $1/third_party/tmp_ffmpeg $1/third_party/ffmpeg
+cd "$where" || exit 1
+
+rm -rf "$1/third_party/ffmpeg"
+mv "$1/third_party/tmp_ffmpeg" "$1/third_party/ffmpeg"
