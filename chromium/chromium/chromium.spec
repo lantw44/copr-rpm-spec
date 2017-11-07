@@ -58,8 +58,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    62.0.3202.75
-Release:    101%{?dist}
+Version:    62.0.3202.89
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -591,6 +591,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Nov 07 2017 - Ting-Wei Lan <lantw44@gmail.com> - 62.0.3202.89-100
+- Update to 62.0.3202.89
+
 * Sat Oct 28 2017 - Ting-Wei Lan <lantw44@gmail.com> - 62.0.3202.75-101
 - Merge changes from the official Fedora package
 - Remove group tag because it is deprecated in Fedora
