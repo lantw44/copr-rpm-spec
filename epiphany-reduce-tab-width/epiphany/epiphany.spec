@@ -4,7 +4,7 @@
 
 Name: epiphany
 Epoch: 1
-Version: 3.26.1
+Version: 3.26.3
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
@@ -94,10 +94,10 @@ desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 %{_libexecdir}/epiphany-search-provider
 %{_datadir}/appdata/org.gnome.Epiphany.appdata.xml
 %{_datadir}/applications/org.gnome.Epiphany.desktop
+%{_datadir}/dbus-1/services/org.gnome.Epiphany.SearchProvider.service
 %dir %{_datadir}/gnome-shell/
 %dir %{_datadir}/gnome-shell/search-providers/
-%{_datadir}/gnome-shell/search-providers/epiphany-search-provider.ini
-%{_datadir}/dbus-1/services/org.gnome.EpiphanySearchProvider.service
+%{_datadir}/gnome-shell/search-providers/org.gnome.Epiphany.search-provider.ini
 
 %files runtime
 %license COPYING
@@ -112,6 +112,12 @@ desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 %{_mandir}/man*/*
 
 %changelog
+* Fri Dec 01 2017 Kalev Lember <klember@redhat.com> - 1:3.26.3-1
+- Update to 3.26.3
+
+* Wed Nov 01 2017 Kalev Lember <klember@redhat.com> - 1:3.26.2-1
+- Update to 3.26.2
+
 * Sun Oct 08 2017 Kalev Lember <klember@redhat.com> - 1:3.26.1-1
 - Update to 3.26.1
 
