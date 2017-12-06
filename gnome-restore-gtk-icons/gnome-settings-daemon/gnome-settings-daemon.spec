@@ -1,3 +1,4 @@
+%global glib2_version 2.53.0
 %global gtk3_version 3.15.3
 %global gnome_desktop_version 3.11.1
 %global libgweather_version 3.9.5
@@ -6,7 +7,7 @@
 %global geoclue_version 2.3.1
 
 Name:           gnome-settings-daemon
-Version:        3.26.1
+Version:        3.26.2
 Release:        1%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
@@ -219,6 +220,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-input-helper
 
 %changelog
+* Thu Nov 02 2017 Kalev Lember <klember@redhat.com> - 3.26.2-1
+- Update to 3.26.2
+
 * Sun Oct 08 2017 Kalev Lember <klember@redhat.com> - 3.26.1-1
 - Update to 3.26.1
 
