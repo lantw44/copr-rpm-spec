@@ -2,6 +2,10 @@
 %define cross_triplet   arm-linux-gnueabi
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
+%if 0%{?_unique_build_ids}
+%define _find_debuginfo_opts --build-id-seed "%{name}-%{version}-%{release}"
+%endif
+
 %if 0%{?bootstrap:1}
 %define headers_only    1
 %define pkg_suffix      -headers
@@ -44,7 +48,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.26
-Release:    3%{?dist}
+Release:    4%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -574,6 +578,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Thu Dec 07 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.26-4
+- Fix build ID conflict for Fedora 27 and later
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.26-3
 - Rebuilt for Fedora 27 and 28
 

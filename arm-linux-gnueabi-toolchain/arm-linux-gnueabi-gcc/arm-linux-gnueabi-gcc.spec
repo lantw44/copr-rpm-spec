@@ -2,6 +2,10 @@
 %define cross_triplet   arm-linux-gnueabi
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
+%if 0%{?_unique_build_ids}
+%define _find_debuginfo_opts --build-id-seed "%{name}-%{version}-%{release}"
+%endif
+
 %if 0%{!?cross_stage:1}
 %define cross_stage     final
 %endif
@@ -26,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    7.2.0
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %define major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -351,6 +355,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Thu Dec 07 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.2.0-3
+- Fix build ID conflict for Fedora 27 and later
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.2.0-2
 - Rebuilt for Fedora 27 and 28
 

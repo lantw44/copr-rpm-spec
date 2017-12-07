@@ -2,9 +2,13 @@
 %define cross_triplet   arm-linux-gnueabi
 %define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
+%if 0%{?_unique_build_ids}
+%define _find_debuginfo_opts --build-id-seed "%{name}-%{version}-%{release}"
+%endif
+
 Name:       %{cross_triplet}-binutils
 Version:    2.29.1
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 Group:      Development/Tools
@@ -85,6 +89,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Thu Dec 07 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.29.1-2
+- Fix build ID conflict for Fedora 27 and later
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.29.1-1
 - Update to 2.29.1
 
