@@ -3,12 +3,12 @@
 
 Name:           emacs-%{pkg}
 Version:        2.7.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Use the Emacsclient as the editor of child processes
 
 Group:          Applications/Editors
 License:        GPLv3+
-URL:            http://magit.vc
+URL:            https://magit.vc
 Source0:        https://github.com/magit/with-editor/archive/v%{version}.tar.gz
 
 BuildArch:      noarch
@@ -62,6 +62,9 @@ fi
 
 
 %changelog
+* Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.7.0-2
+- Use HTTPS in URL
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.7.0-1
 - Update to 2.7.0
 

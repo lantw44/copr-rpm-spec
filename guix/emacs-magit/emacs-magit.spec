@@ -13,12 +13,12 @@
 
 Name:           emacs-%{pkg}
 Version:        2.11.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Emacs interface to the most common Git operations
 
 Group:          Applications/Editors
 License:        GPLv3+
-URL:            http://magit.vc
+URL:            https://magit.vc
 
 Source0:        https://github.com/magit/magit/releases/download/%{version}/magit-%{version}.tar.gz
 
@@ -81,6 +81,9 @@ fi
 
 
 %changelog
+* Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.11.0-2
+- Use HTTPS in URL
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.11.0-1
 - Update to upstream version 2.11.0
 

@@ -1,11 +1,11 @@
 Name:           guile-json
 Version:        0.6.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        JSON module for Guile
 
 License:        LGPLv3+
 URL:            https://savannah.nongnu.org/projects/guile-json
-Source0:        http://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
 BuildRequires:  guile
@@ -51,6 +51,9 @@ make %{?_smp_mflags}
 
 
 %changelog
+* Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-3
+- Use HTTPS to download the source
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-2
 - Rebuilt for Fedora 27 and 28
 
