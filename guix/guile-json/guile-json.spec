@@ -1,13 +1,14 @@
+%global debug_package %{nil}
+
 Name:           guile-json
 Version:        0.6.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        JSON module for Guile
 
 License:        LGPLv3+
 URL:            https://savannah.nongnu.org/projects/guile-json
 Source0:        https://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.gz
 
-BuildArch:      noarch
 BuildRequires:  guile
 Requires:       guile
 
@@ -51,6 +52,9 @@ make %{?_smp_mflags}
 
 
 %changelog
+* Sun Dec 10 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-4
+- Remove noarch because .go files are not architecture-independent
+
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-3
 - Use HTTPS to download the source
 
