@@ -3,7 +3,7 @@
 
 Name:           guix
 Version:        0.14.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -32,7 +32,7 @@ BuildRequires:  systemd
 
 %{?systemd_requires}
 
-Requires:       gzip, bzip2, xz
+Requires:       guile-git, gzip, bzip2, xz
 Requires:       %{_bindir}/dot
 Requires:       %{_libdir}/libgcrypt.so
 Requires(post): /usr/sbin/useradd
@@ -43,7 +43,7 @@ Requires(post): /usr/bin/gpasswd
 Requires(post): info
 Requires(preun): info
 
-Recommends:     guile-git, guile-json, guile-ssh, gnutls-guile
+Recommends:     guile-json, guile-ssh, gnutls-guile
 Suggests:       emacs-guix
 
 %description
@@ -127,7 +127,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/guix
 
 
 %post
-cat << EOF | ( cd "%{guile_source_dir}/gnu/packages/bootstrap" && sha256sum -c ) || exit 1
+cat << EOF | ( cd "%{guile_source_dir}/gnu/packages/bootstrap" && sha256sum -c >/dev/null ) || exit 1
 e3bf6ffe357eebcc28221ffdbb5b00b4ed1237cb101aba4b1b8119b08c732387  aarch64-linux/bash
 444c2af9fefd11d4fc20ee9281fa2c46cbe3cfb3df89cc30bcd50d20cdb6d6c0  aarch64-linux/mkdir
 05273f978a072269193e3a09371c23d6d149f6d807f8e413a4f79aa5a1bb6f25  aarch64-linux/tar
@@ -355,6 +355,10 @@ fi
 
 
 %changelog
+* Sun Dec 10 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.14.0-2
+- Move guile-git to Requires because it is not optional
+- Do not show OK messages when validating bootstrap binraies
+
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.14.0-1
 - Update to 0.14.0
 - Avoid running tests as root
