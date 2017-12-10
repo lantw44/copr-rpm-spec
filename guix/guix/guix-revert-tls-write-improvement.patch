@@ -1,0 +1,32 @@
+From 41d6038882d4f0a50fc07f8ea3016a3bd7529c4f Mon Sep 17 00:00:00 2001
+From: Ting-Wei Lan <lantw44@gmail.com>
+Date: Sun, 10 Dec 2017 15:43:18 +0800
+Subject: [PATCH] Revert "download: Improve efficiency of 'write-request' over
+ TLS."
+
+This reverts commit 866f37fb7e4f3e0bd695a951071383cdff3da8cd.
+---
+ guix/build/download.scm | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/guix/build/download.scm b/guix/build/download.scm
+index 4490d225e..90de269f9 100644
+--- a/guix/build/download.scm
++++ b/guix/build/download.scm
+@@ -306,13 +306,6 @@ host name without trailing dot."
+       ;; never be closed.  So we use `fileno', but keep a weak reference to
+       ;; PORT, so the file descriptor gets closed when RECORD is GC'd.
+       (register-tls-record-port record port)
+-
+-      ;; Write HTTP requests line by line rather than byte by byte:
+-      ;; <https://bugs.gnu.org/22966>.  This is not possible on Guile 2.0.
+-      (cond-expand
+-        (guile-2.0 #f)
+-        (else (setvbuf record 'line)))
+-
+       record)))
+ 
+ (define (ensure-uri uri-or-string)                ;XXX: copied from (web http)
+-- 
+2.14.3
+
