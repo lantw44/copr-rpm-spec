@@ -1,0 +1,31 @@
+From 7f04197fef905790fd392f8d686d00ae95a0d04c Mon Sep 17 00:00:00 2001
+From: Eric Bavier <bavier@cray.com>
+Date: Mon, 4 Dec 2017 10:33:31 -0600
+Subject: utils: Fix cond-expand for Guile 2.0.(https://bugs.gnu.org/29642)
+
+* guix/build/download.scm (tls-wrap): Use 'guile-2.2' feature instead.
+---
+ guix/build/download.scm | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/guix/build/download.scm b/guix/build/download.scm
+index 4490d22..609a100 100644
+--- a/guix/build/download.scm
++++ b/guix/build/download.scm
+@@ -308,10 +308,10 @@ host name without trailing dot."
+       (register-tls-record-port record port)
+ 
+       ;; Write HTTP requests line by line rather than byte by byte:
+-      ;; <https://bugs.gnu.org/22966>.  This is not possible on Guile 2.0.
++      ;; <https://bugs.gnu.org/22966>.  This is possible with Guile >= 2.2.
+       (cond-expand
+-        (guile-2.0 #f)
+-        (else (setvbuf record 'line)))
++        (guile-2.2 (setvbuf record 'line))
++        (else #f))
+ 
+       record)))
+ 
+-- 
+cgit v1.0-41-gc330
+

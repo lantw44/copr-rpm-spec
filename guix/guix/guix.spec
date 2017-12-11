@@ -3,7 +3,7 @@
 
 Name:           guix
 Version:        0.14.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -14,7 +14,7 @@ Source2:        https://alpha.gnu.org/gnu/guix/bootstrap/armhf-linux/20150101/gu
 Source3:        https://alpha.gnu.org/gnu/guix/bootstrap/i686-linux/20131110/guile-2.0.9.tar.xz#/i686-linux-20131110-guile-2.0.9.tar.xz
 Source4:        https://alpha.gnu.org/gnu/guix/bootstrap/mips64el-linux/20131110/guile-2.0.9.tar.xz#/mips64el-linux-20131110-guile-2.0.9.tar.xz
 Source5:        https://alpha.gnu.org/gnu/guix/bootstrap/x86_64-linux/20131110/guile-2.0.9.tar.xz#/x86_64-linux-20131110-guile-2.0.9.tar.xz
-Patch0:         guix-revert-tls-write-improvement.patch
+Patch0:         guix-fix-cond-expand-for-guile-2.0.patch
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
@@ -356,6 +356,9 @@ fi
 
 
 %changelog
+* Tue Dec 12 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.14.0-4
+- Fix TLS crash with upstream commit 7f04197
+
 * Sun Dec 10 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.14.0-3
 - Workaround TLS crash by reverting upstream commit 866f37f
 
