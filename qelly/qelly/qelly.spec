@@ -9,7 +9,7 @@ Summary:    Qelly is a Qt port of Nally
 Group:      Applications/Internet
 License:    GPLv3
 URL:        https://github.com/uranusjr/Qelly
-Source0:    https://github.com/uranusjr/Qelly/archive/v%{real_version}.tar.gz
+Source0:    https://github.com/uranusjr/Qelly/archive/v%{real_version}.tar.gz#/%{name}-%{real_version}.tar.gz
 
 BuildRequires: qt-devel, libqxt-devel, chrpath
 
@@ -43,6 +43,7 @@ install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.10.beta
 - Use autosetup macro
+- Rename the source tarball
 
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.9.beta
 - Use qmake_qt4 macro instead of _qt4_qmake macro

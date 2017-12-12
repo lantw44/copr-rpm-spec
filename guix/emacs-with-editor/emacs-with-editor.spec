@@ -9,7 +9,7 @@ Summary:        Use the Emacsclient as the editor of child processes
 Group:          Applications/Editors
 License:        GPLv3+
 URL:            https://magit.vc
-Source0:        https://github.com/magit/with-editor/archive/v%{version}.tar.gz
+Source0:        https://github.com/magit/with-editor/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
 BuildRequires:  emacs, emacs-dash, texinfo
@@ -64,6 +64,7 @@ fi
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.7.0-3
 - Use autosetup macro
+- Rename the source tarball
 
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.7.0-2
 - Use HTTPS in URL

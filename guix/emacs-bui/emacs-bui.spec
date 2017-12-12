@@ -9,7 +9,7 @@ Summary:        Buffer interface library for Emacs
 Group:          Applications/Editors
 License:        GPLv3+
 URL:            https://github.com/alezost/bui.el
-Source0:        https://github.com/alezost/bui.el/archive/v%{version}.tar.gz
+Source0:        https://github.com/alezost/bui.el/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
 BuildRequires:  emacs
@@ -51,6 +51,7 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/bui/
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-4
 - Use autosetup macro
+- Rename the source tarball
 
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-3
 - Rebuilt for Fedora 27 and 28

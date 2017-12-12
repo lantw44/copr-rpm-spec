@@ -5,7 +5,7 @@ Summary:        A library that provides access to the SSH protocol for GNU Guile
 
 License:        GPLv3+
 URL:            https://github.com/artyom-poptsov/guile-ssh
-Source0:        https://github.com/artyom-poptsov/guile-ssh/archive/v%{version}.tar.gz
+Source0:        https://github.com/artyom-poptsov/guile-ssh/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %global guile_source_dir %{_datadir}/guile/site/2.0
 %global guile_ccache_dir %{_libdir}/guile/2.0/site-ccache
@@ -81,6 +81,7 @@ fi
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.11.2-3
 - Use autosetup macro
+- Rename the source tarball
 
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.11.2-2
 - Rebuilt for Fedora 27 and 28

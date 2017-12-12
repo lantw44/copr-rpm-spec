@@ -9,7 +9,7 @@ Summary:        Dash is a modern list library for Emacs
 Group:          Applications/Editors
 License:        GPLv3+
 URL:            https://github.com/magnars/dash.el
-Source0:        https://github.com/magnars/dash.el/archive/%{version}.tar.gz
+Source0:        https://github.com/magnars/dash.el/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
 BuildRequires:  emacs, texinfo
@@ -62,6 +62,7 @@ fi
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.13.0-4
 - Use autosetup macro
+- Rename the source tarball
 
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.13.0-3
 - Rebuilt for Fedora 27 and 28
