@@ -1,28 +1,28 @@
-%define cross_arch      arm
-%define cross_triplet   arm-linux-gnueabi
-%define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
+%global cross_arch      arm
+%global cross_triplet   arm-linux-gnueabi
+%global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 %if 0%{?_unique_build_ids}
-%define _find_debuginfo_opts --build-id-seed "%{name}-%{version}-%{release}"
+%global _find_debuginfo_opts --build-id-seed "%{name}-%{version}-%{release}"
 %endif
 
 %if 0%{!?cross_stage:1}
-%define cross_stage     final
+%global cross_stage     final
 %endif
 
 %if %{cross_stage} != "final"
-%define pkg_suffix      -%{cross_stage}
+%global pkg_suffix      -%{cross_stage}
 %else
-%define pkg_suffix      %{nil}
+%global pkg_suffix      %{nil}
 %endif
 
 %if %{cross_arch} == "arm"
-  %define lib_dir_name        lib
+  %global lib_dir_name        lib
 %else
   %if %{cross_arch} == "arm64"
-    %define lib_dir_name      lib64
+    %global lib_dir_name      lib64
   %else
-    %define lib_dir_name      lib
+    %global lib_dir_name      lib
   %endif
 %endif
 
@@ -30,10 +30,10 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    7.2.0
-Release:    3%{?dist}
+Release:    4%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
-%define major_version   %(echo %{version} | sed 's/\\..*$//')
+%global major_version   %(echo %{version} | sed 's/\\..*$//')
 
 Group:      Development/Languages
 License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
@@ -194,7 +194,7 @@ rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-t
 rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools
 
 # Don't strip libgcc.a and libgcov.a - based on Fedora Project cross-gcc.spec
-%define __ar_no_strip $RPM_BUILD_DIR/gcc-%{version}/ar-no-strip
+%global __ar_no_strip $RPM_BUILD_DIR/gcc-%{version}/ar-no-strip
 cat > %{__ar_no_strip} << EOF
 #!/bin/sh
 f=\$2
@@ -208,7 +208,7 @@ esac
 EOF
 chmod +x %{__ar_no_strip}
 %undefine __strip
-%define __strip %{__ar_no_strip}
+%global __strip %{__ar_no_strip}
 
 
 %files
@@ -355,6 +355,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.2.0-4
+- Replace define with global
+
 * Thu Dec 07 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.2.0-3
 - Fix build ID conflict for Fedora 27 and later
 

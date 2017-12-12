@@ -1,14 +1,14 @@
-%define cross_arch      arm
-%define cross_triplet   arm-linux-gnueabi
-%define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
+%global cross_arch      arm
+%global cross_triplet   arm-linux-gnueabi
+%global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
 Version:    4.14.5
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
-%define debug_package   %{nil}
-%define kversion        %(echo %{version} | sed 's/\\.0$//')
+%global debug_package   %{nil}
+%global kversion        %(echo %{version} | sed 's/\\.0$//')
 
 Group:      Development/System
 License:    GPLv2
@@ -127,6 +127,7 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 4.14.5-1
 - Update to 4.14.5
 - Use autosetup macro
+- Replace define with global
 
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 4.14.4-1
 - Update to 4.14.4

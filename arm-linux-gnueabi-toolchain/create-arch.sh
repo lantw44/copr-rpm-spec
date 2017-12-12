@@ -32,7 +32,7 @@ for boot_spec in bootstrap; do
     new_pkg_name="${new_triplet}-glibc-headers"
     echo "Creating bootstrap RPM spec: ${new_pkg_name}"
     mkdir -p "${new_dir}/${new_pkg_name}"
-    { echo '%define bootstrap 1';
+    { echo '%global bootstrap 1';
       cat "${new_dir}/${base_pkg_name}/${base_pkg_name}.spec"; } > \
       "${new_dir}/${new_pkg_name}/${new_pkg_name}.spec"
 done
@@ -42,7 +42,7 @@ for boot_spec in pass1 pass2; do
     new_pkg_name="${new_triplet}-gcc-${boot_spec}"
     echo "Creating bootstrap RPM spec: ${new_pkg_name}"
     mkdir -p "${new_dir}/${new_pkg_name}"
-    { echo "%define cross_stage ${boot_spec}";
+    { echo "%global cross_stage ${boot_spec}";
       cat "${new_dir}/${base_pkg_name}/${base_pkg_name}.spec"; } > \
       "${new_dir}/${new_pkg_name}/${new_pkg_name}.spec"
 done

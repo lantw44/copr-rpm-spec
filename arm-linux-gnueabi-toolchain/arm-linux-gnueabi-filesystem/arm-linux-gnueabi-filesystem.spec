@@ -1,20 +1,20 @@
-%define cross_arch      arm
-%define cross_triplet   arm-linux-gnueabi
-%define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
+%global cross_arch      arm
+%global cross_triplet   arm-linux-gnueabi
+%global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 %if %{cross_arch} == "arm"
-  %define lib_dir_name        lib
+  %global lib_dir_name        lib
 %else
   %if %{cross_arch} == "arm64"
-    %define lib_dir_name      lib64
+    %global lib_dir_name      lib64
   %else
-    %define lib_dir_name      lib
+    %global lib_dir_name      lib
   %endif
 %endif
 
 Name:       %{cross_triplet}-filesystem
 Version:    3
-Release:    5%{?dist}
+Release:    6%{?dist}
 Summary:    Cross compilation toolchain filesystem layout (%{cross_triplet})
 
 Group:      Development/System
@@ -84,6 +84,9 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 3-6
+- Replace define with global
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 3-5
 - Rebuilt for Fedora 27 and 28
 

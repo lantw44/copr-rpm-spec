@@ -1,9 +1,9 @@
-%define cross_arch      arm
-%define cross_triplet   arm-linux-gnueabi
-%define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
+%global cross_arch      arm
+%global cross_triplet   arm-linux-gnueabi
+%global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 %if 0%{?_unique_build_ids}
-%define _find_debuginfo_opts --build-id-seed "%{name}-%{version}-%{release}"
+%global _find_debuginfo_opts --build-id-seed "%{name}-%{version}-%{release}"
 %endif
 
 Name:       %{cross_triplet}-binutils
@@ -91,6 +91,7 @@ rm -rf %{buildroot}%{_infodir}
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.29.1-3
 - Use autosetup macro
+- Replace define with global
 
 * Thu Dec 07 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.29.1-2
 - Fix build ID conflict for Fedora 27 and later

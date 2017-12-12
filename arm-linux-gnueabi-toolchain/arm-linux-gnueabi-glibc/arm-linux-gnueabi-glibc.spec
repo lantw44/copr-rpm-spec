@@ -1,54 +1,54 @@
-%define cross_arch      arm
-%define cross_triplet   arm-linux-gnueabi
-%define cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
+%global cross_arch      arm
+%global cross_triplet   arm-linux-gnueabi
+%global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 %if 0%{?_unique_build_ids}
-%define _find_debuginfo_opts --build-id-seed "%{name}-%{version}-%{release}"
+%global _find_debuginfo_opts --build-id-seed "%{name}-%{version}-%{release}"
 %endif
 
 %if 0%{?bootstrap:1}
-%define headers_only    1
-%define pkg_suffix      -headers
-%define debug_package   %{nil}
+%global headers_only    1
+%global pkg_suffix      -headers
+%global debug_package   %{nil}
 %else
-%define headers_only    0
-%define pkg_suffix      %{nil}
+%global headers_only    0
+%global pkg_suffix      %{nil}
 %endif
 
 %if %{cross_arch} == "arm"
-  %define arm_type      %(echo %{cross_triplet} | sed 's/.*-\\([a-z]*\\)$/\\1/')
+  %global arm_type      %(echo %{cross_triplet} | sed 's/.*-\\([a-z]*\\)$/\\1/')
   %if %{arm_type} == "gnueabi"
-    %define loader_suffix     %{nil}
-    %define loader_version    3
-    %define gnu_hdr_suffix    -soft
-    %define lib_dir_name      lib
+    %global loader_suffix     %{nil}
+    %global loader_version    3
+    %global gnu_hdr_suffix    -soft
+    %global lib_dir_name      lib
   %else
     %if %{arm_type} == "gnueabihf"
-      %define loader_suffix   -armhf
-      %define loader_version  3
-      %define gnu_hdr_suffix  -hard
-      %define lib_dir_name    lib
+      %global loader_suffix   -armhf
+      %global loader_version  3
+      %global gnu_hdr_suffix  -hard
+      %global lib_dir_name    lib
     %else
       %{error:Unsupported ARM processor type}
     %endif
   %endif
 %else
   %if %{cross_arch} == "arm64"
-    %define loader_suffix     -aarch64
-    %define loader_version    1
-    %define gnu_hdr_suffix    -lp64
-    %define lib_dir_name      lib64
+    %global loader_suffix     -aarch64
+    %global loader_version    1
+    %global gnu_hdr_suffix    -lp64
+    %global lib_dir_name      lib64
   %else
-    %define loader_suffix     %{nil}
-    %define loader_version    0
-    %define gnu_hdr_suffix    %{nil}
-    %define lib_dir_name      lib
+    %global loader_suffix     %{nil}
+    %global loader_version    0
+    %global gnu_hdr_suffix    %{nil}
+    %global lib_dir_name      lib
   %endif
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.26
-Release:    4%{?dist}
+Release:    5%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
@@ -134,7 +134,7 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %endif
 
 # Don't any static archive - based on Fedora Project cross-gcc.spec
-%define __ar_no_strip $RPM_BUILD_DIR/glibc-%{version}/ar-no-strip
+%global __ar_no_strip $RPM_BUILD_DIR/glibc-%{version}/ar-no-strip
 cat > %{__ar_no_strip} << EOF
 #!/bin/sh
 f=\$2
@@ -148,7 +148,7 @@ esac
 EOF
 chmod +x %{__ar_no_strip}
 %undefine __strip
-%define __strip %{__ar_no_strip}
+%global __strip %{__ar_no_strip}
 
 
 %files
@@ -578,6 +578,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.26-5
+- Replace define with global
+
 * Thu Dec 07 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.26-4
 - Fix build ID conflict for Fedora 27 and later
 

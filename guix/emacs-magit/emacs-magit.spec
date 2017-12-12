@@ -1,14 +1,14 @@
-%define pkg magit
-%define pkgname Magit
+%global pkg magit
+%global pkgname Magit
 
 %if %($(pkg-config emacs) ; echo $?)
-%define emacs_version 22.1
-%define emacs_lispdir %{_datadir}/emacs/site-lisp
-%define emacs_startdir %{_datadir}/emacs/site-lisp/site-start.d
+%global emacs_version 22.1
+%global emacs_lispdir %{_datadir}/emacs/site-lisp
+%global emacs_startdir %{_datadir}/emacs/site-lisp/site-start.d
 %else
-%define emacs_version %(pkg-config emacs --modversion)
-%define emacs_lispdir %(pkg-config emacs --variable sitepkglispdir)
-%define emacs_startdir %(pkg-config emacs --variable sitestartdir)
+%global emacs_version %(pkg-config emacs --modversion)
+%global emacs_lispdir %(pkg-config emacs --variable sitepkglispdir)
+%global emacs_startdir %(pkg-config emacs --variable sitestartdir)
 %endif
 
 Name:           emacs-%{pkg}
@@ -83,6 +83,7 @@ fi
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.11.0-3
 - Use autosetup macro
+- Replace define with global
 
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.11.0-2
 - Use HTTPS in URL
