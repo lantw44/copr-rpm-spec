@@ -8,6 +8,6 @@ Start the `guix-daemon` by using systemd or manually running command
 will create most necessary files and directories when you first using it.
 
 If you want to use prebuilt packages provided by
-[GNU Hydra](http://hydra.gnu.org), you should run
+[GNU Hydra](https://hydra.gnu.org), you should run
 `guix archive --authorize --import < /usr/share/guix/hydra.gnu.org.pub`
 as root before using `guix package`.

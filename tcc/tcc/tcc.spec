@@ -17,8 +17,8 @@ Summary:    Tiny C Compiler
 
 Group:      Development/Languages
 License:    LGPLv2
-URL:        http://bellard.org/tcc
-Source0:    http://download.savannah.gnu.org/releases/tinycc/%{pkg_name}-%{version}.tar.bz2
+URL:        https://bellard.org/tcc
+Source0:    https://download.savannah.gnu.org/releases/tinycc/%{pkg_name}-%{version}.tar.bz2
 
 BuildRequires: %{use_cc}, glibc-devel, texinfo, perl-podlators
 
@@ -103,6 +103,7 @@ fi
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-14
 - Use autosetup macro
+- Use HTTPS to download the source
 
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-13
 - Rebuilt for Fedora 27 and 28

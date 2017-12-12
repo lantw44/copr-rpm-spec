@@ -14,10 +14,10 @@ Requires:       guile
 
 %description
 guile-json is a JSON module for Guile. It supports parsing and building JSON
-documents according to the http://json.org specification. These are the main
+documents according to the https://json.org specification. These are the main
 features:
 
-- Strictly complies to http://json.org specification.
+- Strictly complies to https://json.org specification.
 - Build JSON documents programmatically via macros.
 - Unicode support for strings.
 - Allows JSON pretty printing.
@@ -54,6 +54,7 @@ make %{?_smp_mflags}
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-5
 - Use autosetup macro
+- Use HTTPS links in description
 
 * Sun Dec 10 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-4
 - Remove noarch because .go files are not architecture-independent
