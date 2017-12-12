@@ -27,13 +27,13 @@ Requires:   %{cross_triplet}-filesystem
 
 
 %build
-make ARCH=%{cross_arch} mrproper
-make ARCH=%{cross_arch} headers_check
+%{__make} ARCH=%{cross_arch} mrproper
+%{__make} ARCH=%{cross_arch} headers_check
 
 
 %install
 install -d %{buildroot}%{cross_sysroot}
-make headers_install ARCH=%{cross_arch} \
+%{__make} headers_install ARCH=%{cross_arch} \
     INSTALL_HDR_PATH=%{buildroot}%{cross_sysroot}/usr
 find %{buildroot}%{cross_sysroot} -name .install -delete
 find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete

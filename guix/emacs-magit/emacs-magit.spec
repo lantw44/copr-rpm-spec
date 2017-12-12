@@ -39,7 +39,7 @@ common operations convenient.
 %autosetup -n magit-%{version} -p1
 
 %build
-make \
+%make_build \
     MAKEINFO='makeinfo --no-split' \
     LOAD_PATH='-L %{emacs_lispdir}/dash -L %{emacs_lispdir}/with-editor -L %{_builddir}/magit-%{version}/lisp -L .'
 
@@ -82,7 +82,7 @@ fi
 
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.11.0-3
-- Use autosetup macro
+- Use autosetup and make_build macros
 - Replace define with global
 
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.11.0-2

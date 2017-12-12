@@ -29,7 +29,7 @@ features:
 
 %build
 %configure
-make %{?_smp_mflags}
+%make_build
 
 
 %install
@@ -53,7 +53,7 @@ make %{?_smp_mflags}
 
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-5
-- Use autosetup macro
+- Use autosetup and make_build macros
 - Use HTTPS links in description
 
 * Sun Dec 10 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-4

@@ -3,7 +3,7 @@
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.11.20161004git%{shortcommit}%{?dist}
+Release:        0.12.20161004git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 Group:          User Interface/X
@@ -53,11 +53,11 @@ sed -i -e '/AUTHORS COPYING ChangeLog/,/COPYING/d' data/Makefile
 %build
 %configure --with-gtk=3.0
 echo "EXAMPLES_DIR = %{_pkgdocdir}/examples" >> .config
-make STRIP=:
+%make_build STRIP=:
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT STRIP=:
+%make_install STRIP=:
 sed -i -e 's/LilyTerm/LilyTermGtk3/' -e 's/lilyterm/lilyterm-gtk3/' \
   ${RPM_BUILD_ROOT}%{_datadir}/applications/%{name}.desktop
 desktop-file-install                                       \
@@ -87,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 12 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.12.20161004git8df92d6
+- Use make_build and make_install macros
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.11.20161004git8df92d6
 - Rebuilt for Fedora 27 and 28
 

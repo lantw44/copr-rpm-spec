@@ -44,11 +44,11 @@ Requires:   %{cross_triplet}-filesystem
     --disable-werror \
     --with-sysroot=%{cross_sysroot} \
 
-make %{?_smp_mflags}
+%make_build
 
 
 %install
-make install DESTDIR=%{buildroot}
+%make_install
 rm -rf %{buildroot}%{_mandir}
 rm -rf %{buildroot}%{_infodir}
 
@@ -90,7 +90,7 @@ rm -rf %{buildroot}%{_infodir}
 
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.29.1-3
-- Use autosetup macro
+- Use autosetup, make_build, make_install macros
 - Replace define with global
 
 * Thu Dec 07 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.29.1-2

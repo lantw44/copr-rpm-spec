@@ -28,7 +28,7 @@ utilize multi- or many-core processors (including SNFS, GNFS, SIQS, and ECM).
 sed -i 's|-lmsieve|-lmsieve -lz|' Makefile
 
 %ifarch x86_64
-make %{?_smp_mflags} x86_64 NFS=1 USE_SSE41=1 CC="gcc %{optflags} %{__global_ldflags}"
+%make_build x86_64 NFS=1 USE_SSE41=1 CC="gcc %{optflags} %{__global_ldflags}"
 %else
 false
 %endif
@@ -47,7 +47,7 @@ install -m 755 yafu %{buildroot}%{_bindir}
 
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.34-11
-- Use autosetup macro
+- Use autosetup and make_build macros
 
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.34-10
 - Rebuilt for Fedora 27 and 28

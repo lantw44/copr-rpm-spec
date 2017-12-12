@@ -27,7 +27,7 @@ call home.
 
 
 %build
-make MAKEINFO='makeinfo --no-split' INSTALL_INFO='true' \
+%make_build MAKEINFO='makeinfo --no-split' INSTALL_INFO='true' \
     EFLAGS='-L %{_emacs_sitelispdir}/dash' all
 
 
@@ -63,7 +63,7 @@ fi
 
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.7.0-3
-- Use autosetup macro
+- Use autosetup and make_build macros
 - Rename the source tarball
 
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.7.0-2

@@ -30,9 +30,11 @@ It can also run C source code as a script.
 %autosetup -n %{pkg_name}-%{version} -p1
 
 %build
+# We cannot use configure macro here because it will pass unsupported compiler
+# flags to tcc. These flags are passed to gcc with make command line instead.
 ./configure --prefix=%{_prefix} --libdir=%{_libdir} \
             --cc=%{use_cc} --enable-cross
-make %{?_smp_mflags} \
+%make_build \
 %ifarch x86_64 amd64
 %if %{use_gcc}
     CC="gcc %{optflags} %{__global_ldflags}"
@@ -40,7 +42,7 @@ make %{?_smp_mflags} \
 %endif
 
 %install
-make install DESTDIR=%{buildroot}
+%make_install
 rm -f %{buildroot}%{_datadir}/doc/tcc/tcc-doc.html
 
 %post
@@ -102,7 +104,7 @@ fi
 
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-14
-- Use autosetup macro
+- Use autosetup, make_build, make_install macros
 - Use HTTPS to download the source
 
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-13

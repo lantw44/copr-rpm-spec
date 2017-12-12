@@ -49,7 +49,7 @@ available info about packages and to do many other things.
     --with-guile-site-ccache-dir=%{guile_ccache_dir} \
     GUILE=%{_bindir}/guile \
     GUILD=%{_bindir}/guild
-make %{?_smp_mflags}
+%make_build
 
 
 %install
@@ -96,7 +96,7 @@ fi
 
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.3.3-2
-- Use autosetup macro
+- Use autosetup and make_build macros
 
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.3.3-1
 - Update to 0.3.3

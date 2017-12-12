@@ -38,7 +38,7 @@ repositories of the Git version control system.
 %check
 # segfault on i686
 %ifnarch %{ix86}
-make %{?_smp_mflags} check
+%{__make} %{?_smp_mflags} check
 %endif
 
 

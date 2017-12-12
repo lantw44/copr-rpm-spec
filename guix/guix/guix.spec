@@ -3,7 +3,7 @@
 
 Name:           guix
 Version:        0.14.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -89,14 +89,14 @@ if [ "$(id -u)" = "0" ]; then
         chown -R nobody:nobody %{_topdir}
         setfacl -m u:nobody:x /builddir
     fi
-    runuser nobody -s /bin/sh -c "make %{?_smp_mflags} check" && exit 0
+    runuser nobody -s /bin/sh -c "%{__make} %{?_smp_mflags} check" && exit 0
 else
-    make %{?_smp_mflags} check && exit 0
+    %{__make} %{?_smp_mflags} check && exit 0
 fi
 
 
 %install
-make install DESTDIR=%{buildroot} systemdservicedir=%{_unitdir}
+%make_install systemdservicedir=%{_unitdir}
 # rename systemd service files provided by upstream
 mv %{buildroot}%{_unitdir}/guix-daemon{,-latest}.service
 mv %{buildroot}%{_unitdir}/guix-publish{,-latest}.service
@@ -356,6 +356,9 @@ fi
 
 
 %changelog
+* Tue Dec 12 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.14.0-5
+- Use make_install macro
+
 * Tue Dec 12 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.14.0-4
 - Fix TLS crash with upstream commit 7f04197
 

@@ -80,13 +80,21 @@ BuildRequires: %{cross_triplet}-gcc-stage2, perl
 %build
 mkdir -p %{_builddir}/glibc-build
 cd %{_builddir}/glibc-build
-BUILD_CC=%{_bindir}/gcc \
-CC=%{_bindir}/%{cross_triplet}-gcc \
-CXX=%{_bindir}/%{cross_triplet}-g++ \
-AR=%{_bindir}/%{cross_triplet}-ar \
-RANLIB=%{_bindir}/%{cross_triplet}-ranlib \
-../glibc-%{version}/configure \
-    --prefix=/usr \
+export BUILD_CC=%{_bindir}/gcc
+export CC=%{_bindir}/%{cross_triplet}-gcc
+export CXX=%{_bindir}/%{cross_triplet}-g++
+export AR=%{_bindir}/%{cross_triplet}-ar
+export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
+%global _configure ../glibc-%{version}/configure
+%global __global_ldflags \\\
+    %(echo "%{__global_ldflags}" | sed 's/-specs=[^ ]*//g')
+%global optflags \\\
+    %(echo "%{optflags}" | \\\
+        sed -e 's/-m[^ ]*//g' -e 's/-specs=[^ ]*//g' -e 's/-Werror=[^ ]*//g' \\\
+            -e 's/-Wp,[^ ]*//g' -e 's/-fasynchronous-unwind-tables *//g')
+# Use /usr directly because it is the path in cross_sysroot
+%configure \
+    --libdir=/usr/%{lib_dir_name} \
     --host=%{cross_triplet} \
     --build=%{_target_platform} \
     --enable-kernel=2.6.32 \
@@ -109,16 +117,16 @@ RANLIB=%{_bindir}/%{cross_triplet}-ranlib \
 %endif
 
 %if %{headers_only}
-make %{?_smp_mflags} csu/subdir_lib
+%make_build csu/subdir_lib
 %else
-make %{?_smp_mflags}
+%make_build
 %endif
 
 
 %install
 cd %{_builddir}/glibc-build
 %if %{headers_only}
-make install-headers install_root=%{buildroot}%{cross_sysroot} \
+%{__make} install-headers install_root=%{buildroot}%{cross_sysroot} \
     install-bootstrap-headers=yes
 touch %{buildroot}%{cross_sysroot}/usr/include/gnu/stubs.h
 mkdir -p %{buildroot}%{cross_sysroot}/usr/%{lib_dir_name}
@@ -127,7 +135,7 @@ cp csu/crt1.o csu/crti.o csu/crtn.o \
 %{cross_triplet}-gcc -nostdlib -nostartfiles -shared -x c /dev/null \
     -o %{buildroot}%{cross_sysroot}/usr/%{lib_dir_name}/libc.so
 %else
-make install install_root=%{buildroot}%{cross_sysroot}
+%{__make} install install_root=%{buildroot}%{cross_sysroot}
 rm -rf %{buildroot}%{cross_sysroot}/usr/share/man
 rm -rf %{buildroot}%{cross_sysroot}/usr/share/info
 rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
@@ -579,6 +587,7 @@ chmod +x %{__ar_no_strip}
 
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.26-5
+- Use configure and make_build macros
 - Replace define with global
 
 * Thu Dec 07 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.26-4

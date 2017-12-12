@@ -32,11 +32,11 @@ keep the Lisp Machine Spirit alive.
 
 %build
 %configure --with-lispdir=%{_emacs_sitelispdir}/geiser
-make %{?_smp_mflags}
+%make_build
 
 
 %install
-make install DESTDIR=%{buildroot}
+%make_install
 mkdir -p %{buildroot}%{_datadir}/guile/site
 ln -s %{_datadir}/geiser/guile/geiser %{buildroot}%{_datadir}/guile/site/geiser
 
@@ -69,7 +69,7 @@ fi
 
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9-5
-- Use autosetup macro
+- Use autosetup, make_build, make_install macros
 
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9-4
 - Use HTTPS to download the source

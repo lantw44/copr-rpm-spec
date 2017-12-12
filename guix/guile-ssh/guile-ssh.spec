@@ -28,7 +28,7 @@ written in GNU Guile interpreter. It is built upon the libssh library.
 %build
 autoreconf -fi
 %configure --disable-rpath --disable-static
-make %{?_smp_mflags}
+%make_build
 
 
 %check
@@ -39,7 +39,7 @@ sed -i 's|session.scm||' tests/Makefile
 %endif
 # try a few more times before failing
 for i in {1..24}; do
-    make %{?_smp_mflags} check && exit 0
+    %{__make} %{?_smp_mflags} check && exit 0
 done
 exit 1
 
@@ -80,7 +80,7 @@ fi
 
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.11.2-3
-- Use autosetup macro
+- Use autosetup and make_build macros
 - Rename the source tarball
 
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.11.2-2

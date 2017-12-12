@@ -79,23 +79,29 @@ Provides:   %{cross_triplet}-gcc-stage3 = %{version}
 %build
 mkdir -p %{_builddir}/gcc-build
 cd %{_builddir}/gcc-build
-AR_FOR_TARGET=%{_bindir}/%{cross_triplet}-ar \
-AS_FOR_TARGET=%{_bindir}/%{cross_triplet}-as \
-DLLTOOL_FOR_TARGET=%{_bindir}/%{cross_triplet}-dlltool \
-LD_FOR_TARGET=%{_bindir}/%{cross_triplet}-ld \
-NM_FOR_TARGET=%{_bindir}/%{cross_triplet}-nm \
-OBJDUMP_FOR_TARGET=%{_bindir}/%{cross_triplet}-objdump \
-RANLIB_FOR_TARGET=%{_bindir}/%{cross_triplet}-ranlib \
-STRIP_FOR_TARGET=%{_bindir}/%{cross_triplet}-strip \
-WINDRES_FOR_TARGET=%{_bindir}/%{cross_triplet}-windres \
-WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc \
-../gcc-%{version}/configure \
-    --prefix=%{_prefix} \
-    --mandir=%{_mandir} \
-    --infodir=%{_infodir} \
-    --host=%{_target_platform} \
-    --build=%{_target_platform} \
+export AR_FOR_TARGET=%{_bindir}/%{cross_triplet}-ar
+export AS_FOR_TARGET=%{_bindir}/%{cross_triplet}-as
+export DLLTOOL_FOR_TARGET=%{_bindir}/%{cross_triplet}-dlltool
+export LD_FOR_TARGET=%{_bindir}/%{cross_triplet}-ld
+export NM_FOR_TARGET=%{_bindir}/%{cross_triplet}-nm
+export OBJDUMP_FOR_TARGET=%{_bindir}/%{cross_triplet}-objdump
+export RANLIB_FOR_TARGET=%{_bindir}/%{cross_triplet}-ranlib
+export STRIP_FOR_TARGET=%{_bindir}/%{cross_triplet}-strip
+export WINDRES_FOR_TARGET=%{_bindir}/%{cross_triplet}-windres
+export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
+%global _configure ../gcc-%{version}/configure
+%global _program_prefix %{cross_triplet}-
+%global __global_ldflags \\\
+    %(echo "%{__global_ldflags}" | sed 's/-specs=[^ ]*//g')
+%global optflags \\\
+    %(echo "%{optflags}" | \\\
+        sed -e 's/-m[^ ]*//g' -e 's/-specs=[^ ]*//g' -e 's/-Werror=[^ ]*//g')
+# GCC doesn't build without dependency tracking
+# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55930
+%configure \
+    --libdir=%{_prefix}/lib \
     --target=%{cross_triplet} \
+    --enable-dependency-tracking \
     --with-local-prefix=%{cross_sysroot} \
     --with-sysroot=%{cross_sysroot} \
     --with-gcc-major-version-only \
@@ -126,7 +132,7 @@ WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc \
     --disable-threads \
     --disable-libmudflap \
 
-make %{?_smp_mflags} all-gcc
+%make_build all-gcc
 %endif
 %if %{cross_stage} == "pass2"
     --enable-languages=c \
@@ -134,7 +140,7 @@ make %{?_smp_mflags} all-gcc
     --disable-libgomp \
     --disable-libmudflap \
 
-make %{?_smp_mflags} all-gcc all-target-libgcc
+%make_build all-gcc all-target-libgcc
 %endif
 %if %{cross_stage} == "final"
 %if %{with ada}
@@ -155,7 +161,7 @@ make %{?_smp_mflags} all-gcc all-target-libgcc
     --enable-plugin \
     --enable-threads=posix \
 
-make %{?_smp_mflags}
+%make_build
 %endif
 
 
@@ -163,17 +169,17 @@ make %{?_smp_mflags}
 cd %{_builddir}/gcc-build
 
 %if %{cross_stage} == "pass1"
-make install-gcc DESTDIR=%{buildroot}
+%{__make} install-gcc DESTDIR=%{buildroot}
 %endif
 %if %{cross_stage} == "pass2"
-make install-gcc install-target-libgcc DESTDIR=%{buildroot}
+%{__make} install-gcc install-target-libgcc DESTDIR=%{buildroot}
 mkdir -p %{buildroot}%{cross_sysroot}/%{lib_dir_name}
 mv %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}/* \
     %{buildroot}%{cross_sysroot}/%{lib_dir_name}
 rmdir %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}
 %endif
 %if %{cross_stage} == "final"
-make install DESTDIR=%{buildroot}
+%make_install
 mkdir -p %{buildroot}%{cross_sysroot}/%{lib_dir_name}
 mv %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}/* \
     %{buildroot}%{cross_sysroot}/%{lib_dir_name}
@@ -356,6 +362,7 @@ chmod +x %{__ar_no_strip}
 
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.2.0-4
+- Use configure, make_build, make_install macros
 - Replace define with global
 
 * Thu Dec 07 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.2.0-3

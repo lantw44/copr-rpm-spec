@@ -26,7 +26,7 @@ name), but more features from other Telnet/SSH clients are also planned.
 
 %build
 %{qmake_qt4}
-make %{?_smp_mflags}
+%make_build
 
 
 %install
@@ -42,7 +42,7 @@ install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
 
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.10.beta
-- Use autosetup macro
+- Use autosetup and make_build macros
 - Rename the source tarball
 
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.9.beta
