@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        2.7.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Use the Emacsclient as the editor of child processes
 
 Group:          Applications/Editors
@@ -23,7 +23,7 @@ call home.
 
 
 %prep
-%setup -q -n with-editor-%{version}
+%autosetup -n with-editor-%{version} -p1
 
 
 %build
@@ -62,6 +62,9 @@ fi
 
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.7.0-3
+- Use autosetup macro
+
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.7.0-2
 - Use HTTPS in URL
 

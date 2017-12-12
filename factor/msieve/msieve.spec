@@ -1,6 +1,6 @@
 Name:       msieve
 Version:    1.53
-Release:    3%{?dist}
+Release:    4%{?dist}
 Summary:    Msieve is a C library to factor large integers.
 
 Group:      Applications/Engineering
@@ -17,7 +17,7 @@ integers. It contains an implementation of the SIQS and GNFS algorithms; the
 latter has helped complete some of the largest public factorizations known.
 
 %prep
-%setup -qn %{name}-%{version}
+%autosetup -n %{name}-%{version} -p1
 
 
 %build
@@ -40,6 +40,9 @@ install -m 644 libmsieve.a %{buildroot}%{_libdir}
 
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.53-4
+- Use autosetup macro
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.53-3
 - Rebuilt for Fedora 27 and 28
 

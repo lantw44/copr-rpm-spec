@@ -23,7 +23,7 @@ Requires:   %{cross_triplet}-filesystem
 
 
 %prep
-%setup -qn linux-%{kversion}
+%autosetup -n linux-%{kversion} -p1
 
 
 %build
@@ -126,6 +126,7 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %changelog
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 4.14.5-1
 - Update to 4.14.5
+- Use autosetup macro
 
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 4.14.4-1
 - Update to 4.14.4

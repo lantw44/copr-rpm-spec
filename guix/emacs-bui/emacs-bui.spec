@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        1.1.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Buffer interface library for Emacs
 
 Group:          Applications/Editors
@@ -25,7 +25,7 @@ buffers, functions, etc.).
 
 
 %prep
-%setup -q -n bui.el-%{version}
+%autosetup -n bui.el-%{version} -p1
 
 
 %build
@@ -49,6 +49,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/bui/
 
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-4
+- Use autosetup macro
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-3
 - Rebuilt for Fedora 27 and 28
 

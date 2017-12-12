@@ -12,7 +12,7 @@
 
 Name:       %{pkg_fullname}
 Version:    0.9.26
-Release:    13%{?dist}
+Release:    14%{?dist}
 Summary:    Tiny C Compiler
 
 Group:      Development/Languages
@@ -27,7 +27,7 @@ Tiny C Compiler is a small C compiler, which can already compile itself.
 It can also run C source code as a script.
 
 %prep
-%setup -q -n %{pkg_name}-%{version}
+%autosetup -n %{pkg_name}-%{version} -p1
 
 %build
 ./configure --prefix=%{_prefix} --libdir=%{_libdir} \
@@ -101,6 +101,9 @@ fi
 %doc Changelog README TODO VERSION tcc-doc.html
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-14
+- Use autosetup macro
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-13
 - Rebuilt for Fedora 27 and 28
 

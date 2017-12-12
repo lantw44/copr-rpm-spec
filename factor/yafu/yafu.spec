@@ -1,6 +1,6 @@
 Name:       yafu
 Version:    1.34
-Release:    10%{?dist}
+Release:    11%{?dist}
 Summary:    Automated integer factorization
 
 Group:      Applications/Engineering
@@ -21,7 +21,7 @@ utilize multi- or many-core processors (including SNFS, GNFS, SIQS, and ECM).
 
 
 %prep
-%setup -qn %{name}-%{version}.3
+%autosetup -n %{name}-%{version}.3 -p1
 
 
 %build
@@ -46,6 +46,9 @@ install -m 755 yafu %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.34-11
+- Use autosetup macro
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.34-10
 - Rebuilt for Fedora 27 and 28
 

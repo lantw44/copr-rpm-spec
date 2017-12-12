@@ -2,7 +2,7 @@
 
 Name:           guile-json
 Version:        0.6.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        JSON module for Guile
 
 License:        LGPLv3+
@@ -24,7 +24,7 @@ features:
 
 
 %prep
-%setup -q
+%autosetup -p1
 
 
 %build
@@ -52,6 +52,9 @@ make %{?_smp_mflags}
 
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-5
+- Use autosetup macro
+
 * Sun Dec 10 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-4
 - Remove noarch because .go files are not architecture-independent
 

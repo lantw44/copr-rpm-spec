@@ -8,7 +8,7 @@
 
 Name:       %{cross_triplet}-binutils
 Version:    2.29.1
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 Group:      Development/Tools
@@ -24,7 +24,7 @@ Requires:   %{cross_triplet}-filesystem
 
 
 %prep
-%setup -qn binutils-%{version}
+%autosetup -n binutils-%{version} -p1
 
 
 %build
@@ -89,6 +89,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.29.1-3
+- Use autosetup macro
+
 * Thu Dec 07 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.29.1-2
 - Fix build ID conflict for Fedora 27 and later
 

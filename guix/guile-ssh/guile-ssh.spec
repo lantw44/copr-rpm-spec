@@ -1,6 +1,6 @@
 Name:           guile-ssh
 Version:        0.11.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A library that provides access to the SSH protocol for GNU Guile
 
 License:        GPLv3+
@@ -22,7 +22,7 @@ written in GNU Guile interpreter. It is built upon the libssh library.
 
 
 %prep
-%setup -q
+%autosetup -p1
 
 
 %build
@@ -79,6 +79,9 @@ fi
 
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.11.2-3
+- Use autosetup macro
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.11.2-2
 - Rebuilt for Fedora 27 and 28
 

@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        2.13.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Dash is a modern list library for Emacs
 
 Group:          Applications/Editors
@@ -21,7 +21,7 @@ Emacs. No cl required.
 
 
 %prep
-%setup -q -n dash.el-%{version}
+%autosetup -n dash.el-%{version} -p1
 
 
 %build
@@ -60,6 +60,9 @@ fi
 
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.13.0-4
+- Use autosetup macro
+
 * Mon Oct 16 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.13.0-3
 - Rebuilt for Fedora 27 and 28
 

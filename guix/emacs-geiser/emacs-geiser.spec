@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.9
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Geiser is an Emacs environment to hack and have fun in Scheme
 
 Group:          Applications/Editors
@@ -27,7 +27,7 @@ keep the Lisp Machine Spirit alive.
 
 
 %prep
-%setup -q -n %{pkg}-%{version}
+%autosetup -n %{pkg}-%{version} -p1
 
 
 %build
@@ -68,6 +68,9 @@ fi
 
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9-5
+- Use autosetup macro
+
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9-4
 - Use HTTPS to download the source
 

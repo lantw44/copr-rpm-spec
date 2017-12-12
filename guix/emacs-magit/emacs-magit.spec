@@ -13,7 +13,7 @@
 
 Name:           emacs-%{pkg}
 Version:        2.11.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Emacs interface to the most common Git operations
 
 Group:          Applications/Editors
@@ -36,7 +36,7 @@ the Git source-code management system that aims to make the most
 common operations convenient.
 
 %prep
-%setup -q -n magit-%{version}
+%autosetup -n magit-%{version} -p1
 
 %build
 make \
@@ -81,6 +81,9 @@ fi
 
 
 %changelog
+* Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.11.0-3
+- Use autosetup macro
+
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.11.0-2
 - Use HTTPS in URL
 
