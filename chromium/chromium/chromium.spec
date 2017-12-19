@@ -28,8 +28,8 @@
 %bcond_with system_libxml2
 %endif
 
-# Require harfbuzz >= 1.4.2 for hb_variation_t
-%if 0%{?fedora} >= 26
+# Require harfbuzz >= 1.5.0 for hb_glyph_info_t
+%if 0%{?fedora} >= 28
 %bcond_without system_harfbuzz
 %else
 %bcond_with system_harfbuzz
@@ -58,7 +58,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    62.0.3202.94
+Version:    63.0.3239.108
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -97,16 +97,10 @@ Source13:   chromium-browser.appdata.xml
 # Add a patch from Fedora to fix GN build
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=0df9641
 Patch10:    chromium-last-commit-position.patch
-# Add patches from Gentoo to fix GN build
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=199c924
-Patch11:    chromium-gn-bootstrap.patch
 
-# Add a patch from Gentoo to fix build with GLIBC 2.26
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=2901239
-Patch50:    chromium-ucontext-glibc226.patch
-
-# Don't include C++17 string_view header
-Patch60:    chromium-crc32c-disable-c++17.patch
+# Add a patch from Gentoo to fix the missing include
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=b3838ab
+Patch20:    chromium-webrtc-math.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -223,7 +217,6 @@ Conflicts:     chromedriver-unstable
     base/third_party/valgrind \
     base/third_party/xdg_mime \
     base/third_party/xdg_user_dirs \
-    breakpad/src/third_party/curl \
     chrome/third_party/mozilla_security_manager \
     courgette/third_party \
     native_client/src/third_party/dlmalloc \
@@ -234,23 +227,26 @@ Conflicts:     chromedriver-unstable
     third_party/analytics \
     third_party/angle \
     third_party/angle/src/common/third_party/base \
-    third_party/angle/src/common/third_party/murmurhash \
+    third_party/angle/src/common/third_party/smhasher \
     third_party/angle/src/third_party/compiler \
     third_party/angle/src/third_party/libXNVCtrl \
     third_party/angle/src/third_party/trace_event \
     third_party/boringssl \
+    third_party/blink \
+    third_party/breakpad \
+    third_party/breakpad/breakpad/src/third_party/curl \
     third_party/brotli \
     third_party/cacheinvalidation \
     third_party/catapult \
+    third_party/catapult/common/py_vulcanize/third_party/rcssmin \
+    third_party/catapult/common/py_vulcanize/third_party/rjsmin \
     third_party/catapult/third_party/polymer \
-    third_party/catapult/third_party/py_vulcanize \
-    third_party/catapult/third_party/py_vulcanize/third_party/rcssmin \
-    third_party/catapult/third_party/py_vulcanize/third_party/rjsmin \
     third_party/catapult/tracing/third_party/d3 \
     third_party/catapult/tracing/third_party/gl-matrix \
     third_party/catapult/tracing/third_party/jszip \
     third_party/catapult/tracing/third_party/mannwhitneyu \
     third_party/catapult/tracing/third_party/oboe \
+    third_party/catapult/tracing/third_party/pako \
     third_party/ced \
     third_party/cld_2 \
     third_party/cld_3 \
@@ -361,9 +357,6 @@ Conflicts:     chromedriver-unstable
 ./build/linux/unbundle/replace_gn_files.py --system-libraries \
     flac \
     freetype \
-%if %{with system_harfbuzz}
-    harfbuzz-ng \
-%endif
 %if %{with system_libicu}
     icu \
 %endif
@@ -442,6 +435,10 @@ gn_args=(
     use_kerberos=true
     use_libpci=true
     use_pulseaudio=true
+    use_system_freetype=true
+%if %{with system_harfbuzz}
+    use_system_harfbuzz=true
+%endif
     enable_hangout_services_extension=false
     enable_hotwording=false
     enable_nacl=true
@@ -506,7 +503,9 @@ desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE11}
 install -m 644 %{SOURCE12} %{buildroot}%{_datadir}/gnome-control-center/default-apps/
 appstream-util validate-relax --nonet %{SOURCE13}
 install -m 644 %{SOURCE13} %{buildroot}%{_datadir}/appdata/
-install -m 644 out/Release/chrome.1 %{buildroot}%{_mandir}/man1/chromium-browser.1
+sed -e "s|@@MENUNAME@@|Chromium|g" -e "s|@@PACKAGE@@|chromium|g" \
+    chrome/app/resources/manpage.1.in > chrome.1
+install -m 644 chrome.1 %{buildroot}%{_mandir}/man1/chromium-browser.1
 install -m 755 out/Release/chrome %{buildroot}%{chromiumdir}/chromium-browser
 install -m 4755 out/Release/chrome_sandbox %{buildroot}%{chromiumdir}/chrome-sandbox
 install -m 755 out/Release/chromedriver %{buildroot}%{chromiumdir}/
@@ -591,6 +590,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon Dec 18 2017 - Ting-Wei Lan <lantw44@gmail.com> - 63.0.3239.108-100
+- Update to 63.0.3239.108
+- Bundle harfbuzz on Fedora 27 and older
+- Temporarily remove harfbuzz from the list of replace_gn_files
+
 * Wed Nov 15 2017 - Ting-Wei Lan <lantw44@gmail.com> - 62.0.3202.94-100
 - Update to 62.0.3202.94
 
