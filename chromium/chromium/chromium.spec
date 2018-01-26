@@ -58,7 +58,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    63.0.3239.132
+Version:    64.0.3282.119
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -78,7 +78,7 @@ URL:        https://www.chromium.org/Home
 # Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/chromium-%{version}.tar.xz
 #
 # The repackaged source tarball used here is produced by:
-# ./chromium-latest.py --stable --ffmpegclean
+# ./chromium-latest.py --stable --ffmpegclean --ffmpegarm
 Source0:    chromium-%{version}-clean.tar.xz
 Source1:    chromium-latest.py
 Source2:    chromium-ffmpeg-clean.sh
@@ -98,9 +98,14 @@ Source13:   chromium-browser.appdata.xml
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=0df9641
 Patch10:    chromium-last-commit-position.patch
 
-# Add a patch from Gentoo to fix the missing include
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=b3838ab
-Patch20:    chromium-webrtc-math.patch
+# Add a patch from Gentoo to fix ANGLE build
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=1a8dd9f
+Patch20:    chromium-angle.patch
+
+# Add a patch from Gentoo to fix ANGLE build
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=9b71cea
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=2ad380a
+Patch30:    chromium-cc-memcpy.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -232,6 +237,7 @@ Conflicts:     chromedriver-unstable
     third_party/angle/src/third_party/libXNVCtrl \
     third_party/angle/src/third_party/trace_event \
     third_party/boringssl \
+    third_party/boringssl/src/third_party/fiat \
     third_party/blink \
     third_party/breakpad \
     third_party/breakpad/breakpad/src/third_party/curl \
@@ -248,7 +254,6 @@ Conflicts:     chromedriver-unstable
     third_party/catapult/tracing/third_party/oboe \
     third_party/catapult/tracing/third_party/pako \
     third_party/ced \
-    third_party/cld_2 \
     third_party/cld_3 \
     third_party/crc32c \
     third_party/cros_system_api \
@@ -300,6 +305,7 @@ Conflicts:     chromedriver-unstable
     third_party/lss \
     third_party/lzma_sdk \
     third_party/mesa \
+    third_party/metrics_proto \
     third_party/modp_b64 \
     third_party/mt19937ar \
     third_party/node \
@@ -440,7 +446,6 @@ gn_args=(
     use_system_harfbuzz=true
 %endif
     enable_hangout_services_extension=false
-    enable_hotwording=false
     enable_nacl=true
     enable_webrtc=true
     fatal_linker_warnings=false
@@ -590,6 +595,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Jan 25 2018 - Ting-Wei Lan <lantw44@gmail.com> - 64.0.3282.119-100
+- Update to 64.0.3282.119
+
 * Fri Jan 05 2018 - Ting-Wei Lan <lantw44@gmail.com> - 63.0.3239.132-100
 - Update to 63.0.3239.132
 
