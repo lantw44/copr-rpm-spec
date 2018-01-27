@@ -29,8 +29,8 @@
 %bcond_without ada
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    7.2.0
-Release:    4%{?dist}
+Version:    7.3.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -92,10 +92,12 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
 %global _configure ../gcc-%{version}/configure
 %global _program_prefix %{cross_triplet}-
 %global __global_ldflags \\\
-    %(echo "%{__global_ldflags}" | sed 's/-specs=[^ ]*//g')
+    %(echo "%{__global_ldflags}" | \\\
+        sed -e 's/-specs=[^ ]*//g' -e 's/-Wl,-z,defs *//g')
 %global optflags \\\
     %(echo "%{optflags}" | \\\
-        sed -e 's/-m[^ ]*//g' -e 's/-specs=[^ ]*//g' -e 's/-Werror=[^ ]*//g')
+        sed -e 's/-m[^ ]*//g' -e 's/-specs=[^ ]*//g' -e 's/-Werror=[^ ]*//g' \\\
+            -e 's/-fstack-clash-protection *//g')
 # GCC doesn't build without dependency tracking
 # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55930
 %configure \
@@ -151,6 +153,7 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
 %if 0%{?fedora} <= 22
     --with-default-libstdcxx-abi=gcc4-compatible \
 %endif
+    --enable-shared \
     --enable-libmulflap \
     --enable-libgomp \
     --enable-libssp \
@@ -361,6 +364,11 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Thu Jan 25 2018 Ting-Wei Lan <lantw44@gmail.com> - 7.3.0-1
+- Update to new stable release 7.3.0
+- Remove -fstack-clash-protection from compiler flags to fix Fortran build
+- Remove -Wl,-z,defs from linker flags to prevent plugins from being disabled
+
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 7.2.0-4
 - Use configure, make_build, make_install macros
 - Replace define with global
