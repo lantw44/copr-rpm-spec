@@ -7,8 +7,8 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.29.1
-Release:    3%{?dist}
+Version:    2.30
+Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 Group:      Development/Tools
@@ -89,6 +89,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Sun Jan 28 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.30-1
+- Update to 2.30
+
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.29.1-3
 - Use autosetup, make_build, make_install macros
 - Replace define with global
