@@ -48,13 +48,16 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.26
-Release:    5%{?dist}
+Release:    6%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 Group:      Development/Libraries
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
 URL:        https://www.gnu.org/software/libc
 Source0:    https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
+
+# https://sourceware.org/git/?p=glibc.git;a=commit;h=a68ba2f
+Patch0:     glibc-aarch64-dl-machine.patch
 
 BuildRequires: %{cross_triplet}-filesystem
 BuildRequires: %{cross_triplet}-gcc-stage1
@@ -87,11 +90,13 @@ export AR=%{_bindir}/%{cross_triplet}-ar
 export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
 %global _configure ../glibc-%{version}/configure
 %global __global_ldflags \\\
-    %(echo "%{__global_ldflags}" | sed 's/-specs=[^ ]*//g')
+    %(echo "%{__global_ldflags}" | \\\
+        sed -e 's/-specs=[^ ]*//g' -e 's/-Wl,-z,defs *//g')
 %global optflags \\\
     %(echo "%{optflags}" | \\\
         sed -e 's/-m[^ ]*//g' -e 's/-specs=[^ ]*//g' -e 's/-Werror=[^ ]*//g' \\\
-            -e 's/-Wp,[^ ]*//g' -e 's/-fasynchronous-unwind-tables *//g')
+            -e 's/-Wp,[^ ]*//g' -e 's/-fasynchronous-unwind-tables *//g' \\\
+            -e 's/-fstack-clash-protection *//g')
 # Use /usr directly because it is the path in cross_sysroot
 %configure \
     --libdir=/usr/%{lib_dir_name} \
@@ -586,6 +591,11 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Sun Jan 28 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.26-6
+- Remove the unsupported -fstack-clash-protection compiler flag
+- Remove the -Wl,-z,defs linker flag to avoid linking failure
+- Fix build failure with GNU Binutils 2.30
+
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.26-5
 - Use configure and make_build macros
 - Replace define with global
