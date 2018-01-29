@@ -59,7 +59,7 @@
 
 Name:       chromium
 Version:    64.0.3282.119
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -102,7 +102,7 @@ Patch10:    chromium-last-commit-position.patch
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=1a8dd9f
 Patch20:    chromium-angle.patch
 
-# Add a patch from Gentoo to fix ANGLE build
+# Add a patch from Gentoo to fix compositor build
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=9b71cea
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=2ad380a
 Patch30:    chromium-cc-memcpy.patch
@@ -390,7 +390,8 @@ sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' device/usb/BUILD.gn
 
 # Workaround build error caused by debugedit
 # https://bugzilla.redhat.com/show_bug.cgi?id=304121
-sed -i '/^#include/s|//|/|' \
+sed -i "/relpath/s|/'$|'|" tools/metrics/ukm/gen_builders.py
+sed -i 's|^\(#include "[^"]*\)//\([^"]*"\)|\1/\2|' \
     third_party/webrtc/modules/audio_processing/utility/ooura_fft.cc \
     third_party/webrtc/modules/audio_processing/utility/ooura_fft_sse2.cc
 
@@ -595,6 +596,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon Jan 29 2018 - Ting-Wei Lan <lantw44@gmail.com> - 64.0.3282.119-101
+- Workaround debugedit failure caused by double slashes on Fedora 26 and older
+
 * Thu Jan 25 2018 - Ting-Wei Lan <lantw44@gmail.com> - 64.0.3282.119-100
 - Update to 64.0.3282.119
 
