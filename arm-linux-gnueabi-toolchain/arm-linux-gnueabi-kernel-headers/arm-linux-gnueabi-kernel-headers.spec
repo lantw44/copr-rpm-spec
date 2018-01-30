@@ -3,7 +3,7 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    4.14.15
+Version:    4.15.0
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -124,6 +124,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Tue Jan 30 2018 Ting-Wei Lan <lantw44@gmail.com> - 4.15.0-1
+- Update to 4.15
+
 * Thu Jan 25 2018 Ting-Wei Lan <lantw44@gmail.com> - 4.14.15-1
 - Update to 4.14.15
 
