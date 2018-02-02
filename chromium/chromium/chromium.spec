@@ -58,8 +58,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    64.0.3282.119
-Release:    101%{?dist}
+Version:    64.0.3282.140
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -596,6 +596,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Feb 03 2018 - Ting-Wei Lan <lantw44@gmail.com> - 64.0.3282.140-100
+- Update to 64.0.3282.140
+
 * Mon Jan 29 2018 - Ting-Wei Lan <lantw44@gmail.com> - 64.0.3282.119-101
 - Workaround debugedit failure caused by double slashes on Fedora 26 and older
 
