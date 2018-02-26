@@ -3,14 +3,13 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    4.15.0
+Version:    4.15.6
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
 %global debug_package   %{nil}
 %global kversion        %(echo %{version} | sed 's/\\.0$//')
 
-Group:      Development/System
 License:    GPLv2
 URL:        https://www.kernel.org/
 Source0:    https://www.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
@@ -124,6 +123,10 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 4.15.6-1
+- Update to 4.15.6
+- Remove group tag because it is deprecated in Fedora
+
 * Tue Jan 30 2018 Ting-Wei Lan <lantw44@gmail.com> - 4.15.0-1
 - Update to 4.15
 
