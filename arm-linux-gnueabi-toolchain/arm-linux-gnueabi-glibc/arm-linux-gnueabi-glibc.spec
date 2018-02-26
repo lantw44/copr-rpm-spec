@@ -47,18 +47,15 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.26
-Release:    6%{?dist}
+Version:    2.27
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
-Group:      Development/Libraries
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
 URL:        https://www.gnu.org/software/libc
 Source0:    https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 
-# https://sourceware.org/git/?p=glibc.git;a=commit;h=a68ba2f
-Patch0:     glibc-aarch64-dl-machine.patch
-
+BuildRequires: bison
 BuildRequires: %{cross_triplet}-filesystem
 BuildRequires: %{cross_triplet}-gcc-stage1
 BuildRequires: %{cross_triplet}-kernel-headers
@@ -89,6 +86,8 @@ export CXX=%{_bindir}/%{cross_triplet}-g++
 export AR=%{_bindir}/%{cross_triplet}-ar
 export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
 %global _configure ../glibc-%{version}/configure
+%global _hardening_ldflags \\\
+    %(echo "%{_hardening_ldflags}" | sed -e 's/-specs=[^ ]*//g')
 %global __global_ldflags \\\
     %(echo "%{__global_ldflags}" | \\\
         sed -e 's/-specs=[^ ]*//g' -e 's/-Wl,-z,defs *//g')
@@ -96,7 +95,7 @@ export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
     %(echo "%{optflags}" | \\\
         sed -e 's/-m[^ ]*//g' -e 's/-specs=[^ ]*//g' -e 's/-Werror=[^ ]*//g' \\\
             -e 's/-Wp,[^ ]*//g' -e 's/-fasynchronous-unwind-tables *//g' \\\
-            -e 's/-fstack-clash-protection *//g')
+            -e 's/-fstack-clash-protection *//g' -e 's/-fcf-protection *//g')
 # Use /usr directly because it is the path in cross_sysroot
 %configure \
     --libdir=/usr/%{lib_dir_name} \
@@ -166,29 +165,7 @@ chmod +x %{__ar_no_strip}
 
 %files
 %license COPYING COPYING.LIB LICENSES
-%doc BUGS CONFORMANCE
-%doc ChangeLog
-%doc ChangeLog.1 ChangeLog.2 ChangeLog.3 ChangeLog.4 ChangeLog.5
-%doc ChangeLog.6 ChangeLog.7 ChangeLog.8 ChangeLog.9 ChangeLog.10
-%doc ChangeLog.11 ChangeLog.12 ChangeLog.13 ChangeLog.14 ChangeLog.15
-%doc ChangeLog.16 ChangeLog.17
-%doc ChangeLog.old-ports
-%doc ChangeLog.old-ports-aarch64
-%doc ChangeLog.old-ports-aix
-%doc ChangeLog.old-ports-alpha
-%doc ChangeLog.old-ports-am33
-%doc ChangeLog.old-ports-arm
-%doc ChangeLog.old-ports-cris
-%doc ChangeLog.old-ports-hppa
-%doc ChangeLog.old-ports-ia64
-%doc ChangeLog.old-ports-linux-generic
-%doc ChangeLog.old-ports-m68k
-%doc ChangeLog.old-ports-microblaze
-%doc ChangeLog.old-ports-mips
-%doc ChangeLog.old-ports-powerpc
-%doc ChangeLog.old-ports-tile
-%doc NAMESPACE NEWS README
-%doc README.pretty-printers README.tunables WUR-REPORT
+%doc ChangeLog MAINTAINERS NEWS README
 %{cross_sysroot}/usr/include/_G_config.h
 %{cross_sysroot}/usr/include/a.out.h
 %{cross_sysroot}/usr/include/aio.h
@@ -540,7 +517,6 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/%{lib_dir_name}/libdl.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libdl.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libg.a
-%{cross_sysroot}/usr/%{lib_dir_name}/libieee.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libm.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libm.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libmcheck.a
@@ -591,6 +567,12 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.27-1
+- Update to 2.27
+- Remove -fcf-protection from compiler flags because it needs -m options
+- Remove -specs from _hardening_ldflags because it is now used directly
+- Remove group tag because it is deprecated in Fedora
+
 * Sun Jan 28 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.26-6
 - Remove the unsupported -fstack-clash-protection compiler flag
 - Remove the -Wl,-z,defs linker flag to avoid linking failure
