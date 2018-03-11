@@ -58,7 +58,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    64.0.3282.186
+Version:    65.0.3325.146
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -98,14 +98,10 @@ Source13:   chromium-browser.appdata.xml
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=0df9641
 Patch10:    chromium-last-commit-position.patch
 
-# Add a patch from Gentoo to fix ANGLE build
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=1a8dd9f
-Patch20:    chromium-angle.patch
-
-# Add a patch from Gentoo to fix compositor build
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=9b71cea
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=2ad380a
-Patch30:    chromium-cc-memcpy.patch
+# Add two patches from Gentoo to add the missing includes
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=1b8e99b
+Patch20:    chromium-stdint.patch
+Patch21:    chromium-math.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -285,6 +281,7 @@ Conflicts:     chromedriver-unstable
     third_party/khronos \
     third_party/leveldatabase \
     third_party/libaddressinput \
+    third_party/libaom \
     third_party/libjingle \
     third_party/libphonenumber \
     third_party/libsecret \
@@ -330,6 +327,7 @@ Conflicts:     chromedriver-unstable
     third_party/protobuf \
     third_party/protobuf/third_party/six \
     third_party/qcms \
+    third_party/s2cellid \
     third_party/sfntly \
     third_party/skia \
     third_party/skia/third_party/gif \
@@ -358,11 +356,13 @@ Conflicts:     chromedriver-unstable
     third_party/zlib/google \
     url/third_party/mozilla \
     v8/src/third_party/valgrind \
+    v8/src/third_party/utf8-decoder \
     v8/third_party/inspector_protocol
 
 ./build/linux/unbundle/replace_gn_files.py --system-libraries \
     flac \
     freetype \
+    fontconfig \
 %if %{with system_libicu}
     icu \
 %endif
@@ -426,7 +426,7 @@ export LDFLAGS='%{__global_ldflags}'
 export CC=clang CXX=clang++
 %else
 export CC=gcc CXX=g++
-export CXXFLAGS="$CXXFLAGS -fno-delete-null-pointer-checks"
+export CXXFLAGS="$CXXFLAGS -fno-delete-null-pointer-checks -fpermissive"
 %endif
 
 gn_args=(
@@ -436,7 +436,6 @@ gn_args=(
     use_custom_libcxx=false
     use_aura=true
     use_cups=true
-    use_gconf=false
     use_gnome_keyring=true
     use_gio=true
     use_kerberos=true
@@ -596,6 +595,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Mar 08 2018 - Ting-Wei Lan <lantw44@gmail.com> - 65.0.3325.146-100
+- Update to 65.0.3325.146
+- Temporarily add -fpermissive to CXXFLAGS
+
 * Mon Feb 26 2018 - Ting-Wei Lan <lantw44@gmail.com> - 64.0.3282.186-100
 - Update to 64.0.3282.186
 
