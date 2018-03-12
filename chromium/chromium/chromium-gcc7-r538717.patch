@@ -1,0 +1,259 @@
+From b467afef9550281b7c8763c765735c9e9b4d3f0d Mon Sep 17 00:00:00 2001
+From: Hidehiko Abe <hidehiko@chromium.org>
+Date: Fri, 23 Feb 2018 07:01:30 +0000
+Subject: [PATCH] Update smaller parts of Optional to catch up with C++17 spec.
+
+This has several update parts.
+- Remove DCHECK from operator->(), as redirected value() has same check.
+- rvalue value_or is marked as constexpr.
+- emplace now returns T&.
+- Adds make_optional(Args&&... args) overloading.
+- swap is now conditionally defined.
+
+BUG=784732
+TEST=Ran trybot.
+
+Change-Id: Ife12c56374f14fe3514aeee4f161c9bafce5c135
+Reviewed-on: https://chromium-review.googlesource.com/857357
+Commit-Queue: Hidehiko Abe <hidehiko@chromium.org>
+Reviewed-by: danakj <danakj@chromium.org>
+Cr-Commit-Position: refs/heads/master@{#538717}
+---
+ base/optional.h           | 65 ++++++++++++++++++++++++++++++++---------------
+ base/optional_unittest.cc | 46 ++++++++++++++++++++++++++-------
+ 2 files changed, 82 insertions(+), 29 deletions(-)
+
+diff --git a/base/optional.h b/base/optional.h
+index d65881bd7e..d7c9db7c34 100644
+--- a/base/optional.h
++++ b/base/optional.h
+@@ -363,6 +363,27 @@ struct IsAssignableFromOptional
+               std::is_assignable<T&, Optional<U>&&>::value ||
+               std::is_assignable<T&, const Optional<U>&&>::value> {};
+ 
++// Forward compatibility for C++17.
++// Introduce one more deeper nested namespace to avoid leaking using std::swap.
++namespace swappable_impl {
++using std::swap;
++
++struct IsSwappableImpl {
++  // Tests if swap can be called. Check<T&>(0) returns true_type iff swap
++  // is available for T. Otherwise, Check's overload resolution falls back
++  // to Check(...) declared below thanks to SFINAE, so returns false_type.
++  template <typename T>
++  static auto Check(int)
++      -> decltype(swap(std::declval<T>(), std::declval<T>()), std::true_type());
++
++  template <typename T>
++  static std::false_type Check(...);
++};
++}  // namespace swappable_impl
++
++template <typename T>
++struct IsSwappable : decltype(swappable_impl::IsSwappableImpl::Check<T&>(0)) {};
++
+ // Forward compatibility for C++20.
+ template <typename T>
+ using RemoveCvRefT = std::remove_cv_t<std::remove_reference_t<T>>;
+@@ -532,15 +553,9 @@ class Optional
+     return *this;
+   }
+ 
+-  constexpr const T* operator->() const {
+-    DCHECK(storage_.is_populated_);
+-    return &value();
+-  }
++  constexpr const T* operator->() const { return &value(); }
+ 
+-  constexpr T* operator->() {
+-    DCHECK(storage_.is_populated_);
+-    return &value();
+-  }
++  constexpr T* operator->() { return &value(); }
+ 
+   constexpr const T& operator*() const& { return value(); }
+ 
+@@ -587,7 +602,7 @@ class Optional
+   }
+ 
+   template <class U>
+-  T value_or(U&& default_value) && {
++  constexpr T value_or(U&& default_value) && {
+     // TODO(mlamouri): add the following assert when possible:
+     // static_assert(std::is_move_constructible<T>::value,
+     //               "T must be move constructible");
+@@ -623,18 +638,17 @@ class Optional
+   }
+ 
+   template <class... Args>
+-  void emplace(Args&&... args) {
++  T& emplace(Args&&... args) {
+     FreeIfNeeded();
+     storage_.Init(std::forward<Args>(args)...);
++    return storage_.value_;
+   }
+ 
+-  template <
+-      class U,
+-      class... Args,
+-      class = std::enable_if_t<std::is_constructible<value_type,
+-                                                     std::initializer_list<U>&,
+-                                                     Args...>::value>>
+-  T& emplace(std::initializer_list<U> il, Args&&... args) {
++  template <class U, class... Args>
++  std::enable_if_t<
++      std::is_constructible<T, std::initializer_list<U>&, Args&&...>::value,
++      T&>
++  emplace(std::initializer_list<U> il, Args&&... args) {
+     FreeIfNeeded();
+     storage_.Init(il, std::forward<Args>(args)...);
+     return storage_.value_;
+@@ -829,8 +843,13 @@ constexpr bool operator>=(const U& value, const Optional<T>& opt) {
+ }
+ 
+ template <class T>
+-constexpr Optional<typename std::decay<T>::type> make_optional(T&& value) {
+-  return Optional<typename std::decay<T>::type>(std::forward<T>(value));
++constexpr Optional<std::decay_t<T>> make_optional(T&& value) {
++  return Optional<std::decay_t<T>>(std::forward<T>(value));
++}
++
++template <class T, class... Args>
++constexpr Optional<T> make_optional(Args&&... args) {
++  return Optional<T>(in_place, std::forward<Args>(args)...);
+ }
+ 
+ template <class T, class U, class... Args>
+@@ -839,8 +858,14 @@ constexpr Optional<T> make_optional(std::initializer_list<U> il,
+   return Optional<T>(in_place, il, std::forward<Args>(args)...);
+ }
+ 
++// Partial specialization for a function template is not allowed. Also, it is
++// not allowed to add overload function to std namespace, while it is allowed
++// to specialize the template in std. Thus, swap() (kind of) overloading is
++// defined in base namespace, instead.
+ template <class T>
+-void swap(Optional<T>& lhs, Optional<T>& rhs) {
++std::enable_if_t<std::is_move_constructible<T>::value &&
++                 internal::IsSwappable<T>::value>
++swap(Optional<T>& lhs, Optional<T>& rhs) {
+   lhs.swap(rhs);
+ }
+ 
+diff --git a/base/optional_unittest.cc b/base/optional_unittest.cc
+index 17c9ee4f51..ecf2b07200 100644
+--- a/base/optional_unittest.cc
++++ b/base/optional_unittest.cc
+@@ -1037,6 +1037,18 @@ TEST(OptionalTest, ValueOr) {
+     EXPECT_EQ(0.0f, a.value_or(0.0f));
+   }
+ 
++  // value_or() can be constexpr.
++  {
++    constexpr Optional<int> a(in_place, 1);
++    constexpr int value = a.value_or(10);
++    EXPECT_EQ(1, value);
++  }
++  {
++    constexpr Optional<int> a;
++    constexpr int value = a.value_or(10);
++    EXPECT_EQ(10, value);
++  }
++
+   {
+     Optional<std::string> a;
+     EXPECT_EQ("bar", a.value_or("bar"));
+@@ -1109,7 +1121,7 @@ TEST(OptionalTest, Swap_bothValue) {
+ TEST(OptionalTest, Emplace) {
+   {
+     Optional<float> a(0.1f);
+-    a.emplace(0.3f);
++    EXPECT_EQ(0.3f, a.emplace(0.3f));
+ 
+     EXPECT_TRUE(a);
+     EXPECT_EQ(0.3f, a.value());
+@@ -1117,7 +1129,7 @@ TEST(OptionalTest, Emplace) {
+ 
+   {
+     Optional<std::string> a("foo");
+-    a.emplace("bar");
++    EXPECT_EQ("bar", a.emplace("bar"));
+ 
+     EXPECT_TRUE(a);
+     EXPECT_EQ("bar", a.value());
+@@ -1125,7 +1137,7 @@ TEST(OptionalTest, Emplace) {
+ 
+   {
+     Optional<TestObject> a(TestObject(0, 0.1));
+-    a.emplace(TestObject(1, 0.2));
++    EXPECT_EQ(TestObject(1, 0.2), a.emplace(TestObject(1, 0.2)));
+ 
+     EXPECT_TRUE(!!a);
+     EXPECT_TRUE(TestObject(1, 0.2) == a.value());
+@@ -1883,34 +1895,34 @@ TEST(OptionalTest, NotEqualsNull) {
+ 
+ TEST(OptionalTest, MakeOptional) {
+   {
+-    Optional<float> o = base::make_optional(32.f);
++    Optional<float> o = make_optional(32.f);
+     EXPECT_TRUE(o);
+     EXPECT_EQ(32.f, *o);
+ 
+     float value = 3.f;
+-    o = base::make_optional(std::move(value));
++    o = make_optional(std::move(value));
+     EXPECT_TRUE(o);
+     EXPECT_EQ(3.f, *o);
+   }
+ 
+   {
+-    Optional<std::string> o = base::make_optional(std::string("foo"));
++    Optional<std::string> o = make_optional(std::string("foo"));
+     EXPECT_TRUE(o);
+     EXPECT_EQ("foo", *o);
+ 
+     std::string value = "bar";
+-    o = base::make_optional(std::move(value));
++    o = make_optional(std::move(value));
+     EXPECT_TRUE(o);
+     EXPECT_EQ(std::string("bar"), *o);
+   }
+ 
+   {
+-    Optional<TestObject> o = base::make_optional(TestObject(3, 0.1));
++    Optional<TestObject> o = make_optional(TestObject(3, 0.1));
+     EXPECT_TRUE(!!o);
+     EXPECT_TRUE(TestObject(3, 0.1) == *o);
+ 
+     TestObject value = TestObject(0, 0.42);
+-    o = base::make_optional(std::move(value));
++    o = make_optional(std::move(value));
+     EXPECT_TRUE(!!o);
+     EXPECT_TRUE(TestObject(0, 0.42) == *o);
+     EXPECT_EQ(TestObject::State::MOVED_FROM, value.state());
+@@ -1920,6 +1932,22 @@ TEST(OptionalTest, MakeOptional) {
+               base::make_optional(std::move(value))->state());
+   }
+ 
++  {
++    struct Test {
++      Test(int a, double b, bool c) : a(a), b(b), c(c) {}
++
++      int a;
++      double b;
++      bool c;
++    };
++
++    Optional<Test> o = make_optional<Test>(1, 2.0, true);
++    EXPECT_TRUE(!!o);
++    EXPECT_EQ(1, o->a);
++    EXPECT_EQ(2.0, o->b);
++    EXPECT_TRUE(o->c);
++  }
++
+   {
+     auto str1 = make_optional<std::string>({'1', '2', '3'});
+     EXPECT_EQ("123", *str1);
+-- 
+2.14.3
+

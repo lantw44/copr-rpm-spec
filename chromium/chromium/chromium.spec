@@ -59,7 +59,7 @@
 
 Name:       chromium
 Version:    65.0.3325.146
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -102,6 +102,23 @@ Patch10:    chromium-last-commit-position.patch
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=1b8e99b
 Patch20:    chromium-stdint.patch
 Patch21:    chromium-math.patch
+
+# Add a lot of patches from upstream to fix build on Fedora 26
+Patch50:    chromium-gcc7-r530663.patch
+Patch51:    chromium-gcc7-r531722.patch
+Patch52:    chromium-gcc7-r532004.patch
+Patch53:    chromium-gcc7-r532865.patch
+Patch54:    chromium-gcc7-r533126.patch
+Patch55:    chromium-gcc7-r533185.patch
+Patch56:    chromium-gcc7-r538032.patch
+Patch57:    chromium-gcc7-r538699.patch
+Patch58:    chromium-gcc7-r538717.patch
+Patch59:    chromium-gcc7-r538740.patch
+Patch60:    chromium-gcc7-r539012.patch
+Patch61:    chromium-gcc7-r540815.patch
+Patch62:    chromium-gcc7-r541029.patch
+Patch63:    chromium-gcc7-r541516.patch
+Patch64:    chromium-gcc7-r541827.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -595,6 +612,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Mar 11 2018 - Ting-Wei Lan <lantw44@gmail.com> - 65.0.3325.146-101
+- Import patches from upstream to fix build on Fedora 26
+
 * Thu Mar 08 2018 - Ting-Wei Lan <lantw44@gmail.com> - 65.0.3325.146-100
 - Update to 65.0.3325.146
 - Temporarily add -fpermissive to CXXFLAGS

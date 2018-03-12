@@ -1,0 +1,184 @@
+From 14f92bee690d0b1884864db08f3e7f03abc85c00 Mon Sep 17 00:00:00 2001
+From: Hidehiko Abe <hidehiko@chromium.org>
+Date: Wed, 21 Feb 2018 06:01:28 +0000
+Subject: [PATCH] Implement value forward constructor.
+
+So, older constructors taking const T& or T&& is removed.
+
+BUG=784732
+TEST=Ran trybot.
+
+Change-Id: I806b1880bf3bd2bd25da764f7592299a1a742366
+Reviewed-on: https://chromium-review.googlesource.com/856380
+Commit-Queue: Hidehiko Abe <hidehiko@chromium.org>
+Reviewed-by: danakj <danakj@chromium.org>
+Cr-Commit-Position: refs/heads/master@{#538032}
+---
+ base/optional.h           | 41 +++++++++++++++++++++----
+ base/optional_unittest.cc | 77 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 112 insertions(+), 6 deletions(-)
+
+diff --git a/base/optional.h b/base/optional.h
+index 8e56ca640b..9599baf03b 100644
+--- a/base/optional.h
++++ b/base/optional.h
+@@ -353,6 +353,10 @@ struct IsConvertibleFromOptional
+               std::is_convertible<Optional<U>&&, T>::value ||
+               std::is_convertible<const Optional<U>&&, T>::value> {};
+ 
++// Forward compatibility for C++20.
++template <typename T>
++using RemoveCvRefT = std::remove_cv_t<std::remove_reference_t<T>>;
++
+ }  // namespace internal
+ 
+ // base::Optional is a Chromium version of the C++17 optional class:
+@@ -366,6 +370,13 @@ struct IsConvertibleFromOptional
+ // - 'constexpr' might be missing in some places for reasons specified locally.
+ // - No exceptions are thrown, because they are banned from Chromium.
+ // - All the non-members are in the 'base' namespace instead of 'std'.
++//
++// Note that T cannot have a constructor T(Optional<T>) etc. Optional<T> checks
++// T's constructor (specifically via IsConvertibleFromOptional), and in the
++// check whether T can be constructible from Optional<T>, which is recursive
++// so it does not work. As of Feb 2018, std::optional C++17 implementation in
++// both clang and gcc has same limitation. MSVC SFINAE looks to have different
++// behavior, but anyway it reports an error, too.
+ template <typename T>
+ class Optional
+     : public internal::OptionalBase<T>,
+@@ -425,12 +436,6 @@ class Optional
+   explicit Optional(Optional<U>&& other)
+       : internal::OptionalBase<T>(std::move(other)) {}
+ 
+-  constexpr Optional(const T& value)
+-      : internal::OptionalBase<T>(in_place, value) {}
+-
+-  constexpr Optional(T&& value)
+-      : internal::OptionalBase<T>(in_place, std::move(value)) {}
+-
+   template <class... Args>
+   constexpr explicit Optional(in_place_t, Args&&... args)
+       : internal::OptionalBase<T>(in_place, std::forward<Args>(args)...) {}
+@@ -446,6 +451,30 @@ class Optional
+                               Args&&... args)
+       : internal::OptionalBase<T>(in_place, il, std::forward<Args>(args)...) {}
+ 
++  // Forward value constructor. Similar to converting constructors,
++  // conditionally explicit.
++  template <
++      typename U = value_type,
++      std::enable_if_t<
++          std::is_constructible<T, U&&>::value &&
++              !std::is_same<internal::RemoveCvRefT<U>, in_place_t>::value &&
++              !std::is_same<internal::RemoveCvRefT<U>, Optional<T>>::value &&
++              std::is_convertible<U&&, T>::value,
++          bool> = false>
++  constexpr Optional(U&& value)
++      : internal::OptionalBase<T>(in_place, std::forward<U>(value)) {}
++
++  template <
++      typename U = value_type,
++      std::enable_if_t<
++          std::is_constructible<T, U&&>::value &&
++              !std::is_same<internal::RemoveCvRefT<U>, in_place_t>::value &&
++              !std::is_same<internal::RemoveCvRefT<U>, Optional<T>>::value &&
++              !std::is_convertible<U&&, T>::value,
++          bool> = false>
++  constexpr explicit Optional(U&& value)
++      : internal::OptionalBase<T>(in_place, std::forward<U>(value)) {}
++
+   ~Optional() = default;
+ 
+   // Defer copy-/move- assign operator implementation to OptionalBase.
+diff --git a/base/optional_unittest.cc b/base/optional_unittest.cc
+index da3ac2da94..b098c0eef6 100644
+--- a/base/optional_unittest.cc
++++ b/base/optional_unittest.cc
+@@ -465,6 +465,83 @@ TEST(OptionalTest, ConstructorForwardInitListAndArguments) {
+   }
+ }
+ 
++TEST(OptionalTest, ForwardConstructor) {
++  {
++    Optional<double> a(1);
++    EXPECT_TRUE(a.has_value());
++    EXPECT_EQ(1.0, a.value());
++  }
++
++  // Test that default type of 'U' is value_type.
++  {
++    struct TestData {
++      int a;
++      double b;
++      bool c;
++    };
++
++    Optional<TestData> a({1, 2.0, true});
++    EXPECT_TRUE(a.has_value());
++    EXPECT_EQ(1, a->a);
++    EXPECT_EQ(2.0, a->b);
++    EXPECT_TRUE(a->c);
++  }
++
++  // If T has a constructor with a param Optional<U>, and another ctor with a
++  // param U, then T(Optional<U>) should be used for Optional<T>(Optional<U>)
++  // constructor.
++  {
++    enum class ParamType {
++      DEFAULT_CONSTRUCTED,
++      COPY_CONSTRUCTED,
++      MOVE_CONSTRUCTED,
++      INT,
++      IN_PLACE,
++      OPTIONAL_INT,
++    };
++    struct Test {
++      Test() : param_type(ParamType::DEFAULT_CONSTRUCTED) {}
++      Test(const Test& param) : param_type(ParamType::COPY_CONSTRUCTED) {}
++      Test(Test&& param) : param_type(ParamType::MOVE_CONSTRUCTED) {}
++      explicit Test(int param) : param_type(ParamType::INT) {}
++      explicit Test(in_place_t param) : param_type(ParamType::IN_PLACE) {}
++      explicit Test(Optional<int> param)
++          : param_type(ParamType::OPTIONAL_INT) {}
++
++      ParamType param_type;
++    };
++
++    // Overload resolution with copy-conversion constructor.
++    {
++      const Optional<int> arg(in_place, 1);
++      Optional<Test> testee(arg);
++      EXPECT_EQ(ParamType::OPTIONAL_INT, testee->param_type);
++    }
++
++    // Overload resolution with move conversion constructor.
++    {
++      Optional<Test> testee(Optional<int>(in_place, 1));
++      EXPECT_EQ(ParamType::OPTIONAL_INT, testee->param_type);
++    }
++
++    // Default constructor should be used.
++    {
++      Optional<Test> testee(in_place);
++      EXPECT_EQ(ParamType::DEFAULT_CONSTRUCTED, testee->param_type);
++    }
++  }
++
++  {
++    struct Test {
++      Test(int a) {}  // NOLINT(runtime/explicit)
++    };
++    // If T is convertible from U, it is not marked as explicit.
++    static_assert(std::is_convertible<int, Test>::value,
++                  "Int should be convertible to Test.");
++    ([](Optional<Test> param) {})(1);
++  }
++}
++
+ TEST(OptionalTest, NulloptConstructor) {
+   constexpr Optional<int> a(base::nullopt);
+   EXPECT_FALSE(a);
+-- 
+2.14.3
+

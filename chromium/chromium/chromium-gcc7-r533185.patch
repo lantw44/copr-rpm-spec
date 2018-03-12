@@ -1,0 +1,208 @@
+From d39417a581d92178fea880cc5e4768e17db265f9 Mon Sep 17 00:00:00 2001
+From: Hidehiko Abe <hidehiko@chromium.org>
+Date: Wed, 31 Jan 2018 03:22:42 +0000
+Subject: [PATCH] Implement converting constructors from Optional<U>.
+
+BUG=784732
+TEST=Ran trybot.
+
+Change-Id: Icbb9c5596b045ca0c684cdad0343a2605d00dbb1
+Reviewed-on: https://chromium-review.googlesource.com/856296
+Reviewed-by: danakj <danakj@chromium.org>
+Commit-Queue: Hidehiko Abe <hidehiko@chromium.org>
+Cr-Commit-Position: refs/heads/master@{#533185}
+---
+ base/optional.h           | 78 ++++++++++++++++++++++++++++++++++++++++++++++-
+ base/optional_unittest.cc | 59 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 136 insertions(+), 1 deletion(-)
+
+diff --git a/base/optional.h b/base/optional.h
+index dc77539087..8e56ca640b 100644
+--- a/base/optional.h
++++ b/base/optional.h
+@@ -30,6 +30,10 @@ constexpr in_place_t in_place = {};
+ // http://en.cppreference.com/w/cpp/utility/optional/nullopt
+ constexpr nullopt_t nullopt(0);
+ 
++// Forward declaration, which is refered by following helpers.
++template <typename T>
++class Optional;
++
+ namespace internal {
+ 
+ template <typename T, bool = std::is_trivially_destructible<T>::value>
+@@ -219,6 +223,19 @@ class OptionalBase {
+   constexpr explicit OptionalBase(in_place_t, Args&&... args)
+       : storage_(in_place, std::forward<Args>(args)...) {}
+ 
++  // Implementation of converting constructors.
++  template <typename U>
++  explicit OptionalBase(const OptionalBase<U>& other) {
++    if (other.storage_.is_populated_)
++      storage_.Init(other.storage_.value_);
++  }
++
++  template <typename U>
++  explicit OptionalBase(OptionalBase<U>&& other) {
++    if (other.storage_.is_populated_)
++      storage_.Init(std::move(other.storage_.value_));
++  }
++
+   ~OptionalBase() = default;
+ 
+   OptionalBase& operator=(const OptionalBase& other) {
+@@ -262,6 +279,11 @@ class OptionalBase {
+     storage_.is_populated_ = false;
+   }
+ 
++  // For implementing conversion, allow access to other typed OptionalBase
++  // class.
++  template <typename U>
++  friend class OptionalBase;
++
+   OptionalStorage<T> storage_;
+ };
+ 
+@@ -317,6 +339,20 @@ struct MoveAssignable<false> {
+   MoveAssignable& operator=(MoveAssignable&&) = delete;
+ };
+ 
++// Helper to conditionally enable converting constructors.
++template <typename T, typename U>
++struct IsConvertibleFromOptional
++    : std::integral_constant<
++          bool,
++          std::is_constructible<T, Optional<U>&>::value ||
++              std::is_constructible<T, const Optional<U>&>::value ||
++              std::is_constructible<T, Optional<U>&&>::value ||
++              std::is_constructible<T, const Optional<U>&&>::value ||
++              std::is_convertible<Optional<U>&, T>::value ||
++              std::is_convertible<const Optional<U>&, T>::value ||
++              std::is_convertible<Optional<U>&&, T>::value ||
++              std::is_convertible<const Optional<U>&&, T>::value> {};
++
+ }  // namespace internal
+ 
+ // base::Optional is a Chromium version of the C++17 optional class:
+@@ -347,7 +383,47 @@ class Optional
+   constexpr Optional(const Optional& other) = default;
+   constexpr Optional(Optional&& other) = default;
+ 
+-  constexpr Optional(nullopt_t) {}
++  constexpr Optional(nullopt_t) {}  // NOLINT(runtime/explicit)
++
++  // Converting copy constructor. "explicit" only if
++  // std::is_convertible<const U&, T>::value is false. It is implemented by
++  // declaring two almost same constructors, but that condition in enable_if_t
++  // is different, so that either one is chosen, thanks to SFINAE.
++  template <
++      typename U,
++      std::enable_if_t<std::is_constructible<T, const U&>::value &&
++                           !internal::IsConvertibleFromOptional<T, U>::value &&
++                           std::is_convertible<const U&, T>::value,
++                       bool> = false>
++  Optional(const Optional<U>& other) : internal::OptionalBase<T>(other) {}
++
++  template <
++      typename U,
++      std::enable_if_t<std::is_constructible<T, const U&>::value &&
++                           !internal::IsConvertibleFromOptional<T, U>::value &&
++                           !std::is_convertible<const U&, T>::value,
++                       bool> = false>
++  explicit Optional(const Optional<U>& other)
++      : internal::OptionalBase<T>(other) {}
++
++  // Converting move constructor. Similar to converting copy constructor,
++  // declaring two (explicit and non-explicit) constructors.
++  template <
++      typename U,
++      std::enable_if_t<std::is_constructible<T, U&&>::value &&
++                           !internal::IsConvertibleFromOptional<T, U>::value &&
++                           std::is_convertible<U&&, T>::value,
++                       bool> = false>
++  Optional(Optional<U>&& other) : internal::OptionalBase<T>(std::move(other)) {}
++
++  template <
++      typename U,
++      std::enable_if_t<std::is_constructible<T, U&&>::value &&
++                           !internal::IsConvertibleFromOptional<T, U>::value &&
++                           !std::is_convertible<U&&, T>::value,
++                       bool> = false>
++  explicit Optional(Optional<U>&& other)
++      : internal::OptionalBase<T>(std::move(other)) {}
+ 
+   constexpr Optional(const T& value)
+       : internal::OptionalBase<T>(in_place, value) {}
+diff --git a/base/optional_unittest.cc b/base/optional_unittest.cc
+index 09f3106bfa..da3ac2da94 100644
+--- a/base/optional_unittest.cc
++++ b/base/optional_unittest.cc
+@@ -364,6 +364,65 @@ TEST(OptionalTest, MoveValueConstructor) {
+   }
+ }
+ 
++TEST(OptionalTest, ConvertingCopyConstructor) {
++  {
++    Optional<int> first(1);
++    Optional<double> second(first);
++    EXPECT_TRUE(second.has_value());
++    EXPECT_EQ(1.0, second.value());
++  }
++
++  // Make sure explicit is not marked for convertible case.
++  {
++    Optional<int> o(1);
++    ignore_result<Optional<double>>(o);
++  }
++}
++
++TEST(OptionalTest, ConvertingMoveConstructor) {
++  {
++    Optional<int> first(1);
++    Optional<double> second(std::move(first));
++    EXPECT_TRUE(second.has_value());
++    EXPECT_EQ(1.0, second.value());
++  }
++
++  // Make sure explicit is not marked for convertible case.
++  {
++    Optional<int> o(1);
++    ignore_result<Optional<double>>(std::move(o));
++  }
++
++  {
++    class Test1 {
++     public:
++      explicit Test1(int foo) : foo_(foo) {}
++
++      int foo() const { return foo_; }
++
++     private:
++      int foo_;
++    };
++
++    // Not copyable but convertible from Test1.
++    class Test2 {
++     public:
++      Test2(const Test2&) = delete;
++      explicit Test2(Test1&& other) : bar_(other.foo()) {}
++
++      double bar() const { return bar_; }
++
++     private:
++      double bar_;
++    };
++
++    Optional<Test1> first(in_place, 42);
++    Optional<Test2> second(std::move(first));
++    EXPECT_TRUE(second.has_value());
++    EXPECT_EQ(42.0, second->bar());
++  }
++}
++
+ TEST(OptionalTest, ConstructorForwardArguments) {
+   {
+     constexpr Optional<float> a(base::in_place, 0.1f);
+-- 
+2.14.3
+
