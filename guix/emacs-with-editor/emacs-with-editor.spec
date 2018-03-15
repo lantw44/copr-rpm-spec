@@ -2,19 +2,17 @@
 %global pkgname With-Editor
 
 Name:           emacs-%{pkg}
-Version:        2.7.0
-Release:        3%{?dist}
+Version:        2.7.1
+Release:        1%{?dist}
 Summary:        Use the Emacsclient as the editor of child processes
 
-Group:          Applications/Editors
 License:        GPLv3+
 URL:            https://magit.vc
 Source0:        https://github.com/magit/with-editor/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
-BuildRequires:  emacs, emacs-dash, texinfo
+BuildRequires:  emacs, texinfo
 Requires:       emacs(bin) >= %{_emacs_version}
-Requires:       emacs-dash
 
 %description
 %{pkgname} is an add-on package for GNU Emacs. It makes it easy to use the
@@ -27,16 +25,16 @@ call home.
 
 
 %build
-%make_build MAKEINFO='makeinfo --no-split' INSTALL_INFO='true' \
-    EFLAGS='-L %{_emacs_sitelispdir}/dash' all
+%make_build
 
 
 %install
-mkdir -p %{buildroot}%{_emacs_sitelispdir}
+mkdir -p %{buildroot}%{_emacs_sitelispdir} %{buildroot}%{_emacs_sitestartdir}
 install -m 755 -d %{buildroot}%{_emacs_sitelispdir}/with-editor
-install -m 644 with-editor.el \
+install -m 644 with-editor.el with-editor.elc \
     %{buildroot}%{_emacs_sitelispdir}/with-editor/
-%{_emacs_bytecompile} %{buildroot}%{_emacs_sitelispdir}/with-editor/with-editor*.el
+install -m 644 with-editor-autoloads.el \
+    %{buildroot}%{_emacs_sitestartdir}/with-editor.el
 mkdir -p %{buildroot}%{_infodir}
 gzip -9 < with-editor.info > %{buildroot}%{_infodir}/with-editor.info.gz
 
@@ -57,11 +55,17 @@ fi
 %dir %{_emacs_sitelispdir}/with-editor
 %{_emacs_sitelispdir}/with-editor/with-editor.el
 %{_emacs_sitelispdir}/with-editor/with-editor.elc
+%{_emacs_sitestartdir}/with-editor.el
 %{_infodir}/with-editor.info.gz
 
 
 
 %changelog
+* Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.7.1-1
+- Update to 2.7.1
+- Install the generated autoloads file
+- Remove group tag because it is deprecated in Fedora
+
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.7.0-3
 - Use autosetup and make_build macros
 - Rename the source tarball
