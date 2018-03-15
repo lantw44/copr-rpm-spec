@@ -30,12 +30,11 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    7.3.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
 
-Group:      Development/Languages
 License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
 URL:        https://gcc.gnu.org
 Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
@@ -91,13 +90,15 @@ export WINDRES_FOR_TARGET=%{_bindir}/%{cross_triplet}-windres
 export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
 %global _configure ../gcc-%{version}/configure
 %global _program_prefix %{cross_triplet}-
+%global _hardening_ldflags \\\
+    %(echo "%{_hardening_ldflags}" | sed -e 's/-specs=[^ ]*//g')
 %global __global_ldflags \\\
     %(echo "%{__global_ldflags}" | \\\
         sed -e 's/-specs=[^ ]*//g' -e 's/-Wl,-z,defs *//g')
 %global optflags \\\
     %(echo "%{optflags}" | \\\
         sed -e 's/-m[^ ]*//g' -e 's/-specs=[^ ]*//g' -e 's/-Werror=[^ ]*//g' \\\
-            -e 's/-fstack-clash-protection *//g')
+            -e 's/-fstack-clash-protection *//g' -e 's/-fcf-protection *//g')
 # GCC doesn't build without dependency tracking
 # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55930
 %configure \
@@ -364,6 +365,11 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 7.3.0-2
+- Remove -fcf-protection from compiler flags because it needs -m options
+- Remove -specs from _hardening_ldflags because it is now used directly
+- Remove group tag because it is deprecated in Fedora
+
 * Thu Jan 25 2018 Ting-Wei Lan <lantw44@gmail.com> - 7.3.0-1
 - Update to new stable release 7.3.0
 - Remove -fstack-clash-protection from compiler flags to fix Fortran build
