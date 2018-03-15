@@ -13,19 +13,19 @@
 
 Name:           emacs-%{pkg}
 Version:        2.11.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Emacs interface to the most common Git operations
 
-Group:          Applications/Editors
 License:        GPLv3+
 URL:            https://magit.vc
 
 Source0:        https://github.com/magit/magit/releases/download/%{version}/magit-%{version}.tar.gz
 
 BuildArch:      noarch
-BuildRequires:  emacs, emacs-dash, emacs-with-editor, git-core, texinfo
+BuildRequires:  emacs, git-core, texinfo
+BuildRequires:  emacs-dash, emacs-ghub, emacs-magit-popup, emacs-with-editor
 Requires:       emacs(bin) >= %{emacs_version}
-Requires:       emacs-dash, emacs-with-editor
+Requires:       emacs-dash, emacs-ghub, emacs-magit-popup, emacs-with-editor
 
 Obsoletes:      emacs-%{pkg}-el < 2.3.1-1
 Provides:       emacs-%{pkg}-el < 2.3.1-1
@@ -40,31 +40,29 @@ common operations convenient.
 
 %build
 %make_build \
-    MAKEINFO='makeinfo --no-split' \
-    LOAD_PATH='-L %{emacs_lispdir}/dash -L %{emacs_lispdir}/with-editor -L %{_builddir}/magit-%{version}/lisp -L .'
+    DASH_DIR=%{emacs_lispdir}/dash \
+    GHUB_DIR=%{emacs_lispdir}/ghub \
+    MAGIT_POPUP_DIR=%{emacs_lispdir}/magit-popup \
+    WITH_EDITOR_DIR=%{emacs_lispdir}/with-editor
 
 %install
-%make_install \
-    PREFIX=%{_prefix} docdir=%{_pkgdocdir} \
-    LOAD_PATH='-L %{emacs_lispdir}/dash -L %{emacs_lispdir}/with-editor -L %{_builddir}/magit-%{version}/lisp -L .'
+%make_install PREFIX=%{_prefix} docdir=%{_pkgdocdir}
 
 # clean up after magit's installer's assumptions
 mkdir -p $RPM_BUILD_ROOT%{emacs_startdir}
 mv $RPM_BUILD_ROOT%{emacs_lispdir}/magit/magit-autoloads.el \
     $RPM_BUILD_ROOT%{emacs_startdir}/emacs-magit-mode.el
 gzip -9 $RPM_BUILD_ROOT%{_infodir}/magit.info
-gzip -9 $RPM_BUILD_ROOT%{_infodir}/magit-popup.info
+rm $RPM_BUILD_ROOT%{_infodir}/magit-popup.info
 
 
 %post
 /sbin/install-info /usr/share/info/magit.info.gz /usr/share/info/dir
-/sbin/install-info /usr/share/info/magit-popup.info.gz /usr/share/info/dir
 
 
 %preun
 if [ "$1" = 0 ]; then
     /sbin/install-info --delete /usr/share/info/magit.info.gz /usr/share/info/dir
-    /sbin/install-info --delete /usr/share/info/magit-popup.info.gz /usr/share/info/dir
 fi
 
 
@@ -75,12 +73,16 @@ fi
 %{emacs_lispdir}/%{pkg}/*.elc
 %{emacs_startdir}/emacs-magit-mode.el
 %{_infodir}/magit.info.gz
-%{_infodir}/magit-popup.info.gz
 %dir %{emacs_lispdir}/%{pkg}
 %{_pkgdocdir}/AUTHORS.md
 
 
 %changelog
+* Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.11.0-4
+- Add dependency on emacs-ghub and emacs-magit-popup
+- Remove magit-popup.info because it is already provided by emacs-magit-popup
+- Remove group tag because it is deprecated in Fedora
+
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 2.11.0-3
 - Use autosetup and make_build macros
 - Replace define with global
