@@ -2,11 +2,10 @@
 %global pkgname Guix
 
 Name:           emacs-%{pkg}
-Version:        0.3.3
-Release:        2%{?dist}
+Version:        0.3.4
+Release:        1%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
-Group:          Applications/Editors
 License:        GPLv3+
 URL:            https://alezost.github.io/guix.el
 Source0:        https://github.com/alezost/guix.el/releases/download/v%{version}/%{name}-%{version}.tar.gz
@@ -95,6 +94,10 @@ fi
 
 
 %changelog
+* Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.3.4-1
+- Update to 0.3.4
+- Remove group tag because it is deprecated in Fedora
+
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.3.3-2
 - Use autosetup and make_build macros
 
