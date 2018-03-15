@@ -3,10 +3,9 @@
 
 Name:           emacs-%{pkg}
 Version:        1.1.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Buffer interface library for Emacs
 
-Group:          Applications/Editors
 License:        GPLv3+
 URL:            https://github.com/alezost/bui.el
 Source0:        https://github.com/alezost/bui.el/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
@@ -49,6 +48,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/bui/
 
 
 %changelog
+* Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-5
+- Remove group tag because it is deprecated in Fedora
+
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-4
 - Use autosetup macro
 - Rename the source tarball

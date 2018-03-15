@@ -8,10 +8,9 @@
 
 Name:       %{cross_triplet}-binutils
 Version:    2.30
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
-Group:      Development/Tools
 License:    GPLv3+
 URL:        https://www.gnu.org/software/binutils
 Source0:    https://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
@@ -89,6 +88,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.30-2
+- Remove group tag because it is deprecated in Fedora
+
 * Sun Jan 28 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.30-1
 - Update to 2.30
 

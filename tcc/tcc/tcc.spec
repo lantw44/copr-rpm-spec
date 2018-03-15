@@ -12,10 +12,9 @@
 
 Name:       %{pkg_fullname}
 Version:    0.9.26
-Release:    14%{?dist}
+Release:    15%{?dist}
 Summary:    Tiny C Compiler
 
-Group:      Development/Languages
 License:    LGPLv2
 URL:        https://bellard.org/tcc
 Source0:    https://download.savannah.gnu.org/releases/tinycc/%{pkg_name}-%{version}.tar.bz2
@@ -103,6 +102,9 @@ fi
 %doc Changelog README TODO VERSION tcc-doc.html
 
 %changelog
+* Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-15
+- Remove group tag because it is deprecated in Fedora
+
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-14
 - Use autosetup, make_build, make_install macros
 - Use HTTPS to download the source

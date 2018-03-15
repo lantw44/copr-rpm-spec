@@ -1,9 +1,8 @@
 Name:       yafu
 Version:    1.34
-Release:    11%{?dist}
+Release:    12%{?dist}
 Summary:    Automated integer factorization
 
-Group:      Applications/Engineering
 License:    Public Domain
 URL:        https://sourceforge.net/projects/yafu
 Source0:    https://downloads.sourceforge.net/project/yafu/%{version}/%{name}-%{version}-src.zip
@@ -46,6 +45,9 @@ install -m 755 yafu %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.34-12
+- Remove group tag because it is deprecated in Fedora
+
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 1.34-11
 - Use autosetup and make_build macros
 

@@ -3,10 +3,9 @@
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.12.20161004git%{shortcommit}%{?dist}
+Release:        0.13.20161004git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
-Group:          User Interface/X
 License:        GPLv3+
 URL:            http://lilyterm.luna.com.tw
 Source0:        https://github.com/Tetralet/LilyTerm/archive/%{commit}/LilyTerm-%{commit}.tar.gz
@@ -87,6 +86,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.13.20161004git8df92d6
+- Remove group tag because it is deprecated in Fedora
+
 * Tue Dec 12 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.12.20161004git8df92d6
 - Use make_build and make_install macros
 

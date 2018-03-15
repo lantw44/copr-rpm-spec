@@ -14,10 +14,9 @@
 
 Name:       %{cross_triplet}-filesystem
 Version:    3
-Release:    6%{?dist}
+Release:    7%{?dist}
 Summary:    Cross compilation toolchain filesystem layout (%{cross_triplet})
 
-Group:      Development/System
 License:    Public Domain
 URL:        https://copr.fedoraproject.org/coprs/lantw44/arm-linux-gnueabi-toolchain
 
@@ -84,6 +83,9 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 
 
 %changelog
+* Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 3-7
+- Remove group tag because it is deprecated in Fedora
+
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 3-6
 - Replace define with global
 
