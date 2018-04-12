@@ -8,12 +8,16 @@
 
 Name:           gnome-settings-daemon
 Version:        3.26.2
-Release:        1%{?dist}.1
+Release:        2%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        GPLv2+
 URL:            https://download.gnome.org/sources/%{name}
 Source0:        https://download.gnome.org/sources/%{name}/3.26/%{name}-%{version}.tar.xz
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=1322588
+# https://bugzilla.gnome.org/show_bug.cgi?id=792409
+Patch0: 0001-power-Don-t-react-to-light-changes-if-not-at-console.patch
 
 Patch4:         %{name}-3.24-respect-menus-buttons-icons.patch
 
@@ -220,6 +224,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/gsd-test-input-helper
 
 %changelog
+* Fri Jan 12 2018 Bastien Nocera <bnocera@redhat.com> - 3.26.2-2
+- Fix gdm session trying to change the backlight, resulting in a lot
+  of spurious error messages (#1322588)
+
 * Thu Nov 02 2017 Kalev Lember <klember@redhat.com> - 3.26.2-1
 - Update to 3.26.2
 
