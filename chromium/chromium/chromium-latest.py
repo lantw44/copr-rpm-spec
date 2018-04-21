@@ -33,6 +33,7 @@
 #  * xz -9 command is replaced by xz -0 command to reduce memory requirement.
 #  * Function nacl_versions and download_chrome_latest_rpm are removed.
 #  * Switch back to xz -9 but with -T 0 replaced by -T 2.
+#  * Add an option to delete unrar sources.
 
 try:
   import argparse
@@ -233,6 +234,9 @@ if __name__ == '__main__':
   parser_add_argument(
       '--version',
       help='Download a specific version of Chromium')
+  parser_add_argument(
+      '--deleteunrar', action='store_true',
+      help='Delete unrar sources')
 
   # Parse the args
   if optparse:
@@ -294,6 +298,9 @@ if __name__ == '__main__':
     print("Cleaning ffmpeg from proprietary things...")
     os.system("./chromium-ffmpeg-clean.sh %s %d" % (latest_dir, 0 if args.ffmpegarm else 1))
     print "Done!"
+
+  if (args.deleteunrar):
+    delete_chromium_dir('third_party/unrar')
 
   if (not args.prep):
     print "Compressing cleaned tree, please wait..."

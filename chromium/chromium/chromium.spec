@@ -58,7 +58,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    65.0.3325.181
+Version:    66.0.3359.117
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -78,11 +78,16 @@ URL:        https://www.chromium.org/Home
 # Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/chromium-%{version}.tar.xz
 #
 # The repackaged source tarball used here is produced by:
-# ./chromium-latest.py --stable --ffmpegclean --ffmpegarm
+# ./chromium-latest.py --stable --ffmpegclean --ffmpegarm --deleteunrar
 Source0:    chromium-%{version}-clean.tar.xz
 Source1:    chromium-latest.py
 Source2:    chromium-ffmpeg-clean.sh
 Source3:    chromium-ffmpeg-free-sources.py
+
+# Upstream source tarball include an empty third_party/blink/tools/blinkpy/common directory
+# https://git.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=cfc1a07
+# https://bugs.chromium.org/p/chromium/issues/detail?id=832283
+Source4:    https://chromium.googlesource.com/chromium/src/+archive/%{version}/third_party/blink/tools/blinkpy/common.tar.gz#/%{name}-%{version}-third_party-blink-tools-blinkpy-common.tar.gz
 
 # The following two source files are copied and modified from
 # https://repos.fedorapeople.org/repos/spot/chromium/
@@ -98,27 +103,13 @@ Source13:   chromium-browser.appdata.xml
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=0df9641
 Patch10:    chromium-last-commit-position.patch
 
-# Add two patches from Gentoo to add the missing includes
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=1b8e99b
-Patch20:    chromium-stdint.patch
-Patch21:    chromium-math.patch
+# Disable non-free unrar
+Patch20:    chromium-disable-unrar.patch
 
-# Add a lot of patches from upstream to fix build on Fedora 26
-Patch50:    chromium-gcc7-r530663.patch
-Patch51:    chromium-gcc7-r531722.patch
-Patch52:    chromium-gcc7-r532004.patch
-Patch53:    chromium-gcc7-r532865.patch
-Patch54:    chromium-gcc7-r533126.patch
-Patch55:    chromium-gcc7-r533185.patch
-Patch56:    chromium-gcc7-r538032.patch
-Patch57:    chromium-gcc7-r538699.patch
-Patch58:    chromium-gcc7-r538717.patch
-Patch59:    chromium-gcc7-r538740.patch
-Patch60:    chromium-gcc7-r539012.patch
-Patch61:    chromium-gcc7-r540815.patch
-Patch62:    chromium-gcc7-r541029.patch
-Patch63:    chromium-gcc7-r541516.patch
-Patch64:    chromium-gcc7-r541827.patch
+# Add patches from upstream to fix build with GCC
+Patch50:    chromium-gcc7-r540828.patch
+Patch51:    chromium-gcc7-r541029.patch
+Patch52:    chromium-gcc7-r541827.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -218,11 +209,19 @@ Conflicts:     chromedriver-unstable
 %global chromiumdir %{_libdir}/chromium-browser
 %global __provides_exclude_from ^%{chromiumdir}/.*$
 
+%if !%{with symbol}
+%global debug_package %{nil}
+%endif
+
 %description
 
 
 %prep
 %autosetup -p1
+
+# Add missing source files from a git checkout
+tar -xf %{SOURCE4} -C third_party/blink/tools/blinkpy/common
+touch third_party/blink/tools/blinkpy/__init__.py
 
 ./build/linux/unbundle/remove_bundled_libraries.py --do-remove \
     base/third_party/dmg_fp \
@@ -235,6 +234,8 @@ Conflicts:     chromedriver-unstable
     base/third_party/valgrind \
     base/third_party/xdg_mime \
     base/third_party/xdg_user_dirs \
+    buildtools/third_party/libc++ \
+    buildtools/third_party/libc++abi \
     chrome/third_party/mozilla_security_manager \
     courgette/third_party \
     native_client/src/third_party/dlmalloc \
@@ -249,6 +250,10 @@ Conflicts:     chromedriver-unstable
     third_party/angle/src/third_party/compiler \
     third_party/angle/src/third_party/libXNVCtrl \
     third_party/angle/src/third_party/trace_event \
+    third_party/angle/third_party/glslang \
+    third_party/angle/third_party/spirv-headers \
+    third_party/angle/third_party/spirv-tools \
+    third_party/angle/third_party/vulkan-validation-layers \
     third_party/boringssl \
     third_party/boringssl/src/third_party/fiat \
     third_party/blink \
@@ -299,6 +304,7 @@ Conflicts:     chromedriver-unstable
     third_party/leveldatabase \
     third_party/libaddressinput \
     third_party/libaom \
+    third_party/libaom/source/libaom/third_party/x86inc \
     third_party/libjingle \
     third_party/libphonenumber \
     third_party/libsecret \
@@ -321,7 +327,6 @@ Conflicts:     chromedriver-unstable
     third_party/mesa \
     third_party/metrics_proto \
     third_party/modp_b64 \
-    third_party/mt19937ar \
     third_party/node \
     third_party/node/node_modules/polymer-bundler/lib/third_party/UglifyJS2 \
     third_party/openh264 \
@@ -331,12 +336,12 @@ Conflicts:     chromedriver-unstable
     third_party/pdfium/third_party/agg23 \
     third_party/pdfium/third_party/base \
     third_party/pdfium/third_party/bigint \
-    third_party/pdfium/third_party/build \
     third_party/pdfium/third_party/freetype \
     third_party/pdfium/third_party/lcms \
     third_party/pdfium/third_party/libopenjpeg20 \
     third_party/pdfium/third_party/libpng16 \
     third_party/pdfium/third_party/libtiff \
+    third_party/pdfium/third_party/skia_shared \
 %if !%{with system_ply}
     third_party/ply \
 %endif
@@ -606,12 +611,17 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %dir %{chromiumdir}/swiftshader
 %{chromiumdir}/swiftshader/libEGL.so
 %{chromiumdir}/swiftshader/libGLESv2.so
-%license LICENSE
-%doc AUTHORS
 
 
 
 %changelog
+* Wed Apr 18 2018 - Ting-Wei Lan <lantw44@gmail.com> - 66.0.3359.117-100
+- Update to 66.0.3359.117
+- Workaround empty third_party/blink/tools/blinkpy/common directory
+- Disable debuginfo package when debug symbols are disabled
+- Remove duplicate items in files section
+- Remove unrar sources
+
 * Wed Mar 21 2018 - Ting-Wei Lan <lantw44@gmail.com> - 65.0.3325.181-100
 - Update to 65.0.3325.181
 

@@ -307,7 +307,6 @@ other_files="	BUILD.gn \
 		CREDITS.chromium \
 		ffmpeg_generated.gni \
 		ffmpeg_options.gni \
-		ffmpegsumo.ver \
 		INSTALL.md \
 		LICENSE.md \
 		MAINTAINERS \

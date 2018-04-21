@@ -28,6 +28,7 @@ Cr-Commit-Position: refs/heads/master@{#541029}
 ---
  content/browser/appcache/appcache_request_handler.cc                  | 2 +-
  .../service_worker/service_worker_controllee_request_handler.cc       | 2 +-
+ device/fido/device_response_converter.cc                              | 4 ++--
  3 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/content/browser/appcache/appcache_request_handler.cc b/content/browser/appcache/appcache_request_handler.cc
@@ -56,3 +57,28 @@ index 2ed0c353cad3..5b09f6d670c4 100644
  }
  
  void ServiceWorkerControlleeRequestHandler::PrepareForMainResource(
+diff --git a/device/fido/device_response_converter.cc b/device/fido/device_response_converter.cc
+index 050ff2fc5d10..096f9f44872b 100644
+--- a/device/fido/device_response_converter.cc
++++ b/device/fido/device_response_converter.cc
+@@ -121,7 +121,7 @@ base::Optional<AuthenticatorGetAssertionResponse> ReadCTAPGetAssertionResponse(
+     response.SetNumCredentials(it->second.GetUnsigned());
+   }
+ 
+-  return response;
++  return base::Optional<AuthenticatorGetAssertionResponse>(std::move(response));
+ }
+ 
+ base::Optional<AuthenticatorGetInfoResponse> ReadCTAPGetInfoResponse(
+@@ -241,7 +241,7 @@ base::Optional<AuthenticatorGetInfoResponse> ReadCTAPGetInfoResponse(
+     response.SetPinProtocols(std::move(supported_pin_protocols));
+   }
+ 
+-  return response;
++  return base::Optional<AuthenticatorGetInfoResponse>(std::move(response));
+ }
+ 
+ }  // namespace device
+-- 
+2.14.3
+
