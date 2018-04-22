@@ -59,7 +59,7 @@
 
 Name:       chromium
 Version:    66.0.3359.117
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -106,10 +106,17 @@ Patch10:    chromium-last-commit-position.patch
 # Disable non-free unrar
 Patch20:    chromium-disable-unrar.patch
 
+# Add a patch from Fedora to fix build with GCC 8
+# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=8cfa28d
+# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=61203bf
+Patch30:    chromium-mojo-gcc8.patch
+
 # Add patches from upstream to fix build with GCC
-Patch50:    chromium-gcc7-r540828.patch
-Patch51:    chromium-gcc7-r541029.patch
-Patch52:    chromium-gcc7-r541827.patch
+Patch50:    chromium-gcc7-r540815.patch
+Patch51:    chromium-gcc7-r540828.patch
+Patch52:    chromium-gcc7-r541029.patch
+Patch53:    chromium-gcc7-r541516.patch
+Patch54:    chromium-gcc7-r541827.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -615,6 +622,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Apr 21 2018 - Ting-Wei Lan <lantw44@gmail.com> - 66.0.3359.117-101
+- Import patches from upstream to fix build on Fedora 26
+- Import patches from Fedora to fix build on Fedora 28
+
 * Wed Apr 18 2018 - Ting-Wei Lan <lantw44@gmail.com> - 66.0.3359.117-100
 - Update to 66.0.3359.117
 - Workaround empty third_party/blink/tools/blinkpy/common directory
