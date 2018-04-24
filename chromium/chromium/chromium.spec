@@ -59,7 +59,7 @@
 
 Name:       chromium
 Version:    66.0.3359.117
-Release:    101%{?dist}
+Release:    102%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -550,7 +550,7 @@ install -m 755 out/Release/nacl_helper %{buildroot}%{chromiumdir}/
 install -m 755 out/Release/nacl_helper_bootstrap %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/nacl_irt_x86_64.nexe %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/natives_blob.bin %{buildroot}%{chromiumdir}/
-install -m 644 out/Release/snapshot_blob.bin %{buildroot}%{chromiumdir}/
+install -m 644 out/Release/v8_context_snapshot.bin %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/*.pak %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/locales/*.pak %{buildroot}%{chromiumdir}/locales/
 install -m 755 out/Release/swiftshader/*.so %{buildroot}%{chromiumdir}/swiftshader/
@@ -611,7 +611,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/nacl_helper_bootstrap
 %{chromiumdir}/nacl_irt_x86_64.nexe
 %{chromiumdir}/natives_blob.bin
-%{chromiumdir}/snapshot_blob.bin
+%{chromiumdir}/v8_context_snapshot.bin
 %{chromiumdir}/*.pak
 %dir %{chromiumdir}/locales
 %{chromiumdir}/locales/*.pak
@@ -622,6 +622,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon Apr 23 2018 - Ting-Wei Lan <lantw44@gmail.com> - 66.0.3359.117-102
+- Fix crash by replacing snapshot_blob.bin with v8_context_snapshot.bin
+
 * Sat Apr 21 2018 - Ting-Wei Lan <lantw44@gmail.com> - 66.0.3359.117-101
 - Import patches from upstream to fix build on Fedora 26
 - Import patches from Fedora to fix build on Fedora 28
