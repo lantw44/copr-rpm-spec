@@ -59,7 +59,7 @@
 
 Name:       chromium
 Version:    66.0.3359.117
-Release:    102%{?dist}
+Release:    103%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -392,6 +392,9 @@ touch third_party/blink/tools/blinkpy/__init__.py
     flac \
     freetype \
     fontconfig \
+%if %{with system_harfbuzz}
+    harfbuzz-ng \
+%endif
 %if %{with system_libicu}
     icu \
 %endif
@@ -622,6 +625,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Apr 26 2018 - Ting-Wei Lan <lantw44@gmail.com> - 66.0.3359.117-103
+- Add harfbuzz back to the list of replace_gn_files
+
 * Mon Apr 23 2018 - Ting-Wei Lan <lantw44@gmail.com> - 66.0.3359.117-102
 - Fix crash by replacing snapshot_blob.bin with v8_context_snapshot.bin
 
