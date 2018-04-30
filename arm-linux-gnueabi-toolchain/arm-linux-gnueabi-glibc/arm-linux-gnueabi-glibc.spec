@@ -6,6 +6,14 @@
 %global _find_debuginfo_opts --build-id-seed "%{name}-%{version}-%{release}"
 %endif
 
+%if 0%{?fedora} >= 28
+%global enable_obsolete_rpc  0
+%global enable_obsolete_nsl  0
+%else
+%global enable_obsolete_rpc  1
+%global enable_obsolete_nsl  1
+%endif
+
 %if 0%{?bootstrap:1}
 %global headers_only    1
 %global pkg_suffix      -headers
@@ -48,7 +56,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.27
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -105,8 +113,12 @@ export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
     --enable-shared \
     --enable-add-ons \
     --enable-multi-arch \
+%if %{enable_obsolete_rpc}
     --enable-obsolete-rpc \
+%endif
+%if %{enable_obsolete_nsl}
     --enable-obsolete-nsl \
+%endif
     --enable-stack-protector=strong \
     --enable-tunables \
     --disable-profile \
@@ -300,8 +312,27 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/regex.h
 %{cross_sysroot}/usr/include/regexp.h
 %{cross_sysroot}/usr/include/resolv.h
-%{cross_sysroot}/usr/include/rpc
+%dir %{cross_sysroot}/usr/include/rpc
+%{cross_sysroot}/usr/include/rpc/netdb.h
+%if %{enable_obsolete_rpc}
+%{cross_sysroot}/usr/include/rpc/auth_des.h
+%{cross_sysroot}/usr/include/rpc/auth.h
+%{cross_sysroot}/usr/include/rpc/auth_unix.h
+%{cross_sysroot}/usr/include/rpc/clnt.h
+%{cross_sysroot}/usr/include/rpc/des_crypt.h
+%{cross_sysroot}/usr/include/rpc/key_prot.h
+%{cross_sysroot}/usr/include/rpc/pmap_clnt.h
+%{cross_sysroot}/usr/include/rpc/pmap_prot.h
+%{cross_sysroot}/usr/include/rpc/pmap_rmt.h
+%{cross_sysroot}/usr/include/rpc/rpc_des.h
+%{cross_sysroot}/usr/include/rpc/rpc.h
+%{cross_sysroot}/usr/include/rpc/rpc_msg.h
+%{cross_sysroot}/usr/include/rpc/svc_auth.h
+%{cross_sysroot}/usr/include/rpc/svc.h
+%{cross_sysroot}/usr/include/rpc/types.h
+%{cross_sysroot}/usr/include/rpc/xdr.h
 %{cross_sysroot}/usr/include/rpcsvc
+%endif
 %{cross_sysroot}/usr/include/sched.h
 %{cross_sysroot}/usr/include/scsi
 %{cross_sysroot}/usr/include/search.h
@@ -466,10 +497,12 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/%{lib_dir_name}/libnss_files.so.2
 %{cross_sysroot}/%{lib_dir_name}/libnss_hesiod-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libnss_hesiod.so.2
+%if %{enable_obsolete_nsl}
 %{cross_sysroot}/%{lib_dir_name}/libnss_nis-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libnss_nis.so.2
 %{cross_sysroot}/%{lib_dir_name}/libnss_nisplus-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libnss_nisplus.so.2
+%endif
 %{cross_sysroot}/%{lib_dir_name}/libpcprofile.so
 %{cross_sysroot}/%{lib_dir_name}/libpthread-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libpthread.so.0
@@ -495,7 +528,9 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/bin/mtrace
 %{cross_sysroot}/usr/bin/pcprofiledump
 %{cross_sysroot}/usr/bin/pldd
+%if %{enable_obsolete_rpc}
 %{cross_sysroot}/usr/bin/rpcgen
+%endif
 %{cross_sysroot}/usr/bin/sotruss
 %{cross_sysroot}/usr/bin/sprof
 %{cross_sysroot}/usr/bin/tzselect
@@ -520,21 +555,27 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/%{lib_dir_name}/libm.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libm.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libmcheck.a
+%if %{enable_obsolete_nsl}
 %{cross_sysroot}/usr/%{lib_dir_name}/libnsl.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libnsl.so
+%endif
 %{cross_sysroot}/usr/%{lib_dir_name}/libnss_compat.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libnss_db.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libnss_dns.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libnss_files.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libnss_hesiod.so
+%if %{enable_obsolete_nsl}
 %{cross_sysroot}/usr/%{lib_dir_name}/libnss_nis.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libnss_nisplus.so
+%endif
 %{cross_sysroot}/usr/%{lib_dir_name}/libpthread.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libpthread.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libpthread_nonshared.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libresolv.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libresolv.so
+%if %{enable_obsolete_rpc}
 %{cross_sysroot}/usr/%{lib_dir_name}/librpcsvc.a
+%endif
 %{cross_sysroot}/usr/%{lib_dir_name}/librt.a
 %{cross_sysroot}/usr/%{lib_dir_name}/librt.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libthread_db.so
@@ -567,6 +608,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Apr 30 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.27-2
+- Disable obsolete Sun RPC and libnsl on Fedora 28 and later
+
 * Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.27-1
 - Update to 2.27
 - Remove -fcf-protection from compiler flags because it needs -m options
