@@ -1,13 +1,13 @@
 diff --git a/plugins/xsettings/gsd-xsettings-manager.c b/plugins/xsettings/gsd-xsettings-manager.c
-index 9835c02..4c25ceb 100644
+index eb55b8b7..3edf0ae1 100644
 --- a/plugins/xsettings/gsd-xsettings-manager.c
 +++ b/plugins/xsettings/gsd-xsettings-manager.c
-@@ -444,6 +444,8 @@ static TranslationEntry translations [] = {
-         { "org.gnome.desktop.interface", "gtk-im-status-style",    "Gtk/IMStatusStyle",       translate_string_string },
+@@ -480,6 +480,8 @@ static TranslationEntry translations [] = {
+         { "org.gnome.desktop.interface", "gtk-theme",              "Net/ThemeName",           translate_string_string },
          { "org.gnome.desktop.interface", "gtk-im-module",          "Gtk/IMModule",            translate_string_string },
          { "org.gnome.desktop.interface", "icon-theme",             "Net/IconThemeName",       translate_string_string },
 +        { "org.gnome.desktop.interface", "menus-have-icons",       "Gtk/MenuImages",          translate_bool_int },
 +        { "org.gnome.desktop.interface", "buttons-have-icons",     "Gtk/ButtonImages",        translate_bool_int },
-         { "org.gnome.desktop.interface", "menubar-accel",          "Gtk/MenuBarAccel",        translate_string_string },
          { "org.gnome.desktop.interface", "cursor-theme",           "Gtk/CursorThemeName",     translate_string_string },
          { "org.gnome.desktop.interface", "gtk-enable-primary-paste", "Gtk/EnablePrimaryPaste", translate_bool_int },
+         /* cursor-size is handled via the Xft side as it needs the scaling factor */

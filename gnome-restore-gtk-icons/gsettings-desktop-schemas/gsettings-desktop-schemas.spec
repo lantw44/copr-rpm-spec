@@ -1,15 +1,15 @@
 %global debug_package %{nil}
 
 Name:           gsettings-desktop-schemas
-Version:        3.24.1
+Version:        3.28.0
 Release:        1%{?dist}.1
 Summary:        A collection of GSettings schemas (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        LGPLv2+
 # no homepage exists for this component
 URL:            http://bugzilla.gnome.org/enter_bug.cgi?product=gsettings-desktop-schemas
-#VCS: git:git://git.gnome.org/gsettings-desktop-schemas
-Source0:        http://download.gnome.org/sources/%{name}/3.24/%{name}-%{version}.tar.xz
+Source0:        http://download.gnome.org/sources/%{name}/3.28/%{name}-%{version}.tar.xz
+
 # revert settings related to icons and buttons
 Patch0:         %{name}-3.24-revert-icons-settings.patch
 
@@ -27,7 +27,7 @@ Requires: glib2 >= 2.31.0
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.26.
+buttons and menus in GNOME 3.28.
 
 gsettings-desktop-schemas contains a collection of GSettings schemas for
 settings shared by various components of a desktop.
@@ -55,14 +55,6 @@ make %{?_smp_mflags}
 
 %find_lang %{name} --with-gnome
 
-%posttrans
-glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
-
-%postun
-if [ $1 -eq 0 ]; then
-  glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
-fi
-
 
 %files -f %{name}.lang
 %doc AUTHORS MAINTAINERS NEWS README
@@ -80,6 +72,25 @@ fi
 
 
 %changelog
+* Mon Mar 12 2018 Kalev Lember <klember@redhat.com> - 3.28.0-1
+- Update to 3.28.0
+
+* Mon Mar 05 2018 Kalev Lember <klember@redhat.com> - 3.27.92-1
+- Update to 3.27.92
+
+* Fri Feb 09 2018 Bastien Nocera <bnocera@redhat.com> - 3.27.90-1
++ gsettings-desktop-schemas-3.27.90-1
+- Update to 3.27.90
+
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.27.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Sat Jan 06 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 3.27.1-2
+- Remove obsolete scriptlets
+
+* Thu Nov 02 2017 Kalev Lember <klember@redhat.com> - 3.27.1-1
+- Update to 3.27.1
+
 * Mon Sep 04 2017 Kalev Lember <klember@redhat.com> - 3.24.1-1
 - Update to 3.24.1
 
