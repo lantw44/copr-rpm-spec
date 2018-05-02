@@ -1,16 +1,16 @@
 %global glib2_version 2.52.0
 %global gtk3_version 3.22.13
-%global webkitgtk4_version 2.17.4
+%global webkit2gtk3_version 2.19.4
 
 Name: epiphany
 Epoch: 1
-Version: 3.26.6
+Version: 3.28.1.1
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv3+ and CC-BY-SA
 URL: https://wiki.gnome.org/Apps/Web
-Source0: https://download.gnome.org/sources/epiphany/3.26/%{name}-%{version}.tar.xz
+Source0: https://download.gnome.org/sources/epiphany/3.28/%{name}-%{version}.tar.xz
 
 # Fedora bookmarks
 Patch0: epiphany-default-bookmarks.patch
@@ -36,6 +36,7 @@ BuildRequires: pkgconfig(gtk+-unix-print-3.0) >= %{gtk3_version}
 BuildRequires: pkgconfig(hogweed)
 BuildRequires: pkgconfig(icu-uc) >= 4.6
 BuildRequires: pkgconfig(json-glib-1.0) >= 1.2.0
+BuildRequires: pkgconfig(libdazzle-1.0)
 BuildRequires: pkgconfig(libnotify) >= 0.5.1
 BuildRequires: pkgconfig(libsecret-1) >= 0.14
 BuildRequires: pkgconfig(libsoup-2.4) >= 2.48.0
@@ -43,17 +44,13 @@ BuildRequires: pkgconfig(libxml-2.0) >= 2.6.12
 BuildRequires: pkgconfig(libxslt) >= 1.1.7
 BuildRequires: pkgconfig(nettle)
 BuildRequires: pkgconfig(sqlite3) >= 3.0
-BuildRequires: pkgconfig(webkit2gtk-4.0) >= %{webkitgtk4_version}
-BuildRequires: pkgconfig(webkit2gtk-web-extension-4.0) >= %{webkitgtk4_version}
+BuildRequires: pkgconfig(webkit2gtk-4.0) >= %{webkit2gtk3_version}
+BuildRequires: pkgconfig(webkit2gtk-web-extension-4.0) >= %{webkit2gtk3_version}
 
 Requires: %{name}-runtime%{?_isa} = %{epoch}:%{version}-%{release}
 
 Requires(post): desktop-file-utils
 Requires(postun): desktop-file-utils
-
-# https://mail.gnome.org/archives/epiphany-list/2012-October/msg00006.html
-Obsoletes: epiphany-extensions < 3.7.0
-Obsoletes: epiphany-devel < 1:3.7.90
 
 %description
 Copr: lantw44/epiphany-reduce-tab-width
@@ -70,7 +67,7 @@ Summary: Epiphany runtime suitable for web applications
 Requires: gsettings-desktop-schemas
 Requires: gtk3%{?_isa} >= %{gtk3_version}
 Requires: iso-codes
-Requires: webkitgtk4%{?_isa} >= %{webkitgtk4_version}
+Requires: webkit2gtk3%{?_isa} >= %{webkit2gtk3_version}
 
 %description runtime
 This package provides a runtime for web applications without actually
@@ -92,16 +89,16 @@ desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 
 %files -f %{name}.lang
 %{_libexecdir}/epiphany-search-provider
-%{_datadir}/appdata/org.gnome.Epiphany.appdata.xml
 %{_datadir}/applications/org.gnome.Epiphany.desktop
 %{_datadir}/dbus-1/services/org.gnome.Epiphany.SearchProvider.service
+%{_datadir}/metainfo/org.gnome.Epiphany.appdata.xml
 %dir %{_datadir}/gnome-shell/
 %dir %{_datadir}/gnome-shell/search-providers/
 %{_datadir}/gnome-shell/search-providers/org.gnome.Epiphany.search-provider.ini
 
 %files runtime
 %license COPYING
-%doc README NEWS AUTHORS
+%doc README NEWS
 %{_datadir}/icons/hicolor/*/apps/org.gnome.Epiphany*
 %{_datadir}/glib-2.0/schemas/org.gnome.epiphany.gschema.xml
 %{_datadir}/glib-2.0/schemas/org.gnome.Epiphany.enums.xml
@@ -112,20 +109,38 @@ desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 %{_mandir}/man*/*
 
 %changelog
-* Wed Feb 28 2018 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.26.6-1
-- Update to 3.26.6
+* Thu Apr 19 2018 Kalev Lember <klember@redhat.com> - 1:3.28.1.1-1
+- Update to 3.28.1.1
 
-* Sat Dec 30 2017 Kalev Lember <klember@redhat.com> - 1:3.26.5.1-1
-- Update to 3.26.5.1
+* Tue Apr 10 2018 Kalev Lember <klember@redhat.com> - 1:3.28.1-1
+- Update to 3.28.1
 
-* Sun Dec 17 2017 Kalev Lember <klember@redhat.com> - 1:3.26.5-1
-- Update to 3.26.5
+* Sun Mar 11 2018 Kalev Lember <klember@redhat.com> - 1:3.28.0.1-1
+- Update to 3.28.0.1
 
-* Wed Dec 13 2017 Kalev Lember <klember@redhat.com> - 1:3.26.4-1
-- Update to 3.26.4
+* Sun Mar 11 2018 Kalev Lember <klember@redhat.com> - 1:3.28.0-1
+- Update to 3.28.0
 
-* Fri Dec 01 2017 Kalev Lember <klember@redhat.com> - 1:3.26.3-1
-- Update to 3.26.3
+* Mon Mar 05 2018 Kalev Lember <klember@redhat.com> - 1:3.27.92-1
+- Update to 3.27.92
+
+* Fri Feb 16 2018 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.27.90-1
+- Upgrade to 3.27.90. Drop obsolete obsoletes.
+
+* Tue Feb 13 2018 Björn Esser <besser82@fedoraproject.org> - 1:3.27.1-5
+- Rebuild against newer gnome-desktop3 package
+
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.27.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Fri Jan 12 2018 Tomas Popela <tpopela@redhat.com> - 1:3.27.1-3
+- Adapt to the webkitgtk4 rename
+
+* Thu Nov 30 2017 Pete Walter <pwalter@fedoraproject.org> - 1:3.27.1-2
+- Rebuild for ICU 60.1
+
+* Thu Nov 02 2017 Kalev Lember <klember@redhat.com> - 1:3.27.1-1
+- Update to 3.27.1
 
 * Wed Nov 01 2017 Kalev Lember <klember@redhat.com> - 1:3.26.2-1
 - Update to 3.26.2
