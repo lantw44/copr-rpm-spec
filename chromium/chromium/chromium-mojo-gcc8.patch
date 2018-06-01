@@ -22,15 +22,3 @@ diff -up chromium-65.0.3325.162/mojo/public/cpp/bindings/associated_interface_re
  
    ScopedInterfaceEndpointHandle PassHandle() { return std::move(handle_); }
  
-diff -up chromium-65.0.3325.162/mojo/public/cpp/bindings/interface_request.h.boolfix chromium-65.0.3325.162/mojo/public/cpp/bindings/interface_request.h
---- chromium-65.0.3325.162/mojo/public/cpp/bindings/interface_request.h.boolfix	2018-03-15 13:08:33.494499025 -0400
-+++ chromium-65.0.3325.162/mojo/public/cpp/bindings/interface_request.h	2018-03-15 13:10:39.218462546 -0400
-@@ -54,7 +54,7 @@ class InterfaceRequest {
-   // Indicates whether the request currently contains a valid message pipe.
-   bool is_pending() const { return handle_.is_valid(); }
- 
--  explicit operator bool() const { return handle_; }
-+  explicit operator bool() const { return (bool) handle_; }
- 
-   // Removes the message pipe from the request and returns it.
-   ScopedMessagePipeHandle PassMessagePipe() { return std::move(handle_); }

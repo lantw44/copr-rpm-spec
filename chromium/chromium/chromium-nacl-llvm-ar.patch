@@ -1,0 +1,30 @@
+diff --git a/build/toolchain/gcc_toolchain.gni b/build/toolchain/gcc_toolchain.gni
+index b6f63d7556aa..066d4d854522 100644
+--- a/build/toolchain/gcc_toolchain.gni
++++ b/build/toolchain/gcc_toolchain.gni
+@@ -339,12 +339,12 @@ template("gcc_toolchain") {
+         # We use slightly different arflags for AIX.
+         extra_arflags = "-r -c -s"
+       } else {
+-        extra_arflags = "-r -c -s -D"
++        extra_arflags = "rcsD"
+       }
+ 
+       # Almost all targets build with //build/config/compiler:thin_archive which
+       # adds -T to arflags.
+-      command = "$python_path \"$ar_wrapper\"$whitelist_flag --output={{output}} --ar=\"$ar\" \"{{arflags}} $extra_arflags\" @\"$rspfile\""
++      command = "$python_path \"$ar_wrapper\"$whitelist_flag --output={{output}} --ar=\"$ar\" \"$extra_arflags{{arflags}}\" @\"$rspfile\""
+       description = "AR {{output}}"
+       rspfile_content = "{{inputs}}"
+       outputs = [
+--- chromium-67.0.3396.62/build/config/compiler/BUILD.gn.orig	2018-05-30 16:43:03.000000000 +0800
++++ chromium-67.0.3396.62/build/config/compiler/BUILD.gn	2018-05-31 22:10:19.140340429 +0800
+@@ -1573,7 +1573,7 @@
+     # TODO(thomasanderson): Enable on ChromeOS builds once
+     # https://crbug.com/829956 is fixed.
+     if (default_toolchain != "//build/toolchain/cros:target") {
+-      arflags = [ "-T" ]
++      arflags = [ "T" ]
+     }
+   }
+ }

@@ -58,7 +58,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    66.0.3359.181
+Version:    67.0.3396.62
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -84,11 +84,6 @@ Source1:    chromium-latest.py
 Source2:    chromium-ffmpeg-clean.sh
 Source3:    chromium-ffmpeg-free-sources.py
 
-# Upstream source tarball include an empty third_party/blink/tools/blinkpy/common directory
-# https://git.archlinux.org/svntogit/packages.git/commit/trunk?h=packages/chromium&id=cfc1a07
-# https://bugs.chromium.org/p/chromium/issues/detail?id=832283
-Source4:    https://chromium.googlesource.com/chromium/src/+archive/%{version}/third_party/blink/tools/blinkpy/common.tar.gz#/%{name}-%{version}-third_party-blink-tools-blinkpy-common.tar.gz
-
 # The following two source files are copied and modified from
 # https://repos.fedorapeople.org/repos/spot/chromium/
 Source10:   chromium-browser.sh
@@ -111,12 +106,8 @@ Patch20:    chromium-disable-unrar.patch
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=61203bf
 Patch30:    chromium-mojo-gcc8.patch
 
-# Add patches from upstream to fix build with GCC
-Patch50:    chromium-gcc7-r540815.patch
-Patch51:    chromium-gcc7-r540828.patch
-Patch52:    chromium-gcc7-r541029.patch
-Patch53:    chromium-gcc7-r541516.patch
-Patch54:    chromium-gcc7-r541827.patch
+# Fix llvm-ar command usage
+Patch50:    chromium-nacl-llvm-ar.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -226,10 +217,6 @@ Conflicts:     chromedriver-unstable
 %prep
 %autosetup -p1
 
-# Add missing source files from a git checkout
-tar -xf %{SOURCE4} -C third_party/blink/tools/blinkpy/common
-touch third_party/blink/tools/blinkpy/__init__.py
-
 ./build/linux/unbundle/remove_bundled_libraries.py --do-remove \
     base/third_party/dmg_fp \
     base/third_party/dynamic_annotations \
@@ -261,6 +248,7 @@ touch third_party/blink/tools/blinkpy/__init__.py
     third_party/angle/third_party/spirv-headers \
     third_party/angle/third_party/spirv-tools \
     third_party/angle/third_party/vulkan-validation-layers \
+    third_party/apple_apsl \
     third_party/boringssl \
     third_party/boringssl/src/third_party/fiat \
     third_party/blink \
@@ -280,6 +268,8 @@ touch third_party/blink/tools/blinkpy/__init__.py
     third_party/catapult/tracing/third_party/pako \
     third_party/ced \
     third_party/cld_3 \
+    third_party/crashpad \
+    third_party/crashpad/crashpad/third_party/zlib \
     third_party/crc32c \
     third_party/cros_system_api \
     third_party/devscripts \
@@ -625,6 +615,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Jun 01 2018 - Ting-Wei Lan <lantw44@gmail.com> - 67.0.3396.62-100
+- Update to 67.0.3396.62
+
 * Wed May 16 2018 - Ting-Wei Lan <lantw44@gmail.com> - 66.0.3359.181-100
 - Update to 66.0.3359.181
 
