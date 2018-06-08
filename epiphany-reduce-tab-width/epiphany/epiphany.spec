@@ -4,7 +4,7 @@
 
 Name: epiphany
 Epoch: 1
-Version: 3.28.2.1
+Version: 3.28.3
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
@@ -109,6 +109,9 @@ desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 %{_mandir}/man*/*
 
 %changelog
+* Thu Jun 07 2018 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.28.3-1
+- Update to 3.28.3
+
 * Tue May 22 2018 Kalev Lember <klember@redhat.com> - 1:3.28.2.1-1
 - Update to 3.28.2.1
 
