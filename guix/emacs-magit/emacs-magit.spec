@@ -12,8 +12,8 @@
 %endif
 
 Name:           emacs-%{pkg}
-Version:        2.11.0
-Release:        4%{?dist}
+Version:        2.13.0
+Release:        1%{?dist}
 Summary:        Emacs interface to the most common Git operations
 
 License:        GPLv3+
@@ -50,10 +50,9 @@ common operations convenient.
 
 # clean up after magit's installer's assumptions
 mkdir -p $RPM_BUILD_ROOT%{emacs_startdir}
-mv $RPM_BUILD_ROOT%{emacs_lispdir}/magit/magit-autoloads.el \
-    $RPM_BUILD_ROOT%{emacs_startdir}/emacs-magit-mode.el
+ln -rs $RPM_BUILD_ROOT%{emacs_lispdir}/magit/magit-autoloads.el \
+    $RPM_BUILD_ROOT%{emacs_startdir}
 gzip -9 $RPM_BUILD_ROOT%{_infodir}/magit.info
-rm $RPM_BUILD_ROOT%{_infodir}/magit-popup.info
 
 
 %post
@@ -67,17 +66,21 @@ fi
 
 
 %files
-%license COPYING
+%license LICENSE
 %doc README.md
 %{emacs_lispdir}/%{pkg}/*.el
 %{emacs_lispdir}/%{pkg}/*.elc
-%{emacs_startdir}/emacs-magit-mode.el
+%{emacs_startdir}/magit-autoloads.el
 %{_infodir}/magit.info.gz
 %dir %{emacs_lispdir}/%{pkg}
 %{_pkgdocdir}/AUTHORS.md
 
 
 %changelog
+* Sat Jul 07 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.13.0-1
+- Update to upstream version 2.13.0
+- Fix autoloads by creating a symlink instead of moving the script itself
+
 * Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.11.0-4
 - Add dependency on emacs-ghub and emacs-magit-popup
 - Remove magit-popup.info because it is already provided by emacs-magit-popup
