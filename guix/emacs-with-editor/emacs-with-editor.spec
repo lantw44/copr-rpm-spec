@@ -2,7 +2,7 @@
 %global pkgname With-Editor
 
 Name:           emacs-%{pkg}
-Version:        2.7.1
+Version:        2.7.3
 Release:        1%{?dist}
 Summary:        Use the Emacsclient as the editor of child processes
 
@@ -34,7 +34,9 @@ install -m 755 -d %{buildroot}%{_emacs_sitelispdir}/with-editor
 install -m 644 with-editor.el with-editor.elc \
     %{buildroot}%{_emacs_sitelispdir}/with-editor/
 install -m 644 with-editor-autoloads.el \
-    %{buildroot}%{_emacs_sitestartdir}/with-editor.el
+    %{buildroot}%{_emacs_sitelispdir}/with-editor/
+ln -rs %{buildroot}%{_emacs_sitelispdir}/with-editor/with-editor-autoloads.el \
+    %{buildroot}%{_emacs_sitestartdir}
 mkdir -p %{buildroot}%{_infodir}
 gzip -9 < with-editor.info > %{buildroot}%{_infodir}/with-editor.info.gz
 
@@ -50,17 +52,22 @@ fi
 
 
 %files
-%license COPYING
+%license LICENSE
 %doc AUTHORS.md README.md with-editor.org
 %dir %{_emacs_sitelispdir}/with-editor
 %{_emacs_sitelispdir}/with-editor/with-editor.el
 %{_emacs_sitelispdir}/with-editor/with-editor.elc
-%{_emacs_sitestartdir}/with-editor.el
+%{_emacs_sitelispdir}/with-editor/with-editor-autoloads.el
+%{_emacs_sitestartdir}/with-editor-autoloads.el
 %{_infodir}/with-editor.info.gz
 
 
 
 %changelog
+* Sat Jul 07 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.7.3-1
+- Update to 2.7.3
+- Fix autoloads by creating a symlink instead of moving the script itself
+
 * Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.7.1-1
 - Update to 2.7.1
 - Install the generated autoloads file
