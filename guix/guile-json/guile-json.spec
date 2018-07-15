@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           guile-json
-Version:        0.6.0
-Release:        5%{?dist}
+Version:        1.0.1
+Release:        1%{?dist}
 Summary:        JSON module for Guile
 
 License:        LGPLv3+
@@ -46,12 +46,13 @@ features:
 %{_datadir}/guile/site/json/builder.scm
 %{_datadir}/guile/site/json/parser.go
 %{_datadir}/guile/site/json/parser.scm
-%{_datadir}/guile/site/json/syntax.go
-%{_datadir}/guile/site/json/syntax.scm
 
 
 
 %changelog
+* Sat Jul 07 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.0.1-1
+- Update to 1.0.1
+
 * Mon Dec 11 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-5
 - Use autosetup and make_build macros
 - Use HTTPS links in description
