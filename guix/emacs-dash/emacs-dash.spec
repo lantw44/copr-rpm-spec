@@ -2,8 +2,8 @@
 %global pkgname Dash
 
 Name:           emacs-%{pkg}
-Version:        2.13.0
-Release:        5%{?dist}
+Version:        2.14.1
+Release:        1%{?dist}
 Summary:        Dash is a modern list library for Emacs
 
 License:        GPLv3+
@@ -48,6 +48,7 @@ fi
 
 
 %files
+%license LICENSE
 %doc README.md
 %dir %{_emacs_sitelispdir}/dash
 %{_emacs_sitelispdir}/dash/dash.el
@@ -59,6 +60,9 @@ fi
 
 
 %changelog
+* Sat Jul 07 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.14.1-1
+- Update to 2.14.1
+
 * Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.13.0-5
 - Remove group tag because it is deprecated in Fedora
 
