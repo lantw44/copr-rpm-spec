@@ -2,13 +2,13 @@
 %global pkgname Guix
 
 Name:           emacs-%{pkg}
-Version:        0.3.4
+Version:        0.4.1.1
 Release:        1%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
-URL:            https://alezost.github.io/guix.el
-Source0:        https://github.com/alezost/guix.el/releases/download/v%{version}/%{name}-%{version}.tar.gz
+URL:            https://emacs-guix.gitlab.io/website
+Source0:        https://emacs-guix.gitlab.io/website/releases/%{name}-%{version}.tar.gz
 
 %global guile_source_dir %{_datadir}/guile/site/2.0
 %global guile_ccache_dir %{_libdir}/guile/2.0/site-ccache
@@ -57,7 +57,7 @@ gzip -9 %{buildroot}%{_infodir}/%{name}.info
 # move the autoload script
 mkdir -p %{buildroot}%{_emacs_sitestartdir}
 mv %{buildroot}%{_emacs_sitelispdir}/guix/guix-autoloads.el \
-    %{buildroot}%{_emacs_sitestartdir}/guix.el
+    %{buildroot}%{_emacs_sitestartdir}/guix-autoloads.el
 
 
 %post
@@ -78,7 +78,7 @@ fi
 %{_emacs_sitelispdir}/%{pkg}/guix.elc
 %{_emacs_sitelispdir}/%{pkg}/guix-*.el
 %{_emacs_sitelispdir}/%{pkg}/guix-*.elc
-%{_emacs_sitestartdir}/guix.el
+%{_emacs_sitestartdir}/guix-autoloads.el
 %{guile_source_dir}/%{name}.scm
 %{guile_ccache_dir}/%{name}.go
 %dir %{guile_source_dir}/%{name}
@@ -94,6 +94,10 @@ fi
 
 
 %changelog
+* Sat Jul 07 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.4.1.1-1
+- Update to 0.4.1.1
+- Keep the name of autoloads script because it doesn't work when being renamed
+
 * Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.3.4-1
 - Update to 0.3.4
 - Remove group tag because it is deprecated in Fedora
