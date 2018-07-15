@@ -1,14 +1,11 @@
-%global commit 951a32c56cc4d80f8836e3c7394783e69c1fcbad
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
-
 Name:           guile-git
-Version:        0.1
-Release:        0.1.20171106git%{shortcommit}%{?dist}
+Version:        0.1.0
+Release:        1%{?dist}
 Summary:        Guile bindings of libgit2
 
 License:        GPLv3+
 URL:            https://gitlab.com/guile-git/guile-git
-Source0:        https://gitlab.com/guile-git/guile-git/repository/%{commit}/archive.tar.bz2#/%{name}-%{commit}.tar.bz2
+Source0:        https://gitlab.com/guile-git/guile-git/uploads/e8c218ac7ae77b745c44d1ffbe34f1dd/guile-git-%{version}.tar.gz
 
 %global debug_package    %{nil}
 %global guile_source_dir %{_datadir}/guile/site/2.0
@@ -26,20 +23,16 @@ repositories of the Git version control system.
 
 
 %prep
-%autosetup -n %{name}-%{commit}-%{commit} -p1
+%autosetup -n %{name}-%{version} -p1
 
 
 %build
-./bootstrap
 %configure
 %make_build
 
 
 %check
-# segfault on i686
-%ifnarch %{ix86}
 %{__make} %{?_smp_mflags} check
-%endif
 
 
 %install
@@ -74,5 +67,8 @@ fi
 
 
 %changelog
+* Sat Jul 07 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-1
+- Update to 0.1.0
+
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.1-0.1.20171106git951a32c
 - Initial packaging
