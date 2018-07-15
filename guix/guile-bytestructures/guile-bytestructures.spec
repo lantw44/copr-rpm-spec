@@ -1,15 +1,11 @@
-%global commit 7ed31b1e93a4bf8960f1d4aedbea84f4f594af6d
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global project scheme-bytestructures
-
 Name:           guile-bytestructures
-Version:        0.1
-Release:        0.1.20171209git%{shortcommit}%{?dist}
+Version:        1.0.3
+Release:        1%{?dist}
 Summary:        Structured access library to bytevector contents for Guile
 
 License:        GPLv3+
 URL:            https://github.com/TaylanUB/scheme-bytestructures
-Source0:        https://github.com/TaylanUB/scheme-bytestructures/archive/%{commit}/%{project}-%{commit}.tar.gz
+Source0:        https://github.com/TaylanUB/scheme-bytestructures/releases/download/v%{version}/bytestructures-%{version}.tar.gz
 
 %global debug_package    %{nil}
 %global guile_source_dir %{_datadir}/guile/site/2.0
@@ -27,11 +23,10 @@ first-class status.
 
 
 %prep
-%autosetup -n %{project}-%{commit} -p1
+%autosetup -n bytestructures-%{version} -p1
 
 
 %build
-autoreconf -fi
 %configure
 %make_build
 
@@ -42,9 +37,10 @@ autoreconf -fi
 
 %files
 %license COPYING
-%doc README.md TODO.org
+%doc README.md
 %dir %{guile_source_dir}/bytestructures
 %dir %{guile_ccache_dir}/bytestructures
+%{guile_source_dir}/bytestructures/body/*.scm
 %{guile_source_dir}/bytestructures/guile.scm
 %{guile_ccache_dir}/bytestructures/guile.go
 %dir %{guile_source_dir}/bytestructures/guile
@@ -55,8 +51,14 @@ autoreconf -fi
 %dir %{guile_ccache_dir}/bytestructures/r6
 %{guile_source_dir}/bytestructures/r6/bytevectors.scm
 %{guile_ccache_dir}/bytestructures/r6/bytevectors.go
+%exclude %{guile_source_dir}/bytestructures/body
+%exclude %{guile_source_dir}/bytestructures/r7
+%exclude %{guile_source_dir}/run-tests.*.scm
 
 
 %changelog
+* Sat Jul 07 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.0.3-1
+- Update to 1.0.3
+
 * Sat Dec 09 2017 Ting-Wei Lan <lantw44@gmail.com> - 0.1-0.1.20171209git7ed31b1
 - Initial packaging
