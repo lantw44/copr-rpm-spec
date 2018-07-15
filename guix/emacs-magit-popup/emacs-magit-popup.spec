@@ -2,7 +2,7 @@
 %global pkgname Magit-Popup
 
 Name:           emacs-%{pkg}
-Version:        2.12.2
+Version:        2.12.3
 Release:        1%{?dist}
 Summary:        Define prefix-infix-suffix command combos for Emacs
 
@@ -36,7 +36,9 @@ install -m 755 -d %{buildroot}%{_emacs_sitelispdir}/magit-popup
 install -m 644 magit-popup.el magit-popup.elc \
     %{buildroot}%{_emacs_sitelispdir}/magit-popup/
 install -m 644 magit-popup-autoloads.el \
-    %{buildroot}%{_emacs_sitestartdir}/magit-popup.el
+    %{buildroot}%{_emacs_sitelispdir}/magit-popup/
+ln -rs %{buildroot}%{_emacs_sitelispdir}/magit-popup/magit-popup-autoloads.el \
+    %{buildroot}%{_emacs_sitestartdir}
 mkdir -p %{buildroot}%{_infodir}
 gzip -9 < magit-popup.info > %{buildroot}%{_infodir}/magit-popup.info.gz
 
@@ -57,11 +59,16 @@ fi
 %dir %{_emacs_sitelispdir}/magit-popup
 %{_emacs_sitelispdir}/magit-popup/magit-popup.el
 %{_emacs_sitelispdir}/magit-popup/magit-popup.elc
-%{_emacs_sitestartdir}/magit-popup.el
+%{_emacs_sitelispdir}/magit-popup/magit-popup-autoloads.el
+%{_emacs_sitestartdir}/magit-popup-autoloads.el
 %{_infodir}/magit-popup.info.gz
 
 
 
 %changelog
+* Sat Jul 07 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.12.3-1
+- Update to 2.12.3
+- Fix autoloads by creating a symlink instead of moving the script itself
+
 * Tue Mar 13 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.12.2-1
 - Initial packaging
