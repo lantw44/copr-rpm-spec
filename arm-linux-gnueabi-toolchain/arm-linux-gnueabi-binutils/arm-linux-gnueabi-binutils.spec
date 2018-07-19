@@ -7,8 +7,8 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.30
-Release:    2%{?dist}
+Version:    2.31
+Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 License:    GPLv3+
@@ -88,6 +88,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Tue Jul 17 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.31-1
+- Update to 2.31
+
 * Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.30-2
 - Remove group tag because it is deprecated in Fedora
 
