@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    8.1.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -147,9 +147,9 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
 %endif
 %if %{cross_stage} == "final"
 %if %{with ada}
-    --enable-languages=c,c++,fortran,objc,obj-c++,ada \
+    --enable-languages=c,c++,fortran,objc,obj-c++,go,ada \
 %else
-    --enable-languages=c,c++,fortran,objc,obj-c++ \
+    --enable-languages=c,c++,fortran,objc,obj-c++,go \
 %endif
 %if 0%{?fedora} <= 22
     --with-default-libstdcxx-abi=gcc4-compatible \
@@ -286,6 +286,7 @@ chmod +x %{__ar_no_strip}
 %if %{cross_stage} == "final"
 %{_bindir}/%{cross_triplet}-c++
 %{_bindir}/%{cross_triplet}-g++
+%{_bindir}/%{cross_triplet}-gccgo
 %{_bindir}/%{cross_triplet}-gfortran
 %dir %{_prefix}/%{cross_triplet}
 %dir %{_prefix}/%{cross_triplet}/include
@@ -302,6 +303,9 @@ chmod +x %{__ar_no_strip}
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/cc1obj
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/cc1objplus
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/f951
+%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/go1
+%dir %{cross_sysroot}/%{lib_dir_name}/go
+%{cross_sysroot}/%{lib_dir_name}/go/%{major_version}
 %{cross_sysroot}/%{lib_dir_name}/libasan.a
 %{cross_sysroot}/%{lib_dir_name}/libasan_preinit.o
 %{cross_sysroot}/%{lib_dir_name}/libasan.so*
@@ -310,6 +314,10 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/%{lib_dir_name}/libgfortran.a
 %{cross_sysroot}/%{lib_dir_name}/libgfortran.so*
 %{cross_sysroot}/%{lib_dir_name}/libgfortran.spec
+%{cross_sysroot}/%{lib_dir_name}/libgo.a
+%{cross_sysroot}/%{lib_dir_name}/libgo.so*
+%{cross_sysroot}/%{lib_dir_name}/libgobegin.a
+%{cross_sysroot}/%{lib_dir_name}/libgolibbegin.a
 %{cross_sysroot}/%{lib_dir_name}/libgomp.a
 %{cross_sysroot}/%{lib_dir_name}/libgomp.so*
 %{cross_sysroot}/%{lib_dir_name}/libgomp.spec
@@ -360,6 +368,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Thu Jul 19 2018 Ting-Wei Lan <lantw44@gmail.com> - 8.1.0-2
+- Enable Go support
+
 * Wed May 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 8.1.0-1
 - Update to new stable release 8.1.0
 
