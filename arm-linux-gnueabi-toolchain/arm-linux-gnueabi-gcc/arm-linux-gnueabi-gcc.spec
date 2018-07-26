@@ -29,8 +29,8 @@
 %bcond_without ada
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    8.1.0
-Release:    2%{?dist}
+Version:    8.2.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -368,6 +368,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Thu Jul 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 8.2.0-1
+- Update to new stable release 8.2.0
+
 * Thu Jul 19 2018 Ting-Wei Lan <lantw44@gmail.com> - 8.1.0-2
 - Enable Go support
 
