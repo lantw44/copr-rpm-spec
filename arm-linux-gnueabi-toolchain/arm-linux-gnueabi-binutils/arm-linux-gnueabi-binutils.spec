@@ -7,7 +7,7 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.31
+Version:    2.31.1
 Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
@@ -88,6 +88,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Sat Jul 28 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.31.1-1
+- Update to 2.31.1
+
 * Tue Jul 17 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.31-1
 - Update to 2.31
 
