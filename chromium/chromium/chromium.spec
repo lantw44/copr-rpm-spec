@@ -58,7 +58,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    67.0.3396.99
+Version:    68.0.3440.75
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -101,13 +101,17 @@ Patch10:    chromium-last-commit-position.patch
 # Disable non-free unrar
 Patch20:    chromium-disable-unrar.patch
 
-# Add a patch from Fedora to fix build with GCC 8
-# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=8cfa28d
-# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=61203bf
-Patch30:    chromium-mojo-gcc8.patch
-
 # Fix llvm-ar command usage
 Patch50:    chromium-nacl-llvm-ar.patch
+
+# Add a patch from upstream to fix build with GCC
+Patch60:    chromium-gcc8-r562446.patch
+
+# Add three patches from Gentoo to fix missing includes
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=79f1141
+Patch70:    chromium-cors-string.patch
+Patch71:    chromium-libjpeg.patch
+Patch72:    chromium-libwebp-shim.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -234,8 +238,11 @@ Conflicts:     chromedriver-unstable
     courgette/third_party \
     native_client/src/third_party/dlmalloc \
     native_client/src/third_party/valgrind \
+    net/third_party/http2 \
     net/third_party/mozilla_security_manager \
     net/third_party/nss \
+    net/third_party/quic \
+    net/third_party/spdy \
     third_party/adobe \
     third_party/analytics \
     third_party/angle \
@@ -301,11 +308,11 @@ Conflicts:     chromedriver-unstable
     third_party/leveldatabase \
     third_party/libaddressinput \
     third_party/libaom \
-    third_party/libaom/source/libaom/third_party/x86inc \
     third_party/libjingle \
     third_party/libphonenumber \
     third_party/libsecret \
     third_party/libsrtp \
+    third_party/libsync \
     third_party/libudev \
 %if !%{with system_libvpx}
     third_party/libvpx \
@@ -339,17 +346,21 @@ Conflicts:     chromedriver-unstable
     third_party/pdfium/third_party/libpng16 \
     third_party/pdfium/third_party/libtiff \
     third_party/pdfium/third_party/skia_shared \
+    third_party/perfetto \
 %if !%{with system_ply}
     third_party/ply \
 %endif
     third_party/polymer \
     third_party/protobuf \
     third_party/protobuf/third_party/six \
+    third_party/pyjson5 \
     third_party/qcms \
+    third_party/rnnoise \
     third_party/s2cellid \
     third_party/sfntly \
     third_party/skia \
     third_party/skia/third_party/gif \
+    third_party/skia/third_party/skcms \
     third_party/skia/third_party/vulkan \
     third_party/smhasher \
     third_party/speech-dispatcher \
@@ -376,6 +387,7 @@ Conflicts:     chromedriver-unstable
     url/third_party/mozilla \
     v8/src/third_party/valgrind \
     v8/src/third_party/utf8-decoder \
+    v8/third_party/antlr4 \
     v8/third_party/inspector_protocol
 
 ./build/linux/unbundle/replace_gn_files.py --system-libraries \
@@ -469,7 +481,6 @@ gn_args=(
 %endif
     enable_hangout_services_extension=false
     enable_nacl=true
-    enable_webrtc=true
     fatal_linker_warnings=false
     treat_warnings_as_errors=false
     linux_use_bundled_binutils=false
@@ -615,6 +626,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Jul 26 2018 - Ting-Wei Lan <lantw44@gmail.com> - 68.0.3440.75-100
+- Update to 68.0.3440.75
+
 * Tue Jun 26 2018 - Ting-Wei Lan <lantw44@gmail.com> - 67.0.3396.99-100
 - Update to 67.0.3396.99
 

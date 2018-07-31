@@ -1,3 +1,16 @@
+diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
+index 76f24c9671a6..3940ee13b1a9 100644
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -1659,7 +1659,7 @@ config("thin_archive") {
+   # have a "thin archive" mode (it does accept -T, but it means truncating
+   # archive names to 16 characters, which is not what we want).
+   if ((is_posix && !is_nacl && !is_mac && !is_ios) || is_fuchsia) {
+-    arflags = [ "-T" ]
++    arflags = [ "T" ]
+   }
+ }
+ 
 diff --git a/build/toolchain/gcc_toolchain.gni b/build/toolchain/gcc_toolchain.gni
 index b6f63d7556aa..066d4d854522 100644
 --- a/build/toolchain/gcc_toolchain.gni
@@ -17,14 +30,3 @@ index b6f63d7556aa..066d4d854522 100644
        description = "AR {{output}}"
        rspfile_content = "{{inputs}}"
        outputs = [
---- chromium-67.0.3396.62/build/config/compiler/BUILD.gn.orig	2018-05-30 16:43:03.000000000 +0800
-+++ chromium-67.0.3396.62/build/config/compiler/BUILD.gn	2018-05-31 22:10:19.140340429 +0800
-@@ -1573,7 +1573,7 @@
-     # TODO(thomasanderson): Enable on ChromeOS builds once
-     # https://crbug.com/829956 is fixed.
-     if (default_toolchain != "//build/toolchain/cros:target") {
--      arflags = [ "-T" ]
-+      arflags = [ "T" ]
-     }
-   }
- }
