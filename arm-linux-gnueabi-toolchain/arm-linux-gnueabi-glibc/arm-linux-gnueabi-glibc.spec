@@ -55,8 +55,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.27
-Release:    2%{?dist}
+Version:    2.28
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -122,6 +122,7 @@ export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
     --enable-stack-protector=strong \
     --enable-tunables \
     --disable-profile \
+    --disable-werror \
     --with-headers=%{cross_sysroot}/usr/include \
     --with-tls \
     --with-__thread \
@@ -178,7 +179,6 @@ chmod +x %{__ar_no_strip}
 %files
 %license COPYING COPYING.LIB LICENSES
 %doc ChangeLog MAINTAINERS NEWS README
-%{cross_sysroot}/usr/include/_G_config.h
 %{cross_sysroot}/usr/include/a.out.h
 %{cross_sysroot}/usr/include/aio.h
 %{cross_sysroot}/usr/include/aliases.h
@@ -236,7 +236,6 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/lastlog.h
 %{cross_sysroot}/usr/include/libgen.h
 %{cross_sysroot}/usr/include/libintl.h
-%{cross_sysroot}/usr/include/libio.h
 %{cross_sysroot}/usr/include/limits.h
 %{cross_sysroot}/usr/include/link.h
 %{cross_sysroot}/usr/include/locale.h
@@ -426,7 +425,6 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/sys/un.h
 %{cross_sysroot}/usr/include/sys/unistd.h
 %{cross_sysroot}/usr/include/sys/user.h
-%{cross_sysroot}/usr/include/sys/ustat.h
 %{cross_sysroot}/usr/include/sys/utsname.h
 %{cross_sysroot}/usr/include/sys/vfs.h
 %{cross_sysroot}/usr/include/sys/vlimit.h
@@ -442,13 +440,13 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/termios.h
 %{cross_sysroot}/usr/include/tgmath.h
 %{cross_sysroot}/usr/include/thread_db.h
+%{cross_sysroot}/usr/include/threads.h
 %{cross_sysroot}/usr/include/time.h
 %{cross_sysroot}/usr/include/ttyent.h
 %{cross_sysroot}/usr/include/uchar.h
 %{cross_sysroot}/usr/include/ucontext.h
 %{cross_sysroot}/usr/include/ulimit.h
 %{cross_sysroot}/usr/include/unistd.h
-%{cross_sysroot}/usr/include/ustat.h
 %{cross_sysroot}/usr/include/utime.h
 %{cross_sysroot}/usr/include/utmp.h
 %{cross_sysroot}/usr/include/utmpx.h
@@ -476,8 +474,6 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/%{lib_dir_name}/libanl.so.1
 %{cross_sysroot}/%{lib_dir_name}/libc-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libc.so.6
-%{cross_sysroot}/%{lib_dir_name}/libcidn-%{version}.so
-%{cross_sysroot}/%{lib_dir_name}/libcidn.so.1
 %{cross_sysroot}/%{lib_dir_name}/libcrypt-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libcrypt.so.1
 %{cross_sysroot}/%{lib_dir_name}/libdl-%{version}.so
@@ -546,7 +542,6 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/%{lib_dir_name}/libanl.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libc.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libc_nonshared.a
-%{cross_sysroot}/usr/%{lib_dir_name}/libcidn.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libcrypt.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libcrypt.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libdl.a
@@ -570,7 +565,6 @@ chmod +x %{__ar_no_strip}
 %endif
 %{cross_sysroot}/usr/%{lib_dir_name}/libpthread.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libpthread.so
-%{cross_sysroot}/usr/%{lib_dir_name}/libpthread_nonshared.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libresolv.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libresolv.so
 %if %{enable_obsolete_rpc}
@@ -608,6 +602,10 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Tue Aug 14 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.28-1
+- Update to 2.28
+- Disable -Werror for aarch64
+
 * Mon Apr 30 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.27-2
 - Disable obsolete Sun RPC and libnsl on Fedora 28 and later
 
