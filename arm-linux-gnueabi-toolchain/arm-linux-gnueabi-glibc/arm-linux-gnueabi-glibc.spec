@@ -56,7 +56,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.28
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -318,12 +318,10 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/rpc/auth.h
 %{cross_sysroot}/usr/include/rpc/auth_unix.h
 %{cross_sysroot}/usr/include/rpc/clnt.h
-%{cross_sysroot}/usr/include/rpc/des_crypt.h
 %{cross_sysroot}/usr/include/rpc/key_prot.h
 %{cross_sysroot}/usr/include/rpc/pmap_clnt.h
 %{cross_sysroot}/usr/include/rpc/pmap_prot.h
 %{cross_sysroot}/usr/include/rpc/pmap_rmt.h
-%{cross_sysroot}/usr/include/rpc/rpc_des.h
 %{cross_sysroot}/usr/include/rpc/rpc.h
 %{cross_sysroot}/usr/include/rpc/rpc_msg.h
 %{cross_sysroot}/usr/include/rpc/svc_auth.h
@@ -602,6 +600,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Tue Aug 14 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.28-2
+- Fix RPM files list for Fedora 27 and older
+
 * Tue Aug 14 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.28-1
 - Update to 2.28
 - Disable -Werror for aarch64
