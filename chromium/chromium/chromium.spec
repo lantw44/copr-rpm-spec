@@ -58,7 +58,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    68.0.3440.106
+Version:    69.0.3497.81
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -94,24 +94,11 @@ Source11:   chromium-browser.desktop
 Source12:   chromium-browser.xml
 Source13:   chromium-browser.appdata.xml
 
-# Add a patch from Fedora to fix GN build
-# https://src.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=0df9641
-Patch10:    chromium-last-commit-position.patch
-
 # Disable non-free unrar
 Patch20:    chromium-disable-unrar.patch
 
 # Fix llvm-ar command usage
 Patch50:    chromium-nacl-llvm-ar.patch
-
-# Add a patch from upstream to fix build with GCC
-Patch60:    chromium-gcc8-r562446.patch
-
-# Add three patches from Gentoo to fix missing includes
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=79f1141
-Patch70:    chromium-cors-string.patch
-Patch71:    chromium-libjpeg.patch
-Patch72:    chromium-libwebp-shim.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -243,6 +230,7 @@ Conflicts:     chromedriver-unstable
     net/third_party/nss \
     net/third_party/quic \
     net/third_party/spdy \
+    third_party/abseil-cpp \
     third_party/adobe \
     third_party/analytics \
     third_party/angle \
@@ -254,6 +242,9 @@ Conflicts:     chromedriver-unstable
     third_party/angle/third_party/glslang \
     third_party/angle/third_party/spirv-headers \
     third_party/angle/third_party/spirv-tools \
+    third_party/angle/third_party/vulkan-headers \
+    third_party/angle/third_party/vulkan-loader \
+    third_party/angle/third_party/vulkan-tools \
     third_party/angle/third_party/vulkan-validation-layers \
     third_party/apple_apsl \
     third_party/boringssl \
@@ -384,6 +375,7 @@ Conflicts:     chromedriver-unstable
     third_party/xdg-utils \
     third_party/yasm/run_yasm.py \
     third_party/zlib/google \
+    tools/gn/base/third_party/icu \
     url/third_party/mozilla \
     v8/src/third_party/valgrind \
     v8/src/third_party/utf8-decoder \
@@ -428,6 +420,9 @@ sed -i "/relpath/s|/'$|'|" tools/metrics/ukm/gen_builders.py
 sed -i 's|^\(#include "[^"]*\)//\([^"]*"\)|\1/\2|' \
     third_party/webrtc/modules/audio_processing/utility/ooura_fft.cc \
     third_party/webrtc/modules/audio_processing/utility/ooura_fft_sse2.cc
+
+# Don't use static libstdc++
+sed -i '/-static-libstdc++/d' tools/gn/build/gen.py
 
 %if %{with system_jinja2}
 rmdir third_party/jinja2
@@ -626,6 +621,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Sep 05 2018 - Ting-Wei Lan <lantw44@gmail.com> - 69.0.3497.81-100
+- Update to 69.0.3497.81
+
 * Thu Aug 09 2018 - Ting-Wei Lan <lantw44@gmail.com> - 68.0.3440.106-100
 - Update to 68.0.3440.106
 
