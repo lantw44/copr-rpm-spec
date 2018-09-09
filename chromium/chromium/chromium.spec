@@ -8,32 +8,18 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
-%if 0%{?fedora} < 26
-%bcond_without system_jinja2
-%else
-%bcond_with system_jinja2
-%endif
-
-# https://github.com/dabeaz/ply/issues/66
-%if 0%{?fedora} >= 24
-%bcond_without system_ply
-%else
-%bcond_with system_ply
-%endif
-
-# Require libxml2 > 2.9.4 for XML_PARSE_NOXXE
-%if 0%{?fedora} >= 27
-%bcond_without system_libxml2
-%else
-%bcond_with system_libxml2
-%endif
-
 # Require harfbuzz >= 1.5.0 for hb_glyph_info_t
 %if 0%{?fedora} >= 28
 %bcond_without system_harfbuzz
 %else
 %bcond_with system_harfbuzz
 %endif
+
+# Require libxml2 > 2.9.4 for XML_PARSE_NOXXE
+%bcond_without system_libxml2
+
+# https://github.com/dabeaz/ply/issues/66
+%bcond_without system_ply
 
 # Allow testing whether icu can be unbundled
 %bcond_with system_libicu
@@ -59,7 +45,7 @@
 
 Name:       chromium
 Version:    69.0.3497.81
-Release:    101%{?dist}
+Release:    102%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -108,10 +94,6 @@ Patch60:    chromium-bootstrap-python2.patch
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
 
-# Make sure we don't encounter GCC 5.1 bug
-%if 0%{?fedora} >= 22
-BuildRequires: gcc >= 5.1.1-2
-%endif
 # Chromium 54 requires clang to enable nacl support
 # Chromium 59 requires llvm-ar to enable nacl support
 %if %{with clang} || %{with require_clang}
@@ -120,7 +102,12 @@ BuildRequires: clang, llvm
 # Basic tools and libraries
 BuildRequires: ninja-build, nodejs, bison, gperf, hwdata
 BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
-BuildRequires: libcap-devel, cups-devel, minizip-devel, alsa-lib-devel
+BuildRequires: libcap-devel, cups-devel, alsa-lib-devel
+%if 0%{?fedora} >= 30
+BuildRequires: minizip-compat-devel
+%else
+BuildRequires: minizip-devel
+%endif
 BuildRequires: mesa-libGL-devel, mesa-libEGL-devel
 BuildRequires: pkgconfig(gtk+-2.0), pkgconfig(gtk+-3.0)
 BuildRequires: pkgconfig(libexif), pkgconfig(nss)
@@ -132,18 +119,7 @@ BuildRequires: pkgconfig(libffi)
 BuildRequires: python2-rpm-macros
 BuildRequires: python-beautifulsoup4
 BuildRequires: python-html5lib
-%if %{with system_jinja2}
-%if 0%{?fedora} >= 24
-BuildRequires: python2-jinja2
-%else
-BuildRequires: python-jinja2
-%endif
-%endif
-%if 0%{?fedora} >= 26
 BuildRequires: python2-markupsafe
-%else
-BuildRequires: python-markupsafe
-%endif
 %if %{with system_ply}
 BuildRequires: python2-ply
 %endif
@@ -301,9 +277,7 @@ find -type f -exec \
     third_party/icu \
 %endif
     third_party/inspector_protocol \
-%if !%{with system_jinja2}
     third_party/jinja2 \
-%endif
     third_party/jstemplate \
     third_party/khronos \
     third_party/leveldatabase \
@@ -433,11 +407,6 @@ sed -i 's|^\(#include "[^"]*\)//\([^"]*"\)|\1/\2|' \
 
 # Don't use static libstdc++
 sed -i '/-static-libstdc++/d' tools/gn/build/gen.py
-
-%if %{with system_jinja2}
-rmdir third_party/jinja2
-ln -s %{python2_sitelib}/jinja2 third_party/jinja2
-%endif
 
 rmdir third_party/markupsafe
 ln -s %{python2_sitearch}/markupsafe third_party/markupsafe
@@ -633,6 +602,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Sep 11 2018 - Ting-Wei Lan <lantw44@gmail.com> - 69.0.3497.81-102
+- Remove conditions for unsupported Fedora releases
+- Use minizip-compat on Fedora 30 and later
+
 * Sun Sep 09 2018 - Ting-Wei Lan <lantw44@gmail.com> - 69.0.3497.81-101
 - Don't use unversioned python commands on Fedora 29 and later
 
