@@ -59,7 +59,7 @@
 
 Name:       chromium
 Version:    69.0.3497.81
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -99,6 +99,11 @@ Patch20:    chromium-disable-unrar.patch
 
 # Fix llvm-ar command usage
 Patch50:    chromium-nacl-llvm-ar.patch
+
+# Don't use unversioned python commands. This patch is based on
+# https://src.fedoraproject.org/rpms/chromium/c/7048e95ab61cd143
+# https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
+Patch60:    chromium-bootstrap-python2.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -207,6 +212,11 @@ Conflicts:     chromedriver-unstable
 
 %prep
 %autosetup -p1
+
+# Don't use unversioned python commands in shebangs. This command is based on
+# https://src.fedoraproject.org/rpms/chromium/c/cdad6219176a7615
+find -type f -exec \
+    sed -i '1s:^#!/usr/bin/\(python\|env python\)$:#!%{__python2}:' '{}' '+'
 
 ./build/linux/unbundle/remove_bundled_libraries.py --do-remove \
     base/third_party/dmg_fp \
@@ -443,6 +453,7 @@ ln -s %{_bindir}/node third_party/node/linux/node-linux-x64/bin/node
 
 %build
 export AR=ar NM=nm
+export PNACLPYTHON=%{__python2}
 
 # Fedora 25 doesn't have __global_cxxflags
 %if %{with fedora_compilation_flags}
@@ -512,7 +523,8 @@ gn_args+=(
 )
 
 ./tools/gn/bootstrap/bootstrap.py --gn-gen-args "${gn_args[*]}"
-./out/Release/gn gen out/Release --args="${gn_args[*]}"
+./out/Release/gn gen out/Release \
+    --script-executable=/usr/bin/python2 --args="${gn_args[*]}"
 
 %if 0%{?ninja_build:1}
 %{ninja_build} -C out/Release chrome chrome_sandbox chromedriver
@@ -621,6 +633,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Sep 09 2018 - Ting-Wei Lan <lantw44@gmail.com> - 69.0.3497.81-101
+- Don't use unversioned python commands on Fedora 29 and later
+
 * Wed Sep 05 2018 - Ting-Wei Lan <lantw44@gmail.com> - 69.0.3497.81-100
 - Update to 69.0.3497.81
 
