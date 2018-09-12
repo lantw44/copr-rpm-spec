@@ -44,8 +44,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    69.0.3497.81
-Release:    102%{?dist}
+Version:    69.0.3497.92
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -398,13 +398,6 @@ find -type f -exec \
 
 sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' device/usb/BUILD.gn
 
-# Workaround build error caused by debugedit
-# https://bugzilla.redhat.com/show_bug.cgi?id=304121
-sed -i "/relpath/s|/'$|'|" tools/metrics/ukm/gen_builders.py
-sed -i 's|^\(#include "[^"]*\)//\([^"]*"\)|\1/\2|' \
-    third_party/webrtc/modules/audio_processing/utility/ooura_fft.cc \
-    third_party/webrtc/modules/audio_processing/utility/ooura_fft_sse2.cc
-
 # Don't use static libstdc++
 sed -i '/-static-libstdc++/d' tools/gn/build/gen.py
 
@@ -602,6 +595,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Sep 12 2018 - Ting-Wei Lan <lantw44@gmail.com> - 69.0.3497.92-100
+- Update to 69.0.3497.92
+- Remove workaround for debugedit on Fedora 26 and older
+
 * Tue Sep 11 2018 - Ting-Wei Lan <lantw44@gmail.com> - 69.0.3497.81-102
 - Remove conditions for unsupported Fedora releases
 - Use minizip-compat on Fedora 30 and later
