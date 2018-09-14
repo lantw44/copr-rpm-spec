@@ -45,7 +45,7 @@
 
 Name:       chromium
 Version:    69.0.3497.92
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -428,7 +428,7 @@ export LDFLAGS='%{__global_ldflags}'
 export CC=clang CXX=clang++
 %else
 export CC=gcc CXX=g++
-export CXXFLAGS="$CXXFLAGS -fno-delete-null-pointer-checks -fpermissive"
+export CXXFLAGS="$CXXFLAGS -fno-delete-null-pointer-checks"
 %endif
 
 gn_args=(
@@ -595,6 +595,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Sep 14 2018 - Ting-Wei Lan <lantw44@gmail.com> - 69.0.3497.92-101
+- Remove -fpermissive from CXXFLAGS
+
 * Wed Sep 12 2018 - Ting-Wei Lan <lantw44@gmail.com> - 69.0.3497.92-100
 - Update to 69.0.3497.92
 - Remove workaround for debugedit on Fedora 26 and older
