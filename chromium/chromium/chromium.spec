@@ -44,8 +44,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    69.0.3497.92
-Release:    101%{?dist}
+Version:    69.0.3497.100
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -595,6 +595,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Sep 18 2018 - Ting-Wei Lan <lantw44@gmail.com> - 69.0.3497.100-100
+- Update to 69.0.3497.100
+
 * Fri Sep 14 2018 - Ting-Wei Lan <lantw44@gmail.com> - 69.0.3497.92-101
 - Remove -fpermissive from CXXFLAGS
 
