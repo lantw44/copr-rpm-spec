@@ -1,8 +1,8 @@
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
-index 76f24c9671a6..3940ee13b1a9 100644
+index 08939c54483d..a7008d7278b8 100644
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1659,7 +1659,7 @@ config("thin_archive") {
+@@ -1688,7 +1688,7 @@ config("thin_archive") {
    # have a "thin archive" mode (it does accept -T, but it means truncating
    # archive names to 16 characters, which is not what we want).
    if ((is_posix && !is_nacl && !is_mac && !is_ios) || is_fuchsia) {
@@ -12,21 +12,15 @@ index 76f24c9671a6..3940ee13b1a9 100644
  }
  
 diff --git a/build/toolchain/gcc_toolchain.gni b/build/toolchain/gcc_toolchain.gni
-index b6f63d7556aa..066d4d854522 100644
+index e7c88708c366..bdb8ab4d36a0 100644
 --- a/build/toolchain/gcc_toolchain.gni
 +++ b/build/toolchain/gcc_toolchain.gni
-@@ -339,12 +339,12 @@ template("gcc_toolchain") {
-         # We use slightly different arflags for AIX.
-         extra_arflags = "-r -c -s"
+@@ -336,7 +336,7 @@ template("gcc_toolchain") {
        } else {
--        extra_arflags = "-r -c -s -D"
-+        extra_arflags = "rcsD"
+         rspfile = "{{output}}.rsp"
+         rspfile_content = "{{inputs}}"
+-        command = "\"$ar\" {{arflags}} -r -c -s -D {{output}} @\"$rspfile\""
++        command = "\"$ar\" rcsD{{arflags}} {{output}} @\"$rspfile\""
        }
  
-       # Almost all targets build with //build/config/compiler:thin_archive which
-       # adds -T to arflags.
--      command = "$python_path \"$ar_wrapper\"$whitelist_flag --output={{output}} --ar=\"$ar\" \"{{arflags}} $extra_arflags\" @\"$rspfile\""
-+      command = "$python_path \"$ar_wrapper\"$whitelist_flag --output={{output}} --ar=\"$ar\" \"$extra_arflags{{arflags}}\" @\"$rspfile\""
-       description = "AR {{output}}"
-       rspfile_content = "{{inputs}}"
-       outputs = [
+       # Remove the output file first so that ar doesn't try to modify the

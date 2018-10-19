@@ -8,8 +8,8 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
-# Require harfbuzz >= 1.5.0 for hb_glyph_info_t
-%if 0%{?fedora} >= 28
+# Require harfbuzz >= 1.8.6 for hb_font_funcs_set_glyph_h_advances_func
+%if 0%{?fedora} >= 29
 %bcond_without system_harfbuzz
 %else
 %bcond_with system_harfbuzz
@@ -44,7 +44,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    69.0.3497.100
+Version:    70.0.3538.67
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -90,6 +90,11 @@ Patch50:    chromium-nacl-llvm-ar.patch
 # https://src.fedoraproject.org/rpms/chromium/c/7048e95ab61cd143
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
 Patch60:    chromium-bootstrap-python2.patch
+
+# Add patches from upstream to fix build with GCC
+Patch70:    chromium-gcc8-r588316.patch
+Patch71:    chromium-gcc8-r588547.patch
+Patch72:    chromium-gcc8-r589614.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -216,6 +221,7 @@ find -type f -exec \
     net/third_party/nss \
     net/third_party/quic \
     net/third_party/spdy \
+    net/third_party/uri_template \
     third_party/abseil-cpp \
     third_party/adobe \
     third_party/analytics \
@@ -283,6 +289,8 @@ find -type f -exec \
     third_party/leveldatabase \
     third_party/libaddressinput \
     third_party/libaom \
+    third_party/libaom/source/libaom/third_party/vector \
+    third_party/libaom/source/libaom/third_party/x86inc \
     third_party/libjingle \
     third_party/libphonenumber \
     third_party/libsecret \
@@ -354,6 +362,13 @@ find -type f -exec \
     third_party/webdriver \
     third_party/WebKit \
     third_party/webrtc \
+    third_party/webrtc/common_audio/third_party/fft4g \
+    third_party/webrtc/common_audio/third_party/spl_sqrt_floor \
+    third_party/webrtc/modules/third_party/fft \
+    third_party/webrtc/modules/third_party/g711 \
+    third_party/webrtc/modules/third_party/g722 \
+    third_party/webrtc/rtc_base/third_party/base64 \
+    third_party/webrtc/rtc_base/third_party/sigslot \
     third_party/widevine \
     third_party/woff2 \
     third_party/xdg-utils \
@@ -363,8 +378,8 @@ find -type f -exec \
     url/third_party/mozilla \
     v8/src/third_party/valgrind \
     v8/src/third_party/utf8-decoder \
-    v8/third_party/antlr4 \
-    v8/third_party/inspector_protocol
+    v8/third_party/inspector_protocol \
+    v8/third_party/v8
 
 ./build/linux/unbundle/replace_gn_files.py --system-libraries \
     flac \
@@ -428,7 +443,7 @@ export LDFLAGS='%{__global_ldflags}'
 export CC=clang CXX=clang++
 %else
 export CC=gcc CXX=g++
-export CXXFLAGS="$CXXFLAGS -fno-delete-null-pointer-checks"
+export CXXFLAGS="$CXXFLAGS -fno-delete-null-pointer-checks -fpermissive"
 %endif
 
 gn_args=(
@@ -595,6 +610,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Oct 17 2018 - Ting-Wei Lan <lantw44@gmail.com> - 70.0.3538.67-100
+- Update to 70.0.3538.67
+- Add -fpermissive to CXXFLAGS again
+
 * Tue Sep 18 2018 - Ting-Wei Lan <lantw44@gmail.com> - 69.0.3497.100-100
 - Update to 69.0.3497.100
 
