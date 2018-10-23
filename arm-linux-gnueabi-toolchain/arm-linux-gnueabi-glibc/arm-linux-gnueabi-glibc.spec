@@ -56,7 +56,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.28
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -600,6 +600,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.28-3
+- Rebuilt for Fedora 29 and 30
+
 * Tue Aug 14 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.28-2
 - Fix RPM files list for Fedora 27 and older
 

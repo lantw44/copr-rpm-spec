@@ -14,7 +14,7 @@
 
 Name:       %{cross_triplet}-filesystem
 Version:    3
-Release:    7%{?dist}
+Release:    8%{?dist}
 Summary:    Cross compilation toolchain filesystem layout (%{cross_triplet})
 
 License:    Public Domain
@@ -83,6 +83,9 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 
 
 %changelog
+* Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 3-8
+- Rebuilt for Fedora 29 and 30
+
 * Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 3-7
 - Remove group tag because it is deprecated in Fedora
 

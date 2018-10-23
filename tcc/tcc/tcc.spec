@@ -12,7 +12,7 @@
 
 Name:       %{pkg_fullname}
 Version:    0.9.26
-Release:    15%{?dist}
+Release:    16%{?dist}
 Summary:    Tiny C Compiler
 
 License:    LGPLv2
@@ -102,6 +102,9 @@ fi
 %doc Changelog README TODO VERSION tcc-doc.html
 
 %changelog
+* Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-16
+- Rebuilt for Fedora 29 and 30
+
 * Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-15
 - Remove group tag because it is deprecated in Fedora
 

@@ -3,7 +3,7 @@
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.13.20161004git%{shortcommit}%{?dist}
+Release:        0.14.20161004git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 License:        GPLv3+
@@ -13,6 +13,7 @@ Patch0:         lilyterm-gtk3.patch
 Patch1:         lilyterm-gtk3-vte291-regex.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+BuildRequires:  gcc
 BuildRequires:  gtk3-devel
 %if 0%{?fedora} >= 21 || 0%{?rhel} >= 8
 BuildRequires:  vte291-devel
@@ -86,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.14.20161004git8df92d6
+- Add GCC to BuildRequires for Fedora 29 and later
+
 * Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.13.20161004git8df92d6
 - Remove group tag because it is deprecated in Fedora
 

@@ -6,7 +6,7 @@
 
 Name:           guix
 Version:        0.15.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -31,6 +31,7 @@ Source5:        https://alpha.gnu.org/gnu/guix/bootstrap/x86_64-linux/20131110/g
 %global fish_completion_dir %{_datadir}/fish/vendor_completions.d
 %endif
 
+BuildRequires:  gcc-c++
 BuildRequires:  pkgconfig(guile-2.0)
 BuildRequires:  pkgconfig(sqlite3)
 BuildRequires:  zlib-devel, bzip2-devel, libgcrypt-devel
@@ -390,6 +391,9 @@ fi
 
 
 %changelog
+* Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.15.0-2
+- Add GCC to BuildRequires for Fedora 29 and later
+
 * Sun Jul 15 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.15.0-1
 - Update to 0.15.0
 - Skip all tests because of the number of test failure

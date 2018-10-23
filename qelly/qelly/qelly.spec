@@ -1,6 +1,6 @@
 Name:       qelly
 Version:    1.0
-Release:    0.11.beta%{?dist}
+Release:    0.12.beta%{?dist}
 Summary:    Qelly is a Qt port of Nally
 
 %global     real_name     Qelly
@@ -10,6 +10,7 @@ License:    GPLv3
 URL:        https://github.com/uranusjr/Qelly
 Source0:    https://github.com/uranusjr/Qelly/archive/v%{real_version}.tar.gz#/%{name}-%{real_version}.tar.gz
 
+BuildRequires: gcc-c++
 BuildRequires: qt-devel, libqxt-devel, chrpath
 
 %description
@@ -40,6 +41,9 @@ install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
 %doc AUTHORS CHANGES README.md
 
 %changelog
+* Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.12.beta
+- Add GCC to BuildRequires for Fedora 29 and later
+
 * Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.11.beta
 - Remove group tag because it is deprecated in Fedora
 

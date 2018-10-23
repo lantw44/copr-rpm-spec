@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.4.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
@@ -94,6 +94,9 @@ fi
 
 
 %changelog
+* Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.4.1.1-2
+- Rebuilt for Fedora 29 and 30
+
 * Sat Jul 07 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.4.1.1-1
 - Update to 0.4.1.1
 - Keep the name of autoloads script because it doesn't work when being renamed

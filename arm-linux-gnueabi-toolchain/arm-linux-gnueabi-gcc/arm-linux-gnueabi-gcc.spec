@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    8.2.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -39,6 +39,7 @@ License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGP
 URL:        https://gcc.gnu.org
 Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
 
+BuildRequires: gcc, gcc-c++, gcc-gnat
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel, isl-devel
 BuildRequires: gmp-devel, mpfr-devel, libmpc-devel, elfutils-libelf-devel
 BuildRequires: %{cross_triplet}-filesystem
@@ -368,6 +369,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 8.2.0-2
+- Add GCC to BuildRequires for Fedora 29 and later
+
 * Thu Jul 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 8.2.0-1
 - Update to new stable release 8.2.0
 

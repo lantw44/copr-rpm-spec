@@ -13,7 +13,7 @@
 
 Name:           emacs-%{pkg}
 Version:        2.13.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Emacs interface to the most common Git operations
 
 License:        GPLv3+
@@ -77,6 +77,9 @@ fi
 
 
 %changelog
+* Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.13.0-2
+- Rebuilt for Fedora 29 and 30
+
 * Sat Jul 07 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.13.0-1
 - Update to upstream version 2.13.0
 - Fix autoloads by creating a symlink instead of moving the script itself

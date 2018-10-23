@@ -8,13 +8,14 @@
 
 Name:       %{cross_triplet}-binutils
 Version:    2.31.1
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 License:    GPLv3+
 URL:        https://www.gnu.org/software/binutils
 Source0:    https://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
 
+BuildRequires: gcc, gcc-c++
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel
 BuildRequires: %{cross_triplet}-filesystem
 Requires:   %{cross_triplet}-filesystem
@@ -88,6 +89,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.31.1-2
+- Add GCC to BuildRequires for Fedora 29 and later
+
 * Sat Jul 28 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.31.1-1
 - Update to 2.31.1
 

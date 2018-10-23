@@ -1,6 +1,6 @@
 Name:           guile-git
 Version:        0.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Guile bindings of libgit2
 
 License:        GPLv3+
@@ -67,6 +67,9 @@ fi
 
 
 %changelog
+* Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-2
+- Rebuilt for Fedora 29 and 30
+
 * Sat Jul 07 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-1
 - Update to 0.1.0
 

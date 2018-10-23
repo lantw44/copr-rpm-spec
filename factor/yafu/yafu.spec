@@ -1,12 +1,13 @@
 Name:       yafu
 Version:    1.34
-Release:    12%{?dist}
+Release:    13%{?dist}
 Summary:    Automated integer factorization
 
 License:    Public Domain
 URL:        https://sourceforge.net/projects/yafu
 Source0:    https://downloads.sourceforge.net/project/yafu/%{version}/%{name}-%{version}-src.zip
 
+BuildRequires: gcc
 BuildRequires: msieve, gmp-ecm-devel
 
 %description
@@ -45,6 +46,9 @@ install -m 755 yafu %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.34-13
+- Add GCC to BuildRequires for Fedora 29 and later
+
 * Mon Feb 26 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.34-12
 - Remove group tag because it is deprecated in Fedora
 
