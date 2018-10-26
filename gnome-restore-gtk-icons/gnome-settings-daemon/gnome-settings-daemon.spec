@@ -7,20 +7,21 @@
 %global geoclue_version 2.3.1
 
 Name:           gnome-settings-daemon
-Version:        3.28.1
+Version:        3.30.1.2
 Release:        1%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        GPLv2+
 URL:            https://download.gnome.org/sources/%{name}
-Source0:        https://download.gnome.org/sources/%{name}/3.28/%{name}-%{version}.tar.xz
+Source0:        https://download.gnome.org/sources/%{name}/3.30/%{name}-%{version}.tar.xz
 Source1:        org.gnome.settings-daemon.plugins.power.gschema.override
 
 Patch4:         %{name}-3.28-respect-menus-buttons-icons.patch
 
+BuildRequires:  meson >= 0.44.0
+BuildRequires:  gcc
 BuildRequires:  cups-devel
 BuildRequires:  gettext
-BuildRequires:  meson
 BuildRequires:  perl-interpreter
 BuildRequires:  pkgconfig(alsa)
 BuildRequires:  pkgconfig(colord) >= 1.0.2
@@ -80,7 +81,7 @@ Conflicts: gnome-shell < 3.25.4
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.28.
+buttons and menus in GNOME 3.30.
 
 A daemon to share settings from GNOME to other applications. It also
 handles global keybindings, as well as a number of desktop-wide settings.
@@ -202,11 +203,29 @@ mkdir $RPM_BUILD_ROOT%{_libdir}/gnome-settings-daemon-3.0/gtk-modules
 %{_libexecdir}/gsd-test-input-helper
 
 %changelog
+* Thu Oct 04 2018 Kalev Lember <klember@redhat.com> - 3.30.1.2-1
+- Update to 3.30.1.2
+
+* Fri Sep 28 2018 Kalev Lember <klember@redhat.com> - 3.30.1.1-1
+- Update to 3.30.1.1
+
+* Thu Sep 06 2018 Kalev Lember <klember@redhat.com> - 3.30.0-1
+- Update to 3.30.0
+
+* Sun Aug 12 2018 Kalev Lember <klember@redhat.com> - 3.29.90.1-1
+- Update to 3.29.90.1
+
+* Tue Jul 31 2018 Florian Weimer <fweimer@redhat.com> - 3.28.1-3
+- Rebuild with fixed binutils
+
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.28.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Thu Apr 12 2018 Kalev Lember <klember@redhat.com> - 3.28.1-1
 - Update to 3.28.1
 
 * Tue Apr 10 2018 Michael Catanzaro <mcatanzaro@gnome.org> - 3.28.0-2
-- Disable automatic suspend
+- Disable automatic suspend, except when on battery power
 
 * Mon Mar 12 2018 Kalev Lember <klember@redhat.com> - 3.28.0-1
 - Update to 3.28.0

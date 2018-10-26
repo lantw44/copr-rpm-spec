@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           gsettings-desktop-schemas
-Version:        3.28.0
-Release:        1%{?dist}.1
+Version:        3.28.1
+Release:        2%{?dist}.1
 Summary:        A collection of GSettings schemas (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        LGPLv2+
@@ -27,7 +27,7 @@ Requires: glib2 >= 2.31.0
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.28.
+buttons and menus in GNOME 3.30.
 
 gsettings-desktop-schemas contains a collection of GSettings schemas for
 settings shared by various components of a desktop.
@@ -72,6 +72,15 @@ make %{?_smp_mflags}
 
 
 %changelog
+* Fri Sep 07 2018 Kalev Lember <klember@redhat.com> - 3.28.1-2
+- Rebuilt against fixed atk (#1626575)
+
+* Tue Sep 04 2018 Kalev Lember <klember@redhat.com> - 3.28.1-1
+- Update to 3.28.1
+
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.28.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Mon Mar 12 2018 Kalev Lember <klember@redhat.com> - 3.28.0-1
 - Update to 3.28.0
 
