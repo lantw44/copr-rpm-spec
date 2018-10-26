@@ -1,24 +1,27 @@
 %global glib2_version 2.52.0
 %global gtk3_version 3.22.13
-%global webkit2gtk3_version 2.19.4
+%global webkit2gtk3_version 2.21.92
 
 Name: epiphany
 Epoch: 1
-Version: 3.28.5
+Version: 3.30.1
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv3+ and CC-BY-SA
 URL: https://wiki.gnome.org/Apps/Web
-Source0: https://download.gnome.org/sources/epiphany/3.28/%{name}-%{version}.tar.xz
+Source0: https://download.gnome.org/sources/epiphany/3.30/%{name}-%{version}.tar.xz
 
 # Fedora bookmarks
 Patch0: epiphany-default-bookmarks.patch
+# Allow removing it in GNOME Software
+Patch1: epiphany-dont-make-compulsory.patch
 
 # Reduce the minimum tab width
 Patch2: epiphany-3.24-reduce-tab-width.patch
 
 BuildRequires: desktop-file-utils
+BuildRequires: gcc
 BuildRequires: gettext-devel
 BuildRequires: iso-codes-devel
 BuildRequires: itstool
@@ -98,7 +101,7 @@ desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 
 %files runtime
 %license COPYING
-%doc README NEWS
+%doc NEWS README.md
 %{_datadir}/icons/hicolor/*/apps/org.gnome.Epiphany*
 %{_datadir}/glib-2.0/schemas/org.gnome.epiphany.gschema.xml
 %{_datadir}/glib-2.0/schemas/org.gnome.Epiphany.enums.xml
@@ -109,11 +112,23 @@ desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 %{_mandir}/man*/*
 
 %changelog
-* Fri Sep 21 2018 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.28.5-1
-- Update to 3.28.5
+* Fri Sep 21 2018 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.30.1-1
+- Update to 3.30.1
 
-* Tue Sep 04 2018 Kalev Lember <klember@redhat.com> - 1:3.28.4-1
-- Update to 3.28.4
+* Fri Sep 07 2018 Kalev Lember <klember@redhat.com> - 1:3.30.0-1
+- Update to 3.30.0
+
+* Mon Aug 20 2018 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.29.91-2
+- Add patch to allow removing Epiphany with GNOME Software
+
+* Mon Aug 13 2018 Kalev Lember <klember@redhat.com> - 1:3.29.91-1
+- Update to 3.29.91
+
+* Thu Jul 12 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.28.3.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
+* Tue Jul 10 2018 Pete Walter <pwalter@fedoraproject.org> - 1:3.28.3.1-2
+- Rebuild for ICU 62
 
 * Fri Jun 08 2018 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.28.3.1-1
 - Update to 3.28.3.1
