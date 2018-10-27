@@ -11,8 +11,8 @@
 %endif
 
 Name:       %{pkg_fullname}
-Version:    0.9.26
-Release:    16%{?dist}
+Version:    0.9.27
+Release:    1%{?dist}
 Summary:    Tiny C Compiler
 
 License:    LGPLv2
@@ -42,7 +42,7 @@ It can also run C source code as a script.
 
 %install
 %make_install
-rm -f %{buildroot}%{_datadir}/doc/tcc/tcc-doc.html
+rm %{buildroot}%{_datadir}/doc/tcc-doc.html
 
 %post
 /sbin/install-info %{_infodir}/tcc-doc.info.gz %{_infodir}/dir || :
@@ -53,55 +53,54 @@ if [ "$1" = 0 ]; then
 fi
 
 %files
-%{_bindir}/arm-eabi-tcc
-%{_bindir}/arm-fpa-ld-tcc
-%{_bindir}/arm-fpa-tcc
-%{_bindir}/arm-vfp-tcc
-%{_bindir}/c67-tcc
-%ifnarch i386 i486 i586 i686
-%{_bindir}/i386-tcc
-%endif
-%{_bindir}/i386-win32-tcc
 %{_bindir}/tcc
-%ifnarch x86_64 amd64
+%{_bindir}/arm-tcc
+%{_bindir}/arm-wince-tcc
+%{_bindir}/arm64-tcc
+%{_bindir}/c67-tcc
+%{_bindir}/i386-tcc
+%{_bindir}/i386-win32-tcc
 %{_bindir}/x86_64-tcc
-%endif
+%{_bindir}/x86_64-osx-tcc
 %{_bindir}/x86_64-win32-tcc
 %{_includedir}/libtcc.h
-%attr(644, -, -) %{_libdir}/libtcc.a
+%{_libdir}/libtcc.a
 %dir %{_libdir}/tcc
+%{_libdir}/tcc/libtcc1.a
+%{_libdir}/tcc/arm-libtcc1.a
+%{_libdir}/tcc/arm64-libtcc1.a
+%{_libdir}/tcc/i386-libtcc1.a
+%{_libdir}/tcc/x86_64-libtcc1.a
+%{_libdir}/tcc/x86_64-osx-libtcc1.a
 %dir %{_libdir}/tcc/include
 %{_libdir}/tcc/include/*.h
-%attr(644, -, -) %{_libdir}/tcc/libtcc1.a
-%ifnarch i386 i486 i586 i686
-%dir %{_libdir}/tcc/i386
-%dir %{_libdir}/tcc/i386/include
-%{_libdir}/tcc/i386/include/*.h
-%attr(644, -, -) %{_libdir}/tcc/i386/libtcc1.a
-%endif
 %dir %{_libdir}/tcc/win32
 %dir %{_libdir}/tcc/win32/include
 %dir %{_libdir}/tcc/win32/include/sec_api
-%dir %{_libdir}/tcc/win32/include/sys
 %dir %{_libdir}/tcc/win32/include/sec_api/sys
+%dir %{_libdir}/tcc/win32/include/sys
+%dir %{_libdir}/tcc/win32/include/tcc
 %dir %{_libdir}/tcc/win32/include/winapi
 %{_libdir}/tcc/win32/include/*.h
 %{_libdir}/tcc/win32/include/sec_api/*.h
 %{_libdir}/tcc/win32/include/sec_api/sys/*.h
 %{_libdir}/tcc/win32/include/sys/*.h
+%{_libdir}/tcc/win32/include/tcc/*.h
 %{_libdir}/tcc/win32/include/winapi/*.h
 %dir %{_libdir}/tcc/win32/lib
-%dir %{_libdir}/tcc/win32/lib/32
-%dir %{_libdir}/tcc/win32/lib/64
-%attr(644, -, -) %{_libdir}/tcc/win32/lib/32/libtcc1.a
-%attr(644, -, -) %{_libdir}/tcc/win32/lib/64/libtcc1.a
+%{_libdir}/tcc/win32/lib/arm-wince-libtcc1.a
+%{_libdir}/tcc/win32/lib/i386-win32-libtcc1.a
+%{_libdir}/tcc/win32/lib/x86_64-win32-libtcc1.a
 %{_libdir}/tcc/win32/lib/*.def
-%attr(644, -, -) %{_mandir}/man1/tcc.1.gz
-%attr(644, -, -) %{_infodir}/tcc-doc.info.gz
+%{_mandir}/man1/tcc.1.gz
+%{_infodir}/tcc-doc.info.gz
 %license COPYING
 %doc Changelog README TODO VERSION tcc-doc.html
 
 %changelog
+* Sat Oct 27 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.9.27-1
+- Update to 0.9.27
+
 * Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.9.26-16
 - Rebuilt for Fedora 29 and 30
 
