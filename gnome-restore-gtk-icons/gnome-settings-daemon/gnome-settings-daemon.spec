@@ -8,7 +8,7 @@
 
 Name:           gnome-settings-daemon
 Version:        3.30.1.2
-Release:        1%{?dist}.1
+Release:        2%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        GPLv2+
@@ -77,6 +77,8 @@ Conflicts: gnome-session < 3.27.90
 # functionality was moved to mutter; this conflict here makes sure not to break
 # older gdm, gnome-session and gnome-shell releases that expect the functionality
 Conflicts: gnome-shell < 3.25.4
+
+Recommends: gnome-remote-desktop
 
 %description
 Copr: lantw44/gnome-restore-gtk-icons
@@ -203,6 +205,9 @@ mkdir $RPM_BUILD_ROOT%{_libdir}/gnome-settings-daemon-3.0/gtk-modules
 %{_libexecdir}/gsd-test-input-helper
 
 %changelog
+* Fri Nov 09 2018 Ray Strode <rstrode@redhat.com> - 3.30.1.2-2
+- Add recommends for gnome-remote-desktop after irc discussion
+
 * Thu Oct 04 2018 Kalev Lember <klember@redhat.com> - 3.30.1.2-1
 - Update to 3.30.1.2
 
