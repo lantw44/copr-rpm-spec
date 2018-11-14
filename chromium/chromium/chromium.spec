@@ -44,7 +44,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    70.0.3538.77
+Version:    70.0.3538.102
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -95,6 +95,9 @@ Patch60:    chromium-bootstrap-python2.patch
 Patch70:    chromium-gcc8-r588316.patch
 Patch71:    chromium-gcc8-r588547.patch
 Patch72:    chromium-gcc8-r589614.patch
+
+# Add patches from upstream to fix GN bootstrap
+Patch80:    chromium-gn-r607596.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -610,6 +613,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Nov 14 2018 - Ting-Wei Lan <lantw44@gmail.com> - 70.0.3538.102-100
+- Update to 70.0.3538.102
+
 * Thu Oct 25 2018 - Ting-Wei Lan <lantw44@gmail.com> - 70.0.3538.77-100
 - Update to 70.0.3538.77
 
