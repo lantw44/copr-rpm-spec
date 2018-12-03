@@ -2,8 +2,8 @@
 %global pkgname Ghub
 
 Name:           emacs-%{pkg}
-Version:        2.0.1
-Release:        2%{?dist}
+Version:        3.0.0
+Release:        1%{?dist}
 Summary:        Minuscule GitHub client library for Emacs
 
 License:        GPLv3+
@@ -12,7 +12,9 @@ Source0:        https://github.com/magit/ghub/archive/v%{version}.tar.gz#/%{name
 
 BuildArch:      noarch
 BuildRequires:  emacs, texinfo
+BuildRequires:  emacs-dash, emacs-graphql, emacs-treepy
 Requires:       emacs(bin) >= %{_emacs_version}
+Requires:       emacs-dash, emacs-graphql, emacs-treepy
 Recommends:     git
 
 %description
@@ -25,13 +27,18 @@ using the Github REST (v3) and GraphQL (v4) APIs from Emacs packages.
 
 
 %build
-%make_build
+%make_build LOAD_PATH='-L . -L %{_emacs_sitelispdir}/dash -L %{_emacs_sitelispdir}/graphql -L %{_emacs_sitelispdir}/treepy'
 
 
 %install
 mkdir -p %{buildroot}%{_emacs_sitelispdir} %{buildroot}%{_emacs_sitestartdir}
 install -m 755 -d %{buildroot}%{_emacs_sitelispdir}/ghub
-install -m 644 ghub.el ghub.elc %{buildroot}%{_emacs_sitelispdir}/ghub/
+for filename in ghub ghub-graphql glab gtea gogs buck; do
+    for suffix in el elc; do
+        install -m 644 "${filename}.${suffix}" \
+            %{buildroot}%{_emacs_sitelispdir}/ghub/
+    done
+done
 install -m 644 ghub-autoloads.el %{buildroot}%{_emacs_sitelispdir}/ghub/
 ln -rs %{buildroot}%{_emacs_sitelispdir}/ghub/ghub-autoloads.el \
     %{buildroot}%{_emacs_sitestartdir}
@@ -53,8 +60,18 @@ fi
 %license LICENSE
 %doc README.md ghub.org
 %dir %{_emacs_sitelispdir}/ghub
+%{_emacs_sitelispdir}/ghub/buck.el
+%{_emacs_sitelispdir}/ghub/buck.elc
 %{_emacs_sitelispdir}/ghub/ghub.el
 %{_emacs_sitelispdir}/ghub/ghub.elc
+%{_emacs_sitelispdir}/ghub/ghub-graphql.el
+%{_emacs_sitelispdir}/ghub/ghub-graphql.elc
+%{_emacs_sitelispdir}/ghub/glab.el
+%{_emacs_sitelispdir}/ghub/glab.elc
+%{_emacs_sitelispdir}/ghub/gogs.el
+%{_emacs_sitelispdir}/ghub/gogs.elc
+%{_emacs_sitelispdir}/ghub/gtea.el
+%{_emacs_sitelispdir}/ghub/gtea.elc
 %{_emacs_sitelispdir}/ghub/ghub-autoloads.el
 %{_emacs_sitestartdir}/ghub-autoloads.el
 %{_infodir}/ghub.info.gz
@@ -62,6 +79,9 @@ fi
 
 
 %changelog
+* Sun Dec 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 3.0.0-1
+- Update to 3.0.0
+
 * Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.0.1-2
 - Rebuilt for Fedora 29 and 30
 
