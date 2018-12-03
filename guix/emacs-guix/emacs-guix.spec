@@ -2,8 +2,8 @@
 %global pkgname Guix
 
 Name:           emacs-%{pkg}
-Version:        0.4.1.1
-Release:        2%{?dist}
+Version:        0.5
+Release:        1%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
@@ -16,7 +16,7 @@ Source0:        https://emacs-guix.gitlab.io/website/releases/%{name}-%{version}
 BuildArch:      noarch
 BuildRequires:  emacs, texinfo
 BuildRequires:  guix >= 0.13.0
-BuildRequires:  pkgconfig(guile-2.0)
+BuildRequires:  pkgconfig(guile-2.0), guile-gcrypt
 BuildRequires:  emacs-geiser, emacs-dash, emacs-bui, emacs-magit
 
 Requires:       emacs(bin) >= %{_emacs_version}
@@ -94,6 +94,9 @@ fi
 
 
 %changelog
+* Sun Dec 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.5-1
+- Update to 0.5
+
 * Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.4.1.1-2
 - Rebuilt for Fedora 29 and 30
 
