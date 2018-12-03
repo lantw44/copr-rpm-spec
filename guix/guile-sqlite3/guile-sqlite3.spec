@@ -2,12 +2,12 @@
 
 Name:           guile-sqlite3
 Version:        0.1.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Guile bindings for the SQLite3 database engine
 
 License:        LGPLv3+
-URL:            https://notabug.org/civodul/guile-sqlite3
-Source0:        https://notabug.org/civodul/guile-sqlite3/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+URL:            https://notabug.org/guile-sqlite3/guile-sqlite3
+Source0:        https://notabug.org/guile-sqlite3/guile-sqlite3/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %global guile_source_dir %{_datadir}/guile/site/2.0
 %global guile_ccache_dir %{_libdir}/guile/2.0/site-ccache
@@ -45,6 +45,9 @@ autoreconf -fiv
 
 
 %changelog
+* Sun Dec 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-3
+- Update upstream website and source file URL
+
 * Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-2
 - Rebuilt for Fedora 29 and 30
 
