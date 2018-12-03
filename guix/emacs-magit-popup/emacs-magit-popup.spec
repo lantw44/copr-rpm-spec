@@ -2,8 +2,8 @@
 %global pkgname Magit-Popup
 
 Name:           emacs-%{pkg}
-Version:        2.12.3
-Release:        2%{?dist}
+Version:        2.12.4
+Release:        1%{?dist}
 Summary:        Define prefix-infix-suffix command combos for Emacs
 
 License:        GPLv3+
@@ -54,7 +54,7 @@ fi
 
 
 %files
-%license LICENCE
+%license LICENSE
 %doc AUTHORS.md README.md magit-popup.org
 %dir %{_emacs_sitelispdir}/magit-popup
 %{_emacs_sitelispdir}/magit-popup/magit-popup.el
@@ -66,6 +66,9 @@ fi
 
 
 %changelog
+* Sun Dec 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.12.4-1
+- Update to 2.12.4
+
 * Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.12.3-2
 - Rebuilt for Fedora 29 and 30
 
