@@ -1,15 +1,18 @@
 %global debug_package %{nil}
 
 Name:           guile-json
-Version:        1.0.1
-Release:        2%{?dist}
+Version:        1.3.2
+Release:        1%{?dist}
 Summary:        JSON module for Guile
 
-License:        LGPLv3+
+License:        GPLv3+
 URL:            https://savannah.nongnu.org/projects/guile-json
 Source0:        https://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.gz
 
-BuildRequires:  guile
+%global guile_source_dir %{_datadir}/guile/site/2.0
+%global guile_ccache_dir %{_libdir}/guile/2.0/site-ccache
+
+BuildRequires:  pkgconfig(guile-2.0)
 Requires:       guile
 
 %description
@@ -37,19 +40,23 @@ features:
 
 
 %files
-%license COPYING COPYING.LESSER
+%license COPYING
 %doc AUTHORS ChangeLog NEWS README
-%{_datadir}/guile/site/json.scm
-%{_datadir}/guile/site/json.go
-%dir %{_datadir}/guile/site/json
-%{_datadir}/guile/site/json/builder.go
-%{_datadir}/guile/site/json/builder.scm
-%{_datadir}/guile/site/json/parser.go
-%{_datadir}/guile/site/json/parser.scm
+%{guile_source_dir}/json.scm
+%{guile_ccache_dir}/json.go
+%dir %{guile_source_dir}/json
+%dir %{guile_ccache_dir}/json
+%{guile_source_dir}/json/builder.scm
+%{guile_ccache_dir}/json/builder.go
+%{guile_source_dir}/json/parser.scm
+%{guile_ccache_dir}/json/parser.go
 
 
 
 %changelog
+* Mon Dec 03 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.3.2-1
+- Update to 1.3.2
+
 * Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.0.1-2
 - Rebuilt for Fedora 29 and 30
 
