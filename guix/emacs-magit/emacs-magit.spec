@@ -12,14 +12,15 @@
 %endif
 
 Name:           emacs-%{pkg}
-Version:        2.13.0
-Release:        2%{?dist}
+Version:        2.13.1
+Release:        1%{?dist}
 Summary:        Emacs interface to the most common Git operations
 
 License:        GPLv3+
 URL:            https://magit.vc
 
-Source0:        https://github.com/magit/magit/releases/download/%{version}/magit-%{version}.tar.gz
+# Source0:        https://github.com/magit/magit/releases/download/%{version}/magit-%{version}.tar.gz
+Source0:        https://github.com/magit/magit/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
 BuildRequires:  emacs, git-core, texinfo
@@ -42,7 +43,9 @@ common operations convenient.
 %make_build \
     DASH_DIR=%{emacs_lispdir}/dash \
     GHUB_DIR=%{emacs_lispdir}/ghub \
+    GRAPHQL_DIR=%{emacs_lispdir}/graphql \
     MAGIT_POPUP_DIR=%{emacs_lispdir}/magit-popup \
+    TREEPY_DIR=%{emacs_lispdir}/treepy \
     WITH_EDITOR_DIR=%{emacs_lispdir}/with-editor
 
 %install
@@ -77,6 +80,9 @@ fi
 
 
 %changelog
+* Sun Dec 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.13.1-1
+- Update to upstream version 2.13.1
+
 * Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.13.0-2
 - Rebuilt for Fedora 29 and 30
 
