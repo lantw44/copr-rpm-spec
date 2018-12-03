@@ -2,8 +2,8 @@
 %global pkgname With-Editor
 
 Name:           emacs-%{pkg}
-Version:        2.7.3
-Release:        2%{?dist}
+Version:        2.8.0
+Release:        1%{?dist}
 Summary:        Use the Emacsclient as the editor of child processes
 
 License:        GPLv3+
@@ -64,6 +64,9 @@ fi
 
 
 %changelog
+* Sun Dec 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.8.0-1
+- Update to 2.8.0
+
 * Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.7.3-2
 - Rebuilt for Fedora 29 and 30
 
