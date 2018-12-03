@@ -2,8 +2,8 @@
 %global pkgname BUI
 
 Name:           emacs-%{pkg}
-Version:        1.1.0
-Release:        6%{?dist}
+Version:        1.2.0
+Release:        1%{?dist}
 Summary:        Buffer interface library for Emacs
 
 License:        GPLv3+
@@ -48,6 +48,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/bui/
 
 
 %changelog
+* Sun Dec 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.2.0-1
+- Update to 1.2.0
+
 * Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-6
 - Rebuilt for Fedora 29 and 30
 
