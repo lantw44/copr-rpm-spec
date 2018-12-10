@@ -21,6 +21,9 @@
 # https://github.com/dabeaz/ply/issues/66
 %bcond_without system_ply
 
+# Requires re2 2016.07.21 for re2::LazyRE2
+%bcond_with system_re2
+
 # Allow testing whether icu can be unbundled
 %bcond_with system_libicu
 
@@ -44,7 +47,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    70.0.3538.110
+Version:    71.0.3578.80
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -92,9 +95,7 @@ Patch50:    chromium-nacl-llvm-ar.patch
 Patch60:    chromium-bootstrap-python2.patch
 
 # Add patches from upstream to fix build with GCC
-Patch70:    chromium-gcc8-r588316.patch
-Patch71:    chromium-gcc8-r588547.patch
-Patch72:    chromium-gcc8-r589614.patch
+Patch70:    chromium-gcc8-r599733.patch
 
 # Add patches from upstream to fix GN bootstrap
 Patch80:    chromium-gn-r607596.patch
@@ -287,6 +288,7 @@ find -type f -exec \
 %endif
     third_party/inspector_protocol \
     third_party/jinja2 \
+    third_party/jsoncpp \
     third_party/jstemplate \
     third_party/khronos \
     third_party/leveldatabase \
@@ -341,6 +343,9 @@ find -type f -exec \
     third_party/protobuf/third_party/six \
     third_party/pyjson5 \
     third_party/qcms \
+%if !%{with system_re2}
+    third_party/re2 \
+%endif
     third_party/rnnoise \
     third_party/s2cellid \
     third_party/sfntly \
@@ -351,6 +356,7 @@ find -type f -exec \
     third_party/smhasher \
     third_party/speech-dispatcher \
     third_party/spirv-headers \
+    third_party/SPIRV-Tools \
     third_party/spirv-tools-angle \
     third_party/sqlite \
     third_party/swiftshader \
@@ -406,7 +412,9 @@ find -type f -exec \
 %endif
     libxslt \
     opus \
+%if %{with system_re2}
     re2 \
+%endif
     snappy \
     yasm \
     zlib
@@ -613,6 +621,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon Dec 10 2018 - Ting-Wei Lan <lantw44@gmail.com> - 71.0.3578.80-100
+- Update to 71.0.3578.80
+- Bundle re2 because the one included in Fedora is too old
+
 * Tue Nov 20 2018 - Ting-Wei Lan <lantw44@gmail.com> - 70.0.3538.110-100
 - Update to 70.0.3538.110
 

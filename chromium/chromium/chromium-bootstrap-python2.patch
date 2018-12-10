@@ -1,12 +1,12 @@
---- chromium-69.0.3497.81/tools/gn/bootstrap/bootstrap.py.orig	2018-09-05 03:10:45.000000000 +0800
-+++ chromium-69.0.3497.81/tools/gn/bootstrap/bootstrap.py	2018-09-08 11:15:16.819121260 +0800
-@@ -88,6 +88,7 @@
-     gn_gen_args += ' is_debug=false'
-   subprocess.check_call([
-       gn_path, 'gen', out_dir,
-+      '--script-executable=/usr/bin/python2',
-       '--args=%s' % gn_gen_args, "--root=" + SRC_ROOT
-   ])
+--- chromium-71.0.3578.80/tools/gn/bootstrap/bootstrap.py.orig	2018-12-06 01:06:19.815698655 +0800
++++ chromium-71.0.3578.80/tools/gn/bootstrap/bootstrap.py	2018-12-06 01:07:32.262069775 +0800
+@@ -94,6 +94,7 @@
+       gn_gen_args += ' is_debug=false'
+     subprocess.check_call([
+         gn_path, 'gen', out_dir,
++        '--script-executable=/usr/bin/python2',
+         '--args=%s' % gn_gen_args, "--root=" + SRC_ROOT
+     ])
  
 diff -up chromium-67.0.3396.99/third_party/catapult/common/py_vulcanize/py_vulcanize/generate.py.py2 chromium-67.0.3396.99/third_party/catapult/common/py_vulcanize/py_vulcanize/generate.py
 --- chromium-67.0.3396.99/third_party/catapult/common/py_vulcanize/py_vulcanize/generate.py.py2	2018-07-25 14:14:02.004886479 -0400

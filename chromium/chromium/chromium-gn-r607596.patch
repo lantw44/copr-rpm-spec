@@ -17,8 +17,8 @@ Cr-Commit-Position: refs/heads/master@{#607596}
  tools/gn/bootstrap/bootstrap.py | 6 ------
  1 file changed, 6 deletions(-)
 
---- chromium-70.0.3538.102/tools/gn/bootstrap/bootstrap.py.orig	2018-11-14 06:52:07.000000000 +0800
-+++ chromium-70.0.3538.102/tools/gn/bootstrap/bootstrap.py	2018-11-15 00:22:05.719552038 +0800
+--- chromium-71.0.3578.80/tools/gn/bootstrap/bootstrap.py.orig	2018-12-06 01:09:40.799953118 +0800
++++ chromium-71.0.3578.80/tools/gn/bootstrap/bootstrap.py	2018-12-06 01:09:50.474868296 +0800
 @@ -46,10 +46,6 @@
        '--build-path',
        help='The directory in which to build gn, '
@@ -28,9 +28,9 @@ Cr-Commit-Position: refs/heads/master@{#607596}
 -      action='store_true',
 -      help='Download and build with the Debian sysroot.')
    parser.add_option('-v', '--verbose', help='ignored')
-   options, args = parser.parse_args(argv)
-   if args:
-@@ -71,8 +67,6 @@
+   parser.add_option(
+       '--skip-generate-buildfiles',
+@@ -76,8 +72,6 @@
        '--no-last-commit-position',
        '--out-path=' + gn_build_dir,
    ]
