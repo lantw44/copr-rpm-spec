@@ -2,7 +2,7 @@
 %global pkgname Magit-Popup
 
 Name:           emacs-%{pkg}
-Version:        2.12.4
+Version:        2.12.5
 Release:        1%{?dist}
 Summary:        Define prefix-infix-suffix command combos for Emacs
 
@@ -66,6 +66,9 @@ fi
 
 
 %changelog
+* Sun Dec 16 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.12.5-1
+- Update to 2.12.5
+
 * Sun Dec 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.12.4-1
 - Update to 2.12.4
 
