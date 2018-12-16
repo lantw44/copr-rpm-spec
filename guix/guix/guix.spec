@@ -5,8 +5,8 @@
 %global selinuxmodule guix-daemon
 
 Name:           guix
-Version:        0.15.0
-Release:        2%{?dist}
+Version:        0.16.0
+Release:        1%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -37,13 +37,14 @@ BuildRequires:  pkgconfig(sqlite3)
 BuildRequires:  zlib-devel, bzip2-devel, libgcrypt-devel
 BuildRequires:  gettext, help2man, graphviz
 BuildRequires:  bash-completion, fish
-BuildRequires:  guile-git, guile-json, guile-sqlite3, guile-ssh, gnutls-guile
+BuildRequires:  guile-git, guile-gcrypt, guile-json, guile-sqlite3, guile-ssh
+BuildRequires:  gnutls-guile
 BuildRequires:  selinux-policy
 BuildRequires:  systemd
 
 %{?systemd_requires}
 
-Requires:       guile-git, guile-sqlite3, gnutls-guile
+Requires:       guile-git, guile-gcrypt, guile-sqlite3, gnutls-guile
 Requires:       gzip, bzip2, xz
 Requires:       selinux-policy
 Requires:       %{_bindir}/dot
@@ -215,11 +216,12 @@ fi
 %doc AUTHORS ChangeLog CODE-OF-CONDUCT NEWS README ROADMAP THANKS TODO
 %{_bindir}/guix
 %{_bindir}/guix-daemon
+%dir %{_libexecdir}/guix
+%{_libexecdir}/guix/authenticate
 %{_libexecdir}/guix/download
 %{_libexecdir}/guix/list-runtime-roots
 %{_libexecdir}/guix/offload
 %{_libexecdir}/guix/substitute
-%{_libexecdir}/guix-authenticate
 %{guile_source_dir}/gnu.scm
 %{guile_ccache_dir}/gnu.go
 %dir %{guile_source_dir}/gnu
@@ -346,10 +348,12 @@ fi
 %dir %{guile_ccache_dir}/guix/tests
 %{guile_ccache_dir}/guix/tests/*.go
 %dir %{_datadir}/guix
+%{_datadir}/guix/ci.guix.info.pub
 %{_datadir}/guix/berlin.guixsd.org.pub
 %{_datadir}/guix/hydra.gnu.org.pub
 %{_datadir}/selinux/packages/%{selinuxmodule}.cil
 %{_infodir}/%{name}.info*
+%{_infodir}/%{name}.de.info*
 %{_infodir}/%{name}.fr.info*
 %dir %{_infodir}/images
 %{_infodir}/images/bootstrap-graph.png.gz
@@ -391,6 +395,9 @@ fi
 
 
 %changelog
+* Sun Dec 16 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.16.0-1
+- Update to 0.16.0
+
 * Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.15.0-2
 - Add GCC to BuildRequires for Fedora 29 and later
 
