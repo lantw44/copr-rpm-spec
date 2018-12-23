@@ -6,7 +6,7 @@
 
 Name:           guix
 Version:        0.16.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -22,7 +22,7 @@ Source5:        https://alpha.gnu.org/gnu/guix/bootstrap/x86_64-linux/20131110/g
 %global guix_group        guixbuild
 %global guile_source_dir  %{_datadir}/guile/site/2.0
 %global guile_ccache_dir  %{_libdir}/guile/2.0/site-ccache
-%global guix_profile_root %{_localstatedir}/guix/profiles/per-user/root/guix-profile
+%global guix_profile_root %{_localstatedir}/guix/profiles/per-user/root/current-guix
 
 %global bash_completion_dir %(pkg-config --variable=completionsdir bash-completion)
 %global fish_completion_dir %(pkg-config --variable=completionsdir fish)
@@ -395,6 +395,9 @@ fi
 
 
 %changelog
+* Sat Dec 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.16.0-2
+- Fix ExecStart paths in systemd service files
+
 * Sun Dec 16 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.16.0-1
 - Update to 0.16.0
 
