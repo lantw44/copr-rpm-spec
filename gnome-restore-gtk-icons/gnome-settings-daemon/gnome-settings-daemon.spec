@@ -7,8 +7,8 @@
 %global geoclue_version 2.3.1
 
 Name:           gnome-settings-daemon
-Version:        3.30.1.2
-Release:        2%{?dist}.1
+Version:        3.30.2
+Release:        1%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        GPLv2+
@@ -205,6 +205,9 @@ mkdir $RPM_BUILD_ROOT%{_libdir}/gnome-settings-daemon-3.0/gtk-modules
 %{_libexecdir}/gsd-test-input-helper
 
 %changelog
+* Wed Jan 09 2019 Kalev Lember <klember@redhat.com> - 3.30.2-1
+- Update to 3.30.2
+
 * Fri Nov 09 2018 Ray Strode <rstrode@redhat.com> - 3.30.1.2-2
 - Add recommends for gnome-remote-desktop after irc discussion
 
