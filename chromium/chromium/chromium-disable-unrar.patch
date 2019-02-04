@@ -1,104 +1,78 @@
-diff --git a/chrome/browser/safe_browsing/download_protection/check_client_download_request.cc b/chrome/browser/safe_browsing/download_protection/check_client_download_request.cc
-index f5aaff83c87a..737e168ec5aa 100644
---- a/chrome/browser/safe_browsing/download_protection/check_client_download_request.cc
-+++ b/chrome/browser/safe_browsing/download_protection/check_client_download_request.cc
-@@ -379,10 +379,6 @@ void CheckClientDownloadRequest::AnalyzeFile() {
-   // are enabled.
-   if (item_->GetTargetFilePath().MatchesExtension(FILE_PATH_LITERAL(".zip"))) {
-     StartExtractZipFeatures();
--  } else if (item_->GetTargetFilePath().MatchesExtension(
--                 FILE_PATH_LITERAL(".rar")) &&
--             base::FeatureList::IsEnabled(kInspectDownloadedRarFiles)) {
--    StartExtractRarFeatures();
- #if defined(OS_MACOSX)
-   } else if (item_->GetTargetFilePath().MatchesExtension(
-                  FILE_PATH_LITERAL(".dmg")) ||
-@@ -499,71 +495,6 @@ void CheckClientDownloadRequest::ExtractFileFeatures(
-   OnFileFeatureExtractionDone();
- }
- 
--void CheckClientDownloadRequest::StartExtractRarFeatures() {
--  DCHECK_CURRENTLY_ON(BrowserThread::UI);
--  DCHECK(item_);  // Called directly from Start(), item should still exist.
--  rar_analysis_start_time_ = base::TimeTicks::Now();
--  // We give the rar analyzer a weak pointer to this object.  Since the
--  // analyzer is refcounted, it might outlive the request.
--  rar_analyzer_ = new SandboxedRarAnalyzer(
--      item_->GetFullPath(),
--      base::BindRepeating(&CheckClientDownloadRequest::OnRarAnalysisFinished,
--                          weakptr_factory_.GetWeakPtr()),
--      content::ServiceManagerConnection::GetForProcess()->GetConnector());
--  rar_analyzer_->Start();
--}
--
--void CheckClientDownloadRequest::OnRarAnalysisFinished(
--    const ArchiveAnalyzerResults& results) {
--  DCHECK_CURRENTLY_ON(BrowserThread::UI);
--  if (item_ == nullptr) {
--    PostFinishTask(DownloadCheckResult::UNKNOWN, REASON_REQUEST_CANCELED);
--    return;
--  }
--  if (!service_)
--    return;
--
--  archive_is_valid_ =
--      (results.success ? ArchiveValid::VALID : ArchiveValid::INVALID);
--  archived_executable_ = results.has_executable;
--  CopyArchivedBinaries(results.archived_binary, &archived_binaries_);
--  DVLOG(1) << "Rar analysis finished for " << item_->GetFullPath().value()
--           << ", has_executable=" << results.has_executable
--           << ", has_archive=" << results.has_archive
--           << ", success=" << results.success;
--
--  if (archived_executable_) {
--    UMA_HISTOGRAM_COUNTS_100("SBClientDownload.RarFileArchivedBinariesCount",
--                             results.archived_binary.size());
--  }
--  UMA_HISTOGRAM_BOOLEAN("SBClientDownload.RarFileSuccess", results.success);
--  UMA_HISTOGRAM_BOOLEAN("SBClientDownload.RarFileHasExecutable",
--                        archived_executable_);
--  UMA_HISTOGRAM_BOOLEAN("SBClientDownload.RarFileHasArchiveButNoExecutable",
--                        results.has_archive && !archived_executable_);
--  UMA_HISTOGRAM_TIMES("SBClientDownload.ExtractRarFeaturesTime",
--                      base::TimeTicks::Now() - rar_analysis_start_time_);
--  for (const auto& file_name : results.archived_archive_filenames)
--    RecordArchivedArchiveFileExtensionType(file_name);
--
--  if (!archived_executable_) {
--    if (results.has_archive) {
--      type_ = ClientDownloadRequest::RAR_COMPRESSED_ARCHIVE;
--    } else if (!results.success) {
--      // .rar files that look invalid to Chrome may be successfully unpacked by
--      // other archive tools, so they may be a real threat.
--      type_ = ClientDownloadRequest::INVALID_RAR;
--    } else {
--      // Normal rar w/o EXEs, or invalid rar and not extended-reporting.
--      PostFinishTask(DownloadCheckResult::UNKNOWN,
--                     REASON_ARCHIVE_WITHOUT_BINARIES);
--      return;
--    }
--  }
--
--  OnFileFeatureExtractionDone();
--}
--
- void CheckClientDownloadRequest::StartExtractZipFeatures() {
-   DCHECK_CURRENTLY_ON(BrowserThread::UI);
-   DCHECK(item_);  // Called directly from Start(), item should still exist.
 diff --git a/chrome/browser/safe_browsing/download_protection/check_client_download_request.h b/chrome/browser/safe_browsing/download_protection/check_client_download_request.h
-index 9042d5d589ab..1c50dcff4312 100644
+index af72d11371e1..472cb0098d5e 100644
 --- a/chrome/browser/safe_browsing/download_protection/check_client_download_request.h
 +++ b/chrome/browser/safe_browsing/download_protection/check_client_download_request.h
-@@ -148,7 +148,6 @@ class CheckClientDownloadRequest
-   scoped_refptr<SafeBrowsingDatabaseManager> database_manager_;
-   const bool pingback_enabled_;
-   std::unique_ptr<network::SimpleURLLoader> loader_;
--  scoped_refptr<SandboxedRarAnalyzer> rar_analyzer_;
+@@ -22,7 +22,6 @@
+ #include "chrome/browser/safe_browsing/safe_browsing_navigation_observer_manager.h"
+ #include "chrome/browser/safe_browsing/ui_manager.h"
+ #include "chrome/common/safe_browsing/binary_feature_extractor.h"
+-#include "chrome/services/file_util/public/cpp/sandboxed_rar_analyzer.h"
+ #include "chrome/services/file_util/public/cpp/sandboxed_zip_analyzer.h"
+ #include "components/download/public/common/download_item.h"
+ #include "components/history/core/browser/history_service.h"
+diff --git a/chrome/browser/safe_browsing/download_protection/file_analyzer.cc b/chrome/browser/safe_browsing/download_protection/file_analyzer.cc
+index f46d4ed23669..05b9a5c5071a 100644
+--- a/chrome/browser/safe_browsing/download_protection/file_analyzer.cc
++++ b/chrome/browser/safe_browsing/download_protection/file_analyzer.cc
+@@ -94,8 +94,6 @@ void FileAnalyzer::Start(const base::FilePath& target_path,
+ 
+   if (target_path_.MatchesExtension(FILE_PATH_LITERAL(".zip"))) {
+     StartExtractZipFeatures();
+-  } else if (target_path_.MatchesExtension(FILE_PATH_LITERAL(".rar"))) {
+-    StartExtractRarFeatures();
+ #if defined(OS_MACOSX)
+   } else if (target_path_.MatchesExtension(FILE_PATH_LITERAL(".dmg")) ||
+              target_path_.MatchesExtension(FILE_PATH_LITERAL(".img")) ||
+@@ -211,6 +209,7 @@ void FileAnalyzer::OnZipAnalysisFinished(
+   std::move(callback_).Run(std::move(results_));
+ }
+ 
++#if 0
+ void FileAnalyzer::StartExtractRarFeatures() {
+   DCHECK_CURRENTLY_ON(BrowserThread::UI);
+ 
+@@ -267,6 +266,7 @@ void FileAnalyzer::OnRarAnalysisFinished(
+ 
+   std::move(callback_).Run(std::move(results_));
+ }
++#endif
+ 
+ #if defined(OS_MACOSX)
+ // This is called for .DMGs and other files that can be parsed by
+diff --git a/chrome/browser/safe_browsing/download_protection/file_analyzer.h b/chrome/browser/safe_browsing/download_protection/file_analyzer.h
+index a1f5abf77f5c..6e88eb7954ad 100644
+--- a/chrome/browser/safe_browsing/download_protection/file_analyzer.h
++++ b/chrome/browser/safe_browsing/download_protection/file_analyzer.h
+@@ -11,7 +11,6 @@
+ #include "base/memory/weak_ptr.h"
+ #include "build/build_config.h"
+ #include "chrome/common/safe_browsing/binary_feature_extractor.h"
+-#include "chrome/services/file_util/public/cpp/sandboxed_rar_analyzer.h"
+ #include "chrome/services/file_util/public/cpp/sandboxed_zip_analyzer.h"
+ #include "components/safe_browsing/proto/csd.pb.h"
+ #include "third_party/protobuf/src/google/protobuf/repeated_field.h"
+@@ -88,9 +87,6 @@ class FileAnalyzer {
+   void StartExtractZipFeatures();
+   void OnZipAnalysisFinished(const ArchiveAnalyzerResults& archive_results);
+ 
+-  void StartExtractRarFeatures();
+-  void OnRarAnalysisFinished(const ArchiveAnalyzerResults& archive_results);
+-
+ #if defined(OS_MACOSX)
+   void StartExtractDmgFeatures();
+   void ExtractFileOrDmgFeatures(bool download_file_has_koly_signature);
+@@ -107,9 +103,6 @@ class FileAnalyzer {
    scoped_refptr<SandboxedZipAnalyzer> zip_analyzer_;
-   base::TimeTicks rar_analysis_start_time_;
    base::TimeTicks zip_analysis_start_time_;
+ 
+-  scoped_refptr<SandboxedRarAnalyzer> rar_analyzer_;
+-  base::TimeTicks rar_analysis_start_time_;
+-
+ #if defined(OS_MACOSX)
+   scoped_refptr<SandboxedDMGAnalyzer> dmg_analyzer_;
+   base::TimeTicks dmg_analysis_start_time_;
 diff --git a/chrome/common/safe_browsing/BUILD.gn b/chrome/common/safe_browsing/BUILD.gn
-index 92cc4f57d03b..4780e931e9e7 100644
+index b93eeaeb7e87..7f2f94c6e377 100644
 --- a/chrome/common/safe_browsing/BUILD.gn
 +++ b/chrome/common/safe_browsing/BUILD.gn
 @@ -68,7 +68,6 @@ if (safe_browsing_mode == 1) {
@@ -109,14 +83,37 @@ index 92cc4f57d03b..4780e931e9e7 100644
      ]
  
      defines = [
-@@ -121,7 +120,6 @@ source_set("safe_browsing") {
+@@ -150,7 +149,6 @@ source_set("safe_browsing") {
      deps += [
        ":archive_analyzer_results",
-       ":download_protection_util",
+       ":download_type_util",
 -      ":rar_analyzer",
        "//components/safe_browsing:features",
      ]
  
+diff --git a/chrome/common/safe_browsing/DEPS b/chrome/common/safe_browsing/DEPS
+index c191816456b0..49076ee372c0 100644
+--- a/chrome/common/safe_browsing/DEPS
++++ b/chrome/common/safe_browsing/DEPS
+@@ -1,6 +1,5 @@
+ include_rules = [
+   "+components/safe_browsing",
+   "+third_party/protobuf",
+-  "+third_party/unrar",
+   "+third_party/zlib",
+ ]
+diff --git a/chrome/common/safe_browsing/rar_analyzer.cc b/chrome/common/safe_browsing/rar_analyzer.cc
+index 996c0164ef7f..915f7f93d50b 100644
+--- a/chrome/common/safe_browsing/rar_analyzer.cc
++++ b/chrome/common/safe_browsing/rar_analyzer.cc
+@@ -13,7 +13,6 @@
+ #include "chrome/common/safe_browsing/archive_analyzer_results.h"
+ #include "chrome/common/safe_browsing/download_type_util.h"
+ #include "chrome/common/safe_browsing/file_type_policies.h"
+-#include "third_party/unrar/src/unrar_wrapper.h"
+ 
+ namespace safe_browsing {
+ namespace rar_analyzer {
 diff --git a/chrome/services/file_util/public/cpp/BUILD.gn b/chrome/services/file_util/public/cpp/BUILD.gn
 index 158cbfc6d157..6d8b0df7c59e 100644
 --- a/chrome/services/file_util/public/cpp/BUILD.gn

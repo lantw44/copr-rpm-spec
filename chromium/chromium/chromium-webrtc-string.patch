@@ -1,0 +1,10 @@
+--- chromium-72.0.3626.81/third_party/webrtc/modules/desktop_capture/linux/window_capturer_x11.cc.orig	2019-01-30 09:20:37.000000000 +0800
++++ chromium-72.0.3626.81/third_party/webrtc/modules/desktop_capture/linux/window_capturer_x11.cc	2019-02-01 04:44:52.656360563 +0800
+@@ -14,6 +14,7 @@
+ #include <X11/extensions/Xcomposite.h>
+ #include <X11/extensions/Xrender.h>
+ 
++#include <string.h>
+ #include <memory>
+ #include <string>
+ #include <utility>

@@ -8,8 +8,8 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
-# Require harfbuzz >= 1.8.6 for hb_font_funcs_set_glyph_h_advances_func
-%if 0%{?fedora} >= 29
+# Require harfbuzz >= 2.0.0 for hb_ot_tags_from_script_and_language
+%if 0%{?fedora} >= 30
 %bcond_without system_harfbuzz
 %else
 %bcond_with system_harfbuzz
@@ -47,7 +47,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    71.0.3578.98
+Version:    72.0.3626.81
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -94,11 +94,8 @@ Patch50:    chromium-nacl-llvm-ar.patch
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
 Patch60:    chromium-bootstrap-python2.patch
 
-# Add patches from upstream to fix build with GCC
-Patch70:    chromium-gcc8-r599733.patch
-
-# Add patches from upstream to fix GN bootstrap
-Patch80:    chromium-gn-r607596.patch
+# Fix missing includes
+Patch70:    chromium-webrtc-string.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -109,7 +106,7 @@ ExclusiveArch: x86_64
 BuildRequires: clang, llvm
 %endif
 # Basic tools and libraries
-BuildRequires: ninja-build, nodejs, bison, gperf, hwdata
+BuildRequires: ninja-build, nodejs, java-headless, bison, gperf, hwdata
 BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
 BuildRequires: libcap-devel, cups-devel, alsa-lib-devel
 %if 0%{?fedora} >= 30
@@ -228,10 +225,10 @@ find -type f -exec \
     net/third_party/uri_template \
     third_party/abseil-cpp \
     third_party/adobe \
-    third_party/analytics \
     third_party/angle \
     third_party/angle/src/common/third_party/base \
     third_party/angle/src/common/third_party/smhasher \
+    third_party/angle/src/common/third_party/xxhash \
     third_party/angle/src/third_party/compiler \
     third_party/angle/src/third_party/libXNVCtrl \
     third_party/angle/src/third_party/trace_event \
@@ -262,6 +259,7 @@ find -type f -exec \
     third_party/catapult/tracing/third_party/pako \
     third_party/ced \
     third_party/cld_3 \
+    third_party/closure_compiler \
     third_party/crashpad \
     third_party/crashpad/crashpad/third_party/zlib \
     third_party/crc32c \
@@ -273,7 +271,6 @@ find -type f -exec \
     third_party/flatbuffers \
     third_party/flot \
     third_party/freetype \
-    third_party/glslang-angle \
     third_party/google_input_tools \
     third_party/google_input_tools/third_party/closure_library \
     third_party/google_input_tools/third_party/closure_library/third_party/closure \
@@ -319,6 +316,7 @@ find -type f -exec \
     third_party/mesa \
     third_party/metrics_proto \
     third_party/modp_b64 \
+    third_party/nasm \
     third_party/node \
     third_party/node/node_modules/polymer-bundler/lib/third_party/UglifyJS2 \
     third_party/openh264 \
@@ -357,7 +355,6 @@ find -type f -exec \
     third_party/speech-dispatcher \
     third_party/spirv-headers \
     third_party/SPIRV-Tools \
-    third_party/spirv-tools-angle \
     third_party/sqlite \
     third_party/swiftshader \
     third_party/swiftshader/third_party/llvm-subzero \
@@ -366,10 +363,8 @@ find -type f -exec \
     third_party/usb_ids \
     third_party/usrsctp \
     third_party/vulkan \
-    third_party/vulkan-validation-layers \
     third_party/web-animations-js \
     third_party/webdriver \
-    third_party/WebKit \
     third_party/webrtc \
     third_party/webrtc/common_audio/third_party/fft4g \
     third_party/webrtc/common_audio/third_party/spl_sqrt_floor \
@@ -454,8 +449,10 @@ export LDFLAGS='%{__global_ldflags}'
 export CC=clang CXX=clang++
 %else
 export CC=gcc CXX=g++
-export CXXFLAGS="$CXXFLAGS -fno-delete-null-pointer-checks -fpermissive"
 %endif
+
+# GN needs gold to bootstrap
+export LDFLAGS="$LDFLAGS -fuse-ld=gold"
 
 gn_args=(
     is_debug=false
@@ -621,6 +618,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Feb 02 2019 - Ting-Wei Lan <lantw44@gmail.com> - 72.0.3626.81-100
+- Update to 72.0.3626.81
+- Remove -fno-delete-null-pointer-checks because it causes nullptr checks in
+  constexpr to fail to compile.
+
 * Thu Dec 13 2018 - Ting-Wei Lan <lantw44@gmail.com> - 71.0.3578.98-100
 - Update to 71.0.3578.98
 
