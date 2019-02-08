@@ -47,7 +47,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    72.0.3626.81
+Version:    72.0.3626.96
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -618,6 +618,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Feb 08 2019 - Ting-Wei Lan <lantw44@gmail.com> - 72.0.3626.96-100
+- Update to 72.0.3626.96
+
 * Sat Feb 02 2019 - Ting-Wei Lan <lantw44@gmail.com> - 72.0.3626.81-100
 - Update to 72.0.3626.81
 - Remove -fno-delete-null-pointer-checks because it causes nullptr checks in
