@@ -55,15 +55,15 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.28
-Release:    3%{?dist}
+Version:    2.29
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
 URL:        https://www.gnu.org/software/libc
 Source0:    https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 
-BuildRequires: bison
+BuildRequires: bison, python3
 BuildRequires: %{cross_triplet}-filesystem
 BuildRequires: %{cross_triplet}-gcc-stage1
 BuildRequires: %{cross_triplet}-kernel-headers
@@ -600,6 +600,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Thu Feb 14 2019 Ting-Wei Lan <lantw44@gmail.com> - 2.29-1
+- Update to 2.29
+
 * Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.28-3
 - Rebuilt for Fedora 29 and 30
 
