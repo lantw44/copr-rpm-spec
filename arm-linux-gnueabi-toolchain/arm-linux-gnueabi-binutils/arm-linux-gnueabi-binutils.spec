@@ -7,8 +7,8 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.31.1
-Release:    2%{?dist}
+Version:    2.32
+Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 License:    GPLv3+
@@ -89,6 +89,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Fri Feb 22 2019 Ting-Wei Lan <lantw44@gmail.com> - 2.32-1
+- Update to 2.32
+
 * Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 2.31.1-2
 - Add GCC to BuildRequires for Fedora 29 and later
 
