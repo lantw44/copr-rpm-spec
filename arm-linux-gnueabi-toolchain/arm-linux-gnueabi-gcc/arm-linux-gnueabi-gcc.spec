@@ -29,8 +29,8 @@
 %bcond_without ada
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    8.2.0
-Release:    2%{?dist}
+Version:    8.3.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -369,6 +369,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Sat Feb 23 2019 Ting-Wei Lan <lantw44@gmail.com> - 8.3.0-1
+- Update to new stable release 8.3.0
+
 * Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 8.2.0-2
 - Add GCC to BuildRequires for Fedora 29 and later
 
