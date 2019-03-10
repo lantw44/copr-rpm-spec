@@ -3,7 +3,7 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    4.20.0
+Version:    5.0.0
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -12,7 +12,7 @@ Summary:    Header files for the Linux kernel (%{cross_triplet})
 
 License:    GPLv2
 URL:        https://www.kernel.org/
-Source0:    https://www.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
+Source0:    https://www.kernel.org/pub/linux/kernel/v5.x/linux-%{kversion}.tar.xz
 
 BuildRequires: %{cross_triplet}-filesystem
 BuildRequires: perl
@@ -49,6 +49,7 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/linux/*.h
 %dir %{cross_sysroot}/usr/include/linux/android
 %{cross_sysroot}/usr/include/linux/android/binder.h
+%{cross_sysroot}/usr/include/linux/android/binderfs.h
 %dir %{cross_sysroot}/usr/include/linux/byteorder
 %{cross_sysroot}/usr/include/linux/byteorder/*.h
 %dir %{cross_sysroot}/usr/include/linux/caif
@@ -123,6 +124,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Sun Mar 10 2019 Ting-Wei Lan <lantw44@gmail.com> - 5.0.0-1
+- Update to 5.0
+
 * Sun Jan 13 2019 Ting-Wei Lan <lantw44@gmail.com> - 4.20.0-1
 - Update to 4.20
 
