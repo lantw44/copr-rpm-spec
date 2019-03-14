@@ -47,7 +47,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    72.0.3626.121
+Version:    73.0.3683.75
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -94,8 +94,16 @@ Patch50:    chromium-nacl-llvm-ar.patch
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
 Patch60:    chromium-bootstrap-python2.patch
 
-# Fix missing includes
-Patch70:    chromium-webrtc-string.patch
+# Pull upstream patches from Gentoo
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=a18dfb2bc7b05084
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8a4db4358f52de35
+Patch70:    chromium-gcc8-r630084.patch
+Patch71:    chromium-gcc8-r630140.patch
+Patch72:    chromium-gcc8-r630249.patch
+Patch73:    chromium-gcc8-r630355.patch
+Patch74:    chromium-gcc8-r631472.patch
+Patch75:    chromium-gcc8-r631962.patch
+Patch76:    chromium-gcc8-r632385.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -217,11 +225,9 @@ find -type f -exec \
     courgette/third_party \
     native_client/src/third_party/dlmalloc \
     native_client/src/third_party/valgrind \
-    net/third_party/http2 \
     net/third_party/mozilla_security_manager \
     net/third_party/nss \
     net/third_party/quic \
-    net/third_party/spdy \
     net/third_party/uri_template \
     third_party/abseil-cpp \
     third_party/adobe \
@@ -348,6 +354,7 @@ find -type f -exec \
     third_party/s2cellid \
     third_party/sfntly \
     third_party/skia \
+    third_party/skia/include/third_party/vulkan \
     third_party/skia/third_party/gif \
     third_party/skia/third_party/skcms \
     third_party/skia/third_party/vulkan \
@@ -380,6 +387,7 @@ find -type f -exec \
     third_party/zlib/google \
     tools/gn/base/third_party/icu \
     url/third_party/mozilla \
+    v8/src/third_party/siphash \
     v8/src/third_party/valgrind \
     v8/src/third_party/utf8-decoder \
     v8/third_party/inspector_protocol \
@@ -618,6 +626,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Mar 13 2019 - Ting-Wei Lan <lantw44@gmail.com> - 73.0.3683.75-100
+- Update to 73.0.3683.75
+
 * Sat Mar 02 2019 - Ting-Wei Lan <lantw44@gmail.com> - 72.0.3626.121-100
 - Update to 72.0.3626.121
 
