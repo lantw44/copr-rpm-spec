@@ -48,7 +48,7 @@
 
 Name:       chromium
 Version:    73.0.3683.86
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -81,7 +81,6 @@ Source11:   chromium-browser.desktop
 # The following two source files are copied verbatim from
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/tree/
 Source12:   chromium-browser.xml
-Source13:   chromium-browser.appdata.xml
 
 # Disable non-free unrar
 Patch20:    chromium-disable-unrar.patch
@@ -104,6 +103,10 @@ Patch73:    chromium-gcc8-r630355.patch
 Patch74:    chromium-gcc8-r631472.patch
 Patch75:    chromium-gcc8-r631962.patch
 Patch76:    chromium-gcc8-r632385.patch
+
+# Pull patches from Fedora
+# https://src.fedoraproject.org/rpms/chromium/c/9071ee2d2f996b84
+Patch80:    chromium-webrtc-cstring.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -163,10 +166,11 @@ BuildRequires: re2-devel
 BuildRequires: snappy-devel
 BuildRequires: yasm
 BuildRequires: zlib-devel
-# use_*
+# *_use_*
 BuildRequires: pciutils-devel
 BuildRequires: speech-dispatcher-devel
 BuildRequires: pulseaudio-libs-devel
+BuildRequires: pkgconfig(libpipewire-0.2)
 # install desktop files
 BuildRequires: desktop-file-utils
 # install AppData files
@@ -471,6 +475,7 @@ gn_args=(
     use_cups=true
     use_gnome_keyring=true
     use_gio=true
+    use_jumbo_build=true
     use_kerberos=true
     use_libpci=true
     use_pulseaudio=true
@@ -478,6 +483,8 @@ gn_args=(
 %if %{with system_harfbuzz}
     use_system_harfbuzz=true
 %endif
+    rtc_use_pipewire=true
+    rtc_link_pipewire=true
     enable_hangout_services_extension=false
     enable_nacl=true
     fatal_linker_warnings=false
@@ -529,18 +536,21 @@ ninja -v %{_smp_mflags} -C out/Release chrome chrome_sandbox chromedriver
 %install
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{chromiumdir}/locales
+mkdir -p %{buildroot}%{chromiumdir}/MEIPreload
 mkdir -p %{buildroot}%{chromiumdir}/swiftshader
 mkdir -p %{buildroot}%{_mandir}/man1
-mkdir -p %{buildroot}%{_datadir}/appdata
 mkdir -p %{buildroot}%{_datadir}/applications
 mkdir -p %{buildroot}%{_datadir}/gnome-control-center/default-apps
+mkdir -p %{buildroot}%{_datadir}/metainfo
 sed -e "s|@@CHROMIUMDIR@@|%{chromiumdir}|" -e "s|@@BUILDTARGET@@|`cat /etc/redhat-release`|" \
     %{SOURCE10} > chromium-browser.sh
 install -m 755 chromium-browser.sh %{buildroot}%{_bindir}/chromium-browser
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE11}
 install -m 644 %{SOURCE12} %{buildroot}%{_datadir}/gnome-control-center/default-apps/
-appstream-util validate-relax --nonet %{SOURCE13}
-install -m 644 %{SOURCE13} %{buildroot}%{_datadir}/appdata/
+install -m 644 chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml \
+    %{buildroot}%{_datadir}/metainfo/
+appstream-util validate-relax --nonet \
+    %{buildroot}%{_datadir}/metainfo/chromium-browser.appdata.xml
 sed -e "s|@@MENUNAME@@|Chromium|g" -e "s|@@PACKAGE@@|chromium|g" \
     chrome/app/resources/manpage.1.in > chrome.1
 install -m 644 chrome.1 %{buildroot}%{_mandir}/man1/chromium-browser.1
@@ -557,6 +567,7 @@ install -m 644 out/Release/natives_blob.bin %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/v8_context_snapshot.bin %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/*.pak %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/locales/*.pak %{buildroot}%{chromiumdir}/locales/
+install -m 644 out/Release/MEIPreload/* %{buildroot}%{chromiumdir}/MEIPreload/
 install -m 755 out/Release/swiftshader/*.so %{buildroot}%{chromiumdir}/swiftshader/
 for i in 16 32; do
     mkdir -p %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps
@@ -591,7 +602,6 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %license LICENSE
 %doc AUTHORS README.md
 %{_bindir}/chromium-browser
-%{_datadir}/appdata/chromium-browser.appdata.xml
 %{_datadir}/applications/chromium-browser.desktop
 %{_datadir}/gnome-control-center/default-apps/chromium-browser.xml
 %{_datadir}/icons/hicolor/16x16/apps/chromium-browser.png
@@ -603,6 +613,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/icons/hicolor/64x64/apps/chromium-browser.png
 %{_datadir}/icons/hicolor/128x128/apps/chromium-browser.png
 %{_datadir}/icons/hicolor/256x256/apps/chromium-browser.png
+%{_datadir}/metainfo/chromium-browser.appdata.xml
 %{_mandir}/man1/chromium-browser.1.gz
 %dir %{chromiumdir}
 %{chromiumdir}/chromium-browser
@@ -619,6 +630,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/*.pak
 %dir %{chromiumdir}/locales
 %{chromiumdir}/locales/*.pak
+%dir %{chromiumdir}/MEIPreload
+%{chromiumdir}/MEIPreload/manifest.json
+%{chromiumdir}/MEIPreload/preloaded_data.pb
 %dir %{chromiumdir}/swiftshader
 %{chromiumdir}/swiftshader/libEGL.so
 %{chromiumdir}/swiftshader/libGLESv2.so
@@ -626,6 +640,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Mar 23 2019 - Ting-Wei Lan <lantw44@gmail.com> - 73.0.3683.86-101
+- Enable jumbo build
+- Install MEIPreload
+- Use upstream AppStream data file and move to metainfo
+
 * Thu Mar 21 2019 - Ting-Wei Lan <lantw44@gmail.com> - 73.0.3683.86-100
 - Update to 73.0.3683.86
 
