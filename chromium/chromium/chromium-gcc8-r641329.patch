@@ -1,0 +1,101 @@
+From 0e121588d500217a38d57f5e285aa586676059b2 Mon Sep 17 00:00:00 2001
+From: Sergey Abbakumov <sabbakumov@yandex-team.ru>
+Date: Fri, 15 Mar 2019 22:32:16 +0000
+Subject: [PATCH] base::Value::SetKey/SetPath performance improvements
+
+Use rvalue references to avoid copying sizeof(base::Value).
+
+This commit gives about -20KB of the browser.dll and browser_child.dll
+size. Also it reduces renderer memory consumption by ~200
+KB max.
+
+Bug: 646113
+Change-Id: I8c86594838292a2faf4d134b899a7978dbc214fc
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/1520407
+Reviewed-by: danakj <danakj@chromium.org>
+Commit-Queue: danakj <danakj@chromium.org>
+Cr-Commit-Position: refs/heads/master@{#641329}
+---
+ base/values.cc | 10 +++++-----
+ base/values.h  | 10 +++++-----
+ 2 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/base/values.cc b/base/values.cc
+index 2b0c6c8163d8..0c002551b317 100644
+--- a/base/values.cc
++++ b/base/values.cc
+@@ -353,7 +353,7 @@ bool Value::RemoveKey(StringPiece key) {
+   return dict_.erase(key) != 0;
+ }
+ 
+-Value* Value::SetKey(StringPiece key, Value value) {
++Value* Value::SetKey(StringPiece key, Value&& value) {
+   CHECK(is_dict());
+   // NOTE: We can't use |insert_or_assign| here, as only |try_emplace| does
+   // an explicit conversion from StringPiece to std::string if necessary.
+@@ -366,7 +366,7 @@ Value* Value::SetKey(StringPiece key, Value value) {
+   return result.first->second.get();
+ }
+ 
+-Value* Value::SetKey(std::string&& key, Value value) {
++Value* Value::SetKey(std::string&& key, Value&& value) {
+   CHECK(is_dict());
+   return dict_
+       .insert_or_assign(std::move(key),
+@@ -374,7 +374,7 @@ Value* Value::SetKey(std::string&& key, Value value) {
+       .first->second.get();
+ }
+ 
+-Value* Value::SetKey(const char* key, Value value) {
++Value* Value::SetKey(const char* key, Value&& value) {
+   return SetKey(StringPiece(key), std::move(value));
+ }
+ 
+@@ -425,12 +425,12 @@ const Value* Value::FindPathOfType(span<const StringPiece> path,
+   return result;
+ }
+ 
+-Value* Value::SetPath(std::initializer_list<StringPiece> path, Value value) {
++Value* Value::SetPath(std::initializer_list<StringPiece> path, Value&& value) {
+   DCHECK_GE(path.size(), 2u) << "Use SetKey() for a path of length 1.";
+   return SetPath(make_span(path.begin(), path.size()), std::move(value));
+ }
+ 
+-Value* Value::SetPath(span<const StringPiece> path, Value value) {
++Value* Value::SetPath(span<const StringPiece> path, Value&& value) {
+   DCHECK(path.begin() != path.end());  // Can't be empty path.
+ 
+   // Walk/construct intermediate dictionaries. The last element requires
+diff --git a/base/values.h b/base/values.h
+index 7546fa53756d..429ef1dfdebd 100644
+--- a/base/values.h
++++ b/base/values.h
+@@ -210,11 +210,11 @@ class BASE_EXPORT Value {
+   //
+   // Example:
+   //   SetKey("foo", std::move(myvalue));
+-  Value* SetKey(StringPiece key, Value value);
++  Value* SetKey(StringPiece key, Value&& value);
+   // This overload results in a performance improvement for std::string&&.
+-  Value* SetKey(std::string&& key, Value value);
++  Value* SetKey(std::string&& key, Value&& value);
+   // This overload is necessary to avoid ambiguity for const char* arguments.
+-  Value* SetKey(const char* key, Value value);
++  Value* SetKey(const char* key, Value&& value);
+ 
+   // This attemps to remove the value associated with |key|. In case of failure,
+   // e.g. the key does not exist, |false| is returned and the underlying
+@@ -276,8 +276,8 @@ class BASE_EXPORT Value {
+   //   value.SetPath(components, std::move(myvalue));
+   //
+   // Note: If there is only one component in the path, use SetKey() instead.
+-  Value* SetPath(std::initializer_list<StringPiece> path, Value value);
+-  Value* SetPath(span<const StringPiece> path, Value value);
++  Value* SetPath(std::initializer_list<StringPiece> path, Value&& value);
++  Value* SetPath(span<const StringPiece> path, Value&& value);
+ 
+   // Tries to remove a Value at the given path.
+   //
+-- 
+2.20.1
+

@@ -1,8 +1,8 @@
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
-index 68dc6a001a49..5f828d828464 100644
+index ca6ff2b13809..e96b04df99fe 100644
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1695,7 +1695,7 @@ config("thin_archive") {
+@@ -1708,7 +1708,7 @@ config("thin_archive") {
    # have a "thin archive" mode (it does accept -T, but it means truncating
    # archive names to 16 characters, which is not what we want).
    if ((is_posix && !is_nacl && !is_mac && !is_ios) || is_fuchsia) {
@@ -12,10 +12,10 @@ index 68dc6a001a49..5f828d828464 100644
      arflags = [ "/llvmlibthin" ]
    }
 diff --git a/build/toolchain/gcc_toolchain.gni b/build/toolchain/gcc_toolchain.gni
-index d3bf0ae004be..20be4a557ed3 100644
+index 7326a840dc58..01927b126d1b 100644
 --- a/build/toolchain/gcc_toolchain.gni
 +++ b/build/toolchain/gcc_toolchain.gni
-@@ -351,7 +351,7 @@ template("gcc_toolchain") {
+@@ -377,7 +377,7 @@ template("gcc_toolchain") {
        } else {
          rspfile = "{{output}}.rsp"
          rspfile_content = "{{inputs}}"

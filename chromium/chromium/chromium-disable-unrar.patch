@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/safe_browsing/download_protection/check_client_download_request.h b/chrome/browser/safe_browsing/download_protection/check_client_download_request.h
-index af72d11371e1..472cb0098d5e 100644
+index 557124968ac2..625830599b5e 100644
 --- a/chrome/browser/safe_browsing/download_protection/check_client_download_request.h
 +++ b/chrome/browser/safe_browsing/download_protection/check_client_download_request.h
 @@ -22,7 +22,6 @@
@@ -11,10 +11,10 @@ index af72d11371e1..472cb0098d5e 100644
  #include "components/download/public/common/download_item.h"
  #include "components/history/core/browser/history_service.h"
 diff --git a/chrome/browser/safe_browsing/download_protection/file_analyzer.cc b/chrome/browser/safe_browsing/download_protection/file_analyzer.cc
-index 683d4f23f2c6..35483e4a4041 100644
+index 4d4756b45221..43bacd5e5742 100644
 --- a/chrome/browser/safe_browsing/download_protection/file_analyzer.cc
 +++ b/chrome/browser/safe_browsing/download_protection/file_analyzer.cc
-@@ -99,8 +99,6 @@ void FileAnalyzer::Start(const base::FilePath& target_path,
+@@ -100,8 +100,6 @@ void FileAnalyzer::Start(const base::FilePath& target_path,
  
    if (inspection_type == DownloadFileType::ZIP) {
      StartExtractZipFeatures();
@@ -23,7 +23,7 @@ index 683d4f23f2c6..35483e4a4041 100644
  #if defined(OS_MACOSX)
    } else if (inspection_type == DownloadFileType::DMG) {
      StartExtractDmgFeatures();
-@@ -210,6 +208,7 @@ void FileAnalyzer::OnZipAnalysisFinished(
+@@ -214,6 +212,7 @@ void FileAnalyzer::OnZipAnalysisFinished(
    std::move(callback_).Run(std::move(results_));
  }
  
@@ -31,7 +31,7 @@ index 683d4f23f2c6..35483e4a4041 100644
  void FileAnalyzer::StartExtractRarFeatures() {
    DCHECK_CURRENTLY_ON(BrowserThread::UI);
  
-@@ -266,6 +265,7 @@ void FileAnalyzer::OnRarAnalysisFinished(
+@@ -273,6 +272,7 @@ void FileAnalyzer::OnRarAnalysisFinished(
  
    std::move(callback_).Run(std::move(results_));
  }
@@ -40,7 +40,7 @@ index 683d4f23f2c6..35483e4a4041 100644
  #if defined(OS_MACOSX)
  // This is called for .DMGs and other files that can be parsed by
 diff --git a/chrome/browser/safe_browsing/download_protection/file_analyzer.h b/chrome/browser/safe_browsing/download_protection/file_analyzer.h
-index a1f5abf77f5c..6e88eb7954ad 100644
+index 99684ffae04a..60ae52f70565 100644
 --- a/chrome/browser/safe_browsing/download_protection/file_analyzer.h
 +++ b/chrome/browser/safe_browsing/download_protection/file_analyzer.h
 @@ -11,7 +11,6 @@
@@ -51,7 +51,7 @@ index a1f5abf77f5c..6e88eb7954ad 100644
  #include "chrome/services/file_util/public/cpp/sandboxed_zip_analyzer.h"
  #include "components/safe_browsing/proto/csd.pb.h"
  #include "third_party/protobuf/src/google/protobuf/repeated_field.h"
-@@ -88,9 +87,6 @@ class FileAnalyzer {
+@@ -94,9 +93,6 @@ class FileAnalyzer {
    void StartExtractZipFeatures();
    void OnZipAnalysisFinished(const ArchiveAnalyzerResults& archive_results);
  
@@ -61,7 +61,7 @@ index a1f5abf77f5c..6e88eb7954ad 100644
  #if defined(OS_MACOSX)
    void StartExtractDmgFeatures();
    void ExtractFileOrDmgFeatures(bool download_file_has_koly_signature);
-@@ -107,9 +103,6 @@ class FileAnalyzer {
+@@ -113,9 +109,6 @@ class FileAnalyzer {
    scoped_refptr<SandboxedZipAnalyzer> zip_analyzer_;
    base::TimeTicks zip_analysis_start_time_;
  
@@ -103,7 +103,7 @@ index c191816456b0..49076ee372c0 100644
    "+third_party/zlib",
  ]
 diff --git a/chrome/common/safe_browsing/rar_analyzer.cc b/chrome/common/safe_browsing/rar_analyzer.cc
-index b8d56f05248d..dfefc7b1b05f 100644
+index a9161d4acf61..14ec282a7579 100644
 --- a/chrome/common/safe_browsing/rar_analyzer.cc
 +++ b/chrome/common/safe_browsing/rar_analyzer.cc
 @@ -15,7 +15,6 @@
@@ -115,7 +115,7 @@ index b8d56f05248d..dfefc7b1b05f 100644
  namespace safe_browsing {
  namespace rar_analyzer {
 diff --git a/chrome/services/file_util/public/cpp/BUILD.gn b/chrome/services/file_util/public/cpp/BUILD.gn
-index 158cbfc6d157..6d8b0df7c59e 100644
+index 351a5e2e90b3..213f49de1ee9 100644
 --- a/chrome/services/file_util/public/cpp/BUILD.gn
 +++ b/chrome/services/file_util/public/cpp/BUILD.gn
 @@ -14,8 +14,6 @@ source_set("cpp") {
@@ -127,13 +127,13 @@ index 158cbfc6d157..6d8b0df7c59e 100644
        "sandboxed_zip_analyzer.cc",
        "sandboxed_zip_analyzer.h",
      ]
-@@ -35,7 +33,6 @@ source_set("unit_tests") {
+@@ -49,7 +47,6 @@ if (safe_browsing_mode == 1) {
  
-   sources = [
-     "sandboxed_dmg_analyzer_mac_unittest.cc",
--    "sandboxed_rar_analyzer_unittest.cc",
-     "sandboxed_zip_analyzer_unittest.cc",
-   ]
+     sources = [
+       "sandboxed_dmg_analyzer_mac_unittest.cc",
+-      "sandboxed_rar_analyzer_unittest.cc",
+       "sandboxed_zip_analyzer_unittest.cc",
+     ]
  
 diff --git a/chrome/services/file_util/public/mojom/safe_archive_analyzer.mojom b/chrome/services/file_util/public/mojom/safe_archive_analyzer.mojom
 index 266160351e18..15d5aaba3657 100644

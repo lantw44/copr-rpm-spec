@@ -47,7 +47,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    73.0.3683.103
+Version:    74.0.3729.108
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -93,16 +93,13 @@ Patch50:    chromium-nacl-llvm-ar.patch
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
 Patch60:    chromium-bootstrap-python2.patch
 
-# Pull upstream patches from Gentoo
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=a18dfb2bc7b05084
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8a4db4358f52de35
-Patch70:    chromium-gcc8-r630084.patch
-Patch71:    chromium-gcc8-r630140.patch
-Patch72:    chromium-gcc8-r630249.patch
-Patch73:    chromium-gcc8-r630355.patch
-Patch74:    chromium-gcc8-r631472.patch
-Patch75:    chromium-gcc8-r631962.patch
-Patch76:    chromium-gcc8-r632385.patch
+# Pull upstream patches
+Patch70:    chromium-gcc8-r641329.patch
+Patch71:    chromium-gcc8-r641404.patch
+Patch72:    chromium-gcc8-r642680.patch
+Patch73:    chromium-gcc8-r647271.patch
+Patch74:    chromium-gcc8-r647382.patch
+Patch75:    chromium-gcc8-cl1503254.patch
 
 # Pull patches from Fedora
 # https://src.fedoraproject.org/rpms/chromium/c/9071ee2d2f996b84
@@ -274,13 +271,16 @@ find -type f -exec \
     third_party/crashpad/crashpad/third_party/zlib \
     third_party/crc32c \
     third_party/cros_system_api \
+    third_party/dav1d \
     third_party/devscripts \
     third_party/dom_distiller_js \
+    third_party/emoji-segmenter \
     third_party/ffmpeg \
     third_party/fips181 \
     third_party/flatbuffers \
     third_party/flot \
     third_party/freetype \
+    third_party/glslang \
     third_party/google_input_tools \
     third_party/google_input_tools/third_party/closure_library \
     third_party/google_input_tools/third_party/closure_library/third_party/closure \
@@ -640,6 +640,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Apr 25 2019 - Ting-Wei Lan <lantw44@gmail.com> - 74.0.3729.108-100
+- Update to 74.0.3729.108
+
 * Sat Apr 06 2019 - Ting-Wei Lan <lantw44@gmail.com> - 73.0.3683.103-100
 - Update to 73.0.3683.103
 

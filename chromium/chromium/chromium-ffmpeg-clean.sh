@@ -130,6 +130,7 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/pcm_tablegen.h \
 		libavcodec/pixblockdsp.h \
 		libavcodec/pixels.h \
+		libavcodec/png.h \
 		libavcodec/put_bits.h \
 		libavcodec/qpeldsp.h \
 		libavcodec/ratecontrol.h \
