@@ -20,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 # This file is obtained from official Chromium packages distributed by Fedora:
-# http://pkgs.fedoraproject.org/cgit/rpms/chromium.git/commit/?id=8a15fdf
+# https://src.fedoraproject.org/rpms/chromium/c/8a15fdfccca6239b
 #
 # This script has been modified by Ting-Wei Lan <lantw44@gmail.com> for using
 # in lantw44/chromium Copr repository.
