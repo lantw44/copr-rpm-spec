@@ -1,19 +1,19 @@
-%global glib2_version 2.53.0
-%global gtk3_version 3.15.3
-%global gnome_desktop_version 3.27.90
-%global libgweather_version 3.9.5
-%global gsettings_desktop_schemas_version 3.23.3
+%global glib2_version 2.56
 %global geocode_glib_version 3.10.0
+%global gnome_desktop_version 3.27.90
+%global gsettings_desktop_schemas_version 3.27.90
+%global gtk3_version 3.15.3
+%global libgweather_version 3.9.5
 %global geoclue_version 2.3.1
 
 Name:           gnome-settings-daemon
-Version:        3.30.2
+Version:        3.32.0
 Release:        1%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        GPLv2+
 URL:            https://download.gnome.org/sources/%{name}
-Source0:        https://download.gnome.org/sources/%{name}/3.30/%{name}-%{version}.tar.xz
+Source0:        https://download.gnome.org/sources/%{name}/3.32/%{name}-%{version}.tar.xz
 Source1:        org.gnome.settings-daemon.plugins.power.gschema.override
 
 Patch4:         %{name}-3.28-respect-menus-buttons-icons.patch
@@ -47,7 +47,6 @@ BuildRequires:  pkgconfig(polkit-gobject-1)
 BuildRequires:  pkgconfig(upower-glib)
 BuildRequires:  pkgconfig(x11)
 BuildRequires:  pkgconfig(xi)
-BuildRequires:  pkgconfig(xtst)
 BuildRequires:  pkgconfig(wayland-client)
 %ifnarch s390 s390x
 BuildRequires:  pkgconfig(libwacom) >= 0.7
@@ -78,12 +77,10 @@ Conflicts: gnome-session < 3.27.90
 # older gdm, gnome-session and gnome-shell releases that expect the functionality
 Conflicts: gnome-shell < 3.25.4
 
-Recommends: gnome-remote-desktop
-
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.30.
+buttons and menus in GNOME 3.32.
 
 A daemon to share settings from GNOME to other applications. It also
 handles global keybindings, as well as a number of desktop-wide settings.
@@ -202,11 +199,28 @@ mkdir $RPM_BUILD_ROOT%{_libdir}/gnome-settings-daemon-3.0/gtk-modules
 %files devel
 %{_includedir}/gnome-settings-daemon-3.0
 %{_libdir}/pkgconfig/gnome-settings-daemon.pc
-%{_libexecdir}/gsd-test-input-helper
 
 %changelog
-* Wed Jan 09 2019 Kalev Lember <klember@redhat.com> - 3.30.2-1
-- Update to 3.30.2
+* Mon Mar 11 2019 Kalev Lember <klember@redhat.com> - 3.32.0-1
+- Update to 3.32.0
+
+* Wed Mar 06 2019 Kalev Lember <klember@redhat.com> - 3.31.92-1
+- Update to 3.31.92
+
+* Wed Feb 20 2019 Kalev Lember <klember@redhat.com> - 3.31.91-1
+- Update to 3.31.91
+
+* Wed Feb 06 2019 Kalev Lember <klember@redhat.com> - 3.31.90-1
+- Update to 3.31.90
+
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.31.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Wed Jan 09 2019 Kalev Lember <klember@redhat.com> - 3.31.2-1
+- Update to 3.31.2
+
+* Tue Nov 20 2018 Pete Walter <pwalter@fedoraproject.org> - 3.30.1.2-3
+- Move gnome-remote-desktop recommends to gnome-control-center
 
 * Fri Nov 09 2018 Ray Strode <rstrode@redhat.com> - 3.30.1.2-2
 - Add recommends for gnome-remote-desktop after irc discussion

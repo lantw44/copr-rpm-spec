@@ -1,21 +1,22 @@
 %global debug_package %{nil}
 
 Name:           gsettings-desktop-schemas
-Version:        3.28.1
-Release:        2%{?dist}.1
+Version:        3.32.0
+Release:        1%{?dist}.1
 Summary:        A collection of GSettings schemas (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        LGPLv2+
 # no homepage exists for this component
 URL:            http://bugzilla.gnome.org/enter_bug.cgi?product=gsettings-desktop-schemas
-Source0:        http://download.gnome.org/sources/%{name}/3.28/%{name}-%{version}.tar.xz
+Source0:        http://download.gnome.org/sources/%{name}/3.32/%{name}-%{version}.tar.xz
 
 # revert settings related to icons and buttons
 Patch0:         %{name}-3.24-revert-icons-settings.patch
 
-BuildRequires: glib2-devel >= 2.31.0
-BuildRequires: intltool
-BuildRequires: gobject-introspection-devel
+BuildRequires:  gettext
+BuildRequires:  glib2-devel >= 2.31.0
+BuildRequires:  gobject-introspection-devel
+BuildRequires:  meson
 
 # Older versions need the "scroll-method" key that was removed in 3.19.3
 Conflicts: control-center < 1:3.19.3
@@ -24,13 +25,18 @@ Conflicts: mutter < 3.19.3
 
 Requires: glib2 >= 2.31.0
 
+# Recommend the default fonts set in the schemas
+Recommends: font(cantarell)
+Recommends: font(sourcecodepro)
+
 %description
 Copr: lantw44/gnome-restore-gtk-icons
 Note: This is a modified package. Install it if you want to see icons in GTK+
-buttons and menus in GNOME 3.30.
+buttons and menus in GNOME 3.32.
 
 gsettings-desktop-schemas contains a collection of GSettings schemas for
 settings shared by various components of a desktop.
+
 
 %package        devel
 Summary:        Development files for %{name}
@@ -46,14 +52,19 @@ and header files for developing applications that use %{name}.
 
 
 %build
-%configure --disable-schemas-compile --enable-introspection=yes
-make %{?_smp_mflags}
+%meson
+%meson_build
 
 
 %install
-%make_install
+%meson_install
 
 %find_lang %{name} --with-gnome
+
+
+%check
+# Test that the schemas compile
+glib-compile-schemas --dry-run --strict $RPM_BUILD_ROOT%{_datadir}/glib-2.0/schemas
 
 
 %files -f %{name}.lang
@@ -72,6 +83,40 @@ make %{?_smp_mflags}
 
 
 %changelog
+* Mon Mar 11 2019 Kalev Lember <klember@redhat.com> - 3.32.0-1
+- Update to 3.32.0
+
+* Wed Mar 06 2019 Kalev Lember <klember@redhat.com> - 3.31.92-1
+- Update to 3.31.92
+
+* Mon Feb 25 2019 Kalev Lember <klember@redhat.com> - 3.31.91-2
+- Use fonts() provides instead of requiring specific package names (#1677056)
+
+* Wed Feb 20 2019 Kalev Lember <klember@redhat.com> - 3.31.91-1
+- Update to 3.31.91
+
+* Tue Feb 19 2019 Kalev Lember <klember@redhat.com> - 3.31.90-2
+- Recommend the default fonts set in the schemas:
+  abattis-cantarell-fonts and adobe-source-code-pro-fonts (#1677056)
+
+* Wed Feb 06 2019 Kalev Lember <klember@redhat.com> - 3.31.90-1
+- Update to 3.31.90
+
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.31.0.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Tue Jan 15 2019 Kalev Lember <klember@redhat.com> - 3.31.0.2-1
+- Update to 3.31.0.2
+- Switch to meson once again now that enums generation is fixed
+
+* Thu Jan 10 2019 Kalev Lember <klember@redhat.com> - 3.31.0.1-2
+- Switch back to autotools to fix missing org.gnome.desktop.enums.xml
+- Add a test to verify that the schemas compile
+
+* Wed Jan 09 2019 Kalev Lember <klember@redhat.com> - 3.31.0.1-1
+- Update to 3.31.0.1
+- Switch to the meson build system
+
 * Fri Sep 07 2018 Kalev Lember <klember@redhat.com> - 3.28.1-2
 - Rebuilt against fixed atk (#1626575)
 
