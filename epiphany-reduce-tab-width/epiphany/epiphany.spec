@@ -1,16 +1,16 @@
-%global glib2_version 2.52.0
-%global gtk3_version 3.22.13
+%global glib2_version 2.56.0
+%global gtk3_version 3.24.0
 %global webkit2gtk3_version 2.21.92
 
 Name: epiphany
 Epoch: 1
-Version: 3.30.4
+Version: 3.32.1.2
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv3+ and CC-BY-SA
 URL: https://wiki.gnome.org/Apps/Web
-Source0: https://download.gnome.org/sources/epiphany/3.30/%{name}-%{version}.tar.xz
+Source0: https://download.gnome.org/sources/epiphany/3.32/%{name}-%{version}.tar.xz
 
 # Fedora bookmarks
 Patch0: epiphany-default-bookmarks.patch
@@ -28,6 +28,7 @@ BuildRequires: itstool
 BuildRequires: libappstream-glib-devel
 BuildRequires: meson
 BuildRequires: pkgconfig(cairo) >= 1.2
+BuildRequires: pkgconfig(evince-document-3.0)
 BuildRequires: pkgconfig(gcr-3) >= 3.5.5
 BuildRequires: pkgconfig(gdk-3.0) >= %{gtk3_version}
 BuildRequires: pkgconfig(gdk-pixbuf-2.0) >= 2.14
@@ -40,6 +41,7 @@ BuildRequires: pkgconfig(hogweed)
 BuildRequires: pkgconfig(icu-uc) >= 4.6
 BuildRequires: pkgconfig(json-glib-1.0) >= 1.2.0
 BuildRequires: pkgconfig(libdazzle-1.0)
+BuildRequires: pkgconfig(libhandy-0.0)
 BuildRequires: pkgconfig(libnotify) >= 0.5.1
 BuildRequires: pkgconfig(libsecret-1) >= 0.14
 BuildRequires: pkgconfig(libsoup-2.4) >= 2.48.0
@@ -80,7 +82,7 @@ installing the epiphany application itself.
 %autosetup -p1
 
 %build
-%meson -Ddistributor_name=Fedora
+%meson
 %meson_build
 
 %install
@@ -112,11 +114,35 @@ desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 %{_mandir}/man*/*
 
 %changelog
-* Thu Apr 18 2019 Michael Catanzaro <mcatanzaro@gnome.org> - 1:3.30.4-1
-- Update to 3.30.4
+* Fri Mar 22 2019 Kalev Lember <klember@redhat.com> - 1:3.32.1.2-1
+- Update to 3.32.1.2
 
-* Tue Feb 12 2019 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.30.3-1
-- Update to 3.30.3
+* Thu Mar 21 2019 Kalev Lember <klember@redhat.com> - 1:3.32.1.1-1
+- Update to 3.32.1.1
+
+* Wed Mar 20 2019 Kalev Lember <klember@redhat.com> - 1:3.32.1-1
+- Update to 3.32.1
+
+* Mon Mar 11 2019 Kalev Lember <klember@redhat.com> - 1:3.32.0-1
+- Update to 3.32.0
+
+* Mon Mar 04 2019 Kalev Lember <klember@redhat.com> - 1:3.31.92-1
+- Update to 3.31.92
+
+* Tue Feb 19 2019 Kalev Lember <klember@redhat.com> - 1:3.31.91-1
+- Update to 3.31.91
+
+* Tue Feb 05 2019 Kalev Lember <klember@redhat.com> - 1:3.31.90-1
+- Update to 3.31.90
+
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.31.4-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Wed Jan 23 2019 Pete Walter <pwalter@fedoraproject.org> - 1:3.31.4-2
+- Rebuild for ICU 63
+
+* Tue Jan 08 2019 Kalev Lember <klember@redhat.com> - 1:3.31.4-1
+- Update to 3.31.4
 
 * Mon Oct 22 2018 Kalev Lember <klember@redhat.com> - 1:3.30.2-1
 - Update to 3.30.2
