@@ -6,7 +6,7 @@
 
 Name:           guix
 Version:        0.16.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -395,6 +395,9 @@ fi
 
 
 %changelog
+* Wed May 01 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.16.0-3
+- Rebuilt for Fedora 30 and 31
+
 * Sat Dec 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.16.0-2
 - Fix ExecStart paths in systemd service files
 

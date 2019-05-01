@@ -8,7 +8,7 @@
 
 Name:       %{cross_triplet}-binutils
 Version:    2.32
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 License:    GPLv3+
@@ -89,6 +89,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Wed May 01 2019 Ting-Wei Lan <lantw44@gmail.com> - 2.32-2
+- Rebuilt for Fedora 30 and 31
+
 * Fri Feb 22 2019 Ting-Wei Lan <lantw44@gmail.com> - 2.32-1
 - Update to 2.32
 

@@ -2,7 +2,7 @@
 
 Name:           guile-gcrypt
 Version:        0.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Guile bindings to Libgcrypt
 
 License:        GPLv3+
@@ -67,5 +67,8 @@ fi
 
 
 %changelog
+* Wed May 01 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-2
+- Rebuilt for Fedora 30 and 31
+
 * Sun Dec 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-1
 - Initial packaging

@@ -3,15 +3,15 @@
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.14.20161004git%{shortcommit}%{?dist}
+Release:        0.15.20161004git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 License:        GPLv3+
-URL:            http://lilyterm.luna.com.tw
+URL:            https://lilyterm.luna.com.tw
 Source0:        https://github.com/Tetralet/LilyTerm/archive/%{commit}/LilyTerm-%{commit}.tar.gz
 Patch0:         lilyterm-gtk3.patch
 Patch1:         lilyterm-gtk3-vte291-regex.patch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Patch2:         lilyterm-gtk3-ldflags-order.patch
 
 BuildRequires:  gcc
 BuildRequires:  gtk3-devel
@@ -69,12 +69,7 @@ desktop-file-install                                       \
 %find_lang %{name}
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
 %files -f %{name}.lang
-%defattr(-,root,root,-)
 %license COPYING
 %doc AUTHORS ChangeLog README TODO
 %config(noreplace) %{_sysconfdir}/%{name}.conf
@@ -87,6 +82,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Apr 30 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.15.20161004git8df92d6
+- Rebuilt for Fedora 30 and 31
+- Remove BuildRoot, defattr, clean section
+
 * Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.14.20161004git8df92d6
 - Add GCC to BuildRequires for Fedora 29 and later
 

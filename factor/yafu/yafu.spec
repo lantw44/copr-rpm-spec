@@ -1,6 +1,6 @@
 Name:       yafu
 Version:    1.34
-Release:    13%{?dist}
+Release:    14%{?dist}
 Summary:    Automated integer factorization
 
 License:    Public Domain
@@ -46,6 +46,9 @@ install -m 755 yafu %{buildroot}%{_bindir}
 
 
 %changelog
+* Tue Apr 30 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.34-14
+- Rebuilt for Fedora 30 and 31
+
 * Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.34-13
 - Add GCC to BuildRequires for Fedora 29 and later
 

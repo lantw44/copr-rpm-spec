@@ -1,0 +1,11 @@
+--- src/Makefile.orig   2019-05-01 08:06:07.290147735 +0000
++++ src/Makefile        2019-05-01 08:11:20.906433619 +0000
+@@ -233,7 +233,7 @@
+
+ $(BINARY): $(OBJ)
+ 	@ $(PRINTF) "\033[1;36m** compiling \033[1;32m$(BINARY)\033[1;36m ...\033[0m\n"
+-	$(VERBOSITY_OUTPUT) $(CC) $(LDFLAGS) $(CPPFLAGS) $(CFLAGS) -o $(BINARY) $(OBJ) `$(BINARY_PKG_CMD)`
++	$(VERBOSITY_OUTPUT) $(CC) $(CPPFLAGS) $(CFLAGS) -o $(BINARY) $(OBJ) $(LDFLAGS) `$(BINARY_PKG_CMD)`
+
+ .PHONY: data
+ data: debug

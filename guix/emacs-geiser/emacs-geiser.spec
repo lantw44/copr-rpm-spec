@@ -3,11 +3,11 @@
 
 Name:           emacs-%{pkg}
 Version:        0.9
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Geiser is an Emacs environment to hack and have fun in Scheme
 
 License:        BSD
-URL:            http://nongnu.org/geiser
+URL:            https://nongnu.org/geiser
 Source0:        https://download.sv.gnu.org/releases/geiser/%{version}/%{pkg}-%{version}.tar.gz
 
 BuildArch:      noarch
@@ -67,6 +67,10 @@ fi
 
 
 %changelog
+* Wed May 01 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.9-8
+- Rebuilt for Fedora 30 and 31
+- Use HTTPS in URL
+
 * Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.9-7
 - Rebuilt for Fedora 29 and 30
 

@@ -1,6 +1,6 @@
 Name:       qelly
 Version:    1.0
-Release:    0.12.beta%{?dist}
+Release:    0.13.beta%{?dist}
 Summary:    Qelly is a Qt port of Nally
 
 %global     real_name     Qelly
@@ -11,7 +11,7 @@ URL:        https://github.com/uranusjr/Qelly
 Source0:    https://github.com/uranusjr/Qelly/archive/v%{real_version}.tar.gz#/%{name}-%{real_version}.tar.gz
 
 BuildRequires: gcc-c++
-BuildRequires: qt-devel, libqxt-devel, chrpath
+BuildRequires: qt5-qtbase-devel, libqxt-qt5-devel, chrpath
 
 %description
 Qelly (pronounced as the English name "Kelly") is a Qt port of Nally, the
@@ -25,7 +25,9 @@ name), but more features from other Telnet/SSH clients are also planned.
 %autosetup -n %{real_name}-%{real_version} -p1
 
 %build
-%{qmake_qt4}
+%{qmake_qt5}
+%make_build qmake_all
+sed -i 's| -lQxt\([^ ]*\)| -lQxt\1-qt5|g' src/Makefile
 %make_build
 
 
@@ -35,12 +37,16 @@ chrpath -d "bin/Qelly"
 install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
 
 %files
-%defattr(-,root,root,-)
 %{_bindir}/Qelly
 %license LICENSE
 %doc AUTHORS CHANGES README.md
 
 %changelog
+* Tue Apr 30 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.13.beta
+- Rebuilt for Fedora 30 and 31
+- Remove defattr
+- Switch to Qt 5
+
 * Mon Oct 22 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.12.beta
 - Add GCC to BuildRequires for Fedora 29 and later
 
