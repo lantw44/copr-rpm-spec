@@ -2,7 +2,7 @@
 %global pkgname Ghub
 
 Name:           emacs-%{pkg}
-Version:        3.0.0
+Version:        3.2.0
 Release:        1%{?dist}
 Summary:        Minuscule GitHub client library for Emacs
 
@@ -79,6 +79,9 @@ fi
 
 
 %changelog
+* Thu May 02 2019 Ting-Wei Lan <lantw44@gmail.com> - 3.2.0-1
+- Update to 3.2.0
+
 * Sun Dec 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 3.0.0-1
 - Update to 3.0.0
 
