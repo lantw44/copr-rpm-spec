@@ -2,7 +2,7 @@
 %global pkgname BUI
 
 Name:           emacs-%{pkg}
-Version:        1.2.0
+Version:        1.2.1
 Release:        1%{?dist}
 Summary:        Buffer interface library for Emacs
 
@@ -48,6 +48,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/bui/
 
 
 %changelog
+* Thu May 02 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.2.1-1
+- Update to 1.2.1
+
 * Sun Dec 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 1.2.0-1
 - Update to 1.2.0
 
