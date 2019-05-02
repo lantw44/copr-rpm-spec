@@ -1,11 +1,11 @@
 Name:           guile-git
-Version:        0.1.0
-Release:        2%{?dist}
+Version:        0.2.0
+Release:        1%{?dist}
 Summary:        Guile bindings of libgit2
 
 License:        GPLv3+
 URL:            https://gitlab.com/guile-git/guile-git
-Source0:        https://gitlab.com/guile-git/guile-git/uploads/e8c218ac7ae77b745c44d1ffbe34f1dd/guile-git-%{version}.tar.gz
+Source0:        https://gitlab.com/guile-git/guile-git/uploads/160f6a36c1be8d4fc1990a193081a04d/guile-git-%{version}.tar.gz
 
 %global debug_package    %{nil}
 %global guile_source_dir %{_datadir}/guile/site/2.0
@@ -67,6 +67,9 @@ fi
 
 
 %changelog
+* Thu May 02 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.2.0-1
+- Update to 0.2.0
+
 * Tue Oct 23 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-2
 - Rebuilt for Fedora 29 and 30
 
