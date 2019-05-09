@@ -1,11 +1,11 @@
 %global glib2_version 2.56.0
 %global gtk3_version 3.24.0
-%global webkit2gtk3_version 2.21.92
+%global webkit2gtk3_version 2.24.1
 
 Name: epiphany
 Epoch: 1
-Version: 3.32.1.2
-Release: 1%{?dist}.1
+Version: 3.32.2
+Release: 2%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv3+ and CC-BY-SA
@@ -27,28 +27,28 @@ BuildRequires: iso-codes-devel
 BuildRequires: itstool
 BuildRequires: libappstream-glib-devel
 BuildRequires: meson
-BuildRequires: pkgconfig(cairo) >= 1.2
+BuildRequires: pkgconfig(cairo)
 BuildRequires: pkgconfig(evince-document-3.0)
-BuildRequires: pkgconfig(gcr-3) >= 3.5.5
+BuildRequires: pkgconfig(gcr-3)
 BuildRequires: pkgconfig(gdk-3.0) >= %{gtk3_version}
-BuildRequires: pkgconfig(gdk-pixbuf-2.0) >= 2.14
+BuildRequires: pkgconfig(gdk-pixbuf-2.0)
 BuildRequires: pkgconfig(gio-unix-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gnome-desktop-3.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gtk+-3.0) >= %{gtk3_version}
 BuildRequires: pkgconfig(gtk+-unix-print-3.0) >= %{gtk3_version}
 BuildRequires: pkgconfig(hogweed)
-BuildRequires: pkgconfig(icu-uc) >= 4.6
-BuildRequires: pkgconfig(json-glib-1.0) >= 1.2.0
+BuildRequires: pkgconfig(icu-uc)
+BuildRequires: pkgconfig(json-glib-1.0)
 BuildRequires: pkgconfig(libdazzle-1.0)
 BuildRequires: pkgconfig(libhandy-0.0)
-BuildRequires: pkgconfig(libnotify) >= 0.5.1
-BuildRequires: pkgconfig(libsecret-1) >= 0.14
-BuildRequires: pkgconfig(libsoup-2.4) >= 2.48.0
-BuildRequires: pkgconfig(libxml-2.0) >= 2.6.12
-BuildRequires: pkgconfig(libxslt) >= 1.1.7
+BuildRequires: pkgconfig(libnotify)
+BuildRequires: pkgconfig(libsecret-1)
+BuildRequires: pkgconfig(libsoup-2.4)
+BuildRequires: pkgconfig(libxml-2.0)
+BuildRequires: pkgconfig(libxslt)
 BuildRequires: pkgconfig(nettle)
-BuildRequires: pkgconfig(sqlite3) >= 3.0
+BuildRequires: pkgconfig(sqlite3)
 BuildRequires: pkgconfig(webkit2gtk-4.0) >= %{webkit2gtk3_version}
 BuildRequires: pkgconfig(webkit2gtk-web-extension-4.0) >= %{webkit2gtk3_version}
 
@@ -108,12 +108,21 @@ desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 %{_datadir}/glib-2.0/schemas/org.gnome.epiphany.gschema.xml
 %{_datadir}/glib-2.0/schemas/org.gnome.Epiphany.enums.xml
 %{_bindir}/epiphany
-%{_libexecdir}/epiphany/ephy-profile-migrator
+%{_libexecdir}/epiphany/
 %{_libdir}/epiphany/
 %{_datadir}/epiphany
 %{_mandir}/man*/*
 
 %changelog
+* Tue May 07 2019 Kalev Lember <klember@redhat.com> - 1:3.32.2-2
+- Bump required webkitgtk version
+
+* Mon May 06 2019 Kalev Lember <klember@redhat.com> - 1:3.32.2-1
+- Update to 3.32.2
+
+* Wed Apr 03 2019 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.32.1.2-2
+- Own libexecdir/epiphany
+
 * Fri Mar 22 2019 Kalev Lember <klember@redhat.com> - 1:3.32.1.2-1
 - Update to 3.32.1.2
 
