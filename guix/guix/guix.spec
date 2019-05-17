@@ -5,23 +5,22 @@
 %global selinuxmodule guix-daemon
 
 Name:           guix
-Version:        0.16.0
-Release:        3%{?dist}
+Version:        1.0.0
+Release:        1%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
 URL:            https://www.gnu.org/software/guix
-Source0:        https://alpha.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
-Source1:        https://alpha.gnu.org/gnu/guix/bootstrap/aarch64-linux/20170217/guile-2.0.14.tar.xz#/aarch64-linux-20170217-guile-2.0.14.tar.xz
-Source2:        https://alpha.gnu.org/gnu/guix/bootstrap/armhf-linux/20150101/guile-2.0.11.tar.xz#/armhf-linux-20150101-guile-2.0.11.tar.xz
-Source3:        https://alpha.gnu.org/gnu/guix/bootstrap/i686-linux/20131110/guile-2.0.9.tar.xz#/i686-linux-20131110-guile-2.0.9.tar.xz
-Source4:        https://alpha.gnu.org/gnu/guix/bootstrap/mips64el-linux/20131110/guile-2.0.9.tar.xz#/mips64el-linux-20131110-guile-2.0.9.tar.xz
-Source5:        https://alpha.gnu.org/gnu/guix/bootstrap/x86_64-linux/20131110/guile-2.0.9.tar.xz#/x86_64-linux-20131110-guile-2.0.9.tar.xz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source1:        https://git.savannah.gnu.org/cgit/guix.git/plain/gnu/system/examples/docker-image.tmpl?h=v%{version}#/%{name}-%{version}-docker-image.tmpl
+
+Patch0:         guix-1.0.0-tests-gremlin.patch
+Patch1:         guix-1.0.0-tests-guix-pack-localstatedir.patch
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
-%global guile_source_dir  %{_datadir}/guile/site/2.0
-%global guile_ccache_dir  %{_libdir}/guile/2.0/site-ccache
+%global guile_source_dir  %{_datadir}/guile/site/2.2
+%global guile_ccache_dir  %{_libdir}/guile/2.2/site-ccache
 %global guix_profile_root %{_localstatedir}/guix/profiles/per-user/root/current-guix
 
 %global bash_completion_dir %(pkg-config --variable=completionsdir bash-completion)
@@ -31,20 +30,33 @@ Source5:        https://alpha.gnu.org/gnu/guix/bootstrap/x86_64-linux/20131110/g
 %global fish_completion_dir %{_datadir}/fish/vendor_completions.d
 %endif
 
+# We require Guile 2.2.4 here because both Guile 2.2.2 and 2.2.3 are known to
+# miscompile guix/build/debug-link.scm, causing the test tests/debug-link.scm
+# to fail because the function debuglink-crc32 returns a wrong result.
+#
+# To test the bug yourself, run the command:
+#   guile2.2 -c '(use-modules (guix build debug-link))(display (debuglink-crc32 (open-input-string "a")))'
+# It should print 3904355907, but Guile 2.2.2 and 2.2.3 return 4294967295.
+#
+# Note that it is not a runtime issue but a compiler issue, so simply upgrading
+# Guile to 2.2.4 is not going to fix the test. You have to delete the broken
+# bytecode and recompile them from sources to pass the test.
+
 BuildRequires:  gcc-c++
-BuildRequires:  pkgconfig(guile-2.0)
+BuildRequires:  pkgconfig(guile-2.2) >= 2.2.4
 BuildRequires:  pkgconfig(sqlite3)
 BuildRequires:  zlib-devel, bzip2-devel, libgcrypt-devel
 BuildRequires:  gettext, help2man, graphviz
 BuildRequires:  bash-completion, fish
 BuildRequires:  guile-git, guile-gcrypt, guile-json, guile-sqlite3, guile-ssh
-BuildRequires:  gnutls-guile
+BuildRequires:  gnutls-guile22
 BuildRequires:  selinux-policy
 BuildRequires:  systemd
 
 %{?systemd_requires}
 
-Requires:       guile-git, guile-gcrypt, guile-sqlite3, gnutls-guile
+Requires:       guile22 >= 2.2.4
+Requires:       guile-git, guile-gcrypt, guile-sqlite3, gnutls-guile22
 Requires:       gzip, bzip2, xz
 Requires:       selinux-policy
 Requires:       %{_bindir}/dot
@@ -72,48 +84,58 @@ composed.
 
 %prep
 %autosetup -p1
-echo '3939909f24dcb955621aa7f81ecde6844bea8a083969c2d275c55699af123ebe  %{SOURCE1}' | sha256sum -c
-echo 'e551d05d4d385d6706ab8d574856a087758294dc90ab4c06e70a157a685e23d6  %{SOURCE2}' | sha256sum -c
-echo 'b757cd46bf13ecac83fb8e955fb50096ac2d17bb610ca8eb816f29302a00a846  %{SOURCE3}' | sha256sum -c
-echo '994680f0001346864aa2c2cc5110f380ee7518dcd701c614291682b8e948f73b  %{SOURCE4}' | sha256sum -c
-echo '037b103522a2d0d7d69c7ffd8de683dfe5bb4b59c1fafd70b4ffd397fd2f57f0  %{SOURCE5}' | sha256sum -c
-cp %{SOURCE1} gnu/packages/bootstrap/aarch64-linux/guile-2.0.14.tar.xz
-cp %{SOURCE2} gnu/packages/bootstrap/armhf-linux/guile-2.0.11.tar.xz
-cp %{SOURCE3} gnu/packages/bootstrap/i686-linux/guile-2.0.9.tar.xz
-cp %{SOURCE4} gnu/packages/bootstrap/mips64el-linux/guile-2.0.9.tar.xz
-cp %{SOURCE5} gnu/packages/bootstrap/x86_64-linux/guile-2.0.9.tar.xz
+# https://debbugs.gnu.org/35774
+# Obtain the file from the git repository and put it into the source tree.
+# It is required by the test tests/guix-system.sh.
+cp %{SOURCE1} gnu/system/examples/docker-image.tmpl
 
 
 %build
+# Rename test-tmp to t to save the length of the path.
 %configure \
     --disable-rpath \
     --with-bash-completion-dir=%{bash_completion_dir} \
     --with-fish-completion-dir=%{fish_completion_dir} \
     --with-selinux-policy-dir=%{_datadir}/selinux/packages \
-    GUILE=%{_bindir}/guile \
-    GUILD=%{_bindir}/guild
-%make_build
+    GUILE=%{_bindir}/guile2.2 \
+    GUILD=%{_bindir}/guild2.2 \
+    ac_cv_guix_test_root="$(pwd)/t"
+# The progress bar of Guile compilation does not work with -O option.
+%make_build -Onone
 
 
 %check
-# FIXME: There are too many failed tests and upstream developers haven't made
-# any response in the bug report. All tests are temporarily skipped for now.
-# https://debbugs.gnu.org/32098
-exit 0
-
+if [ "$(curl http://fedoraproject.org/static/hotspot.txt)" != OK ]; then
+    echo 'Guix tests require Internet access to work.'
+    echo 'Expect failure if the build process has no access to Internet.'
+fi
+# The default path used by mock is /builddir/build/BUILD/guix-<version>, whose
+# length is at least 32 bytes. However, the test tests/gexp.scm fails when the
+# path is longer than 29 bytes because of the length limit of the shebang line.
+# We raise the working directory length limit from 29 to 36 by overriding the
+# autoconf cache variable ac_cv_guix_test_root, saving 7 bytes by renaming
+# test-tmp to t.
+cwd_str="$(pwd)"
+cwd_len="${#cwd_str}"
+if [ "${cwd_len}" -gt 36 ]; then
+    echo "${cwd_str} is too long."
+    echo 'The working directory cannot be longer than 36 bytes.'
+    exit 1
+fi
+# replace guile with guile2.2
+sed -i 's|guile -c|guile2.2 -c|g' tests/*.sh
+sed -i 's|-- guile2.2|-- guile|g' tests/*.sh
 # user namespace may be unsupported
 if ! unshare -Ur true; then
-    sed -i 's|tests/syscalls.scm||' Makefile
-    sed -i 's|tests/containers.scm||' Makefile
-    sed -i 's|tests/guix-environment-container.sh||' Makefile
+    sed -i 's|tests/guix-pack\.sh||' Makefile
 fi
 # don't run tests as root
-if [ "$(id -u)" = "0" ]; then
-    if [ "%{_topdir}" = "/builddir/build" ]; then
+if [ "$(id -u)" = 0 ]; then
+    if [ %{_topdir} = /builddir/build ]; then
         chown -R nobody:nobody %{_topdir}
         setfacl -m u:nobody:x /builddir
     fi
-    runuser nobody -s /bin/sh -c "%{__make} %{?_smp_mflags} check" && exit 0
+    runuser -u nobody -- %{__make} %{?_smp_mflags} check && exit 0
 else
     %{__make} %{?_smp_mflags} check && exit 0
 fi
@@ -156,7 +178,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/guix
 
 
 %post
-cat << EOF | ( cd "%{guile_source_dir}/gnu/packages/bootstrap" && sha256sum -c >/dev/null ) || exit 1
+cat << EOF | ( cd %{guile_source_dir}/gnu/packages/bootstrap && sha256sum -c >/dev/null ) || exit 1
 e3bf6ffe357eebcc28221ffdbb5b00b4ed1237cb101aba4b1b8119b08c732387  aarch64-linux/bash
 444c2af9fefd11d4fc20ee9281fa2c46cbe3cfb3df89cc30bcd50d20cdb6d6c0  aarch64-linux/mkdir
 05273f978a072269193e3a09371c23d6d149f6d807f8e413a4f79aa5a1bb6f25  aarch64-linux/tar
@@ -182,7 +204,7 @@ EOF
 if [ "$1" = 1 ]; then
     /usr/sbin/groupadd -r %{guix_group}
     /usr/sbin/useradd -r -M -N -g %{guix_group} -d /var/empty -s /sbin/nologin \
-        -c "Guix build user" %{guix_user}
+        -c 'Guix build user' %{guix_user}
     /usr/bin/gpasswd -a %{guix_user} %{guix_group} >/dev/null
 elif [ "$1" -gt 1 ]; then
     /usr/sbin/groupmod -n %{guix_group} guix-builder 2>/dev/null || :
@@ -238,6 +260,15 @@ fi
 %{guile_ccache_dir}/gnu/bootloader/*.go
 %{guile_source_dir}/gnu/build/*.scm
 %{guile_ccache_dir}/gnu/build/*.go
+%{guile_source_dir}/gnu/ci.scm
+%{guile_ccache_dir}/gnu/ci.go
+%{guile_source_dir}/gnu/installer.scm
+%dir %{guile_source_dir}/gnu/installer
+%{guile_source_dir}/gnu/installer/*.scm
+%{guile_source_dir}/gnu/installer/logo.txt
+%{guile_source_dir}/gnu/installer/SUPPORTED
+%dir %{guile_source_dir}/gnu/installer/newt
+%{guile_source_dir}/gnu/installer/newt/*.scm
 %{guile_source_dir}/gnu/packages.scm
 %{guile_ccache_dir}/gnu/packages.go
 %dir %{guile_source_dir}/gnu/packages
@@ -246,10 +277,13 @@ fi
 %{guile_ccache_dir}/gnu/packages/*.go
 %{guile_source_dir}/gnu/packages/ld-wrapper.in
 %dir %{guile_source_dir}/gnu/packages/aux-files
+%dir %{guile_source_dir}/gnu/packages/aux-files/chromium
+%{guile_source_dir}/gnu/packages/aux-files/chromium/master-preferences.json
 %dir %{guile_source_dir}/gnu/packages/aux-files/emacs
 %{guile_source_dir}/gnu/packages/aux-files/emacs/guix-emacs.el
 %dir %{guile_source_dir}/gnu/packages/aux-files/linux-libre
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-arm.conf
+%{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-arm-veyron.conf
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-arm64.conf
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-i686.conf
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-x86_64.conf
@@ -295,6 +329,7 @@ fi
 %{guile_source_dir}/gnu/system/*.scm
 %{guile_ccache_dir}/gnu/system/*.go
 %dir %{guile_source_dir}/gnu/system/examples
+%{guile_source_dir}/gnu/system/examples/asus-c201.tmpl
 %{guile_source_dir}/gnu/system/examples/bare-bones.tmpl
 %{guile_source_dir}/gnu/system/examples/beaglebone-black.tmpl
 %{guile_source_dir}/gnu/system/examples/desktop.tmpl
@@ -348,19 +383,25 @@ fi
 %dir %{guile_ccache_dir}/guix/tests
 %{guile_ccache_dir}/guix/tests/*.go
 %dir %{_datadir}/guix
+%{_datadir}/guix/ci.guix.gnu.org.pub
 %{_datadir}/guix/ci.guix.info.pub
 %{_datadir}/guix/berlin.guixsd.org.pub
 %{_datadir}/guix/hydra.gnu.org.pub
 %{_datadir}/selinux/packages/%{selinuxmodule}.cil
 %{_infodir}/%{name}.info*
 %{_infodir}/%{name}.de.info*
+%{_infodir}/%{name}.es.info*
 %{_infodir}/%{name}.fr.info*
+%{_infodir}/%{name}.zh_CN.info*
 %dir %{_infodir}/images
 %{_infodir}/images/bootstrap-graph.png.gz
 %{_infodir}/images/bootstrap-packages.png.gz
 %{_infodir}/images/coreutils-bag-graph.png.gz
 %{_infodir}/images/coreutils-graph.png.gz
 %{_infodir}/images/coreutils-size-map.png.gz
+%{_infodir}/images/installer-network.png.gz
+%{_infodir}/images/installer-partitions.png.gz
+%{_infodir}/images/installer-resume.png.gz
 %{_infodir}/images/service-graph.png.gz
 %{_infodir}/images/shepherd-graph.png.gz
 %exclude %{_infodir}/dir
@@ -395,6 +436,10 @@ fi
 
 
 %changelog
+* Fri May 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0.0-1
+- Update to 1.0.0
+- Switch to Guile 2.2 because Guile 2.0 is no longer supported
+
 * Wed May 01 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.16.0-3
 - Rebuilt for Fedora 30 and 31
 
