@@ -47,5 +47,5 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/treepy/
 * Wed May 01 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-2
 - Rebuilt for Fedora 30 and 31
 
-* Sun Dec 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1.1
+* Sun Dec 02 2018 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-1
 - Initial packaging
