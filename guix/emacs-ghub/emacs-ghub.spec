@@ -3,8 +3,8 @@
 
 Name:           emacs-%{pkg}
 Version:        3.2.0
-Release:        1%{?dist}
-Summary:        Minuscule GitHub client library for Emacs
+Release:        2%{?dist}
+Summary:        Minuscule client libraries for the APIs of various Git forges
 
 License:        GPLv3+
 URL:            https://magit.vc
@@ -19,7 +19,9 @@ Recommends:     git
 
 %description
 %{pkgname} is an add-on package for GNU Emacs. It provides basic support for
-using the Github REST (v3) and GraphQL (v4) APIs from Emacs packages.
+using the APIs of various Git forges from Emacs packages. Originally it only
+supported the Github REST API, but now it also supports the Github GraphQL API
+as well as the REST APIs of Gitlab, Gitea, Gogs and Bitbucket.
 
 
 %prep
@@ -58,7 +60,7 @@ fi
 
 %files
 %license LICENSE
-%doc README.md ghub.org
+%doc CHANGELOG README.md ghub.org
 %dir %{_emacs_sitelispdir}/ghub
 %{_emacs_sitelispdir}/ghub/buck.el
 %{_emacs_sitelispdir}/ghub/buck.elc
@@ -79,6 +81,10 @@ fi
 
 
 %changelog
+* Wed May 15 2019 Ting-Wei Lan <lantw44@gmail.com> - 3.2.0-2
+- Add CHANGELOG to doc
+- Update description from upstream README
+
 * Thu May 02 2019 Ting-Wei Lan <lantw44@gmail.com> - 3.2.0-1
 - Update to 3.2.0
 
