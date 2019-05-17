@@ -2,19 +2,19 @@
 
 Name:           guile-gcrypt
 Version:        0.1.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Guile bindings to Libgcrypt
 
 License:        GPLv3+
 URL:            https://notabug.org/cwebber/guile-gcrypt
 Source0:        https://notabug.org/cwebber/guile-gcrypt/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
-%global guile_source_dir %{_datadir}/guile/site/2.0
-%global guile_ccache_dir %{_libdir}/guile/2.0/site-ccache
+%global guile_source_dir %{_datadir}/guile/site/2.2
+%global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
 BuildRequires:  autoconf, automake, texinfo
-BuildRequires:  pkgconfig(guile-2.0), libgcrypt-devel
-Requires:       guile, libgcrypt-devel
+BuildRequires:  pkgconfig(guile-2.2), libgcrypt-devel
+Requires:       guile22, libgcrypt-devel
 Requires(post): info
 Requires(preun): info
 
@@ -67,6 +67,9 @@ fi
 
 
 %changelog
+* Wed May 15 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-3
+- Switch to Guile 2.2
+
 * Wed May 01 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-2
 - Rebuilt for Fedora 30 and 31
 

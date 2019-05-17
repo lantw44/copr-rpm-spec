@@ -1,19 +1,23 @@
 Name:           guile-ssh
 Version:        0.11.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A library that provides access to the SSH protocol for GNU Guile
 
 License:        GPLv3+
 URL:            https://github.com/artyom-poptsov/guile-ssh
 Source0:        https://github.com/artyom-poptsov/guile-ssh/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
-%global guile_source_dir %{_datadir}/guile/site/2.0
-%global guile_ccache_dir %{_libdir}/guile/2.0/site-ccache
+Patch0:         guile-ssh-0.11.3-fix-segfault.patch
+Patch1:         guile-ssh-0.11.3-libssh-0.8-name.patch
+Patch2:         guile-ssh-0.11.3-libssh-0.8-tests.patch
+
+%global guile_source_dir %{_datadir}/guile/site/2.2
+%global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
 BuildRequires:  gcc
 BuildRequires:  autoconf, automake, libtool, texinfo
-BuildRequires:  pkgconfig(guile-2.0), pkgconfig(libssh)
-Requires:       guile
+BuildRequires:  pkgconfig(guile-2.2), pkgconfig(libssh)
+Requires:       guile22
 Requires(post): info
 Requires(preun): info
 
@@ -24,15 +28,17 @@ written in GNU Guile interpreter. It is built upon the libssh library.
 
 %prep
 %autosetup -p1
-# This test doesn't pass and the author haven't fixed it.
-# https://github.com/artyom-poptsov/guile-ssh/issues/10
-sed -i '/^	server\.scm \\$/d' tests/Makefile.am
 
 
 %build
 autoreconf -fi
-%configure --disable-rpath --disable-static
-%make_build
+%configure \
+    --disable-rpath \
+    --disable-static \
+    GUILE=%{_bindir}/guile2.2 \
+    GUILD=%{_bindir}/guild2.2
+%make_build \
+    GUILE_SNARF=%{_bindir}/guile-snarf2.2
 
 
 %check
@@ -74,6 +80,9 @@ fi
 
 
 %changelog
+* Fri May 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.11.3-4
+- Switch to Guile 2.2
+
 * Wed May 01 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.11.3-3
 - Rebuilt for Fedora 30 and 31
 

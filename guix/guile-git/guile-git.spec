@@ -1,19 +1,19 @@
 Name:           guile-git
 Version:        0.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Guile bindings of libgit2
 
-License:        GPLv3+
+License:        GPLv3+ and LGPLv3+
 URL:            https://gitlab.com/guile-git/guile-git
 Source0:        https://gitlab.com/guile-git/guile-git/uploads/160f6a36c1be8d4fc1990a193081a04d/guile-git-%{version}.tar.gz
 
 %global debug_package    %{nil}
-%global guile_source_dir %{_datadir}/guile/site/2.0
-%global guile_ccache_dir %{_libdir}/guile/2.0/site-ccache
+%global guile_source_dir %{_datadir}/guile/site/2.2
+%global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
 BuildRequires:  autoconf, automake, texinfo
-BuildRequires:  pkgconfig(guile-2.0), pkgconfig(libgit2), guile-bytestructures
-Requires:       guile, guile-bytestructures, libgit2-devel
+BuildRequires:  pkgconfig(guile-2.2), pkgconfig(libgit2), guile-bytestructures
+Requires:       guile22, guile-bytestructures, libgit2-devel
 Requires(post): info
 Requires(preun): info
 
@@ -27,7 +27,7 @@ repositories of the Git version control system.
 
 
 %build
-%configure
+%configure GUILE=%{_bindir}/guile2.2 GUILD=%{_bindir}/guild2.2
 %make_build
 
 
@@ -50,8 +50,8 @@ fi
 
 
 %files
-%license COPYING
-%doc README.md
+%license COPYING COPYING.LESSER
+%doc NEWS README.md
 %{guile_source_dir}/git.scm
 %{guile_ccache_dir}/git.go
 %dir %{guile_source_dir}/git
@@ -67,6 +67,10 @@ fi
 
 
 %changelog
+* Wed May 15 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.2.0-2
+- Switch to Guile 2.2
+- Fix license
+
 * Thu May 02 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.2.0-1
 - Update to 0.2.0
 

@@ -1,6 +1,6 @@
 Name:           guile-bytestructures
 Version:        1.0.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Structured access library to bytevector contents for Guile
 
 License:        GPLv3+
@@ -8,11 +8,11 @@ URL:            https://github.com/TaylanUB/scheme-bytestructures
 Source0:        https://github.com/TaylanUB/scheme-bytestructures/releases/download/v%{version}/bytestructures-%{version}.tar.gz
 
 %global debug_package    %{nil}
-%global guile_source_dir %{_datadir}/guile/site/2.0
-%global guile_ccache_dir %{_libdir}/guile/2.0/site-ccache
+%global guile_source_dir %{_datadir}/guile/site/2.2
+%global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
-BuildRequires:  autoconf, automake, pkgconfig(guile-2.0)
-Requires:       guile
+BuildRequires:  autoconf, automake, pkgconfig(guile-2.2)
+Requires:       guile22
 
 %description
 This library offers a system imitating the type system of the C programming
@@ -27,7 +27,7 @@ first-class status.
 
 
 %build
-%configure
+%configure GUILE=%{_bindir}/guile2.2 GUILD=%{_bindir}/guild2.2
 %make_build
 
 
@@ -40,7 +40,7 @@ first-class status.
 %doc README.md
 %dir %{guile_source_dir}/bytestructures
 %dir %{guile_ccache_dir}/bytestructures
-%{guile_source_dir}/bytestructures/body/*.scm
+%{guile_source_dir}/bytestructures/body
 %{guile_source_dir}/bytestructures/guile.scm
 %{guile_ccache_dir}/bytestructures/guile.go
 %dir %{guile_source_dir}/bytestructures/guile
@@ -51,12 +51,13 @@ first-class status.
 %dir %{guile_ccache_dir}/bytestructures/r6
 %{guile_source_dir}/bytestructures/r6/bytevectors.scm
 %{guile_ccache_dir}/bytestructures/r6/bytevectors.go
-%exclude %{guile_source_dir}/bytestructures/body
-%exclude %{guile_source_dir}/bytestructures/r7
-%exclude %{guile_source_dir}/run-tests.*.scm
+%{guile_source_dir}/bytestructures/r7
 
 
 %changelog
+* Wed May 15 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0.5-2
+- Switch to Guile 2.2
+
 * Thu May 02 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0.5-1
 - Update to 1.0.5
 
