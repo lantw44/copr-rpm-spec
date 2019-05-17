@@ -3,24 +3,26 @@
 
 Name:           emacs-%{pkg}
 Version:        0.5.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
 URL:            https://emacs-guix.gitlab.io/website
 Source0:        https://emacs-guix.gitlab.io/website/releases/%{name}-%{version}.tar.gz
 
-%global guile_source_dir %{_datadir}/guile/site/2.0
-%global guile_ccache_dir %{_libdir}/guile/2.0/site-ccache
+%global debug_package    %{nil}
+%global guile_source_dir %{_datadir}/guile/site/2.2
+%global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
-BuildArch:      noarch
 BuildRequires:  emacs, texinfo
 BuildRequires:  guix >= 0.13.0
-BuildRequires:  pkgconfig(guile-2.0), guile-gcrypt
-BuildRequires:  emacs-geiser, emacs-dash, emacs-bui, emacs-magit
+BuildRequires:  pkgconfig(guile-2.2), guile-gcrypt
+BuildRequires:  emacs-geiser, emacs-dash, emacs-bui, emacs-edit-indirect
+BuildRequires:  emacs-magit, emacs-magit-popup
 
 Requires:       emacs(bin) >= %{_emacs_version}
-Requires:       emacs-geiser, emacs-dash, emacs-bui, emacs-magit
+Requires:       emacs-geiser, emacs-dash, emacs-bui, emacs-edit-indirect
+Requires:       emacs-magit, emacs-magit-popup
 Suggests:       guix
 
 Obsoletes:      guix-emacs <= 0.8.3-1
@@ -44,10 +46,13 @@ available info about packages and to do many other things.
 %build
 %configure \
     --with-lispdir=%{_emacs_sitelispdir}/%{pkg} \
-    --with-guile-site-dir=%{guile_source_dir} \ \
-    --with-guile-site-ccache-dir=%{guile_ccache_dir} \
-    GUILE=%{_bindir}/guile \
-    GUILD=%{_bindir}/guild
+    --with-geiser-lispdir=%{_emacs_sitelispdir}/geiser \
+    --with-dash-lispdir=%{_emacs_sitelispdir}/dash \
+    --with-bui-lispdir=%{_emacs_sitelispdir}/bui \
+    --with-editindirect-lispdir=%{_emacs_sitelispdir}/edit-indirect \
+    --with-popup-lispdir=%{_emacs_sitelispdir}/magit-popup \
+    GUILE=%{_bindir}/guile2.2 \
+    GUILD=%{_bindir}/guild2.2
 %make_build
 
 
@@ -94,6 +99,10 @@ fi
 
 
 %changelog
+* Wed May 15 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.5.1.1-2
+- Switch to Guile 2.2
+- Remove noarch because .go files are not architecture-independent
+
 * Thu May 02 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.5.1.1-1
 - Update to 0.5.1.1
 
