@@ -47,7 +47,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    74.0.3729.157
+Version:    74.0.3729.169
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -91,7 +91,7 @@ Patch50:    chromium-nacl-llvm-ar.patch
 # Don't use unversioned python commands. This patch is based on
 # https://src.fedoraproject.org/rpms/chromium/c/7048e95ab61cd143
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
-Patch60:    chromium-bootstrap-python2.patch
+Patch60:    chromium-python2.patch
 
 # Pull upstream patches
 Patch70:    chromium-gcc8-r641329.patch
@@ -104,6 +104,10 @@ Patch75:    chromium-gcc8-cl1503254.patch
 # Pull patches from Fedora
 # https://src.fedoraproject.org/rpms/chromium/c/9071ee2d2f996b84
 Patch80:    chromium-webrtc-cstring.patch
+
+# Revert upstream patches which cause errors
+# https://crbug.com/gn/77
+Patch90:    chromium-gn-revert-bug-77.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -640,6 +644,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed May 22 2019 - Ting-Wei Lan <lantw44@gmail.com> - 74.0.3729.169-100
+- Update to 74.0.3729.169
+
 * Wed May 15 2019 - Ting-Wei Lan <lantw44@gmail.com> - 74.0.3729.157-100
 - Update to 74.0.3729.157
 
