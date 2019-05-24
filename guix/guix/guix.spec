@@ -5,17 +5,13 @@
 %global selinuxmodule guix-daemon
 
 Name:           guix
-Version:        1.0.0
+Version:        1.0.1
 Release:        1%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
 URL:            https://www.gnu.org/software/guix
 Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
-Source1:        https://git.savannah.gnu.org/cgit/guix.git/plain/gnu/system/examples/docker-image.tmpl?h=v%{version}#/%{name}-%{version}-docker-image.tmpl
-
-Patch0:         guix-1.0.0-tests-gremlin.patch
-Patch1:         guix-1.0.0-tests-guix-pack-localstatedir.patch
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
@@ -84,10 +80,6 @@ composed.
 
 %prep
 %autosetup -p1
-# https://debbugs.gnu.org/35774
-# Obtain the file from the git repository and put it into the source tree.
-# It is required by the test tests/guix-system.sh.
-cp %{SOURCE1} gnu/system/examples/docker-image.tmpl
 
 
 %build
@@ -266,7 +258,6 @@ fi
 %dir %{guile_source_dir}/gnu/installer
 %{guile_source_dir}/gnu/installer/*.scm
 %{guile_source_dir}/gnu/installer/logo.txt
-%{guile_source_dir}/gnu/installer/SUPPORTED
 %dir %{guile_source_dir}/gnu/installer/newt
 %{guile_source_dir}/gnu/installer/newt/*.scm
 %{guile_source_dir}/gnu/packages.scm
@@ -333,6 +324,7 @@ fi
 %{guile_source_dir}/gnu/system/examples/bare-bones.tmpl
 %{guile_source_dir}/gnu/system/examples/beaglebone-black.tmpl
 %{guile_source_dir}/gnu/system/examples/desktop.tmpl
+%{guile_source_dir}/gnu/system/examples/docker-image.tmpl
 %{guile_source_dir}/gnu/system/examples/lightweight-desktop.tmpl
 %{guile_source_dir}/gnu/system/examples/vm-image.tmpl
 %{guile_source_dir}/gnu/tests.scm
@@ -392,6 +384,7 @@ fi
 %{_infodir}/%{name}.de.info*
 %{_infodir}/%{name}.es.info*
 %{_infodir}/%{name}.fr.info*
+%{_infodir}/%{name}.ru.info*
 %{_infodir}/%{name}.zh_CN.info*
 %dir %{_infodir}/images
 %{_infodir}/images/bootstrap-graph.png.gz
@@ -436,6 +429,9 @@ fi
 
 
 %changelog
+* Fri May 24 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0.1-1
+- Update to 1.0.1
+
 * Fri May 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0.0-1
 - Update to 1.0.0
 - Switch to Guile 2.2 because Guile 2.0 is no longer supported
