@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    8.3.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -122,7 +122,7 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
     --enable-gnu-indirect-function \
 %if %{cross_arch} == "arm"
 %if %(echo %{cross_triplet} | sed 's/.*-\([a-z]*\)$/\1/') == "gnueabihf"
-    --with-tune=cortex-a8 \
+    --with-tune=generic-armv7-a \
     --with-arch=armv7-a \
     --with-float=hard \
     --with-fpu=vfpv3-d16 \
@@ -369,6 +369,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Sat May 25 2019 Ting-Wei Lan <lantw44@gmail.com> - 8.3.0-2
+- Sync --with-tune argument with the official Fedora package
+
 * Sat Feb 23 2019 Ting-Wei Lan <lantw44@gmail.com> - 8.3.0-1
 - Update to new stable release 8.3.0
 
