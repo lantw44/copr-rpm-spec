@@ -8,7 +8,7 @@
 
 Name:           gnome-settings-daemon
 Version:        3.30.2
-Release:        1%{?dist}.1
+Release:        2%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        GPLv2+
@@ -16,6 +16,7 @@ URL:            https://download.gnome.org/sources/%{name}
 Source0:        https://download.gnome.org/sources/%{name}/3.30/%{name}-%{version}.tar.xz
 Source1:        org.gnome.settings-daemon.plugins.power.gschema.override
 
+Patch0:         0001-smartcard-Cancel-cancellable-when-stopping.patch
 Patch4:         %{name}-3.28-respect-menus-buttons-icons.patch
 
 BuildRequires:  meson >= 0.44.0
@@ -205,6 +206,9 @@ mkdir $RPM_BUILD_ROOT%{_libdir}/gnome-settings-daemon-3.0/gtk-modules
 %{_libexecdir}/gsd-test-input-helper
 
 %changelog
+* Tue May 28 2019 Marek Kasik <mkasik@redhat.com> - 3.30.2-2
+- Fix NSS crash at smartcard plugin (#1646359)
+
 * Wed Jan 09 2019 Kalev Lember <klember@redhat.com> - 3.30.2-1
 - Update to 3.30.2
 
