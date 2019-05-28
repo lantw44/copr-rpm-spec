@@ -1,5 +1,5 @@
 # This spec file has been automatically updated
-Version:	3.6.7
+Version:	3.6.8
 Release: 1%{?dist}
 Patch1:	fedora-rawhide_gnutls-3.2.7-rpath.patch
 Patch2:	fedora-rawhide_gnutls-3.6.7-no-now-guile.patch
@@ -171,6 +171,7 @@ export CCASFLAGS
            --htmldir=%{_docdir}/manual \
 %if %{with guile}
            --enable-guile \
+           --with-guile-extension-dir=%{_libdir}/guile/2.2 \
 %else
            --disable-guile \
 %endif
@@ -275,6 +276,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Tue May 28 2019 Nikos Mavrogiannopoulos <nmav@redhat.com> - 3.6.8-1
+- Update to upstream 3.6.8 release
+
 * Wed Mar 27 2019 Anderson Toshiyuki Sasaki <ansasaki@redhat.com> - 3.6.7-1
 - Update to upstream 3.6.7 release
 - Fixed CVE-2019-3836 (#1693214)
