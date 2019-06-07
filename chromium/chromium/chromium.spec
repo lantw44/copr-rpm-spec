@@ -47,7 +47,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    74.0.3729.169
+Version:    75.0.3770.80
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -94,20 +94,13 @@ Patch50:    chromium-nacl-llvm-ar.patch
 Patch60:    chromium-python2.patch
 
 # Pull upstream patches
-Patch70:    chromium-gcc8-r641329.patch
-Patch71:    chromium-gcc8-r641404.patch
-Patch72:    chromium-gcc8-r642680.patch
-Patch73:    chromium-gcc8-r647271.patch
-Patch74:    chromium-gcc8-r647382.patch
-Patch75:    chromium-gcc8-cl1503254.patch
+Patch70:    chromium-angle-gcc9.patch
+Patch71:    chromium-gcc9-r654570.patch
+Patch72:    chromium-gcc9-r666714.patch
 
 # Pull patches from Fedora
 # https://src.fedoraproject.org/rpms/chromium/c/9071ee2d2f996b84
 Patch80:    chromium-webrtc-cstring.patch
-
-# Revert upstream patches which cause errors
-# https://crbug.com/gn/77
-Patch90:    chromium-gn-revert-bug-77.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -251,6 +244,7 @@ find -type f -exec \
     third_party/angle/third_party/vulkan-tools \
     third_party/angle/third_party/vulkan-validation-layers \
     third_party/apple_apsl \
+    third_party/axe-core \
     third_party/boringssl \
     third_party/boringssl/src/third_party/fiat \
     third_party/blink \
@@ -272,15 +266,16 @@ find -type f -exec \
     third_party/cld_3 \
     third_party/closure_compiler \
     third_party/crashpad \
+    third_party/crashpad/crashpad/third_party/lss \
     third_party/crashpad/crashpad/third_party/zlib \
     third_party/crc32c \
     third_party/cros_system_api \
     third_party/dav1d \
+    third_party/dawn \
     third_party/devscripts \
     third_party/dom_distiller_js \
     third_party/emoji-segmenter \
     third_party/ffmpeg \
-    third_party/fips181 \
     third_party/flatbuffers \
     third_party/flot \
     third_party/freetype \
@@ -347,6 +342,7 @@ find -type f -exec \
     third_party/pdfium/third_party/libtiff \
     third_party/pdfium/third_party/skia_shared \
     third_party/perfetto \
+    third_party/pffft \
 %if !%{with system_ply}
     third_party/ply \
 %endif
@@ -644,6 +640,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Jun 07 2019 - Ting-Wei Lan <lantw44@gmail.com> - 75.0.3770.80-100
+- Update to 75.0.3770.80
+
 * Wed May 22 2019 - Ting-Wei Lan <lantw44@gmail.com> - 74.0.3729.169-100
 - Update to 74.0.3729.169
 
