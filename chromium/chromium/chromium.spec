@@ -48,7 +48,7 @@
 
 Name:       chromium
 Version:    75.0.3770.80
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -96,7 +96,8 @@ Patch60:    chromium-python2.patch
 # Pull upstream patches
 Patch70:    chromium-angle-gcc9.patch
 Patch71:    chromium-gcc9-r654570.patch
-Patch72:    chromium-gcc9-r666714.patch
+Patch72:    chromium-gcc9-r666279.patch
+Patch73:    chromium-gcc9-r666714.patch
 
 # Pull patches from Fedora
 # https://src.fedoraproject.org/rpms/chromium/c/9071ee2d2f996b84
@@ -640,6 +641,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Jun 08 2019 - Ting-Wei Lan <lantw44@gmail.com> - 75.0.3770.80-101
+- Fix crash on Fedora 30
+
 * Fri Jun 07 2019 - Ting-Wei Lan <lantw44@gmail.com> - 75.0.3770.80-100
 - Update to 75.0.3770.80
 
