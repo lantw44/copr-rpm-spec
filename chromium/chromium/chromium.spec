@@ -47,8 +47,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    75.0.3770.80
-Release:    102%{?dist}
+Version:    75.0.3770.90
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -644,6 +644,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Jun 14 2019 - Ting-Wei Lan <lantw44@gmail.com> - 75.0.3770.90-100
+- Update to 75.0.3770.90
+
 * Sat Jun 08 2019 - Ting-Wei Lan <lantw44@gmail.com> - 75.0.3770.80-102
 - Workaround GCC 8 undefined reference error with -fno-ipa-cp-clone
 
