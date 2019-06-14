@@ -4,8 +4,8 @@
 
 Name: epiphany
 Epoch: 1
-Version: 3.32.2
-Release: 2%{?dist}.1
+Version: 3.32.3
+Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv3+ and CC-BY-SA
@@ -114,6 +114,9 @@ desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 %{_mandir}/man*/*
 
 %changelog
+* Tue Jun 11 2019 Michael Catanzaro <mcatanzaro@igalia.com> - 1:3.32.3.-1
+- Update to 3.32.3
+
 * Tue May 07 2019 Kalev Lember <klember@redhat.com> - 1:3.32.2-2
 - Bump required webkitgtk version
 
