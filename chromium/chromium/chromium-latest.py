@@ -74,7 +74,7 @@ def dlProgress(count, blockSize, totalSize):
 def delete_chromium_dir(ch_dir):
 
   full_dir = "%s/%s" % (latest_dir, ch_dir)
-  print 'Deleting %s ' % full_dir
+  print 'Deleting %s ' % ch_dir,
   if os.path.isdir(full_dir):
     shutil.rmtree(full_dir)
     print '[DONE]'
@@ -84,12 +84,20 @@ def delete_chromium_dir(ch_dir):
 
 def delete_chromium_files(files):
 
-  full_path = "%s/%s" % (latest_dir, files)
-  print 'Deleting ' + full_path + ' ',
-  for filename in glob.glob(full_path):
+  for filename in files:
+    full_path = "%s/%s" % (latest_dir, filename)
     print 'Deleting ' + filename + ' ',
-    os.remove(filename)
+    os.remove(full_path)
     print '[DONE]'
+
+
+def delete_chromium_dir_or_file(dir_or_file):
+
+  full_path = os.path.join(latest_dir, dir_or_file)
+  if os.path.isdir(full_path):
+    return delete_chromium_dir(dir_or_file)
+  else:
+    return delete_chromium_files([dir_or_file])
 
 
 def check_omahaproxy(channel="stable"):
@@ -295,12 +303,19 @@ if __name__ == '__main__':
   remove_file_if_exists(chromium_clean_xz_file)
 
   if (args.ffmpegclean):
-    print("Cleaning ffmpeg from proprietary things...")
+    print "Cleaning ffmpeg from proprietary things...",
     os.system("./chromium-ffmpeg-clean.sh %s %d" % (latest_dir, 0 if args.ffmpegarm else 1))
     print "Done!"
 
   if (args.deleteunrar):
-    delete_chromium_dir('third_party/unrar')
+    unrar_dir = 'third_party/unrar'
+    for filename in os.listdir(os.path.join(latest_dir, unrar_dir)):
+      if filename not in ['BUILD.gn', 'DEPS', 'src']:
+        delete_chromium_dir_or_file(os.path.join(unrar_dir, filename))
+    unrar_src_dir = os.path.join(unrar_dir, 'src')
+    for filename in os.listdir(os.path.join(latest_dir, unrar_src_dir)):
+      if filename not in ['unrar_wrapper.h', 'unrar_wrapper.cc']:
+        delete_chromium_dir_or_file(os.path.join(unrar_src_dir, filename))
 
   if (not args.prep):
     print "Compressing cleaned tree, please wait..."

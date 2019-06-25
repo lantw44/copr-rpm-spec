@@ -48,7 +48,7 @@
 
 Name:       chromium
 Version:    75.0.3770.100
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -82,26 +82,27 @@ Source11:   chromium-browser.desktop
 # https://src.fedoraproject.org/cgit/rpms/chromium.git/tree/
 Source12:   chromium-browser.xml
 
-# Disable non-free unrar
-Patch20:    chromium-disable-unrar.patch
+# Stub unrar wrapper
+# https://bugs.chromium.org/p/chromium/issues/detail?id=884521
+Patch0:     chromium-stub-unrar-wrapper.patch
 
 # Fix llvm-ar command usage
-Patch50:    chromium-nacl-llvm-ar.patch
+Patch10:    chromium-nacl-llvm-ar.patch
 
 # Don't use unversioned python commands. This patch is based on
 # https://src.fedoraproject.org/rpms/chromium/c/7048e95ab61cd143
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
-Patch60:    chromium-python2.patch
-
-# Pull upstream patches
-Patch70:    chromium-angle-gcc9.patch
-Patch71:    chromium-gcc9-r654570.patch
-Patch72:    chromium-gcc9-r666279.patch
-Patch73:    chromium-gcc9-r666714.patch
+Patch20:    chromium-python2.patch
 
 # Pull patches from Fedora
 # https://src.fedoraproject.org/rpms/chromium/c/9071ee2d2f996b84
-Patch80:    chromium-webrtc-cstring.patch
+Patch30:    chromium-webrtc-cstring.patch
+
+# Pull upstream patches
+Patch40:    chromium-angle-gcc9.patch
+Patch41:    chromium-gcc9-r654570.patch
+Patch42:    chromium-gcc9-r666279.patch
+Patch43:    chromium-gcc9-r666714.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -372,6 +373,7 @@ find -type f -exec \
     third_party/swiftshader/third_party/llvm-subzero \
     third_party/swiftshader/third_party/subzero \
     third_party/tcmalloc \
+    third_party/unrar \
     third_party/usb_ids \
     third_party/usrsctp \
     third_party/vulkan \
@@ -644,6 +646,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Jun 25 2019 - Ting-Wei Lan <lantw44@gmail.com> - 75.0.3770.100-101
+- Make unrar wrapper a stub instead of patching safe browsing code
+
 * Wed Jun 19 2019 - Ting-Wei Lan <lantw44@gmail.com> - 75.0.3770.100-100
 - Update to 75.0.3770.100
 
