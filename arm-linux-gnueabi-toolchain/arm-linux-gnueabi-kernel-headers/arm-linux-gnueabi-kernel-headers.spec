@@ -3,7 +3,7 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    5.1.2
+Version:    5.2.0
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -117,6 +117,8 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/scsi/fc/*.h
 %dir %{cross_sysroot}/usr/include/sound
 %{cross_sysroot}/usr/include/sound/*.h
+%dir %{cross_sysroot}/usr/include/sound/sof
+%{cross_sysroot}/usr/include/sound/sof/*.h
 %dir %{cross_sysroot}/usr/include/video
 %{cross_sysroot}/usr/include/video/*.h
 %dir %{cross_sysroot}/usr/include/xen
@@ -124,6 +126,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Mon Jul 08 2019 Ting-Wei Lan <lantw44@gmail.com> - 5.2.0-1
+- Update to 5.2
+
 * Thu May 16 2019 Ting-Wei Lan <lantw44@gmail.com> - 5.1.2-1
 - Update to 5.1.2
 
