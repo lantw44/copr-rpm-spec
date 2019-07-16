@@ -47,8 +47,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    75.0.3770.100
-Release:    101%{?dist}
+Version:    75.0.3770.142
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -646,6 +646,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Jul 16 2019 - Ting-Wei Lan <lantw44@gmail.com> - 75.0.3770.142-100
+- Update to 75.0.3770.142
+
 * Tue Jun 25 2019 - Ting-Wei Lan <lantw44@gmail.com> - 75.0.3770.100-101
 - Make unrar wrapper a stub instead of patching safe browsing code
 
