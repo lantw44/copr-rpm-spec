@@ -1,5 +1,5 @@
 diff --git a/third_party/unrar/BUILD.gn b/third_party/unrar/BUILD.gn
-index f315ffed212c..2813bd8ac05d 100644
+index 333a00899cfe..9ff77d68e782 100644
 --- a/third_party/unrar/BUILD.gn
 +++ b/third_party/unrar/BUILD.gn
 @@ -7,54 +7,7 @@ import("//build/config/features.gni")
@@ -134,54 +134,19 @@ index 63b31f008861..6879a2d84988 100644
  }
  
 diff --git a/third_party/unrar/src/unrar_wrapper.h b/third_party/unrar/src/unrar_wrapper.h
-index 64cc4f4e0be0..6aebc255a1f8 100644
+index 05bf5b256383..b96260c70971 100644
 --- a/third_party/unrar/src/unrar_wrapper.h
 +++ b/third_party/unrar/src/unrar_wrapper.h
-@@ -10,19 +10,39 @@
- #include "base/files/platform_file.h"
- #include "base/memory/scoped_refptr.h"
+@@ -12,9 +12,9 @@
  
--// TODO(drubery): Remove this once http://crbug/909778 is fully rolled out.
--#include "third_party/unrar/src/rar.hpp"
-+typedef int64_t int64;
- 
- namespace third_party_unrar {
- 
- // TODO(drubery): Remove this once http://crbug/909778 is fully rolled out.
--static const int kUnrarEndarcHead = HEAD_ENDARC;
-+static const int kUnrarEndarcHead = 0;
-+
-+struct FileHeader {
-+  FileHeader() : FileName(L""), UnpSize(0), Dir(false) { }
-+
-+  const wchar_t *FileName;
-+  int64_t UnpSize;
-+  bool Dir;
-+};
-+
-+struct Archive {
-+  void SetFileHandle(base::PlatformFile) { }
-+  void SetTempFileHandle(base::PlatformFile) { }
-+
-+  bool Open(const wchar_t*) { return false; }
-+  bool IsArchive(bool) { return false; }
-+
-+  void ViewComment() { }
-+  size_t ReadHeader() { return 0; }
-+  int GetHeaderType() { return 0; }
-+  void SeekToNext() { }
-+
-+  FileHeader FileHead;
-+};
-+
-+struct CmdExtract { };
- 
--// Forward declare the unrar symbols needed for extraction, so users of
--// RarReader don't need all the symbols from unrar.
+ // Forward declare the unrar symbols needed for extraction, so users of
+ // RarReader don't need all the symbols from unrar.
 -class Archive;
 -class CmdExtract;
 -class CommandData;
-+struct CommandData { };
++class Archive {};
++class CmdExtract {};
++class CommandData {};
  
- // This class is used for extracting RAR files, one entry at a time.
- class RarReader {
+ namespace third_party_unrar {
+ 

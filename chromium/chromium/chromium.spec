@@ -47,7 +47,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    75.0.3770.142
+Version:    76.0.3809.87
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -99,10 +99,22 @@ Patch20:    chromium-python2.patch
 Patch30:    chromium-webrtc-cstring.patch
 
 # Pull upstream patches
-Patch40:    chromium-angle-gcc9.patch
-Patch41:    chromium-gcc9-r654570.patch
-Patch42:    chromium-gcc9-r666279.patch
-Patch43:    chromium-gcc9-r666714.patch
+Patch40:    chromium-quiche-gcc9.patch
+Patch41:    chromium-gcc9-r666279.patch
+Patch42:    chromium-gcc9-r666336.patch
+Patch43:    chromium-gcc9-r666401.patch
+Patch44:    chromium-gcc9-r666436.patch
+Patch45:    chromium-gcc9-r666619.patch
+Patch46:    chromium-gcc9-r666714.patch
+Patch47:    chromium-gcc9-r667064.patch
+Patch48:    chromium-gcc9-r667228.patch
+Patch49:    chromium-gcc9-r667260.patch
+Patch50:    chromium-gcc9-r667484.patch
+Patch51:    chromium-gcc9-r667901.patch
+Patch52:    chromium-gcc9-r668015.patch
+Patch53:    chromium-gcc9-r668033.patch
+Patch54:    chromium-gcc9-r670973.patch
+Patch55:    chromium-gcc9-r670980.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -209,6 +221,7 @@ find -type f -exec \
     sed -i '1s:^#!/usr/bin/\(python\|env python\)$:#!%{__python2}:' '{}' '+'
 
 ./build/linux/unbundle/remove_bundled_libraries.py --do-remove \
+    base/third_party/cityhash \
     base/third_party/dmg_fp \
     base/third_party/dynamic_annotations \
     base/third_party/icu \
@@ -249,6 +262,9 @@ find -type f -exec \
     third_party/axe-core \
     third_party/boringssl \
     third_party/boringssl/src/third_party/fiat \
+    third_party/boringssl/src/third_party/sike \
+    third_party/boringssl/linux-aarch64/crypto/third_party/sike \
+    third_party/boringssl/linux-x86_64/crypto/third_party/sike \
     third_party/blink \
     third_party/breakpad \
     third_party/breakpad/breakpad/src/third_party/curl \
@@ -331,7 +347,7 @@ find -type f -exec \
     third_party/node \
     third_party/node/node_modules/polymer-bundler/lib/third_party/UglifyJS2 \
     third_party/openh264 \
-    third_party/openmax_dl \
+    third_party/openscreen \
     third_party/ots \
     third_party/pdfium \
     third_party/pdfium/third_party/agg23 \
@@ -360,6 +376,7 @@ find -type f -exec \
     third_party/s2cellid \
     third_party/sfntly \
     third_party/skia \
+    third_party/skia/include/third_party/skcms \
     third_party/skia/include/third_party/vulkan \
     third_party/skia/third_party/gif \
     third_party/skia/third_party/skcms \
@@ -432,7 +449,8 @@ find -type f -exec \
 ./build/download_nacl_toolchains.py --packages \
     nacl_x86_glibc,nacl_x86_newlib,pnacl_newlib,pnacl_translator sync --extract
 
-sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' device/usb/BUILD.gn
+sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' \
+    services/device/public/cpp/usb/BUILD.gn
 
 # Don't use static libstdc++
 sed -i '/-static-libstdc++/d' tools/gn/build/gen.py
@@ -646,6 +664,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Jul 31 2019 - Ting-Wei Lan <lantw44@gmail.com> - 76.0.3809.87-100
+- Update to 76.0.3809.87
+
 * Tue Jul 16 2019 - Ting-Wei Lan <lantw44@gmail.com> - 75.0.3770.142-100
 - Update to 75.0.3770.142
 
