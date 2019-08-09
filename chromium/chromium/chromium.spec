@@ -48,7 +48,7 @@
 
 Name:       chromium
 Version:    76.0.3809.87
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -85,6 +85,10 @@ Source12:   chromium-browser.xml
 # Stub unrar wrapper
 # https://bugs.chromium.org/p/chromium/issues/detail?id=884521
 Patch0:     chromium-stub-unrar-wrapper.patch
+
+# Workaround certificate transparency error
+# https://bugs.chromium.org/p/chromium/issues/detail?id=992287
+Patch1:     chromium-certificate-transparency-google.patch
 
 # Fix llvm-ar command usage
 Patch10:    chromium-nacl-llvm-ar.patch
@@ -664,6 +668,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Aug 09 2019 - Ting-Wei Lan <lantw44@gmail.com> - 76.0.3809.87-101
+- Workaround certificate transparency error for popular sites such as
+  Google, Facebook, Yahoo
+
 * Wed Jul 31 2019 - Ting-Wei Lan <lantw44@gmail.com> - 76.0.3809.87-100
 - Update to 76.0.3809.87
 

@@ -1,0 +1,13 @@
+--- chromium-76.0.3809.87/components/certificate_transparency/chrome_ct_policy_enforcer.cc.orig	2019-07-30 04:35:59.000000000 +0800
++++ chromium-76.0.3809.87/components/certificate_transparency/chrome_ct_policy_enforcer.cc	2019-08-09 11:55:35.123756411 +0800
+@@ -159,8 +159,8 @@
+ 
+ bool ChromeCTPolicyEnforcer::IsLogOperatedByGoogle(
+     base::StringPiece log_id) const {
+-  return std::binary_search(std::begin(operated_by_google_logs_),
+-                            std::end(operated_by_google_logs_), log_id);
++  return std::find(operated_by_google_logs_.begin(),
++                   operated_by_google_logs_.end(), log_id) != operated_by_google_logs_.end();
+ }
+ 
+ bool ChromeCTPolicyEnforcer::IsLogDataTimely() const {
