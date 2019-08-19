@@ -55,8 +55,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.29
-Release:    2%{?dist}
+Version:    2.30
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -212,6 +212,8 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/fcntl.h
 %{cross_sysroot}/usr/include/features.h
 %{cross_sysroot}/usr/include/fenv.h
+%dir %{cross_sysroot}/usr/include/finclude
+%{cross_sysroot}/usr/include/finclude/math-vector-fortran.h
 %{cross_sysroot}/usr/include/fmtmsg.h
 %{cross_sysroot}/usr/include/fnmatch.h
 %{cross_sysroot}/usr/include/fpu_control.h
@@ -347,7 +349,6 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/stdlib.h
 %{cross_sysroot}/usr/include/string.h
 %{cross_sysroot}/usr/include/strings.h
-%{cross_sysroot}/usr/include/stropts.h
 %dir %{cross_sysroot}/usr/include/sys
 %{cross_sysroot}/usr/include/sys/acct.h
 %{cross_sysroot}/usr/include/sys/auxv.h
@@ -364,10 +365,10 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/sys/fsuid.h
 %{cross_sysroot}/usr/include/sys/gmon.h
 %{cross_sysroot}/usr/include/sys/gmon_out.h
-%{cross_sysroot}/usr/include/sys/inotify.h
-%if %{cross_arch} == "arm"
-%{cross_sysroot}/usr/include/sys/io.h
+%if %{cross_arch} == "arm64"
+%{cross_sysroot}/usr/include/sys/ifunc.h
 %endif
+%{cross_sysroot}/usr/include/sys/inotify.h
 %{cross_sysroot}/usr/include/sys/ioctl.h
 %{cross_sysroot}/usr/include/sys/ipc.h
 %{cross_sysroot}/usr/include/sys/kd.h
@@ -402,7 +403,6 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/sys/stat.h
 %{cross_sysroot}/usr/include/sys/statfs.h
 %{cross_sysroot}/usr/include/sys/statvfs.h
-%{cross_sysroot}/usr/include/sys/stropts.h
 %{cross_sysroot}/usr/include/sys/swap.h
 %{cross_sysroot}/usr/include/sys/syscall.h
 %{cross_sysroot}/usr/include/sys/sysctl.h
@@ -600,6 +600,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Aug 19 2019 Ting-Wei Lan <lantw44@gmail.com> - 2.30-1
+- Update to 2.30
+
 * Wed May 01 2019 Ting-Wei Lan <lantw44@gmail.com> - 2.29-2
 - Rebuilt for Fedora 30 and 31
 
