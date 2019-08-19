@@ -29,8 +29,8 @@
 %bcond_without ada
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    9.1.0
-Release:    2%{?dist}
+Version:    9.2.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -197,6 +197,7 @@ rm -rf %{buildroot}%{_infodir}
 rm -rf %{buildroot}%{_datadir}/gcc-%{major_version}/python
 rm -f %{buildroot}%{_bindir}/%{cross_triplet}-gcc-%{major_version}
 rm -f %{buildroot}%{_libdir}/libcc1.so*
+rm -rf %{buildroot}%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/bits
 rm -rf %{buildroot}%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/install-tools
 rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools/fixincl
 rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools/fixinc.sh
@@ -378,6 +379,10 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Mon Aug 19 2019 Ting-Wei Lan <lantw44@gmail.com> - 9.2.0-1
+- Update to new stable release 9.2.0
+- Remove bits from include-fixed directory
+
 * Sat May 25 2019 Ting-Wei Lan <lantw44@gmail.com> - 9.1.0-2
 - Sync --with-tune argument with the official Fedora package
 
