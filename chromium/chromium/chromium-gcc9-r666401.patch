@@ -25,7 +25,7 @@ diff --git a/services/network/cross_origin_read_blocking.cc b/services/network/c
 index 30999c075d99..60a03f67ac9f 100644
 --- a/services/network/cross_origin_read_blocking.cc
 +++ b/services/network/cross_origin_read_blocking.cc
-@@ -211,7 +211,7 @@ bool ShouldEnforceInitiatorLock() {
+@@ -207,7 +207,7 @@ std::set<int>& GetPluginProxyingProcesses() {
  // confirmation sniffing because images, scripts, etc. are frequently
  // mislabelled by http servers as HTML/JSON/XML).
  base::flat_set<std::string>& GetNeverSniffedMimeTypes() {
@@ -34,8 +34,8 @@ index 30999c075d99..60a03f67ac9f 100644
        // The list below has been populated based on most commonly used content
        // types according to HTTP Archive - see:
        // https://github.com/whatwg/fetch/issues/860#issuecomment-457330454
-@@ -224,7 +224,7 @@ base::flat_set<std::string>& GetNeverSniffedMimeTypes() {
-       "application/x-www-form-urlencoded",
+@@ -219,7 +219,7 @@ base::flat_set<std::string>& GetNeverSniffedMimeTypes() {
+       "application/x-protobuf",
        "application/zip",
        "text/event-stream",
 -  });
