@@ -150,6 +150,7 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/vorbisdsp.h \
 		libavcodec/vp3data.h \
 		libavcodec/vp3dsp.h \
+		libavcodec/vp4data.h \
 		libavcodec/vp56.h \
 		libavcodec/vp56dsp.h \
 		libavcodec/vp8data.h \

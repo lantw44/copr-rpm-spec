@@ -8,8 +8,8 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
-# Require harfbuzz >= 2.0.0 for hb_ot_tags_from_script_and_language
-%if 0%{?fedora} >= 30
+# Require harfbuzz >= 2.4.0 for hb_subset_input_set_retain_gids
+%if 0%{?fedora} >= 31
 %bcond_without system_harfbuzz
 %else
 %bcond_with system_harfbuzz
@@ -47,7 +47,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    76.0.3809.132
+Version:    77.0.3865.75
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -102,23 +102,15 @@ Patch20:    chromium-python2.patch
 # https://src.fedoraproject.org/rpms/chromium/c/9071ee2d2f996b84
 Patch30:    chromium-webrtc-cstring.patch
 
+# Pull patches from Gentoo
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=5b7b57438d399738
+Patch40:    chromium-unbundle-zlib.patch
+Patch41:    chromium-base-location.patch
+
 # Pull upstream patches
-Patch40:    chromium-quiche-gcc9.patch
-Patch41:    chromium-gcc9-r666279.patch
-Patch42:    chromium-gcc9-r666336.patch
-Patch43:    chromium-gcc9-r666401.patch
-Patch44:    chromium-gcc9-r666436.patch
-Patch45:    chromium-gcc9-r666619.patch
-Patch46:    chromium-gcc9-r666714.patch
-Patch47:    chromium-gcc9-r667064.patch
-Patch48:    chromium-gcc9-r667228.patch
-Patch49:    chromium-gcc9-r667260.patch
-Patch50:    chromium-gcc9-r667484.patch
-Patch51:    chromium-gcc9-r667901.patch
-Patch52:    chromium-gcc9-r668015.patch
-Patch53:    chromium-gcc9-r668033.patch
-Patch54:    chromium-gcc9-r670973.patch
-Patch55:    chromium-gcc9-r670980.patch
+Patch50:    chromium-gcc9-r681321.patch
+Patch51:    chromium-gcc9-r681333.patch
+Patch52:    chromium-gcc9-r684731.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -146,8 +138,8 @@ BuildRequires: pkgconfig(gnome-keyring-1)
 BuildRequires: pkgconfig(libffi)
 # remove_bundled_libraries.py --do-remove
 BuildRequires: python2-rpm-macros
-BuildRequires: python-beautifulsoup4
-BuildRequires: python-html5lib
+BuildRequires: python2-beautifulsoup4
+BuildRequires: python2-html5lib
 BuildRequires: python2-markupsafe
 %if %{with system_ply}
 BuildRequires: python2-ply
@@ -350,8 +342,10 @@ find -type f -exec \
     third_party/nasm \
     third_party/node \
     third_party/node/node_modules/polymer-bundler/lib/third_party/UglifyJS2 \
+    third_party/one_euro_filter \
     third_party/openh264 \
     third_party/openscreen \
+    third_party/openscreen/src/third_party/tinycbor/src/src \
     third_party/ots \
     third_party/pdfium \
     third_party/pdfium/third_party/agg23 \
@@ -391,8 +385,10 @@ find -type f -exec \
     third_party/SPIRV-Tools \
     third_party/sqlite \
     third_party/swiftshader \
+    third_party/swiftshader/third_party/llvm-7.0 \
     third_party/swiftshader/third_party/llvm-subzero \
     third_party/swiftshader/third_party/subzero \
+    third_party/swiftshader/third_party/SPIRV-Headers/include/spirv/unified1 \
     third_party/tcmalloc \
     third_party/unrar \
     third_party/usb_ids \
@@ -602,7 +598,7 @@ for i in 16 32; do
     install -m 644 chrome/app/theme/default_100_percent/chromium/product_logo_$i.png \
         %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/chromium-browser.png
 done
-for i in 22 24 32 48 64 128 256; do
+for i in 24 32 48 64 128 256; do
     if [ ${i} = 32 ]; then ext=xpm; else ext=png; fi
     if [ ${i} = 32 ]; then dir=linux/; else dir=; fi
     mkdir -p %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps
@@ -633,7 +629,6 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/applications/chromium-browser.desktop
 %{_datadir}/gnome-control-center/default-apps/chromium-browser.xml
 %{_datadir}/icons/hicolor/16x16/apps/chromium-browser.png
-%{_datadir}/icons/hicolor/22x22/apps/chromium-browser.png
 %{_datadir}/icons/hicolor/24x24/apps/chromium-browser.png
 %{_datadir}/icons/hicolor/32x32/apps/chromium-browser.png
 %{_datadir}/icons/hicolor/32x32/apps/chromium-browser.xpm
@@ -664,10 +659,15 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %dir %{chromiumdir}/swiftshader
 %{chromiumdir}/swiftshader/libEGL.so
 %{chromiumdir}/swiftshader/libGLESv2.so
+%{chromiumdir}/swiftshader/libvulkan.so
 
 
 
 %changelog
+* Wed Sep 11 2019 - Ting-Wei Lan <lantw44@gmail.com> - 77.0.3865.75-100
+- Update to 77.0.3865.75
+- Fix python package names for Fedora 31
+
 * Tue Aug 27 2019 - Ting-Wei Lan <lantw44@gmail.com> - 76.0.3809.132-100
 - Update to 76.0.3809.132
 
