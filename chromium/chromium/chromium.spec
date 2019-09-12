@@ -48,7 +48,7 @@
 
 Name:       chromium
 Version:    77.0.3865.75
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -101,6 +101,9 @@ Patch20:    chromium-python2.patch
 # Pull patches from Fedora
 # https://src.fedoraproject.org/rpms/chromium/c/9071ee2d2f996b84
 Patch30:    chromium-webrtc-cstring.patch
+# https://src.fedoraproject.org/rpms/chromium/c/8b12346860ef3360
+# https://src.fedoraproject.org/rpms/chromium/c/4376be3d5fd00f26
+Patch31:    chromium-pulseaudio-12.99.patch
 
 # Pull patches from Gentoo
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=5b7b57438d399738
@@ -110,7 +113,8 @@ Patch41:    chromium-base-location.patch
 # Pull upstream patches
 Patch50:    chromium-gcc9-r681321.patch
 Patch51:    chromium-gcc9-r681333.patch
-Patch52:    chromium-gcc9-r684731.patch
+Patch52:    chromium-gcc9-r681760.patch
+Patch53:    chromium-gcc9-r684731.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -210,6 +214,11 @@ Conflicts:     chromedriver-unstable
 
 %prep
 %autosetup -p1
+# This patch can only be applied on systems using PulseAudio 12.99, so we have
+# to revert it on older Fedora releases.
+%if 0%{?fedora} <= 30
+%patch31 -p1 -R
+%endif
 
 # Don't use unversioned python commands in shebangs. This command is based on
 # https://src.fedoraproject.org/rpms/chromium/c/cdad6219176a7615
@@ -664,6 +673,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Sep 12 2019 - Ting-Wei Lan <lantw44@gmail.com> - 77.0.3865.75-101
+- Patch pulse_stubs for Fedora 31 and later
+- Fix harfbuzz linking issue on Fedora 31 and later
+
 * Wed Sep 11 2019 - Ting-Wei Lan <lantw44@gmail.com> - 77.0.3865.75-100
 - Update to 77.0.3865.75
 - Fix python package names for Fedora 31
