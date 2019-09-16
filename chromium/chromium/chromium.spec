@@ -48,7 +48,7 @@
 
 Name:       chromium
 Version:    77.0.3865.75
-Release:    101%{?dist}
+Release:    102%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -673,6 +673,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon Sep 16 2019 - Ting-Wei Lan <lantw44@gmail.com> - 77.0.3865.75-102
+- Merge changes from the official Fedora package
+
 * Thu Sep 12 2019 - Ting-Wei Lan <lantw44@gmail.com> - 77.0.3865.75-101
 - Patch pulse_stubs for Fedora 31 and later
 - Fix harfbuzz linking issue on Fedora 31 and later

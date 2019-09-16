@@ -1,5 +1,5 @@
-#!/usr/bin/env python2
-# Copyright 2010,2015-2016 Tom Callaway <tcallawa@redhat.com>
+#!/usr/bin/env python3
+# Copyright 2010,2015-2019 Tom Callaway <tcallawa@redhat.com>
 # Copyright 2013-2016 Tomas Popela <tpopela@redhat.com>
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -34,6 +34,7 @@
 #  * Function nacl_versions and download_chrome_latest_rpm are removed.
 #  * Switch back to xz -9 but with -T 0 replaced by -T 2.
 #  * Add an option to delete unrar sources.
+#  * Merge changes from the official Fedora package, version 77.0.3865.75.
 
 try:
   import argparse
@@ -47,9 +48,9 @@ import hashlib
 import locale
 import os
 import shutil
-import StringIO
+import io
 import sys
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 chromium_url = "https://commondatastorage.googleapis.com/chromium-browser-official/"
 
@@ -74,21 +75,21 @@ def dlProgress(count, blockSize, totalSize):
 def delete_chromium_dir(ch_dir):
 
   full_dir = "%s/%s" % (latest_dir, ch_dir)
-  print 'Deleting %s ' % ch_dir,
+  print('Deleting %s ' % ch_dir, end='')
   if os.path.isdir(full_dir):
     shutil.rmtree(full_dir)
-    print '[DONE]'
+    print('[DONE]')
   else:
-    print '[NOT FOUND]'
+    print('[NOT FOUND]')
 
 
 def delete_chromium_files(files):
 
   for filename in files:
     full_path = "%s/%s" % (latest_dir, filename)
-    print 'Deleting ' + filename + ' ',
+    print('Deleting ' + filename + ' ', end='')
     os.remove(full_path)
-    print '[DONE]'
+    print('[DONE]')
 
 
 def delete_chromium_dir_or_file(dir_or_file):
@@ -105,20 +106,20 @@ def check_omahaproxy(channel="stable"):
   version = 0
   status_url = "https://omahaproxy.appspot.com/all?os=linux&channel=" + channel
 
-  usock = urllib.urlopen(status_url)
-  status_dump = usock.read()
+  usock = urllib.request.urlopen(status_url)
+  status_dump = usock.read().decode('utf-8')
   usock.close()
-  status_list = StringIO.StringIO(status_dump)
+  status_list = io.StringIO(status_dump)
   status_reader = list(csv.reader(status_list, delimiter=','))
   linux_channels = [s for s in status_reader if "linux" in s]
   linux_channel = [s for s in linux_channels if channel in s]
   version = linux_channel[0][2]
 
   if version == 0:
-    print 'I could not find the latest %s build. Bailing out.' % channel
+    print('I could not find the latest %s build. Bailing out.' % channel)
     sys.exit(1)
   else:
-    print 'Latest Chromium Version on %s at %s is %s' % (channel, status_url, version)
+    print('Latest Chromium Version on %s at %s is %s' % (channel, status_url, version))
     return version
 
 
@@ -143,34 +144,34 @@ def download_file_and_compare_hashes(file_to_download):
   # Let's make sure we haven't already downloaded it.
   tarball_local_file = "%s/%s" % (chromium_root_dir, file_to_download)
   if os.path.isfile(tarball_local_file):
-    print "%s already exists!" % file_to_download
+    print("%s already exists!" % file_to_download)
   else:
     path = '%s%s' % (chromium_url, file_to_download)
-    print "Downloading %s" % path
+    print("Downloading %s" % path)
     # Perhaps look at using python-progressbar at some point?
-    info=urllib.urlretrieve(path, tarball_local_file, reporthook=dlProgress)[1]
-    urllib.urlcleanup()
-    print ""
+    info=urllib.request.urlretrieve(path, tarball_local_file, reporthook=dlProgress)[1]
+    urllib.request.urlcleanup()
+    print("")
     if (info["Content-Type"] != "application/x-tar"):
-      print 'Chromium tarballs for %s are not on servers.' % file_to_download
+      print('Chromium tarballs for %s are not on servers.' % file_to_download)
       remove_file_if_exists (file_to_download)
       sys.exit(1)
 
   hashes_local_file = "%s/%s" % (chromium_root_dir, hashes_file)
   if not os.path.isfile(hashes_local_file):
     path = '%s%s' % (chromium_url, hashes_file)
-    print "Downloading %s" % path
+    print("Downloading %s" % path)
     # Perhaps look at using python-progressbar at some point?
-    info=urllib.urlretrieve(path, hashes_local_file, reporthook=dlProgress)[1]
-    urllib.urlcleanup()
-    print ""
+    info=urllib.request.urlretrieve(path, hashes_local_file, reporthook=dlProgress)[1]
+    urllib.request.urlcleanup()
+    print("")
 
   if os.path.isfile(hashes_local_file):
     with open(hashes_local_file, "r") as input_file:
       while True:
         hash_line = input_file.readline().split()
         if len(hash_line) == 0:
-          print "Cannot compare SHA512 hash for %s!" % file_to_download
+          print("Cannot compare SHA512 hash for %s!" % file_to_download)
         if hash_line[0] == 'sha512':
           sha512sum = hash_line[1]
           break
@@ -179,12 +180,12 @@ def download_file_and_compare_hashes(file_to_download):
         for block in iter(lambda: f.read(65536), b""):
           sha512.update(block)
         if (sha512sum == sha512.hexdigest()):
-          print "SHA512 matches for %s!" % file_to_download
+          print("SHA512 matches for %s!" % file_to_download)
         else:
-          print "SHA512 mismatch for %s!" % file_to_download
+          print("SHA512 mismatch for %s!" % file_to_download)
           sys.exit(1)
   else:
-    print "Cannot compare hashes for %s!" % file_to_download
+    print("Cannot compare hashes for %s!" % file_to_download)
 
 
 def download_version(version):
@@ -263,7 +264,8 @@ if __name__ == '__main__':
     version_string = "dev"
   elif (not (args.stable or args.beta or args.dev)):
     if (not args.version):
-      print 'No version specified, downloading STABLE'
+      print('No version specified, downloading STABLE')
+    args.stable = True
 
   chromium_version = args.version if args.version else check_omahaproxy(version_string)
 
@@ -277,11 +279,11 @@ if __name__ == '__main__':
     shutil.rmtree(latest_dir)
 
   if os.path.isdir(latest_dir):
-    print "%s already exists, perhaps %s has already been unpacked?" % (latest_dir, latest)
+    print("%s already exists, perhaps %s has already been unpacked?" % (latest_dir, latest))
   else:
-    print "Unpacking %s into %s, please wait." % (latest, latest_dir)
+    print("Unpacking %s into %s, please wait." % (latest, latest_dir))
     if (os.system("cd %s && tar -xJf %s" % (chromium_root_dir, latest)) != 0):
-      print "%s is possibly corrupted, exiting." % (latest)
+      print("%s is possibly corrupted, exiting." % (latest))
       sys.exit(1)
 
   if (args.cleansources):
@@ -303,9 +305,9 @@ if __name__ == '__main__':
   remove_file_if_exists(chromium_clean_xz_file)
 
   if (args.ffmpegclean):
-    print "Cleaning ffmpeg from proprietary things...",
+    print("Cleaning ffmpeg from proprietary things...", end="")
     os.system("./chromium-ffmpeg-clean.sh %s %d" % (latest_dir, 0 if args.ffmpegarm else 1))
-    print "Done!"
+    print("Done!")
 
   if (args.deleteunrar):
     unrar_dir = 'third_party/unrar'
@@ -318,8 +320,8 @@ if __name__ == '__main__':
         delete_chromium_dir_or_file(os.path.join(unrar_src_dir, filename))
 
   if (not args.prep):
-    print "Compressing cleaned tree, please wait..."
+    print("Compressing cleaned tree, please wait...")
     os.chdir(chromium_root_dir)
     os.system("tar --exclude=\.svn -cf - chromium-%s | xz -9 -T 2 -f > %s" % (chromium_version, chromium_clean_xz_file))
 
-  print "Finished!"
+  print("Finished!")

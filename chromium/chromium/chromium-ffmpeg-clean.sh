@@ -31,6 +31,7 @@
 #  * Delete gyp* from other_files because GYP support has been removed.
 #  * Add new header_files and manual_files required by Chromium 56.
 #  * Merge changes from the official Fedora package, version 62.0.3202.62.
+#  * Merge changes from the official Fedora package, version 77.0.3865.75.
 
 # $1 files
 # $2 verbose
@@ -71,6 +72,8 @@ generated_files_headers="$generated_files_headers ${generated_files//.asm/.h}"
 header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/x86/mathops.h \
 		libavcodec/x86/vp56_arith.h \
+		libavcodec/aarch64/vp8dsp.h \
+		libavcodec/arm/vp8dsp.h \
 		libavcodec/aac.h \
 		libavcodec/aacps.h \
 		libavcodec/aacpsdsp.h \
@@ -217,12 +220,17 @@ manual_files="	libavcodec/aarch64/fft_neon.S \
 		libavcodec/aarch64/h264pred_neon.S \
 		libavcodec/aarch64/hpeldsp_neon.S \
 		libavcodec/aarch64/mdct_neon.S \
+		libavcodec/aarch64/neon.S \
 		libavcodec/aarch64/vorbisdsp_neon.S \
+		libavcodec/aarch64/vp8dsp_neon.S \
 		libavcodec/x86/hpeldsp_rnd_template.c \
+		libavcodec/x86/mdct15.asm \
+		libavcodec/x86/mdct15_init.c \
 		libavcodec/x86/rnd_template.c \
 		libavcodec/x86/videodsp.asm \
 		libavcodec/x86/videodsp_init.c \
 		libavcodec/x86/vorbisdsp_init.c \
+		libavcodec/autorename_libavcodec_mdct15.c \
 		libavcodec/bit_depth_template.c \
 		libavcodec/fft_template.c \
 		libavcodec/flacdec.c \
@@ -232,6 +240,7 @@ manual_files="	libavcodec/aarch64/fft_neon.S \
 		libavcodec/h264pred_template.c \
 		libavcodec/hpel_template.c \
 		libavcodec/hpeldsp.c \
+		libavcodec/mdct15.c \
 		libavcodec/mdct_template.c \
 		libavcodec/pel_template.c \
 		libavcodec/utils.c \
@@ -256,8 +265,14 @@ manual_files="	libavcodec/aarch64/fft_neon.S \
 		libavutil/x86/x86inc.asm \
 		libavutil/x86/x86util.asm "
 
-mp3_files="	libavcodec/aarch64/mpegaudiodsp_init.c \
+mp3_files="	libavcodec/aarch64/aacpsdsp_init_aarch64.c \
+		libavcodec/aarch64/aacpsdsp_neon.S \
+		libavcodec/aarch64/autorename_libavcodec_aarch64_aacpsdsp_neon.S \
+		libavcodec/aarch64/autorename_libavcodec_aarch64_sbrdsp_neon.S \
+		libavcodec/aarch64/mpegaudiodsp_init.c \
 		libavcodec/aarch64/mpegaudiodsp_neon.S \
+		libavcodec/aarch64/sbrdsp_init_aarch64.c \
+		libavcodec/aarch64/sbrdsp_neon.S \
 		libavcodec/aac_ac3_parser.c \
 		libavcodec/aac_parser.c \
 		libavcodec/aacps_float.c \

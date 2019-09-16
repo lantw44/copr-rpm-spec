@@ -31,6 +31,7 @@
 #  * Allow conditions without 'ffmpeg_branding == "Chromium"'.
 #  * Add files included by files named with 'autorename_' prefix.
 #  * Merge changes from the official Fedora package, version 62.0.3202.62.
+#  * Merge changes from the official Fedora package, version 77.0.3865.75.
 
 import sys
 import os
@@ -64,9 +65,9 @@ def parse_sources(input_sources, output_sources, arch_not_arm):
       append_sources (block[1], output_sources)
 
 
-def parse_ffmpeg_gyni_file(gyni_path, arch_not_arm):
+def parse_ffmpeg_gni_file(gni_path, arch_not_arm):
 
-  with open(gyni_path, "r") as input_file:
+  with open(gni_path, "r") as input_file:
     content = input_file.read().replace('\n', '')
 
   output_sources = []
@@ -86,7 +87,7 @@ def parse_ffmpeg_gyni_file(gyni_path, arch_not_arm):
         if ('use_linux_config' in condition or 'is_linux' in condition) and \
           not any(limitation in condition for limitation in limitations):
           if (arch_not_arm):
-            if ('x64' in condition) or ('x86' in condition):
+            if ('x64' in condition) or ('x86' in condition) or ('use_linux_config' in condition):
               parse_sources (block[1], output_sources, arch_not_arm)
               inserted = True
           else:
@@ -103,4 +104,4 @@ def parse_ffmpeg_gyni_file(gyni_path, arch_not_arm):
 if __name__ == "__main__":
 
   path = "%s/third_party/ffmpeg/ffmpeg_generated.gni" % sys.argv[1]
-  parse_ffmpeg_gyni_file (path, False if sys.argv[2] == "0" else True)
+  parse_ffmpeg_gni_file (path, False if sys.argv[2] == "0" else True)
