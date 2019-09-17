@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.5.1.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
@@ -99,6 +99,9 @@ fi
 
 
 %changelog
+* Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.5.1.1-3
+- Rebuilt for Fedora 31 and 32
+
 * Wed May 15 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.5.1.1-2
 - Switch to Guile 2.2
 - Remove noarch because .go files are not architecture-independent

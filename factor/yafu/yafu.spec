@@ -1,6 +1,6 @@
 Name:       yafu
 Version:    1.34
-Release:    14%{?dist}
+Release:    15%{?dist}
 Summary:    Automated integer factorization
 
 License:    Public Domain
@@ -46,6 +46,9 @@ install -m 755 yafu %{buildroot}%{_bindir}
 
 
 %changelog
+* Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.34-15
+- Rebuilt for Fedora 31 and 32
+
 * Tue Apr 30 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.34-14
 - Rebuilt for Fedora 30 and 31
 

@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    9.2.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -379,6 +379,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 9.2.0-2
+- Rebuilt for Fedora 31 and 32
+
 * Mon Aug 19 2019 Ting-Wei Lan <lantw44@gmail.com> - 9.2.0-1
 - Update to new stable release 9.2.0
 - Remove bits from include-fixed directory

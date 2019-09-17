@@ -2,7 +2,7 @@
 
 Name:           guile-json
 Version:        1.3.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        JSON module for Guile
 
 License:        GPLv3+
@@ -54,6 +54,9 @@ features:
 
 
 %changelog
+* Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.3.2-4
+- Rebuilt for Fedora 31 and 32
+
 * Wed May 15 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.3.2-3
 - Switch to Guile 2.2
 

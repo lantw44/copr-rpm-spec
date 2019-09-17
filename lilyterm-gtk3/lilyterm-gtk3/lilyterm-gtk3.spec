@@ -3,7 +3,7 @@
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.15.20161004git%{shortcommit}%{?dist}
+Release:        0.16.20161004git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 License:        GPLv3+
@@ -82,6 +82,9 @@ desktop-file-install                                       \
 
 
 %changelog
+* Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.16.20161004git8df92d6
+- Rebuilt for Fedora 31 and 32
+
 * Tue Apr 30 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.15.20161004git8df92d6
 - Rebuilt for Fedora 30 and 31
 - Remove BuildRoot, defattr, clean section

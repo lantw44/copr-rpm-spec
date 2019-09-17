@@ -1,6 +1,6 @@
 Name:       qelly
 Version:    1.0
-Release:    0.13.beta%{?dist}
+Release:    0.14.beta%{?dist}
 Summary:    Qelly is a Qt port of Nally
 
 %global     real_name     Qelly
@@ -42,6 +42,9 @@ install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
 %doc AUTHORS CHANGES README.md
 
 %changelog
+* Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.14.beta
+- Rebuilt for Fedora 31 and 32
+
 * Tue Apr 30 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.13.beta
 - Rebuilt for Fedora 30 and 31
 - Remove defattr

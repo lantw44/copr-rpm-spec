@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        3.2.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Minuscule client libraries for the APIs of various Git forges
 
 License:        GPLv3+
@@ -81,6 +81,9 @@ fi
 
 
 %changelog
+* Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 3.2.0-3
+- Rebuilt for Fedora 31 and 32
+
 * Wed May 15 2019 Ting-Wei Lan <lantw44@gmail.com> - 3.2.0-2
 - Add CHANGELOG to doc
 - Update description from upstream README

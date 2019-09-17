@@ -1,6 +1,6 @@
 Name:       msieve
 Version:    1.53
-Release:    7%{?dist}
+Release:    8%{?dist}
 Summary:    Msieve is a C library to factor large integers.
 
 License:    Public Domain
@@ -40,6 +40,9 @@ install -m 644 libmsieve.a %{buildroot}%{_libdir}
 
 
 %changelog
+* Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.53-8
+- Rebuilt for Fedora 31 and 32
+
 * Tue Apr 30 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.53-7
 - Rebuilt for Fedora 30 and 31
 
