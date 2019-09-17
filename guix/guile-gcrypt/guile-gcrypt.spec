@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           guile-gcrypt
-Version:        0.1.0
-Release:        3%{?dist}
+Version:        0.2.0
+Release:        1%{?dist}
 Summary:        Guile bindings to Libgcrypt
 
 License:        GPLv3+
@@ -67,6 +67,9 @@ fi
 
 
 %changelog
+* Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.2.0-1
+- Update to 0.2.0
+
 * Wed May 15 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-3
 - Switch to Guile 2.2
 
