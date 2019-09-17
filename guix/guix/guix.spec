@@ -6,7 +6,7 @@
 
 Name:           guix
 Version:        1.0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -45,14 +45,23 @@ BuildRequires:  zlib-devel, bzip2-devel, libgcrypt-devel
 BuildRequires:  gettext, help2man, graphviz
 BuildRequires:  bash-completion, fish
 BuildRequires:  guile-git, guile-gcrypt, guile-json, guile-sqlite3, guile-ssh
+%if 0%{?fedora} >= 31
+BuildRequires:  gnutls-guile
+%else
 BuildRequires:  gnutls-guile22
+%endif
 BuildRequires:  selinux-policy
 BuildRequires:  systemd
 
 %{?systemd_requires}
 
 Requires:       guile22 >= 2.2.4
-Requires:       guile-git, guile-gcrypt, guile-sqlite3, gnutls-guile22
+Requires:       guile-git, guile-gcrypt, guile-sqlite3
+%if 0%{?fedora} >= 31
+Requires:       gnutls-guile
+%else
+Requires:       gnutls-guile22
+%endif
 Requires:       gzip, bzip2, xz
 Requires:       selinux-policy
 Requires:       %{_bindir}/dot
@@ -429,6 +438,9 @@ fi
 
 
 %changelog
+* Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0.1-2
+- Use gnutls-guile on Fedora 31 and later
+
 * Fri May 24 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0.1-1
 - Update to 1.0.1
 
