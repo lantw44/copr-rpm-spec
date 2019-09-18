@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           guile-json
-Version:        1.3.2
-Release:        4%{?dist}
+Version:        3.2.0
+Release:        1%{?dist}
 Summary:        JSON module for Guile
 
 License:        GPLv3+
@@ -54,6 +54,9 @@ features:
 
 
 %changelog
+* Wed Sep 18 2019 Ting-Wei Lan <lantw44@gmail.com> - 3.2.0-1
+- Update to 3.2.0
+
 * Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.3.2-4
 - Rebuilt for Fedora 31 and 32
 

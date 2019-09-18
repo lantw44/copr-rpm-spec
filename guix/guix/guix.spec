@@ -1,3 +1,6 @@
+%global commit 0ed97e69805253656df929a6ad678016aa81f08a
+%global shortcommit %(c=%{commit}; echo ${c:0:7})
+
 # Bootstrap binaries provided by guix don't have build IDs
 %global _missing_build_ids_terminate_build 0
 
@@ -5,13 +8,14 @@
 %global selinuxmodule guix-daemon
 
 Name:           guix
-Version:        1.0.1
-Release:        2%{?dist}
+Version:        1.0.2
+Release:        0.1.20190917git%{shortcommit}%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
 URL:            https://www.gnu.org/software/guix
-Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+# Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://git.savannah.gnu.org/cgit/guix.git/snapshot/guix-%{commit}.tar.gz
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
@@ -39,12 +43,14 @@ Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 # bytecode and recompile them from sources to pass the test.
 
 BuildRequires:  gcc-c++
+BuildRequires:  autoconf, automake, gettext-devel, po4a, help2man, texinfo
 BuildRequires:  pkgconfig(guile-2.2) >= 2.2.4
 BuildRequires:  pkgconfig(sqlite3)
-BuildRequires:  zlib-devel, bzip2-devel, libgcrypt-devel
+BuildRequires:  zlib-devel, lzlib-devel, bzip2-devel, libgcrypt-devel
 BuildRequires:  gettext, help2man, graphviz
 BuildRequires:  bash-completion, fish
-BuildRequires:  guile-git, guile-gcrypt, guile-json, guile-sqlite3, guile-ssh
+BuildRequires:  guile-git, guile-gcrypt, guile-json >= 3, guile-sqlite3
+BuildRequires:  guile-ssh
 %if 0%{?fedora} >= 31
 BuildRequires:  gnutls-guile
 %else
@@ -56,7 +62,7 @@ BuildRequires:  systemd
 %{?systemd_requires}
 
 Requires:       guile22 >= 2.2.4
-Requires:       guile-git, guile-gcrypt, guile-sqlite3
+Requires:       guile-git, guile-gcrypt, guile-json >= 3, guile-sqlite3
 %if 0%{?fedora} >= 31
 Requires:       gnutls-guile
 %else
@@ -65,6 +71,8 @@ Requires:       gnutls-guile22
 Requires:       gzip, bzip2, xz
 Requires:       selinux-policy
 Requires:       %{_bindir}/dot
+Requires:       %{_libdir}/libz.so
+Requires:       %{_libdir}/liblz.so
 Requires:       %{_libdir}/libgcrypt.so
 Requires(post): /usr/sbin/useradd
 Requires(post): /usr/sbin/usermod
@@ -75,7 +83,7 @@ Requires(post): libselinux-utils, policycoreutils
 Requires(post): info
 Requires(preun): info
 
-Recommends:     guile-json, guile-ssh
+Recommends:     guile-ssh
 Suggests:       emacs-guix
 
 %description
@@ -88,10 +96,16 @@ composed.
 
 
 %prep
-%autosetup -p1
+%autosetup -n %{name}-%{commit} -p1
+# The commit hash is too long to run tests. We have to make it shorter.
+cd ..
+rm -rf %{name}-%{shortcommit}
+mv %{name}-%{commit} %{name}-%{shortcommit}
+%setup -n %{name}-%{shortcommit} -D -T
 
 
 %build
+./bootstrap
 # Rename test-tmp to t to save the length of the path.
 %configure \
     --disable-rpath \
@@ -136,10 +150,16 @@ if [ "$(id -u)" = 0 ]; then
         chown -R nobody:nobody %{_topdir}
         setfacl -m u:nobody:x /builddir
     fi
-    runuser -u nobody -- %{__make} %{?_smp_mflags} check && exit 0
+    runuser -u nobody -- %{__make} %{?_smp_mflags} check
 else
-    %{__make} %{?_smp_mflags} check && exit 0
+    %{__make} %{?_smp_mflags} check
 fi
+# print the log on failure
+ret="$?"
+if [ "${ret}" != 0 ]; then
+    cat test-suite.log
+fi
+exit "${ret}"
 
 
 %install
@@ -239,12 +259,6 @@ fi
 %doc AUTHORS ChangeLog CODE-OF-CONDUCT NEWS README ROADMAP THANKS TODO
 %{_bindir}/guix
 %{_bindir}/guix-daemon
-%dir %{_libexecdir}/guix
-%{_libexecdir}/guix/authenticate
-%{_libexecdir}/guix/download
-%{_libexecdir}/guix/list-runtime-roots
-%{_libexecdir}/guix/offload
-%{_libexecdir}/guix/substitute
 %{guile_source_dir}/gnu.scm
 %{guile_ccache_dir}/gnu.go
 %dir %{guile_source_dir}/gnu
@@ -269,6 +283,12 @@ fi
 %{guile_source_dir}/gnu/installer/logo.txt
 %dir %{guile_source_dir}/gnu/installer/newt
 %{guile_source_dir}/gnu/installer/newt/*.scm
+%{guile_source_dir}/gnu/machine.scm
+%{guile_ccache_dir}/gnu/machine.go
+%dir %{guile_source_dir}/gnu/machine
+%dir %{guile_ccache_dir}/gnu/machine
+%{guile_source_dir}/gnu/machine/ssh.scm
+%{guile_ccache_dir}/gnu/machine/ssh.go
 %{guile_source_dir}/gnu/packages.scm
 %{guile_ccache_dir}/gnu/packages.go
 %dir %{guile_source_dir}/gnu/packages
@@ -387,7 +407,6 @@ fi
 %{_datadir}/guix/ci.guix.gnu.org.pub
 %{_datadir}/guix/ci.guix.info.pub
 %{_datadir}/guix/berlin.guixsd.org.pub
-%{_datadir}/guix/hydra.gnu.org.pub
 %{_datadir}/selinux/packages/%{selinuxmodule}.cil
 %{_infodir}/%{name}.info*
 %{_infodir}/%{name}.de.info*
@@ -438,6 +457,10 @@ fi
 
 
 %changelog
+* Wed Sep 18 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0.2-0.1.20190917git0ed97e6
+- Update to a git snapshot from master branch to fix tests
+- Move guile-json from Recommends to Requires because emacs-guix needs it
+
 * Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0.1-2
 - Use gnutls-guile on Fedora 31 and later
 
