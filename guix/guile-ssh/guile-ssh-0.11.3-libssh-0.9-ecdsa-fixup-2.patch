@@ -1,0 +1,27 @@
+From 75cec44f60e07730cbd25157b4a19c98fc8583fb Mon Sep 17 00:00:00 2001
+From: "Artyom V. Poptsov" <poptsov.artyom@gmail.com>
+Date: Thu, 19 Sep 2019 20:09:30 +0300
+Subject: [PATCH] libguile-ssh/key-type.c: Fix libssh 9.0 check
+
+Reported by lantw44 in
+<https://github.com/artyom-poptsov/guile-ssh/issues/12>
+
+* libguile-ssh/key-type.c: Use 'if' instead of 'ifdef' to check the presence
+  of libssh 9.0.
+---
+ libguile-ssh/key-type.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libguile-ssh/key-type.c b/libguile-ssh/key-type.c
+index 12617ce..10e7c4a 100644
+--- a/libguile-ssh/key-type.c
++++ b/libguile-ssh/key-type.c
+@@ -44,7 +44,7 @@ static const struct symbol_mapping key_types[] = {
+   { "rsa1",    SSH_KEYTYPE_RSA1    },
+   { "ecdsa",   SSH_KEYTYPE_ECDSA   }, /* Deprecated in libssh 0.9 */
+ 
+-#ifdef HAVE_LIBSSH_0_9
++#if HAVE_LIBSSH_0_9
+   { "ecdsa-p256",        SSH_KEYTYPE_ECDSA_P256        },
+   { "ecdsa-p384",        SSH_KEYTYPE_ECDSA_P384        },
+   { "ecdsa-p521",        SSH_KEYTYPE_ECDSA_P521        },

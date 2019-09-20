@@ -29,7 +29,7 @@ index 74271f7..99d35af 100644
 +                                [AC_DEFINE(HAVE_LIBSSH_0_9, 1, [Use libssh 0.9])],
 +                                [AC_DEFINE(HAVE_LIBSSH_0_9, 0, [Use libssh < 0.9])])
 +
-+AM_CONDITIONAL(HAVE_LIBSSH_0_8, $HAVE_LIBSSH_0_8)
++AM_CONDITIONAL(HAVE_LIBSSH_0_9, $HAVE_LIBSSH_0_9)
  
  # -------------------------------------------------------------------------------
  
