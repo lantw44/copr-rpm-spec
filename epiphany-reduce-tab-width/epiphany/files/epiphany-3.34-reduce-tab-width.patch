@@ -1,0 +1,39 @@
+diff --git a/src/ephy-notebook.c b/src/ephy-notebook.c
+index 7d4dccaf0..d60ff4932 100644
+--- a/src/ephy-notebook.c
++++ b/src/ephy-notebook.c
+@@ -40,7 +40,7 @@
+ #include <glib/gi18n.h>
+ #include <gtk/gtk.h>
+ 
+-#define TAB_WIDTH_N_CHARS 15
++#define TAB_WIDTH_N_CHARS 5
+ 
+ #define AFTER_ALL_TABS -1
+ 
+diff --git a/src/ephy-tab-label.c b/src/ephy-tab-label.c
+index 2562bf323..f7f05d66b 100644
+--- a/src/ephy-tab-label.c
++++ b/src/ephy-tab-label.c
+@@ -26,7 +26,7 @@
+ #include "ephy-settings.h"
+ #include "ephy-tab-label.h"
+ 
+-#define TAB_WIDTH_N_CHARS 15
++#define TAB_WIDTH_N_CHARS 5
+ 
+ struct _EphyTabLabel {
+   GtkBox parent_instance;
+diff --git a/src/resources/gtk/tab-label.ui b/src/resources/gtk/tab-label.ui
+index 3fa1527af..80ae7a6a0 100644
+--- a/src/resources/gtk/tab-label.ui
++++ b/src/resources/gtk/tab-label.ui
+@@ -9,7 +9,7 @@
+   </object>
+   <template class="EphyTabLabel" parent="GtkBox">
+     <property name="can_focus">False</property>
+-    <property name="spacing">6</property>
++    <property name="spacing">2</property>
+     <signal name="style-updated" handler="style_updated_cb" swapped="no"/>
+     <child>
+       <object class="GtkImage" id="icon">
