@@ -47,7 +47,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    77.0.3865.120
+Version:    78.0.3904.70
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -107,14 +107,20 @@ Patch31:    chromium-pulseaudio-12.99.patch
 
 # Pull patches from Gentoo
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=5b7b57438d399738
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=6b89e0d09ed3f133
+# http://distfiles.gentoo.org/distfiles/chromium-78-revert-noexcept-r1.patch.gz
 Patch40:    chromium-unbundle-zlib.patch
 Patch41:    chromium-base-location.patch
+Patch42:    chromium-v8-gcc9.patch
+Patch43:    chromium-gcc9-r688676.patch
 
 # Pull upstream patches
-Patch50:    chromium-gcc9-r681321.patch
-Patch51:    chromium-gcc9-r681333.patch
-Patch52:    chromium-gcc9-r681760.patch
-Patch53:    chromium-gcc9-r684731.patch
+Patch50:    chromium-gcc9-r694853.patch
+Patch51:    chromium-gcc9-r696834.patch
+Patch52:    chromium-gcc9-r706467.patch
+
+# Fix other GCC problems
+Patch60:    chromium-gcc9-dns_util-ambiguous-ctor.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -227,7 +233,7 @@ find -type f -exec \
 
 ./build/linux/unbundle/remove_bundled_libraries.py --do-remove \
     base/third_party/cityhash \
-    base/third_party/dmg_fp \
+    base/third_party/double_conversion \
     base/third_party/dynamic_annotations \
     base/third_party/icu \
     base/third_party/libevent \
@@ -281,6 +287,7 @@ find -type f -exec \
     third_party/catapult/third_party/polymer \
     third_party/catapult/tracing/third_party/d3 \
     third_party/catapult/tracing/third_party/gl-matrix \
+    third_party/catapult/tracing/third_party/jpeg-js \
     third_party/catapult/tracing/third_party/jszip \
     third_party/catapult/tracing/third_party/mannwhitneyu \
     third_party/catapult/tracing/third_party/oboe \
@@ -295,6 +302,7 @@ find -type f -exec \
     third_party/cros_system_api \
     third_party/dav1d \
     third_party/dawn \
+    third_party/depot_tools \
     third_party/devscripts \
     third_party/dom_distiller_js \
     third_party/emoji-segmenter \
@@ -372,6 +380,7 @@ find -type f -exec \
     third_party/ply \
 %endif
     third_party/polymer \
+    third_party/private-join-and-compute \
     third_party/protobuf \
     third_party/protobuf/third_party/six \
     third_party/pyjson5 \
@@ -418,6 +427,7 @@ find -type f -exec \
     third_party/xdg-utils \
     third_party/yasm/run_yasm.py \
     third_party/zlib/google \
+    tools/grit/third_party/six \
     tools/gn/base/third_party/icu \
     url/third_party/mozilla \
     v8/src/third_party/siphash \
@@ -491,6 +501,7 @@ export LDFLAGS='%{__global_ldflags}'
 export CC=clang CXX=clang++
 %else
 export CC=gcc CXX=g++
+export CXXFLAGS="$CXXFLAGS -fpermissive"
 %if 0%{?fedora} <= 29
 export CXXFLAGS="$CXXFLAGS -fno-ipa-cp-clone"
 %endif
@@ -668,11 +679,15 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %dir %{chromiumdir}/swiftshader
 %{chromiumdir}/swiftshader/libEGL.so
 %{chromiumdir}/swiftshader/libGLESv2.so
-%{chromiumdir}/swiftshader/libvulkan.so
+%{chromiumdir}/swiftshader/libvk_swiftshader.so
 
 
 
 %changelog
+* Wed Oct 23 2019 - Ting-Wei Lan <lantw44@gmail.com> - 78.0.3904.70-100
+- Update to 78.0.3904.70
+- Bring -fpermissive back to CXXFLAGS again
+
 * Fri Oct 11 2019 - Ting-Wei Lan <lantw44@gmail.com> - 77.0.3865.120-100
 - Update to 77.0.3865.120
 

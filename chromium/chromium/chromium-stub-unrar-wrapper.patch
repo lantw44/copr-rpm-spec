@@ -1,62 +1,62 @@
 diff --git a/third_party/unrar/BUILD.gn b/third_party/unrar/BUILD.gn
-index 333a00899cfe..9ff77d68e782 100644
+index 5716ad0e720f..6f60c130561f 100644
 --- a/third_party/unrar/BUILD.gn
 +++ b/third_party/unrar/BUILD.gn
-@@ -7,54 +7,7 @@ import("//build/config/features.gni")
- if (safe_browsing_mode == 1) {
-   static_library("unrar") {
-     sources = [
--      "src/archive.cpp",
--      "src/arcread.cpp",
--      "src/blake2s.cpp",
--      "src/cmddata.cpp",
--      "src/consio.cpp",
--      "src/crc.cpp",
--      "src/crypt.cpp",
--      "src/encname.cpp",
--      "src/errhnd.cpp",
--      "src/extinfo.cpp",
--      "src/extract.cpp",
--      "src/filcreat.cpp",
--      "src/file.cpp",
--      "src/filefn.cpp",
--      "src/filestr.cpp",
--      "src/find.cpp",
--      "src/getbits.cpp",
--      "src/global.cpp",
--      "src/hash.cpp",
--      "src/headers.cpp",
--      "src/list.cpp",
--      "src/match.cpp",
--      "src/options.cpp",
--      "src/pathfn.cpp",
--      "src/qopen.cpp",
--      "src/rarvm.cpp",
--      "src/rawread.cpp",
--      "src/rdwrfn.cpp",
--      "src/recvol.cpp",
--      "src/resource.cpp",
--      "src/rijndael.cpp",
--      "src/rs.cpp",
--      "src/rs16.cpp",
--      "src/scantree.cpp",
--      "src/secpassword.cpp",
--      "src/sha1.cpp",
--      "src/sha256.cpp",
--      "src/smallfn.cpp",
--      "src/strfn.cpp",
--      "src/strlist.cpp",
--      "src/system.cpp",
--      "src/threadpool.cpp",
--      "src/timefn.cpp",
--      "src/ui.cpp",
--      "src/unicode.cpp",
--      "src/unpack.cpp",
-       "src/unrar_wrapper.cc",
--      "src/volume.cpp",
-     ]
-     if (is_win) {
-       sources += [ "src/isnt.cpp" ]
+@@ -23,54 +23,7 @@ config("unrar_warnings") {
+ 
+ static_library("unrar") {
+   sources = [
+-    "src/archive.cpp",
+-    "src/arcread.cpp",
+-    "src/blake2s.cpp",
+-    "src/cmddata.cpp",
+-    "src/consio.cpp",
+-    "src/crc.cpp",
+-    "src/crypt.cpp",
+-    "src/encname.cpp",
+-    "src/errhnd.cpp",
+-    "src/extinfo.cpp",
+-    "src/extract.cpp",
+-    "src/filcreat.cpp",
+-    "src/file.cpp",
+-    "src/filefn.cpp",
+-    "src/filestr.cpp",
+-    "src/find.cpp",
+-    "src/getbits.cpp",
+-    "src/global.cpp",
+-    "src/hash.cpp",
+-    "src/headers.cpp",
+-    "src/list.cpp",
+-    "src/match.cpp",
+-    "src/options.cpp",
+-    "src/pathfn.cpp",
+-    "src/qopen.cpp",
+-    "src/rarvm.cpp",
+-    "src/rawread.cpp",
+-    "src/rdwrfn.cpp",
+-    "src/recvol.cpp",
+-    "src/resource.cpp",
+-    "src/rijndael.cpp",
+-    "src/rs.cpp",
+-    "src/rs16.cpp",
+-    "src/scantree.cpp",
+-    "src/secpassword.cpp",
+-    "src/sha1.cpp",
+-    "src/sha256.cpp",
+-    "src/smallfn.cpp",
+-    "src/strfn.cpp",
+-    "src/strlist.cpp",
+-    "src/system.cpp",
+-    "src/threadpool.cpp",
+-    "src/timefn.cpp",
+-    "src/ui.cpp",
+-    "src/unicode.cpp",
+-    "src/unpack.cpp",
+     "src/unrar_wrapper.cc",
+-    "src/volume.cpp",
+   ]
+   if (is_win) {
+     sources += [ "src/isnt.cpp" ]
 diff --git a/third_party/unrar/src/unrar_wrapper.cc b/third_party/unrar/src/unrar_wrapper.cc
 index 63b31f008861..6879a2d84988 100644
 --- a/third_party/unrar/src/unrar_wrapper.cc
