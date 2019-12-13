@@ -1,0 +1,12 @@
+diff --git a/tools/gn/bootstrap/bootstrap.py b/tools/gn/bootstrap/bootstrap.py
+index 8e121b59f387..cbeb32e18af5 100755
+--- a/tools/gn/bootstrap/bootstrap.py
++++ b/tools/gn/bootstrap/bootstrap.py
+@@ -112,6 +112,7 @@ def main(argv):
+       os.path.join(GN_ROOT, 'build', 'gen.py'),
+       '--no-last-commit-position',
+       '--out-path=' + gn_build_dir,
++      '--no-static-libstdc++',
+   ]
+   if options.debug:
+     cmd.append('--debug')

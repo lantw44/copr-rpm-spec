@@ -47,7 +47,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    78.0.3904.108
+Version:    79.0.3945.79
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -90,6 +90,9 @@ Patch0:     chromium-stub-unrar-wrapper.patch
 # https://bugs.chromium.org/p/chromium/issues/detail?id=992287
 Patch1:     chromium-certificate-transparency-google.patch
 
+# Don't require static libstdc++
+Patch2:     chromium-gn-no-static-libstdc++.patch
+
 # Fix llvm-ar command usage
 Patch10:    chromium-nacl-llvm-ar.patch
 
@@ -101,9 +104,6 @@ Patch20:    chromium-python2.patch
 # Pull patches from Fedora
 # https://src.fedoraproject.org/rpms/chromium/c/9071ee2d2f996b84
 Patch30:    chromium-webrtc-cstring.patch
-# https://src.fedoraproject.org/rpms/chromium/c/8b12346860ef3360
-# https://src.fedoraproject.org/rpms/chromium/c/4376be3d5fd00f26
-Patch31:    chromium-pulseaudio-12.99.patch
 
 # Pull patches from Gentoo
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=5b7b57438d399738
@@ -111,16 +111,12 @@ Patch31:    chromium-pulseaudio-12.99.patch
 # http://distfiles.gentoo.org/distfiles/chromium-78-revert-noexcept-r1.patch.gz
 Patch40:    chromium-unbundle-zlib.patch
 Patch41:    chromium-base-location.patch
-Patch42:    chromium-v8-gcc9.patch
-Patch43:    chromium-gcc9-r688676.patch
 
 # Pull upstream patches
-Patch50:    chromium-gcc9-r694853.patch
-Patch51:    chromium-gcc9-r696834.patch
-Patch52:    chromium-gcc9-r706467.patch
-
-# Fix other GCC problems
-Patch60:    chromium-gcc9-dns_util-ambiguous-ctor.patch
+Patch50:    chromium-fix-use_system_harfbuzz-ng.patch
+Patch51:    chromium-gcc9-r709411.patch
+Patch52:    chromium-gcc9-r709472.patch
+Patch53:    chromium-gcc9-r709569.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -220,11 +216,6 @@ Conflicts:     chromedriver-unstable
 
 %prep
 %autosetup -p1
-# This patch can only be applied on systems using PulseAudio 12.99, so we have
-# to revert it on older Fedora releases.
-%if 0%{?fedora} <= 30
-%patch31 -p1 -R
-%endif
 
 # Don't use unversioned python commands in shebangs. This command is based on
 # https://src.fedoraproject.org/rpms/chromium/c/cdad6219176a7615
@@ -405,6 +396,7 @@ find -type f -exec \
     third_party/swiftshader \
     third_party/swiftshader/third_party/llvm-7.0 \
     third_party/swiftshader/third_party/llvm-subzero \
+    third_party/swiftshader/third_party/marl \
     third_party/swiftshader/third_party/subzero \
     third_party/swiftshader/third_party/SPIRV-Headers/include/spirv/unified1 \
     third_party/tcmalloc \
@@ -471,9 +463,6 @@ find -type f -exec \
 sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' \
     services/device/public/cpp/usb/BUILD.gn
 
-# Don't use static libstdc++
-sed -i '/-static-libstdc++/d' tools/gn/build/gen.py
-
 rmdir third_party/markupsafe
 ln -s %{python2_sitearch}/markupsafe third_party/markupsafe
 
@@ -502,9 +491,6 @@ export CC=clang CXX=clang++
 %else
 export CC=gcc CXX=g++
 export CXXFLAGS="$CXXFLAGS -fpermissive"
-%if 0%{?fedora} <= 29
-export CXXFLAGS="$CXXFLAGS -fno-ipa-cp-clone"
-%endif
 %endif
 
 # GN needs gold to bootstrap
@@ -519,7 +505,6 @@ gn_args=(
     use_cups=true
     use_gnome_keyring=true
     use_gio=true
-    use_jumbo_build=true
     use_kerberos=true
     use_libpci=true
     use_pulseaudio=true
@@ -679,11 +664,17 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %dir %{chromiumdir}/swiftshader
 %{chromiumdir}/swiftshader/libEGL.so
 %{chromiumdir}/swiftshader/libGLESv2.so
-%{chromiumdir}/swiftshader/libvk_swiftshader.so
 
 
 
 %changelog
+* Wed Dec 11 2019 - Ting-Wei Lan <lantw44@gmail.com> - 79.0.3945.79-100
+- Update to 79.0.3945.79
+- Disable jumbo build because upstream no longer supports it
+- Remove GCC 8 undefined reference workaround because Fedora 29 is EOL
+- Replace the sed command used to disable static libstdc++ with a patch file
+  because the command can create Python syntax error
+
 * Wed Nov 20 2019 - Ting-Wei Lan <lantw44@gmail.com> - 78.0.3904.108-100
 - Update to 78.0.3904.108
 

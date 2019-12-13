@@ -1,0 +1,44 @@
+From ea7a9bad96f921da314ab8d171b1e22ad19d49a7 Mon Sep 17 00:00:00 2001
+From: ckitagawa <ckitagawa@chromium.org>
+Date: Tue, 22 Oct 2019 14:31:41 +0000
+Subject: [PATCH] [Build] fix use_system_harfbuzz-ng
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Use <> for harfbuzz includes to support the option to build with system
+harfbuzz rather than the version in third_party.
+
+Bug: 1016158
+Change-Id: I8a85e928c010ca65e04b5ebc4909a051b4312672
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/1873236
+Commit-Queue: Calder Kitagawa <ckitagawa@chromium.org>
+Commit-Queue: Dominik Röttsches <drott@chromium.org>
+Reviewed-by: Dominik Röttsches <drott@chromium.org>
+Cr-Commit-Position: refs/heads/master@{#708176}
+---
+ components/paint_preview/common/subset_font.cc | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/components/paint_preview/common/subset_font.cc b/components/paint_preview/common/subset_font.cc
+index a218d6373350..287f5600ce9b 100644
+--- a/components/paint_preview/common/subset_font.cc
++++ b/components/paint_preview/common/subset_font.cc
+@@ -7,11 +7,12 @@
+ #include <memory>
+ #include <utility>
+ 
++#include <hb-subset.h>
++#include <hb.h>
++
+ #include "base/bind.h"
+ #include "base/callback.h"
+ #include "base/macros.h"
+-#include "third_party/harfbuzz-ng/src/src/hb-subset.h"
+-#include "third_party/harfbuzz-ng/src/src/hb.h"
+ #include "third_party/skia/include/core/SkStream.h"
+ #include "third_party/skia/include/core/SkTypeface.h"
+ 
+-- 
+2.23.0
+
