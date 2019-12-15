@@ -18,8 +18,16 @@
 # Require libxml2 > 2.9.4 for XML_PARSE_NOXXE
 %bcond_without system_libxml2
 
-# https://github.com/dabeaz/ply/issues/66
+# Python 2 libraries
+%if 0%{?fedora} < 32
+%bcond_without system_beautifulsoup4
+%bcond_without system_html5lib
 %bcond_without system_ply
+%else
+%bcond_with system_beautifulsoup4
+%bcond_with system_html5lib
+%bcond_with system_ply
+%endif
 
 # Requires re2 2016.07.21 for re2::LazyRE2
 %bcond_with system_re2
@@ -48,7 +56,7 @@
 
 Name:       chromium
 Version:    79.0.3945.79
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -114,9 +122,11 @@ Patch41:    chromium-base-location.patch
 
 # Pull upstream patches
 Patch50:    chromium-fix-use_system_harfbuzz-ng.patch
-Patch51:    chromium-gcc9-r709411.patch
-Patch52:    chromium-gcc9-r709472.patch
-Patch53:    chromium-gcc9-r709569.patch
+Patch51:    chromium-gcc9-r707329.patch
+Patch52:    chromium-gcc9-r709411.patch
+Patch53:    chromium-gcc9-r709469.patch
+Patch54:    chromium-gcc9-r709472.patch
+Patch55:    chromium-gcc9-r709569.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -144,12 +154,17 @@ BuildRequires: pkgconfig(gnome-keyring-1)
 BuildRequires: pkgconfig(libffi)
 # remove_bundled_libraries.py --do-remove
 BuildRequires: python2-rpm-macros
+%if %{with system_beautifulsoup4}
 BuildRequires: python2-beautifulsoup4
+%endif
+%if %{with system_html5lib}
 BuildRequires: python2-html5lib
+%endif
 BuildRequires: python2-markupsafe
 %if %{with system_ply}
 BuildRequires: python2-ply
 %endif
+BuildRequires: python2-six
 # replace_gn_files.py --system-libraries
 BuildRequires: flac-devel
 BuildRequires: freetype-devel
@@ -275,6 +290,12 @@ find -type f -exec \
     third_party/catapult \
     third_party/catapult/common/py_vulcanize/third_party/rcssmin \
     third_party/catapult/common/py_vulcanize/third_party/rjsmin \
+%if !%{with system_beautifulsoup4}
+    third_party/catapult/third_party/beautifulsoup4 \
+%endif
+%if !%{with system_html5lib}
+    third_party/catapult/third_party/html5lib-python \
+%endif
     third_party/catapult/third_party/polymer \
     third_party/catapult/tracing/third_party/d3 \
     third_party/catapult/tracing/third_party/gl-matrix \
@@ -490,7 +511,6 @@ export LDFLAGS='%{__global_ldflags}'
 export CC=clang CXX=clang++
 %else
 export CC=gcc CXX=g++
-export CXXFLAGS="$CXXFLAGS -fpermissive"
 %endif
 
 # GN needs gold to bootstrap
@@ -668,6 +688,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Dec 15 2019 - Ting-Wei Lan <lantw44@gmail.com> - 79.0.3945.79-101
+- Remove -fpermissive from CXXFLAGS
+- Bundle beautifulsoup4, html5lib, ply on Fedora 32 and later because these
+  Python 2 libraries have been removed
+
 * Wed Dec 11 2019 - Ting-Wei Lan <lantw44@gmail.com> - 79.0.3945.79-100
 - Update to 79.0.3945.79
 - Disable jumbo build because upstream no longer supports it
