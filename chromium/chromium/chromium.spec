@@ -55,8 +55,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    79.0.3945.79
-Release:    101%{?dist}
+Version:    79.0.3945.88
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -688,6 +688,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Dec 18 2019 - Ting-Wei Lan <lantw44@gmail.com> - 79.0.3945.88-100
+- Update to 79.0.3945.88
+
 * Sun Dec 15 2019 - Ting-Wei Lan <lantw44@gmail.com> - 79.0.3945.79-101
 - Remove -fpermissive from CXXFLAGS
 - Bundle beautifulsoup4, html5lib, ply on Fedora 32 and later because these
