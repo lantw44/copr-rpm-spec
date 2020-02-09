@@ -55,7 +55,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    79.0.3945.130
+Version:    80.0.3987.87
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -116,17 +116,19 @@ Patch30:    chromium-webrtc-cstring.patch
 # Pull patches from Gentoo
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=5b7b57438d399738
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=6b89e0d09ed3f133
-# http://distfiles.gentoo.org/distfiles/chromium-78-revert-noexcept-r1.patch.gz
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=63e5fbd254535ca8
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8ba7a983c4c70ff8
 Patch40:    chromium-unbundle-zlib.patch
 Patch41:    chromium-base-location.patch
+Patch42:    chromium-gcc9-blink.patch
+Patch43:    chromium-gcc9-permissive.patch
 
 # Pull upstream patches
-Patch50:    chromium-fix-use_system_harfbuzz-ng.patch
-Patch51:    chromium-gcc9-r707329.patch
-Patch52:    chromium-gcc9-r709411.patch
-Patch53:    chromium-gcc9-r709469.patch
-Patch54:    chromium-gcc9-r709472.patch
-Patch55:    chromium-gcc9-r709569.patch
+Patch50:    chromium-unbundle-libxml.patch
+Patch51:    chromium-quiche-gcc9.patch
+Patch52:    chromium-gcc9-r723499.patch
+Patch53:    chromium-gcc9-r725070.patch
+Patch54:    chromium-gcc9-r732437.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -279,9 +281,6 @@ find -type f -exec \
     third_party/axe-core \
     third_party/boringssl \
     third_party/boringssl/src/third_party/fiat \
-    third_party/boringssl/src/third_party/sike \
-    third_party/boringssl/linux-aarch64/crypto/third_party/sike \
-    third_party/boringssl/linux-x86_64/crypto/third_party/sike \
     third_party/blink \
     third_party/breakpad \
     third_party/breakpad/breakpad/src/third_party/curl \
@@ -316,12 +315,14 @@ find -type f -exec \
     third_party/dawn \
     third_party/depot_tools \
     third_party/devscripts \
+    third_party/devtools-frontend \
+    third_party/devtools-frontend/src/third_party \
     third_party/dom_distiller_js \
     third_party/emoji-segmenter \
     third_party/ffmpeg \
     third_party/flatbuffers \
-    third_party/flot \
     third_party/freetype \
+    third_party/libgifcodec \
     third_party/glslang \
     third_party/google_input_tools \
     third_party/google_input_tools/third_party/closure_library \
@@ -406,7 +407,6 @@ find -type f -exec \
     third_party/skia \
     third_party/skia/include/third_party/skcms \
     third_party/skia/include/third_party/vulkan \
-    third_party/skia/third_party/gif \
     third_party/skia/third_party/skcms \
     third_party/skia/third_party/vulkan \
     third_party/smhasher \
@@ -437,6 +437,7 @@ find -type f -exec \
     third_party/webrtc/rtc_base/third_party/sigslot \
     third_party/widevine \
     third_party/woff2 \
+    third_party/wuffs \
     third_party/xdg-utils \
     third_party/yasm/run_yasm.py \
     third_party/zlib/google \
@@ -612,7 +613,6 @@ install -m 644 out/Release/icudtl.dat %{buildroot}%{chromiumdir}/
 install -m 755 out/Release/nacl_helper %{buildroot}%{chromiumdir}/
 install -m 755 out/Release/nacl_helper_bootstrap %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/nacl_irt_x86_64.nexe %{buildroot}%{chromiumdir}/
-install -m 644 out/Release/natives_blob.bin %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/v8_context_snapshot.bin %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/*.pak %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/locales/*.pak %{buildroot}%{chromiumdir}/locales/
@@ -673,7 +673,6 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/nacl_helper
 %{chromiumdir}/nacl_helper_bootstrap
 %{chromiumdir}/nacl_irt_x86_64.nexe
-%{chromiumdir}/natives_blob.bin
 %{chromiumdir}/v8_context_snapshot.bin
 %{chromiumdir}/*.pak
 %dir %{chromiumdir}/locales
@@ -688,6 +687,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Feb 09 2020 - Ting-Wei Lan <lantw44@gmail.com> - 80.0.3987.87-100
+- Update to 80.0.3987.87
+
 * Sat Jan 18 2020 - Ting-Wei Lan <lantw44@gmail.com> - 79.0.3945.130-100
 - Update to 79.0.3945.130
 

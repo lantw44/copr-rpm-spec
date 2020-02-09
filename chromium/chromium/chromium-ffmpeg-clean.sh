@@ -111,6 +111,7 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/mdct15.c \
 		libavcodec/mdct15.h \
 		libavcodec/me_cmp.h \
+		libavcodec/mlp_parse.h \
 		libavcodec/motion_est.h \
 		libavcodec/mpeg12.h \
 		libavcodec/mpeg12data.h \
@@ -210,6 +211,7 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavutil/thread.h \
 		libavutil/timer.h \
 		libavutil/timestamp.h \
+		libavutil/tx_priv.h \
 		libavutil/version.h \
 		libswresample/swresample.h \
 		libswresample/version.h \
@@ -260,6 +262,7 @@ manual_files="	libavcodec/aarch64/fft_neon.S \
 		libavutil/fixed_dsp.c \
 		libavutil/float_dsp.c \
 		libavutil/imgutils.c \
+		libavutil/tx_template.c \
 		libavutil/x86/cpu.c \
 		libavutil/x86/float_dsp_init.c \
 		libavutil/x86/x86inc.asm \
