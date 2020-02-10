@@ -7,13 +7,13 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.33.1
+Version:    2.34
 Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 License:    GPLv3+
 URL:        https://www.gnu.org/software/binutils
-Source0:    https://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
+Source0:    https://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.xz
 
 BuildRequires: gcc, gcc-c++
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel
@@ -89,6 +89,10 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Sun Feb 09 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.34-1
+- Update to 2.34
+- Use xz-compressed source tarball
+
 * Sun Oct 13 2019 Ting-Wei Lan <lantw44@gmail.com> - 2.33.1-1
 - Update to 2.33.1
 
