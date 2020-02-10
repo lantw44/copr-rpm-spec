@@ -55,8 +55,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.30
-Release:    2%{?dist}
+Version:    2.31
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -178,7 +178,7 @@ chmod +x %{__ar_no_strip}
 
 %files
 %license COPYING COPYING.LIB LICENSES
-%doc ChangeLog MAINTAINERS NEWS README
+%doc MAINTAINERS NEWS README
 %{cross_sysroot}/usr/include/a.out.h
 %{cross_sysroot}/usr/include/aio.h
 %{cross_sysroot}/usr/include/aliases.h
@@ -600,6 +600,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Sun Feb 09 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.31-1
+- Update to 2.31
+
 * Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 2.30-2
 - Rebuilt for Fedora 31 and 32
 
