@@ -29,8 +29,8 @@
 %bcond_without ada
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    9.2.0
-Release:    3%{?dist}
+Version:    9.3.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -38,9 +38,6 @@ Summary:    The GNU Compiler Collection (%{cross_triplet})
 License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
 URL:        https://gcc.gnu.org
 Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
-
-# https://gcc.gnu.org/git/gitweb.cgi?p=gcc.git;a=patch;h=761a3a95ee26d54fbb8351c15cf5773d58fc9f70
-Patch0:     gcc-9-arm-libsanitizer-bootstrap.patch
 
 BuildRequires: gcc, gcc-c++, gcc-gnat
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel, isl-devel
@@ -382,6 +379,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Sat Mar 21 2020 Ting-Wei Lan <lantw44@gmail.com> - 9.3.0-1
+- Update to new stable release 9.3.0
+
 * Mon Feb 10 2020 Ting-Wei Lan <lantw44@gmail.com> - 9.2.0-3
 - Fix build failure with GLIBC 2.31
 
