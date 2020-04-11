@@ -52,7 +52,7 @@
 
 Name:       chromium
 Version:    81.0.4044.92
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -110,13 +110,21 @@ Patch30:    chromium-webrtc-cstring.patch
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=5b7b57438d399738
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=63e5fbd254535ca8
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8ba7a983c4c70ff8
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=68ee7ce691b80d8a
 Patch41:    chromium-base-location.patch
 Patch42:    chromium-gcc9-blink.patch
+Patch43:    chromium-gcc10-chrome.patch
+Patch44:    chromium-gcc10-ui.patch
+Patch45:    chromium-webrtc-gcc10.patch
 
 # Pull upstream patches
 Patch51:    chromium-quiche-gcc9.patch
 Patch52:    chromium-gcc9-r742632.patch
 Patch53:    chromium-gcc9-r742834.patch
+Patch54:    chromium-gcc10-r753781.patch
+Patch55:    chromium-gcc10-r755016.patch
+Patch56:    chromium-angle-gcc10.patch
+Patch57:    chromium-perfetto-gcc10.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -669,6 +677,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Apr 11 2020 - Ting-Wei Lan <lantw44@gmail.com> - 81.0.4044.92-101
+- Fix build issues for GCC 10
+
 * Sat Apr 11 2020 - Ting-Wei Lan <lantw44@gmail.com> - 81.0.4044.92-100
 - Update to 81.0.4044.92
 - Disable NaCl because of build failures and being deprecated for a long time

@@ -1,0 +1,13 @@
+diff --git a/ui/gfx/linux/drm_util_linux.h b/ui/gfx/linux/drm_util_linux.h
+index 86ff2eb..990f12c 100644
+--- a/ui/gfx/linux/drm_util_linux.h
++++ b/ui/gfx/linux/drm_util_linux.h
+@@ -7,6 +7,8 @@
+ 
+ #include "ui/gfx/buffer_types.h"
+ 
++#include <cstdint>
++
+ namespace ui {
+ 
+ int GetFourCCFormatFromBufferFormat(gfx::BufferFormat format);
