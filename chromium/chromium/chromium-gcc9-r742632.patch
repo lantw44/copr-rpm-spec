@@ -1,0 +1,35 @@
+From c9b108ac880f898c21617734de2e1ab45c5c24f3 Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Wed, 19 Feb 2020 15:21:27 +0000
+Subject: [PATCH] GCC: remove noexcept on definition of operator= in
+ PaintPreviewClient
+
+GCC throws an error if noexcept is specified on declaration and
+definition. Specifing on declaration is enough.
+
+Bug: 819294
+Change-Id: I89f03cf3ee73e63b3f711082315a67f93ccc9dbe
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/2059999
+Reviewed-by: Calder Kitagawa <ckitagawa@chromium.org>
+Commit-Queue: Mehran Mahmoudi <mahmoudi@chromium.org>
+Cr-Commit-Position: refs/heads/master@{#742632}
+---
+ components/paint_preview/browser/paint_preview_client.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/components/paint_preview/browser/paint_preview_client.cc b/components/paint_preview/browser/paint_preview_client.cc
+index a02605adbdf3..abe0e3ac5ff1 100644
+--- a/components/paint_preview/browser/paint_preview_client.cc
++++ b/components/paint_preview/browser/paint_preview_client.cc
+@@ -98,7 +98,7 @@ PaintPreviewClient::PaintPreviewData::PaintPreviewData() = default;
+ PaintPreviewClient::PaintPreviewData::~PaintPreviewData() = default;
+ 
+ PaintPreviewClient::PaintPreviewData& PaintPreviewClient::PaintPreviewData::
+-operator=(PaintPreviewData&& rhs) noexcept = default;
++operator=(PaintPreviewData&& rhs) = default;
+ PaintPreviewClient::PaintPreviewData::PaintPreviewData(
+     PaintPreviewData&& other) noexcept = default;
+
+-- 
+2.25.2
+

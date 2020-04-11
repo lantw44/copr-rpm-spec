@@ -46,16 +46,12 @@
 # Disabled by default becaue gcc is the system compiler
 %bcond_with clang
 
-# Allow disabling unconditional build dependency on clang
-# Enabled by default because nacl always uses clang to compile some files
-%bcond_without require_clang
-
 # Allow using compilation flags set by Fedora RPM macros
 # Disabled by default because it causes out-of-memory error on Fedora Copr
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    80.0.3987.163
+Version:    81.0.4044.92
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -101,9 +97,6 @@ Patch1:     chromium-certificate-transparency-google.patch
 # Don't require static libstdc++
 Patch2:     chromium-gn-no-static-libstdc++.patch
 
-# Fix llvm-ar command usage
-Patch10:    chromium-nacl-llvm-ar.patch
-
 # Don't use unversioned python commands. This patch is based on
 # https://src.fedoraproject.org/rpms/chromium/c/7048e95ab61cd143
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
@@ -115,30 +108,25 @@ Patch30:    chromium-webrtc-cstring.patch
 
 # Pull patches from Gentoo
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=5b7b57438d399738
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=6b89e0d09ed3f133
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=63e5fbd254535ca8
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8ba7a983c4c70ff8
-Patch40:    chromium-unbundle-zlib.patch
 Patch41:    chromium-base-location.patch
 Patch42:    chromium-gcc9-blink.patch
-Patch43:    chromium-gcc9-permissive.patch
 
 # Pull upstream patches
-Patch50:    chromium-unbundle-libxml.patch
 Patch51:    chromium-quiche-gcc9.patch
-Patch52:    chromium-gcc9-r723499.patch
-Patch53:    chromium-gcc9-r725070.patch
-Patch54:    chromium-gcc9-r732437.patch
+Patch52:    chromium-gcc9-r742632.patch
+Patch53:    chromium-gcc9-r742834.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
 
-# Chromium 54 requires clang to enable nacl support
-# Chromium 59 requires llvm-ar to enable nacl support
-%if %{with clang} || %{with require_clang}
-BuildRequires: clang, llvm
-%endif
 # Basic tools and libraries
+%if %{with clang}
+BuildRequires: clang
+%else
+BuildRequires: gcc, gcc-c++
+%endif
 BuildRequires: ninja-build, nodejs, java-headless, bison, gperf, hwdata
 BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
 BuildRequires: libcap-devel, cups-devel, alsa-lib-devel
@@ -147,7 +135,7 @@ BuildRequires: minizip-compat-devel
 %else
 BuildRequires: minizip-devel
 %endif
-BuildRequires: mesa-libGL-devel, mesa-libEGL-devel
+BuildRequires: mesa-libGL-devel, mesa-libEGL-devel, mesa-libgbm-devel
 BuildRequires: pkgconfig(gtk+-2.0), pkgconfig(gtk+-3.0)
 BuildRequires: pkgconfig(libexif), pkgconfig(nss)
 BuildRequires: pkgconfig(xtst), pkgconfig(xscrnsaver)
@@ -270,6 +258,7 @@ find -type f -exec \
     third_party/angle/src/third_party/compiler \
     third_party/angle/src/third_party/libXNVCtrl \
     third_party/angle/src/third_party/trace_event \
+    third_party/angle/src/third_party/volk \
     third_party/angle/third_party/glslang \
     third_party/angle/third_party/spirv-headers \
     third_party/angle/third_party/spirv-tools \
@@ -316,6 +305,8 @@ find -type f -exec \
     third_party/depot_tools \
     third_party/devscripts \
     third_party/devtools-frontend \
+    third_party/devtools-frontend/src/front_end/third_party/fabricjs \
+    third_party/devtools-frontend/src/front_end/third_party/wasmparser \
     third_party/devtools-frontend/src/third_party \
     third_party/dom_distiller_js \
     third_party/emoji-segmenter \
@@ -403,7 +394,7 @@ find -type f -exec \
 %endif
     third_party/rnnoise \
     third_party/s2cellid \
-    third_party/sfntly \
+    third_party/simplejson \
     third_party/skia \
     third_party/skia/include/third_party/skcms \
     third_party/skia/include/third_party/vulkan \
@@ -442,7 +433,7 @@ find -type f -exec \
     third_party/yasm/run_yasm.py \
     third_party/zlib/google \
     tools/grit/third_party/six \
-    tools/gn/base/third_party/icu \
+    tools/gn/src/base/third_party/icu \
     url/third_party/mozilla \
     v8/src/third_party/siphash \
     v8/src/third_party/valgrind \
@@ -478,9 +469,6 @@ find -type f -exec \
     snappy \
     yasm \
     zlib
-
-./build/download_nacl_toolchains.py --packages \
-    nacl_x86_glibc,nacl_x86_newlib,pnacl_newlib,pnacl_translator sync --extract
 
 sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' \
     services/device/public/cpp/usb/BUILD.gn
@@ -536,7 +524,7 @@ gn_args=(
     rtc_use_pipewire=true
     rtc_link_pipewire=true
     enable_hangout_services_extension=false
-    enable_nacl=true
+    enable_nacl=false
     fatal_linker_warnings=false
     treat_warnings_as_errors=false
     linux_use_bundled_binutils=false
@@ -550,7 +538,7 @@ gn_args=(
 )
 
 gn_args+=(
-%if %{with clang} || %{with require_clang}
+%if %{with clang}
     'clang_base_path="/usr"'
 %endif
 )
@@ -610,9 +598,6 @@ install -m 755 out/Release/chromedriver %{buildroot}%{chromiumdir}/
 %if !%{with system_libicu}
 install -m 644 out/Release/icudtl.dat %{buildroot}%{chromiumdir}/
 %endif
-install -m 755 out/Release/nacl_helper %{buildroot}%{chromiumdir}/
-install -m 755 out/Release/nacl_helper_bootstrap %{buildroot}%{chromiumdir}/
-install -m 644 out/Release/nacl_irt_x86_64.nexe %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/v8_context_snapshot.bin %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/*.pak %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/locales/*.pak %{buildroot}%{chromiumdir}/locales/
@@ -670,9 +655,6 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %if !%{with system_libicu}
 %{chromiumdir}/icudtl.dat
 %endif
-%{chromiumdir}/nacl_helper
-%{chromiumdir}/nacl_helper_bootstrap
-%{chromiumdir}/nacl_irt_x86_64.nexe
 %{chromiumdir}/v8_context_snapshot.bin
 %{chromiumdir}/*.pak
 %dir %{chromiumdir}/locales
@@ -687,6 +669,12 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Apr 11 2020 - Ting-Wei Lan <lantw44@gmail.com> - 81.0.4044.92-100
+- Update to 81.0.4044.92
+- Disable NaCl because of build failures and being deprecated for a long time
+- Building without Internet access becomes possible because we no longer have to
+  download NaCl toolchains in prep stage
+
 * Sat Apr 04 2020 - Ting-Wei Lan <lantw44@gmail.com> - 80.0.3987.163-100
 - Update to 80.0.3987.163
 
