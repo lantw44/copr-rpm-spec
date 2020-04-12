@@ -52,7 +52,7 @@
 
 Name:       chromium
 Version:    81.0.4044.92
-Release:    101%{?dist}
+Release:    102%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -137,7 +137,7 @@ BuildRequires: gcc, gcc-c++
 %endif
 BuildRequires: ninja-build, nodejs, java-headless, bison, gperf, hwdata
 BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
-BuildRequires: libcap-devel, cups-devel, alsa-lib-devel
+BuildRequires: libcap-devel, cups-devel, alsa-lib-devel, expat-devel
 %if 0%{?fedora} >= 30
 BuildRequires: minizip-compat-devel
 %else
@@ -677,6 +677,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Apr 12 2020 - Ting-Wei Lan <lantw44@gmail.com> - 81.0.4044.92-102
+- Fix BuildRequires for Fedora 33
+
 * Sat Apr 11 2020 - Ting-Wei Lan <lantw44@gmail.com> - 81.0.4044.92-101
 - Fix build issues for GCC 10
 
