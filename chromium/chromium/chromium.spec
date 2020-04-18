@@ -51,8 +51,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    81.0.4044.92
-Release:    102%{?dist}
+Version:    81.0.4044.113
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -677,6 +677,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Apr 19 2020 - Ting-Wei Lan <lantw44@gmail.com> - 81.0.4044.113-100
+- Update to 81.0.4044.113
+
 * Sun Apr 12 2020 - Ting-Wei Lan <lantw44@gmail.com> - 81.0.4044.92-102
 - Fix BuildRequires for Fedora 33
 
