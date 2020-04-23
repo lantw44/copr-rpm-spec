@@ -1,6 +1,6 @@
 Name:       yafu
 Version:    1.34
-Release:    15%{?dist}
+Release:    16%{?dist}
 Summary:    Automated integer factorization
 
 License:    Public Domain
@@ -28,7 +28,8 @@ utilize multi- or many-core processors (including SNFS, GNFS, SIQS, and ECM).
 sed -i 's|-lmsieve|-lmsieve -lz|' Makefile
 
 %ifarch x86_64
-%make_build x86_64 NFS=1 USE_SSE41=1 CC="gcc %{optflags} %{__global_ldflags}"
+%make_build x86_64 NFS=1 USE_SSE41=1 \
+    CC="gcc %{build_cflags} %{build_ldflags} -fcommon"
 %else
 false
 %endif
@@ -46,6 +47,10 @@ install -m 755 yafu %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu Apr 23 2020 Ting-Wei Lan <lantw44@gmail.com> - 1.34-16
+- Fix GCC 10 linking failure with -fcommon
+- Use build_* flags instead of the old optflags and __global_ldflags
+
 * Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.34-15
 - Rebuilt for Fedora 31 and 32
 
