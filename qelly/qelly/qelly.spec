@@ -1,6 +1,6 @@
 Name:       qelly
 Version:    1.0
-Release:    0.15.beta%{?dist}
+Release:    0.16.beta%{?dist}
 Summary:    Qelly is a Qt port of Nally
 
 %global     real_name     Qelly
@@ -11,7 +11,7 @@ URL:        https://github.com/uranusjr/Qelly
 Source0:    https://github.com/uranusjr/Qelly/archive/v%{real_version}.tar.gz#/%{name}-%{real_version}.tar.gz
 
 BuildRequires: gcc-c++
-BuildRequires: qt5-qtbase-devel, libqxt-qt5-devel, chrpath
+BuildRequires: qt5-qtbase-devel, qt5-linguist, libqxt-qt5-devel, chrpath
 
 %description
 Qelly (pronounced as the English name "Kelly") is a Qt port of Nally, the
@@ -42,6 +42,9 @@ install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
 %doc AUTHORS CHANGES README.md
 
 %changelog
+* Thu Apr 23 2020 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.16.beta
+- Fix BuildRequires for Fedora 33
+
 * Thu Apr 23 2020 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.15.beta
 - Rebuilt for Fedora 32 and 33
 
