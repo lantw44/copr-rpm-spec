@@ -1,9 +1,9 @@
-%global commit 8df92d63ed556e6c9e1b817ccbd014c920516c73
+%global commit faf1254f46049edfb1fd6e9191e78b1b23b9c51d
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.16.20161004git%{shortcommit}%{?dist}
+Release:        0.17.20190725git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 License:        GPLv3+
@@ -12,6 +12,7 @@ Source0:        https://github.com/Tetralet/LilyTerm/archive/%{commit}/LilyTerm-
 Patch0:         lilyterm-gtk3.patch
 Patch1:         lilyterm-gtk3-vte291-regex.patch
 Patch2:         lilyterm-gtk3-ldflags-order.patch
+Patch3:         lilyterm-gtk3-restore-configure.patch
 
 BuildRequires:  gcc
 BuildRequires:  gtk3-devel
@@ -82,6 +83,10 @@ desktop-file-install                                       \
 
 
 %changelog
+* Thu Apr 23 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.17.20190725gitfaf1254
+- Update to the latest git snapshot
+- Restore GTK+ 3 support by patching the configure script
+
 * Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.16.20161004git8df92d6
 - Rebuilt for Fedora 31 and 32
 

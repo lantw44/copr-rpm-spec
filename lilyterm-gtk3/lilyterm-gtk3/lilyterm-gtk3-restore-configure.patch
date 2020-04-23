@@ -1,0 +1,11 @@
+--- configure
++++ configure
+@@ -16,7 +16,7 @@ if [ "$UNAME" = "FreeBSD" -o "$UNAME" = "OpenBSD" -o "$UNAME" = "NetBSD" ]; then
+ 	BSD=1
+ fi
+ 
+-GTK=gtk+-2.0
++GTK=gtk+-3.0
+ 
+ VERBOSITY=N
+ DEBUG=N
