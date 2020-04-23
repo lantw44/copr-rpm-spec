@@ -3,7 +3,7 @@
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.17.20190725git%{shortcommit}%{?dist}
+Release:        0.18.20190725git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 License:        GPLv3+
@@ -16,7 +16,7 @@ Patch3:         lilyterm-gtk3-restore-configure.patch
 
 BuildRequires:  gcc
 BuildRequires:  gtk3-devel
-%if 0%{?fedora} >= 21 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 21 || 0%{?rhel} >= 7
 BuildRequires:  vte291-devel
 %else
 BuildRequires:  vte3-devel
@@ -83,6 +83,9 @@ desktop-file-install                                       \
 
 
 %changelog
+* Thu Apr 23 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.18.20190725gitfaf1254
+- Use vte-2.91 on CentOS 7
+
 * Thu Apr 23 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.17.20190725gitfaf1254
 - Update to the latest git snapshot
 - Restore GTK+ 3 support by patching the configure script
