@@ -56,7 +56,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.31
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -600,6 +600,9 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Sat Apr 25 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.31-2
+- Rebuilt for Fedora 32 and 33
+
 * Sun Feb 09 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.31-1
 - Update to 2.31
 
