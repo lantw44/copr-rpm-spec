@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.1.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Functions for interacting with GraphQL web services
 
 License:        GPLv3+
@@ -43,6 +43,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/graphql/
 
 
 %changelog
+* Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-4
+- Rebuilt for Fedora 32 and 33
+
 * Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-3
 - Rebuilt for Fedora 31 and 32
 

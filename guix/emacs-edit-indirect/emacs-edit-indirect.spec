@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.1.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Edit regions in separate buffers
 
 License:        BSD
@@ -41,6 +41,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/edit-indirect/
 
 
 %changelog
+* Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.1.5-3
+- Rebuilt for Fedora 32 and 33
+
 * Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.1.5-2
 - Rebuilt for Fedora 31 and 32
 

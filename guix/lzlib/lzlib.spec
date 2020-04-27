@@ -3,11 +3,11 @@
 
 Name:           lzlib
 Version:        1.11
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A compression library for the lzip file format
 
 License:        GPLv2+
-URL:            https://www.nongnu.org/lzip/%{name}.html
+URL:            https://www.nongnu.org/lzip/lzlib.html
 Source0:        https://download.savannah.gnu.org/releases/lzip/%{name}/%{name}-%{version}.tar.gz
 
 BuildRequires:  gcc
@@ -60,6 +60,10 @@ developing applications that use %{name}.
 
 
 %changelog
+* Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 1.11-3
+- Rebuilt for Fedora 32 and 33
+- Don't use macros in URL
+
 * Wed Sep 18 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.11-2
 - Use HTTPS links
 - Use CFLAGS+= instead of CFLAGS=
