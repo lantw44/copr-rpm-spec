@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           guile-json
-Version:        3.2.0
+Version:        3.4.0
 Release:        1%{?dist}
 Summary:        JSON module for Guile
 
@@ -54,6 +54,9 @@ features:
 
 
 %changelog
+* Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 3.4.0-1
+- Update to 3.4.0
+
 * Wed Sep 18 2019 Ting-Wei Lan <lantw44@gmail.com> - 3.2.0-1
 - Update to 3.2.0
 
