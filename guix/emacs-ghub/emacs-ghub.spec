@@ -2,8 +2,8 @@
 %global pkgname Ghub
 
 Name:           emacs-%{pkg}
-Version:        3.2.0
-Release:        3%{?dist}
+Version:        3.3.0
+Release:        1%{?dist}
 Summary:        Minuscule client libraries for the APIs of various Git forges
 
 License:        GPLv3+
@@ -12,9 +12,9 @@ Source0:        https://github.com/magit/ghub/archive/v%{version}.tar.gz#/%{name
 
 BuildArch:      noarch
 BuildRequires:  emacs, texinfo
-BuildRequires:  emacs-dash, emacs-graphql, emacs-treepy
+BuildRequires:  emacs-treepy
 Requires:       emacs(bin) >= %{_emacs_version}
-Requires:       emacs-dash, emacs-graphql, emacs-treepy
+Requires:       emacs-treepy
 Recommends:     git
 
 %description
@@ -29,13 +29,13 @@ as well as the REST APIs of Gitlab, Gitea, Gogs and Bitbucket.
 
 
 %build
-%make_build LOAD_PATH='-L . -L %{_emacs_sitelispdir}/dash -L %{_emacs_sitelispdir}/graphql -L %{_emacs_sitelispdir}/treepy'
+%make_build LOAD_PATH='-L . -L %{_emacs_sitelispdir}/treepy'
 
 
 %install
 mkdir -p %{buildroot}%{_emacs_sitelispdir} %{buildroot}%{_emacs_sitestartdir}
 install -m 755 -d %{buildroot}%{_emacs_sitelispdir}/ghub
-for filename in ghub ghub-graphql glab gtea gogs buck; do
+for filename in ghub gsexp ghub-graphql glab gtea gogs buck; do
     for suffix in el elc; do
         install -m 644 "${filename}.${suffix}" \
             %{buildroot}%{_emacs_sitelispdir}/ghub/
@@ -72,6 +72,8 @@ fi
 %{_emacs_sitelispdir}/ghub/glab.elc
 %{_emacs_sitelispdir}/ghub/gogs.el
 %{_emacs_sitelispdir}/ghub/gogs.elc
+%{_emacs_sitelispdir}/ghub/gsexp.el
+%{_emacs_sitelispdir}/ghub/gsexp.elc
 %{_emacs_sitelispdir}/ghub/gtea.el
 %{_emacs_sitelispdir}/ghub/gtea.elc
 %{_emacs_sitelispdir}/ghub/ghub-autoloads.el
@@ -81,6 +83,9 @@ fi
 
 
 %changelog
+* Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 3.3.0-1
+- Update to 3.3.0
+
 * Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 3.2.0-3
 - Rebuilt for Fedora 31 and 32
 
