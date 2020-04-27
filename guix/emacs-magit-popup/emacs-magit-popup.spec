@@ -2,8 +2,8 @@
 %global pkgname Magit-Popup
 
 Name:           emacs-%{pkg}
-Version:        2.13.0
-Release:        2%{?dist}
+Version:        2.13.2
+Release:        1%{?dist}
 Summary:        Define prefix-infix-suffix command combos for Emacs
 
 License:        GPLv3+
@@ -66,6 +66,9 @@ fi
 
 
 %changelog
+* Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.13.2-1
+- Update to 2.13.2
+
 * Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 2.13.0-2
 - Rebuilt for Fedora 31 and 32
 
