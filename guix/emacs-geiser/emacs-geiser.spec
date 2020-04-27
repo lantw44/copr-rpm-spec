@@ -2,13 +2,13 @@
 %global pkgname Geiser
 
 Name:           emacs-%{pkg}
-Version:        0.10
-Release:        2%{?dist}
+Version:        0.11.2
+Release:        1%{?dist}
 Summary:        Geiser is an Emacs environment to hack and have fun in Scheme
 
 License:        BSD
 URL:            https://nongnu.org/geiser
-Source0:        https://download.sv.gnu.org/releases/geiser/%{version}/%{pkg}-%{version}.tar.gz
+Source0:        https://gitlab.com/jaor/geiser/uploads/56b0cd60b99f78359bba0042421ac0a6/%{pkg}-%{version}.tar.gz
 
 # Use guile2.2 instead of guile because Guile 2.0 support has been dropped.
 Patch0:         emacs-geiser-default-guile-2.2.patch
@@ -57,7 +57,7 @@ fi
 
 %files
 %license COPYING
-%doc AUTHORS ChangeLog NEWS README README.elpa THANKS
+%doc AUTHORS ChangeLog NEWS README README.elpa README.org THANKS
 %{_bindir}/geiser-racket
 %{_infodir}/geiser.info.gz
 %{_datadir}/geiser/
@@ -72,6 +72,9 @@ fi
 
 
 %changelog
+* Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.11.2-1
+- Update to 0.11.2
+
 * Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.10-2
 - Rebuilt for Fedora 31 and 32
 
