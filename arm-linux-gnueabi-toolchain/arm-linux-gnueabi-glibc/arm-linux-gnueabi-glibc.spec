@@ -23,15 +23,15 @@
 %global pkg_suffix      %{nil}
 %endif
 
-%if %{cross_arch} == "arm"
+%if "%{cross_arch}" == "arm"
   %global arm_type      %(echo %{cross_triplet} | sed 's/.*-\\([a-z]*\\)$/\\1/')
-  %if %{arm_type} == "gnueabi"
+  %if "%{arm_type}" == "gnueabi"
     %global loader_suffix     %{nil}
     %global loader_version    3
     %global gnu_hdr_suffix    -soft
     %global lib_dir_name      lib
   %else
-    %if %{arm_type} == "gnueabihf"
+    %if "%{arm_type}" == "gnueabihf"
       %global loader_suffix   -armhf
       %global loader_version  3
       %global gnu_hdr_suffix  -hard
@@ -41,7 +41,7 @@
     %endif
   %endif
 %else
-  %if %{cross_arch} == "arm64"
+  %if "%{cross_arch}" == "arm64"
     %global loader_suffix     -aarch64
     %global loader_version    1
     %global gnu_hdr_suffix    -lp64
@@ -56,7 +56,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.31
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -158,22 +158,9 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/info
 rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %endif
 
-# Don't any static archive - based on Fedora Project cross-gcc.spec
-%global __ar_no_strip $RPM_BUILD_DIR/glibc-%{version}/ar-no-strip
-cat > %{__ar_no_strip} << EOF
-#!/bin/sh
-f=\$2
-case \$(basename \$f) in
-    *.a)
-        ;;
-    *)
-        %{__strip} \$@
-        ;;
-esac
-EOF
-chmod +x %{__ar_no_strip}
+# Don't strip anything - /usr/bin/strip does not work on other architectures
 %undefine __strip
-%global __strip %{__ar_no_strip}
+%global __strip /bin/true
 
 
 %files
@@ -365,7 +352,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/include/sys/fsuid.h
 %{cross_sysroot}/usr/include/sys/gmon.h
 %{cross_sysroot}/usr/include/sys/gmon_out.h
-%if %{cross_arch} == "arm64"
+%if "%{cross_arch}" == "arm64"
 %{cross_sysroot}/usr/include/sys/ifunc.h
 %endif
 %{cross_sysroot}/usr/include/sys/inotify.h
@@ -459,7 +446,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/%{lib_dir_name}/libc.so
 %if !%{headers_only}
 %{cross_sysroot}/etc/rpc
-%if %{cross_arch} == "arm64"
+%if "%{cross_arch}" == "arm64"
 %{cross_sysroot}/lib/ld-linux%{loader_suffix}.so.%{loader_version}
 %else
 %{cross_sysroot}/%{lib_dir_name}/ld-linux%{loader_suffix}.so.%{loader_version}
@@ -574,7 +561,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/%{lib_dir_name}/libutil.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libutil.so
 %dir %{cross_sysroot}/usr/libexec/getconf
-%if %{cross_arch} == "arm"
+%if "%{cross_arch}" == "arm"
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V6_ILP32_OFF32
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V6_ILP32_OFFBIG
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V7_ILP32_OFF32
@@ -582,7 +569,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/usr/libexec/getconf/XBS5_ILP32_OFF32
 %{cross_sysroot}/usr/libexec/getconf/XBS5_ILP32_OFFBIG
 %else
-%if %{cross_arch} == "arm64"
+%if "%{cross_arch}" == "arm64"
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V6_LP64_OFF64
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V7_LP64_OFF64
 %{cross_sysroot}/usr/libexec/getconf/XBS5_LP64_OFF64
@@ -600,6 +587,10 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Tue Apr 28 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.31-3
+- Quote strings in if conditionals for RPM 4.16
+- Remove __ar_no_strip and define __strip to a dummy command
+
 * Sat Apr 25 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.31-2
 - Rebuilt for Fedora 32 and 33
 

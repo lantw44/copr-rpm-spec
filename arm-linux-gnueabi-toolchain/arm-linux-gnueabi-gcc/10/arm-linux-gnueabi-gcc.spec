@@ -10,16 +10,16 @@
 %global cross_stage     final
 %endif
 
-%if %{cross_stage} != "final"
+%if "%{cross_stage}" != "final"
 %global pkg_suffix      -%{cross_stage}
 %else
 %global pkg_suffix      %{nil}
 %endif
 
-%if %{cross_arch} == "arm"
+%if "%{cross_arch}" == "arm"
   %global lib_dir_name        lib
 %else
-  %if %{cross_arch} == "arm64"
+  %if "%{cross_arch}" == "arm64"
     %global lib_dir_name      lib64
   %else
     %global lib_dir_name      lib
@@ -34,7 +34,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    10.0.1
-Release:    1.%{date}git%{shortgitrev}%{?dist}
+Release:    2.%{date}git%{shortgitrev}%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -61,13 +61,13 @@ Requires:   %{cross_triplet}-filesystem
 Requires:   %{cross_triplet}-binutils
 Provides:   %{cross_triplet}-gcc-stage1 = %{version}
 
-%if %{cross_stage} == "pass2"
+%if "%{cross_stage}" == "pass2"
 BuildRequires: %{cross_triplet}-glibc-stage1
 Requires:   %{cross_triplet}-glibc-stage1
 Provides:   %{cross_triplet}-gcc-stage2 = %{version}
 %endif
 
-%if %{cross_stage} == "final"
+%if "%{cross_stage}" == "final"
 BuildRequires: %{cross_triplet}-glibc
 BuildRequires: gcc-gnat, libstdc++-static
 Requires:   %{cross_triplet}-glibc
@@ -135,8 +135,8 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
     --enable-linker-build-id \
     --enable-gnu-unique-object \
     --enable-gnu-indirect-function \
-%if %{cross_arch} == "arm"
-%if %(echo %{cross_triplet} | sed 's/.*-\([a-z]*\)$/\1/') == "gnueabihf"
+%if "%{cross_arch}" == "arm"
+%if "%(echo %{cross_triplet} | sed 's/.*-\([a-z]*\)$/\1/')" == "gnueabihf"
     --with-tune=generic-armv7-a \
     --with-arch=armv7-a \
     --with-float=hard \
@@ -144,7 +144,7 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
     --with-abi=aapcs-linux \
 %endif
 %endif
-%if %{cross_stage} == "pass1"
+%if "%{cross_stage}" == "pass1"
     --with-newlib \
     --enable-languages=c \
     --disable-shared \
@@ -153,7 +153,7 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
 
 %make_build all-gcc
 %endif
-%if %{cross_stage} == "pass2"
+%if "%{cross_stage}" == "pass2"
     --enable-languages=c \
     --enable-shared \
     --disable-libgomp \
@@ -161,7 +161,7 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
 
 %make_build all-gcc all-target-libgcc
 %endif
-%if %{cross_stage} == "final"
+%if "%{cross_stage}" == "final"
 %if %{with ada}
     --enable-languages=c,c++,fortran,objc,obj-c++,go,d,ada \
 %else
@@ -188,17 +188,17 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
 %install
 cd %{_builddir}/gcc-build
 
-%if %{cross_stage} == "pass1"
+%if "%{cross_stage}" == "pass1"
 %{__make} install-gcc DESTDIR=%{buildroot}
 %endif
-%if %{cross_stage} == "pass2"
+%if "%{cross_stage}" == "pass2"
 %{__make} install-gcc install-target-libgcc DESTDIR=%{buildroot}
 mkdir -p %{buildroot}%{cross_sysroot}/%{lib_dir_name}
 mv %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}/* \
     %{buildroot}%{cross_sysroot}/%{lib_dir_name}
 rmdir %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}
 %endif
-%if %{cross_stage} == "final"
+%if "%{cross_stage}" == "final"
 %make_install
 mkdir -p %{buildroot}%{cross_sysroot}/%{lib_dir_name}
 mv %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}/* \
@@ -220,22 +220,9 @@ rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-t
 rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools/mkinstalldirs
 rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools
 
-# Don't strip libgcc.a and libgcov.a - based on Fedora Project cross-gcc.spec
-%global __ar_no_strip $RPM_BUILD_DIR/gcc-%{version}-%{date}/ar-no-strip
-cat > %{__ar_no_strip} << EOF
-#!/bin/sh
-f=\$2
-case \$(basename \$f) in
-    *.a)
-        ;;
-    *)
-        %{__strip} \$@
-        ;;
-esac
-EOF
-chmod +x %{__ar_no_strip}
+# Don't strip anything - /usr/bin/strip does not work on other architectures
 %undefine __strip
-%global __strip %{__ar_no_strip}
+%global __strip /bin/true
 
 
 %files
@@ -269,7 +256,7 @@ chmod +x %{__ar_no_strip}
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdalign.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdnoreturn.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdatomic.h
-%if %{cross_arch} == "arm"
+%if "%{cross_arch}" == "arm"
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/unwind-arm-common.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/mmintrin.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_cmse.h
@@ -277,10 +264,10 @@ chmod +x %{__ar_no_strip}
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_mve.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_mve_types.h
 %endif
-%if %{cross_arch} == "arm64"
+%if "%{cross_arch}" == "arm64"
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_sve.h
 %endif
-%if %{cross_arch} == "arm" || %{cross_arch} == "arm64"
+%if "%{cross_arch}" == "arm" || "%{cross_arch}" == "arm64"
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_neon.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_acle.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_fp16.h
@@ -296,7 +283,7 @@ chmod +x %{__ar_no_strip}
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/liblto_plugin.so*
 %dir %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/plugin
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/plugin/gengtype
-%if %{cross_stage} != "pass1"
+%if "%{cross_stage}" != "pass1"
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/gcov.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/unwind.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/crtbegin*.o
@@ -308,7 +295,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/%{lib_dir_name}/libgcc_s.so
 %{cross_sysroot}/%{lib_dir_name}/libgcc_s.so.1
 %endif
-%if %{cross_stage} == "final"
+%if "%{cross_stage}" == "final"
 %{_bindir}/%{cross_triplet}-c++
 %{_bindir}/%{cross_triplet}-g++
 %{_bindir}/%{cross_triplet}-gccgo
@@ -374,7 +361,7 @@ chmod +x %{__ar_no_strip}
 %{cross_sysroot}/%{lib_dir_name}/libsupc++.a
 %{cross_sysroot}/%{lib_dir_name}/libubsan.a
 %{cross_sysroot}/%{lib_dir_name}/libubsan.so*
-%if %{cross_arch} == "arm64"
+%if "%{cross_arch}" == "arm64"
 %{cross_sysroot}/%{lib_dir_name}/liblsan.a
 %{cross_sysroot}/%{lib_dir_name}/liblsan_preinit.o
 %{cross_sysroot}/%{lib_dir_name}/liblsan.so*
@@ -404,6 +391,10 @@ chmod +x %{__ar_no_strip}
 
 
 %changelog
+* Tue Apr 28 2020 Ting-Wei Lan <lantw44@gmail.com> - 10.0.1-2.20200425git8fc8bf8
+- Quote strings in if conditionals for RPM 4.16
+- Remove __ar_no_strip and define __strip to a dummy command
+
 * Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 10.0.1-1.20200425git8fc8bf8
 - Update to GCC 10 snapshot for Fedora 32
 

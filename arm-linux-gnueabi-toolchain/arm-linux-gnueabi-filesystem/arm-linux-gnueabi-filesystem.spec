@@ -2,10 +2,10 @@
 %global cross_triplet   arm-linux-gnueabi
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
-%if %{cross_arch} == "arm"
+%if "%{cross_arch}" == "arm"
   %global lib_dir_name        lib
 %else
-  %if %{cross_arch} == "arm64"
+  %if "%{cross_arch}" == "arm64"
     %global lib_dir_name      lib64
   %else
     %global lib_dir_name      lib
@@ -14,7 +14,7 @@
 
 Name:       %{cross_triplet}-filesystem
 Version:    3
-Release:    11%{?dist}
+Release:    12%{?dist}
 Summary:    Cross compilation toolchain filesystem layout (%{cross_triplet})
 
 License:    Public Domain
@@ -37,7 +37,7 @@ mkdir %{buildroot}%{_prefix}/%{cross_triplet}/bin
 mkdir %{buildroot}%{_prefix}/%{cross_triplet}/lib
 mkdir -p %{buildroot}%{cross_sysroot}
 mkdir %{buildroot}%{cross_sysroot}/etc
-%if %{cross_arch} == "arm64"
+%if "%{cross_arch}" == "arm64"
 mkdir %{buildroot}%{cross_sysroot}/lib
 %endif
 mkdir %{buildroot}%{cross_sysroot}/%{lib_dir_name}
@@ -45,7 +45,7 @@ mkdir %{buildroot}%{cross_sysroot}/sbin
 mkdir %{buildroot}%{cross_sysroot}/usr
 mkdir %{buildroot}%{cross_sysroot}/usr/bin
 mkdir %{buildroot}%{cross_sysroot}/usr/include
-%if %{cross_arch} == "arm64"
+%if "%{cross_arch}" == "arm64"
 mkdir %{buildroot}%{cross_sysroot}/usr/lib
 %endif
 mkdir %{buildroot}%{cross_sysroot}/usr/%{lib_dir_name}
@@ -62,7 +62,7 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 %dir %{_prefix}/%{cross_triplet}/lib
 %dir %{cross_sysroot}
 %dir %{cross_sysroot}/etc
-%if %{cross_arch} == "arm64"
+%if "%{cross_arch}" == "arm64"
 %dir %{cross_sysroot}/lib
 %endif
 %dir %{cross_sysroot}/%{lib_dir_name}
@@ -70,7 +70,7 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 %dir %{cross_sysroot}/usr
 %dir %{cross_sysroot}/usr/bin
 %dir %{cross_sysroot}/usr/include
-%if %{cross_arch} == "arm64"
+%if "%{cross_arch}" == "arm64"
 %dir %{cross_sysroot}/usr/lib
 %endif
 %dir %{cross_sysroot}/usr/%{lib_dir_name}
@@ -83,6 +83,9 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 
 
 %changelog
+* Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 3-12
+- Quote strings in if conditionals for RPM 4.16
+
 * Sat Apr 25 2020 Ting-Wei Lan <lantw44@gmail.com> - 3-11
 - Rebuilt for Fedora 32 and 33
 
