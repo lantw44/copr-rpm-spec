@@ -1,5 +1,5 @@
 Name:           guile-bytestructures
-Version:        1.0.6
+Version:        1.0.7
 Release:        1%{?dist}
 Summary:        Structured access library to bytevector contents for Guile
 
@@ -55,6 +55,9 @@ first-class status.
 
 
 %changelog
+* Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 1.0.7-1
+- Update to 1.0.7
+
 * Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0.6-1
 - Update to 1.0.6
 
