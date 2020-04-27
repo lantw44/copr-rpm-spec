@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           guile-gcrypt
-Version:        0.2.0
+Version:        0.2.1
 Release:        1%{?dist}
 Summary:        Guile bindings to Libgcrypt
 
@@ -67,6 +67,9 @@ fi
 
 
 %changelog
+* Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.2.1-1
+- Update to 0.2.1
+
 * Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.2.0-1
 - Update to 0.2.0
 
