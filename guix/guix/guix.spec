@@ -1,6 +1,3 @@
-%global commit 0ed97e69805253656df929a6ad678016aa81f08a
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
-
 # Bootstrap binaries provided by guix don't have build IDs
 %global _missing_build_ids_terminate_build 0
 
@@ -8,14 +5,13 @@
 %global selinuxmodule guix-daemon
 
 Name:           guix
-Version:        1.0.2
-Release:        0.1.20190917git%{shortcommit}%{?dist}
+Version:        1.1.0
+Release:        1%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
 URL:            https://www.gnu.org/software/guix
-# Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
-Source0:        https://git.savannah.gnu.org/cgit/guix.git/snapshot/guix-%{commit}.tar.gz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
@@ -96,16 +92,10 @@ composed.
 
 
 %prep
-%autosetup -n %{name}-%{commit} -p1
-# The commit hash is too long to run tests. We have to make it shorter.
-cd ..
-rm -rf %{name}-%{shortcommit}
-mv %{name}-%{commit} %{name}-%{shortcommit}
-%setup -n %{name}-%{shortcommit} -D -T
+%autosetup -p1
 
 
 %build
-./bootstrap
 # Rename test-tmp to t to save the length of the path.
 %configure \
     --disable-rpath \
@@ -116,7 +106,11 @@ mv %{name}-%{commit} %{name}-%{shortcommit}
     GUILD=%{_bindir}/guild2.2 \
     ac_cv_guix_test_root="$(pwd)/t"
 # The progress bar of Guile compilation does not work with -O option.
-%make_build -Onone
+%global _make_output_sync %{nil}
+# Guile may crash with 'mmap(PROT_NONE) failed' when it uses too many threads
+# for compilation.
+%global _smp_ncpus_max 2
+%make_build
 
 
 %check
@@ -188,6 +182,8 @@ rm %{buildroot}%{_libdir}/upstart/system/guix-daemon.conf
 rm %{buildroot}%{_libdir}/upstart/system/guix-publish.conf
 rmdir %{buildroot}%{_libdir}/upstart/system
 rmdir %{buildroot}%{_libdir}/upstart
+# drop useless sysvinit service files
+rm %{buildroot}%{_sysconfdir}/init.d/guix-daemon
 # own the configuration directory
 mkdir -p %{buildroot}%{_sysconfdir}/guix
 %find_lang guix
@@ -199,28 +195,6 @@ mkdir -p %{buildroot}%{_sysconfdir}/guix
 
 
 %post
-cat << EOF | ( cd %{guile_source_dir}/gnu/packages/bootstrap && sha256sum -c >/dev/null ) || exit 1
-e3bf6ffe357eebcc28221ffdbb5b00b4ed1237cb101aba4b1b8119b08c732387  aarch64-linux/bash
-444c2af9fefd11d4fc20ee9281fa2c46cbe3cfb3df89cc30bcd50d20cdb6d6c0  aarch64-linux/mkdir
-05273f978a072269193e3a09371c23d6d149f6d807f8e413a4f79aa5a1bb6f25  aarch64-linux/tar
-48e9baa8a6c2527a5b4ecb8f0ac87767e2b055979256acab2a3dbff4f6171637  aarch64-linux/xz
-2ad82bb9ee6e77eaff284222e1d43a2829b5a1e2bcf158b08564a26da48e0045  armhf-linux/bash
-a19e386b31ebc8a46b5f934c11bca86e28f8aa997272a5fcd052b52d5019f790  armhf-linux/mkdir
-da56be0b332fac3880b151abe60c1eeb2649cd192379b18658b1d872f7aa53e8  armhf-linux/tar
-6507d04d55210e3a8cdc2e5758d79a4b0da3cb53bb142f60a78788af7b915ab1  armhf-linux/xz
-ed059a9ae964d538605c923c4e73128bd5ca912994709b3fe2d71d061751e8c5  i686-linux/bash
-b369264bda7bbb98d1acf0bf53ebc9077e82f48b190f3956fa23cb73d6e99f92  i686-linux/mkdir
-9f7e79e52aa369fc9ed69359e503d4f8179117842df8261fc0cae5629cc896cb  i686-linux/tar
-d23173dfe66c41e1c8d8eef905d14d1f39aaa52c9d70621f366c275e9139b415  i686-linux/xz
-213cfb8794ffdf4a71cb321a89987ee61704edcec5d1203912575f0a626a239c  mips64el-linux/bash
-d436070fde044366d72d7e59d8d12b1ba72b32d7b0f13e409b61118bdc8254c8  mips64el-linux/mkdir
-d27fcb52f9b4a42fafdae3164fffd200f52e04d142574dcf06212dbf7701cbb8  mips64el-linux/tar
-107eac7523b0148d18f461d81bec9d0db6154d6c61e4caf3a4cdb43a9a6afb3c  mips64el-linux/xz
-265d2f633a5ab35747fc4836b5e3ca32bf56ad44cc24f3bd358f1ff6cf0779a5  x86_64-linux/bash
-50689abdf2d5374e17ea8c51801f04f7590ad604af33a12a940cc11d137a4a2f  x86_64-linux/mkdir
-16440b4495a2ff9c6aa50c05a8c9066e1004a5990b75aa891f08cdf8753c8689  x86_64-linux/tar
-930ad7e88ca0b2275dc459b24aea912fadd5b7c9e95be06788d4b61efc7ef470  x86_64-linux/xz
-EOF
 /sbin/install-info %{_infodir}/%{name}.info.gz %{_infodir}/dir || :
 if [ "$1" = 1 ]; then
     /usr/sbin/groupadd -r %{guix_group}
@@ -287,6 +261,8 @@ fi
 %{guile_ccache_dir}/gnu/machine.go
 %dir %{guile_source_dir}/gnu/machine
 %dir %{guile_ccache_dir}/gnu/machine
+%{guile_source_dir}/gnu/machine/digital-ocean.scm
+%{guile_ccache_dir}/gnu/machine/digital-ocean.go
 %{guile_source_dir}/gnu/machine/ssh.scm
 %{guile_ccache_dir}/gnu/machine/ssh.go
 %{guile_source_dir}/gnu/packages.scm
@@ -296,6 +272,7 @@ fi
 %{guile_source_dir}/gnu/packages/*.scm
 %{guile_ccache_dir}/gnu/packages/*.go
 %{guile_source_dir}/gnu/packages/ld-wrapper.in
+%{guile_source_dir}/gnu/packages/ld-wrapper-next.in
 %dir %{guile_source_dir}/gnu/packages/aux-files
 %dir %{guile_source_dir}/gnu/packages/aux-files/chromium
 %{guile_source_dir}/gnu/packages/aux-files/chromium/master-preferences.json
@@ -303,39 +280,12 @@ fi
 %{guile_source_dir}/gnu/packages/aux-files/emacs/guix-emacs.el
 %dir %{guile_source_dir}/gnu/packages/aux-files/linux-libre
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-arm.conf
-%{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-arm-veyron.conf
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-arm64.conf
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-i686.conf
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-x86_64.conf
 %{guile_source_dir}/gnu/packages/aux-files/run-in-namespace.c
 %dir %{guile_source_dir}/gnu/packages/patches
 %{guile_source_dir}/gnu/packages/patches/*.patch
-%dir %{guile_source_dir}/gnu/packages/bootstrap
-%dir %{guile_source_dir}/gnu/packages/bootstrap/aarch64-linux
-%{guile_source_dir}/gnu/packages/bootstrap/aarch64-linux/tar
-%{guile_source_dir}/gnu/packages/bootstrap/aarch64-linux/xz
-%{guile_source_dir}/gnu/packages/bootstrap/aarch64-linux/mkdir
-%{guile_source_dir}/gnu/packages/bootstrap/aarch64-linux/bash
-%dir %{guile_source_dir}/gnu/packages/bootstrap/armhf-linux
-%{guile_source_dir}/gnu/packages/bootstrap/armhf-linux/tar
-%{guile_source_dir}/gnu/packages/bootstrap/armhf-linux/xz
-%{guile_source_dir}/gnu/packages/bootstrap/armhf-linux/mkdir
-%{guile_source_dir}/gnu/packages/bootstrap/armhf-linux/bash
-%dir %{guile_source_dir}/gnu/packages/bootstrap/mips64el-linux
-%{guile_source_dir}/gnu/packages/bootstrap/mips64el-linux/tar
-%{guile_source_dir}/gnu/packages/bootstrap/mips64el-linux/xz
-%{guile_source_dir}/gnu/packages/bootstrap/mips64el-linux/mkdir
-%{guile_source_dir}/gnu/packages/bootstrap/mips64el-linux/bash
-%dir %{guile_source_dir}/gnu/packages/bootstrap/i686-linux
-%{guile_source_dir}/gnu/packages/bootstrap/i686-linux/tar
-%{guile_source_dir}/gnu/packages/bootstrap/i686-linux/xz
-%{guile_source_dir}/gnu/packages/bootstrap/i686-linux/mkdir
-%{guile_source_dir}/gnu/packages/bootstrap/i686-linux/bash
-%dir %{guile_source_dir}/gnu/packages/bootstrap/x86_64-linux
-%{guile_source_dir}/gnu/packages/bootstrap/x86_64-linux/tar
-%{guile_source_dir}/gnu/packages/bootstrap/x86_64-linux/xz
-%{guile_source_dir}/gnu/packages/bootstrap/x86_64-linux/mkdir
-%{guile_source_dir}/gnu/packages/bootstrap/x86_64-linux/bash
 %{guile_source_dir}/gnu/services.scm
 %{guile_ccache_dir}/gnu/services.go
 %dir %{guile_source_dir}/gnu/services
@@ -414,12 +364,15 @@ fi
 %{_infodir}/%{name}.fr.info*
 %{_infodir}/%{name}.ru.info*
 %{_infodir}/%{name}.zh_CN.info*
+%{_infodir}/%{name}-cookbook.info*
+%{_infodir}/%{name}-cookbook.de.info*
 %dir %{_infodir}/images
 %{_infodir}/images/bootstrap-graph.png.gz
 %{_infodir}/images/bootstrap-packages.png.gz
 %{_infodir}/images/coreutils-bag-graph.png.gz
 %{_infodir}/images/coreutils-graph.png.gz
 %{_infodir}/images/coreutils-size-map.png.gz
+%{_infodir}/images/gcc-mesboot-bag-graph.png.gz
 %{_infodir}/images/installer-network.png.gz
 %{_infodir}/images/installer-partitions.png.gz
 %{_infodir}/images/installer-resume.png.gz
@@ -457,6 +410,9 @@ fi
 
 
 %changelog
+* Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-1
+- Update to 1.1.0
+
 * Wed Sep 18 2019 Ting-Wei Lan <lantw44@gmail.com> - 1.0.2-0.1.20190917git0ed97e6
 - Update to a git snapshot from master branch to fix tests
 - Move guile-json from Recommends to Requires because emacs-guix needs it
