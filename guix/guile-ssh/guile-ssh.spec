@@ -1,18 +1,11 @@
 Name:           guile-ssh
-Version:        0.11.3
-Release:        6%{?dist}
+Version:        0.12.0
+Release:        1%{?dist}
 Summary:        A library that provides access to the SSH protocol for GNU Guile
 
 License:        GPLv3+
 URL:            https://github.com/artyom-poptsov/guile-ssh
 Source0:        https://github.com/artyom-poptsov/guile-ssh/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
-
-Patch0:         guile-ssh-0.11.3-fix-segfault.patch
-Patch1:         guile-ssh-0.11.3-libssh-0.8-name.patch
-Patch2:         guile-ssh-0.11.3-libssh-0.8-tests.patch
-Patch3:         guile-ssh-0.11.3-libssh-0.9-ecdsa.patch
-Patch4:         guile-ssh-0.11.3-libssh-0.9-ecdsa-fixup-1.patch
-Patch5:         guile-ssh-0.11.3-libssh-0.9-ecdsa-fixup-2.patch
 
 %global guile_source_dir %{_datadir}/guile/site/2.2
 %global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
@@ -45,6 +38,7 @@ autoreconf -fi
 
 
 %check
+sed -i 's|/usr/bin/guile|%{_bindir}/guile2.2|g' tests/common.scm
 %{__make} %{?_smp_mflags} check
 
 
@@ -83,6 +77,9 @@ fi
 
 
 %changelog
+* Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.12.0-1
+- Update to 0.12.0
+
 * Fri Sep 20 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.11.3-6
 - Fix build with libssh 0.8
 
