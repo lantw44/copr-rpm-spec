@@ -2,8 +2,8 @@
 %global pkgname Guix
 
 Name:           emacs-%{pkg}
-Version:        0.5.1.1
-Release:        3%{?dist}
+Version:        0.5.2
+Release:        1%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
@@ -99,6 +99,9 @@ fi
 
 
 %changelog
+* Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-1
+- Update to 0.5.2
+
 * Tue Sep 17 2019 Ting-Wei Lan <lantw44@gmail.com> - 0.5.1.1-3
 - Rebuilt for Fedora 31 and 32
 
