@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           gsettings-desktop-schemas
-Version:        3.36.0
+Version:        3.36.1
 Release:        1%{?dist}.1
 Summary:        A collection of GSettings schemas (Copr: lantw44/gnome-restore-gtk-icons)
 
@@ -78,6 +78,9 @@ glib-compile-schemas --dry-run --strict %{buildroot}%{_datadir}/glib-2.0/schemas
 
 
 %changelog
+* Thu Apr 30 2020 Kalev Lember <klember@redhat.com> - 3.36.1-1
+- Update to 3.36.1
+
 * Mon Mar 09 2020 Kalev Lember <klember@redhat.com> - 3.36.0-1
 - Update to 3.36.0
 
