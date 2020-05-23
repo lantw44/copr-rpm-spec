@@ -1,0 +1,39 @@
+From f4cfbbfb51934ed6104a5bbd51a7b72cf5cfd5c1 Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Mon, 4 May 2020 00:43:30 +0000
+Subject: [PATCH] GCC: add missing apps namespace to BrowserAppLauncher
+
+GCC does not get namespace of BrowserAppLauncher right and
+fails like this:
+
+chrome/browser/apps/app_service/app_service_proxy.h:82:23: error:
+declaration of 'apps::BrowserAppLauncher&
+apps::AppServiceProxy::BrowserAppLauncher()' changes meaning of
+'BrowserAppLauncher' [-fpermissive]
+
+Bug: 819294
+Change-Id: I1ee948723c68768e41e4d1e1861b3ed8f8fc6b2d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/2174484
+Reviewed-by: Nancy Wang <nancylingwang@chromium.org>
+Commit-Queue: Nancy Wang <nancylingwang@chromium.org>
+Cr-Commit-Position: refs/heads/master@{#764972}
+---
+ chrome/browser/apps/app_service/app_service_proxy.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/chrome/browser/apps/app_service/app_service_proxy.h b/chrome/browser/apps/app_service/app_service_proxy.h
+index 97e5edf4347b..e284f93e398d 100644
+--- a/chrome/browser/apps/app_service/app_service_proxy.h
++++ b/chrome/browser/apps/app_service/app_service_proxy.h
+@@ -83,7 +83,7 @@ class AppServiceProxy : public KeyedService,
+   apps::InstanceRegistry& InstanceRegistry();
+ #endif
+ 
+-  BrowserAppLauncher& BrowserAppLauncher();
++  apps::BrowserAppLauncher& BrowserAppLauncher();
+ 
+   apps::PreferredAppsList& PreferredApps();
+ 
+-- 
+2.26.2
+

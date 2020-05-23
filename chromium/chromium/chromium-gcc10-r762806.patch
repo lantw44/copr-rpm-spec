@@ -1,0 +1,48 @@
+From 4af12b86673edcf82989a87a11496543a9478fb5 Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Mon, 27 Apr 2020 12:05:48 +0000
+Subject: [PATCH] libstdc++: make NGPhysicalContainerFragment::ConstIterator
+ usable with std::all_of
+
+Use of std::all_of requires STL compliant iterator. However,
+NGPhysicalContainerFragment::ConstIterator does not define
+iterator_tag and therefore is no STL iterator. To make it
+compliant derive NGPhysicalContainerFragment::ConstIterator from
+std::iterator.
+
+Bug: 957519
+Change-Id: Id042f987ca093ece6cd1cd10f601eb1909700d08
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/2153148
+Reviewed-by: Aleks Totic <atotic@chromium.org>
+Commit-Queue: Morten Stenshorne <mstensho@chromium.org>
+Cr-Commit-Position: refs/heads/master@{#762806}
+---
+ .../renderer/core/layout/ng/ng_physical_container_fragment.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/third_party/blink/renderer/core/layout/ng/ng_physical_container_fragment.h b/third_party/blink/renderer/core/layout/ng/ng_physical_container_fragment.h
+index b3c7624f4940..1256e77c1463 100644
+--- a/third_party/blink/renderer/core/layout/ng/ng_physical_container_fragment.h
++++ b/third_party/blink/renderer/core/layout/ng/ng_physical_container_fragment.h
+@@ -5,6 +5,8 @@
+ #ifndef THIRD_PARTY_BLINK_RENDERER_CORE_LAYOUT_NG_NG_PHYSICAL_CONTAINER_FRAGMENT_H_
+ #define THIRD_PARTY_BLINK_RENDERER_CORE_LAYOUT_NG_NG_PHYSICAL_CONTAINER_FRAGMENT_H_
+ 
++#include <iterator>
++
+ #include "base/containers/span.h"
+ #include "third_party/blink/renderer/core/core_export.h"
+ #include "third_party/blink/renderer/core/layout/geometry/physical_rect.h"
+@@ -31,7 +33,8 @@ class CORE_EXPORT NGPhysicalContainerFragment : public NGPhysicalFragment {
+     PostLayoutChildLinkList(wtf_size_t count, const NGLink* buffer)
+         : count_(count), buffer_(buffer) {}
+ 
+-    class ConstIterator {
++    class ConstIterator
++        : public std::iterator<std::input_iterator_tag, NGLink> {
+       STACK_ALLOCATED();
+ 
+      public:
+-- 
+2.26.2
+

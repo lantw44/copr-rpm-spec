@@ -51,7 +51,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    81.0.4044.138
+Version:    83.0.4103.61
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -108,23 +108,26 @@ Patch30:    chromium-webrtc-cstring.patch
 
 # Pull patches from Gentoo
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=5b7b57438d399738
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=63e5fbd254535ca8
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8ba7a983c4c70ff8
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=68ee7ce691b80d8a
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=adb8703f3e0af990
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=74bedae1b414b74f
 Patch41:    chromium-base-location.patch
-Patch42:    chromium-gcc9-blink.patch
 Patch43:    chromium-gcc10-chrome.patch
 Patch44:    chromium-gcc10-ui.patch
 Patch45:    chromium-webrtc-gcc10.patch
+Patch46:    chromium-gcc10-content.patch
+Patch47:    chromium-gcc9-ui.patch
 
 # Pull upstream patches
 Patch51:    chromium-quiche-gcc9.patch
-Patch52:    chromium-gcc9-r742632.patch
-Patch53:    chromium-gcc9-r742834.patch
-Patch54:    chromium-gcc10-r753781.patch
-Patch55:    chromium-gcc10-r755016.patch
-Patch56:    chromium-angle-gcc10.patch
-Patch57:    chromium-perfetto-gcc10.patch
+Patch52:    chromium-gcc10-r756880.patch
+Patch53:    chromium-gcc10-r760075.patch
+Patch54:    chromium-gcc10-r760272.patch
+Patch55:    chromium-gcc10-r760588.patch
+Patch56:    chromium-gcc10-r762806.patch
+Patch57:    chromium-gcc10-r762881.patch
+Patch58:    chromium-gcc10-r764426.patch
+Patch59:    chromium-gcc10-r764972.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -150,6 +153,7 @@ BuildRequires: pkgconfig(xtst), pkgconfig(xscrnsaver)
 BuildRequires: pkgconfig(dbus-1), pkgconfig(libudev)
 BuildRequires: pkgconfig(gnome-keyring-1)
 BuildRequires: pkgconfig(libffi)
+BuildRequires: python2-setuptools
 # remove_bundled_libraries.py --do-remove
 BuildRequires: python2-rpm-macros
 %if %{with system_beautifulsoup4}
@@ -314,6 +318,7 @@ find -type f -exec \
     third_party/devscripts \
     third_party/devtools-frontend \
     third_party/devtools-frontend/src/front_end/third_party/fabricjs \
+    third_party/devtools-frontend/src/front_end/third_party/lighthouse \
     third_party/devtools-frontend/src/front_end/third_party/wasmparser \
     third_party/devtools-frontend/src/third_party \
     third_party/dom_distiller_js \
@@ -330,6 +335,7 @@ find -type f -exec \
 %if !%{with system_harfbuzz}
     third_party/harfbuzz-ng \
 %endif
+    third_party/harfbuzz-ng/utils \
     third_party/hunspell \
     third_party/iccjpeg \
 %if !%{with system_libicu}
@@ -365,6 +371,7 @@ find -type f -exec \
     third_party/libyuv \
     third_party/lss \
     third_party/lzma_sdk \
+    third_party/mako \
     third_party/mesa \
     third_party/metrics_proto \
     third_party/modp_b64 \
@@ -402,6 +409,7 @@ find -type f -exec \
 %endif
     third_party/rnnoise \
     third_party/s2cellid \
+    third_party/schema_org \
     third_party/simplejson \
     third_party/skia \
     third_party/skia/include/third_party/skcms \
@@ -414,6 +422,7 @@ find -type f -exec \
     third_party/SPIRV-Tools \
     third_party/sqlite \
     third_party/swiftshader \
+    third_party/swiftshader/third_party/astc-encoder \
     third_party/swiftshader/third_party/llvm-7.0 \
     third_party/swiftshader/third_party/llvm-subzero \
     third_party/swiftshader/third_party/marl \
@@ -677,6 +686,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri May 22 2020 - Ting-Wei Lan <lantw44@gmail.com> - 83.0.4103.61-100
+- Update to 83.0.4103.61
+
 * Wed May 06 2020 - Ting-Wei Lan <lantw44@gmail.com> - 81.0.4044.138-100
 - Update to 81.0.4044.138
 
