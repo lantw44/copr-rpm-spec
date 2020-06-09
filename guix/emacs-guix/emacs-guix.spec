@@ -3,12 +3,16 @@
 
 Name:           emacs-%{pkg}
 Version:        0.5.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
 URL:            https://emacs-guix.gitlab.io/website
 Source0:        https://emacs-guix.gitlab.io/website/releases/%{name}-%{version}.tar.gz
+
+# Fix crash when installing a package
+# https://gitlab.com/emacs-guix/emacs-guix/-/issues/18
+Patch0:         emacs-guix-0.5.2-guix-api-change.patch
 
 %global debug_package    %{nil}
 %global guile_source_dir %{_datadir}/guile/site/2.2
@@ -99,6 +103,9 @@ fi
 
 
 %changelog
+* Tue Jun 09 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-2
+- Add a patch from upstream to fix crash when installing a package
+
 * Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-1
 - Update to 0.5.2
 
