@@ -3,7 +3,7 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    5.6.7
+Version:    5.7.1
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -104,6 +104,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/linux/wimax/*.h
 %dir %{cross_sysroot}/usr/include/misc
 %{cross_sysroot}/usr/include/misc/*.h
+%dir %{cross_sysroot}/usr/include/misc/uacce
+%{cross_sysroot}/usr/include/misc/uacce/hisi_qm.h
+%{cross_sysroot}/usr/include/misc/uacce/uacce.h
 %dir %{cross_sysroot}/usr/include/mtd
 %{cross_sysroot}/usr/include/mtd/*.h
 %dir %{cross_sysroot}/usr/include/rdma
@@ -126,6 +129,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Tue Jun 09 2020 Ting-Wei Lan <lantw44@gmail.com> - 5.7.1-1
+- Update to 5.7.1
+
 * Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 5.6.7-1
 - Update to 5.6.7
 
