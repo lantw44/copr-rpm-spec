@@ -88,6 +88,7 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/bytestream.h \
 		libavcodec/cbrt_data.h \
 		libavcodec/cbrt_tablegen.h \
+		libavcodec/codec_id.h \
 		libavcodec/dct.h \
 		libavcodec/dct32.h \
 		libavcodec/error_resilience.h \
@@ -104,6 +105,7 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/hpeldsp.h \
 		libavcodec/hwaccel.h \
 		libavcodec/hwaccels.h \
+		libavcodec/hwconfig.h \
 		libavcodec/idctdsp.h \
 		libavcodec/internal.h \
 		libavcodec/kbdwin.h \
@@ -132,6 +134,7 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/opus_celt.h \
 		libavcodec/opus_pvq.h \
 		libavcodec/opus_rc.h \
+		libavcodec/packet.h \
 		libavcodec/pcm_tablegen.h \
 		libavcodec/pixblockdsp.h \
 		libavcodec/pixels.h \

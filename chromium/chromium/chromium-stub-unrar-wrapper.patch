@@ -1,5 +1,5 @@
 diff --git a/third_party/unrar/BUILD.gn b/third_party/unrar/BUILD.gn
-index 5716ad0e720f..6f60c130561f 100644
+index 96756a8a538a..5b300ef5667f 100644
 --- a/third_party/unrar/BUILD.gn
 +++ b/third_party/unrar/BUILD.gn
 @@ -23,54 +23,7 @@ config("unrar_warnings") {
@@ -58,7 +58,7 @@ index 5716ad0e720f..6f60c130561f 100644
    if (is_win) {
      sources += [ "src/isnt.cpp" ]
 diff --git a/third_party/unrar/src/unrar_wrapper.cc b/third_party/unrar/src/unrar_wrapper.cc
-index 63b31f008861..6879a2d84988 100644
+index cd05eaa0033b..6879a2d84988 100644
 --- a/third_party/unrar/src/unrar_wrapper.cc
 +++ b/third_party/unrar/src/unrar_wrapper.cc
 @@ -9,7 +9,6 @@
@@ -69,7 +69,7 @@ index 63b31f008861..6879a2d84988 100644
  
  namespace third_party_unrar {
  
-@@ -18,62 +17,10 @@ RarReader::RarReader() {}
+@@ -18,60 +17,10 @@ RarReader::RarReader() {}
  RarReader::~RarReader() {}
  
  bool RarReader::Open(base::File rar_file, base::File temp_file) {
@@ -81,12 +81,10 @@ index 63b31f008861..6879a2d84988 100644
 -  archive_->SetTempFileHandle(temp_file_.GetPlatformFile());
 -
 -  bool open_success = archive_->Open(L"dummy.rar");
--  UMA_HISTOGRAM_BOOLEAN("SBClientDownload.RarOpenSuccess", open_success);
 -  if (!open_success)
 -    return false;
 -
 -  bool is_valid_archive = archive_->IsArchive(/*EnableBroken=*/true);
--  UMA_HISTOGRAM_BOOLEAN("SBClientDownload.RarValidArchive", is_valid_archive);
 -  if (!is_valid_archive)
 -    return false;
 -

@@ -51,7 +51,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    83.0.4103.116
+Version:    84.0.4147.89
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -97,6 +97,9 @@ Patch1:     chromium-certificate-transparency-google.patch
 # Don't require static libstdc++
 Patch2:     chromium-gn-no-static-libstdc++.patch
 
+# Make ui/gfx/x/gen_xproto.py compatible with Python 3
+Patch3:     chromium-gen-xproto-python3.patch
+
 # Don't use unversioned python commands. This patch is based on
 # https://src.fedoraproject.org/rpms/chromium/c/7048e95ab61cd143
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
@@ -117,17 +120,21 @@ Patch44:    chromium-gcc10-ui.patch
 Patch45:    chromium-webrtc-gcc10.patch
 Patch46:    chromium-gcc10-content.patch
 Patch47:    chromium-gcc9-ui.patch
+Patch48:    chromium-revert-manage-ManifestManagerHost-per-document.patch
 
 # Pull upstream patches
-Patch51:    chromium-quiche-gcc9.patch
-Patch52:    chromium-gcc10-r756880.patch
-Patch53:    chromium-gcc10-r760075.patch
-Patch54:    chromium-gcc10-r760272.patch
-Patch55:    chromium-gcc10-r760588.patch
-Patch56:    chromium-gcc10-r762806.patch
-Patch57:    chromium-gcc10-r762881.patch
-Patch58:    chromium-gcc10-r764426.patch
-Patch59:    chromium-gcc10-r764972.patch
+Patch50:    chromium-quiche-gcc9.patch
+Patch51:    chromium-gcc10-r769713.patch
+Patch52:    chromium-gcc10-r771840.patch
+Patch53:    chromium-gcc10-r772215.patch
+Patch54:    chromium-gcc10-r772267.patch
+Patch55:    chromium-gcc10-r772283.patch
+Patch56:    chromium-gcc10-r772542.patch
+Patch57:    chromium-gcc10-r773698.patch
+Patch58:    chromium-gcc10-r773855.patch
+Patch59:    chromium-gcc10-r774141.patch
+Patch60:    chromium-gcc10-r775439.patch
+Patch61:    chromium-gcc10-r778406.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -139,6 +146,7 @@ BuildRequires: clang
 BuildRequires: gcc, gcc-c++
 %endif
 BuildRequires: ninja-build, nodejs, java-headless, bison, gperf, hwdata
+BuildRequires: xcb-proto
 BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
 BuildRequires: libcap-devel, cups-devel, alsa-lib-devel, expat-devel
 %if 0%{?fedora} >= 30
@@ -191,7 +199,6 @@ BuildRequires: pkgconfig(libxslt)
 BuildRequires: opus-devel
 BuildRequires: re2-devel
 BuildRequires: snappy-devel
-BuildRequires: yasm
 BuildRequires: zlib-devel
 # *_use_*
 BuildRequires: pciutils-devel
@@ -317,6 +324,8 @@ find -type f -exec \
     third_party/depot_tools \
     third_party/devscripts \
     third_party/devtools-frontend \
+    third_party/devtools-frontend/src/front_end/third_party/acorn \
+    third_party/devtools-frontend/src/front_end/third_party/codemirror \
     third_party/devtools-frontend/src/front_end/third_party/fabricjs \
     third_party/devtools-frontend/src/front_end/third_party/lighthouse \
     third_party/devtools-frontend/src/front_end/third_party/wasmparser \
@@ -351,6 +360,7 @@ find -type f -exec \
     third_party/libaom \
     third_party/libaom/source/libaom/third_party/vector \
     third_party/libaom/source/libaom/third_party/x86inc \
+    third_party/libavif \
     third_party/libjingle \
     third_party/libphonenumber \
     third_party/libsecret \
@@ -369,6 +379,7 @@ find -type f -exec \
 %endif
     third_party/libXNVCtrl \
     third_party/libyuv \
+    third_party/lottie \
     third_party/lss \
     third_party/lzma_sdk \
     third_party/mako \
@@ -381,6 +392,7 @@ find -type f -exec \
     third_party/one_euro_filter \
     third_party/openh264 \
     third_party/openscreen \
+    third_party/openscreen/src/third_party/mozilla \
     third_party/openscreen/src/third_party/tinycbor/src/src \
     third_party/ots \
     third_party/pdfium \
@@ -436,7 +448,7 @@ find -type f -exec \
     third_party/web-animations-js \
     third_party/webdriver \
     third_party/webrtc \
-    third_party/webrtc/common_audio/third_party/fft4g \
+    third_party/webrtc/common_audio/third_party/ooura \
     third_party/webrtc/common_audio/third_party/spl_sqrt_floor \
     third_party/webrtc/modules/third_party/fft \
     third_party/webrtc/modules/third_party/g711 \
@@ -447,7 +459,6 @@ find -type f -exec \
     third_party/woff2 \
     third_party/wuffs \
     third_party/xdg-utils \
-    third_party/yasm/run_yasm.py \
     third_party/zlib/google \
     tools/grit/third_party/six \
     tools/gn/src/base/third_party/icu \
@@ -484,7 +495,6 @@ find -type f -exec \
     re2 \
 %endif
     snappy \
-    yasm \
     zlib
 
 sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' \
@@ -544,7 +554,6 @@ gn_args=(
     enable_nacl=false
     fatal_linker_warnings=false
     treat_warnings_as_errors=false
-    linux_use_bundled_binutils=false
     fieldtrial_testing_like_official_build=true
     'system_libdir="%{_lib}"'
     'custom_toolchain="//build/toolchain/linux/unbundle:default"'
@@ -580,6 +589,24 @@ gn_args+=(
 ./tools/gn/bootstrap/bootstrap.py --gn-gen-args "${gn_args[*]}"
 ./out/Release/gn gen out/Release \
     --script-executable=/usr/bin/python2 --args="${gn_args[*]}"
+
+# The Python script ui/gfx/x/gen_xproto.py uses xcbgen library, which can be
+# found in xcb-proto package on Fedora. Surprisingly, the Chromium developer
+# decides to write this new script in Python 2 even if Python 2 is EOL in 2020.
+# Fedora only provides xcb-proto package for Python 3, so we have to patch both
+# the script and the ninja file to switch it to Python 3.
+sed -i 's|python2 \(\.\./\.\./ui/gfx/x/gen_xproto\.py\)|python3 \1|' \
+    out/Release/toolchain.ninja
+
+# It seems that Chromium cannot properly handle <list type="fd" name="buffers">
+# element of PixmapFromBuffers request in dri3.xml. It knows 'num_buffers' is
+# the size of 'buffers', but it doesn't declare the variable 'buffers' itself.
+# Therefore, the generated dri3.cc file doesn't compile because of undeclared
+# variable. Since currently there is no code using the function, assume that
+# callers never pass 'buffers' and patch 'num_buffers' to always be zero.
+%{ninja_build} -C out/Release gen/ui/gfx/x/dri3.cc
+sed -i 's|^\(  num_buffers\) = buffers.size();|\1 = 0;|' \
+    out/Release/gen/ui/gfx/x/dri3.cc
 
 %if 0%{?ninja_build:1}
 %{ninja_build} -C out/Release chrome chrome_sandbox chromedriver
@@ -686,6 +713,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Jul 26 2020 - Ting-Wei Lan <lantw44@gmail.com> - 84.0.4147.89-100
+- Update to 84.0.4147.89
+
 * Tue Jun 23 2020 - Ting-Wei Lan <lantw44@gmail.com> - 83.0.4103.116-100
 - Update to 83.0.4103.116
 
