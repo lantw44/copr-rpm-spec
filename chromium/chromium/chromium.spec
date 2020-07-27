@@ -52,7 +52,7 @@
 
 Name:       chromium
 Version:    84.0.4147.89
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -135,6 +135,8 @@ Patch58:    chromium-gcc10-r773855.patch
 Patch59:    chromium-gcc10-r774141.patch
 Patch60:    chromium-gcc10-r775439.patch
 Patch61:    chromium-gcc10-r778406.patch
+Patch62:    chromium-gcc9-r772175.patch
+Patch63:    chromium-gcc9-r772348.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -713,6 +715,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Jul 26 2020 - Ting-Wei Lan <lantw44@gmail.com> - 84.0.4147.89-101
+- Fix build issues for GCC 9
+
 * Sun Jul 26 2020 - Ting-Wei Lan <lantw44@gmail.com> - 84.0.4147.89-100
 - Update to 84.0.4147.89
 
