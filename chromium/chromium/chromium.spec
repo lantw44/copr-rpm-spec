@@ -51,8 +51,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    84.0.4147.89
-Release:    101%{?dist}
+Version:    84.0.4147.105
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -715,6 +715,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Jul 28 2020 - Ting-Wei Lan <lantw44@gmail.com> - 84.0.4147.105-100
+- Update to 84.0.4147.105
+
 * Sun Jul 26 2020 - Ting-Wei Lan <lantw44@gmail.com> - 84.0.4147.89-101
 - Fix build issues for GCC 9
 
