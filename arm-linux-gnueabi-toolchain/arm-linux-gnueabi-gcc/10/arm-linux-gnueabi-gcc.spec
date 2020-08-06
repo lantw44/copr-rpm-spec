@@ -29,7 +29,7 @@
 %bcond_without ada
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    10.1.0
+Version:    10.2.0
 Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
@@ -378,6 +378,9 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 
 
 %changelog
+* Sat Jul 25 2020 Ting-Wei Lan <lantw44@gmail.com> - 10.2.0-1
+- Update to new stable release 10.2.0
+
 * Sat May 09 2020 Ting-Wei Lan <lantw44@gmail.com> - 10.1.0-1
 - Update to new stable release 10.1.0
 
