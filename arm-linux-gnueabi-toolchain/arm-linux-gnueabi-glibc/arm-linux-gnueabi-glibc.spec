@@ -55,8 +55,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.31
-Release:    3%{?dist}
+Version:    2.32
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -384,6 +384,7 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/include/sys/shm.h
 %{cross_sysroot}/usr/include/sys/signal.h
 %{cross_sysroot}/usr/include/sys/signalfd.h
+%{cross_sysroot}/usr/include/sys/single_threaded.h
 %{cross_sysroot}/usr/include/sys/socket.h
 %{cross_sysroot}/usr/include/sys/socketvar.h
 %{cross_sysroot}/usr/include/sys/soundcard.h
@@ -392,7 +393,6 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/include/sys/statvfs.h
 %{cross_sysroot}/usr/include/sys/swap.h
 %{cross_sysroot}/usr/include/sys/syscall.h
-%{cross_sysroot}/usr/include/sys/sysctl.h
 %{cross_sysroot}/usr/include/sys/sysinfo.h
 %{cross_sysroot}/usr/include/sys/syslog.h
 %{cross_sysroot}/usr/include/sys/sysmacros.h
@@ -587,6 +587,9 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Sat Aug 08 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.32-1
+- Update to 2.32
+
 * Tue Apr 28 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.31-3
 - Quote strings in if conditionals for RPM 4.16
 - Remove __ar_no_strip and define __strip to a dummy command
