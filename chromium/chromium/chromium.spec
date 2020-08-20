@@ -51,7 +51,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    84.0.4147.125
+Version:    84.0.4147.135
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -437,7 +437,7 @@ find -type f -exec \
     third_party/sqlite \
     third_party/swiftshader \
     third_party/swiftshader/third_party/astc-encoder \
-    third_party/swiftshader/third_party/llvm-7.0 \
+    third_party/swiftshader/third_party/llvm-10.0 \
     third_party/swiftshader/third_party/llvm-subzero \
     third_party/swiftshader/third_party/marl \
     third_party/swiftshader/third_party/subzero \
@@ -715,6 +715,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Aug 20 2020 - Ting-Wei Lan <lantw44@gmail.com> - 84.0.4147.135-100
+- Update to 84.0.4147.135
+
 * Tue Aug 11 2020 - Ting-Wei Lan <lantw44@gmail.com> - 84.0.4147.125-100
 - Update to 84.0.4147.125
 
