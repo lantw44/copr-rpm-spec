@@ -4,7 +4,7 @@
 
 Name: epiphany
 Epoch: 1
-Version: 3.36.3
+Version: 3.36.4
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
@@ -111,6 +111,9 @@ desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 %{_mandir}/man*/*
 
 %changelog
+* Mon Aug 17 2020 Kalev Lember <klember@redhat.com> - 1:3.36.4-1
+- Update to 3.36.4
+
 * Mon Jul 20 2020 Kalev Lember <klember@redhat.com> - 1:3.36.3-1
 - Update to 3.36.3
 
