@@ -51,7 +51,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    84.0.4147.135
+Version:    85.0.4183.83
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -97,9 +97,6 @@ Patch1:     chromium-certificate-transparency-google.patch
 # Don't require static libstdc++
 Patch2:     chromium-gn-no-static-libstdc++.patch
 
-# Make ui/gfx/x/gen_xproto.py compatible with Python 3
-Patch3:     chromium-gen-xproto-python3.patch
-
 # Don't use unversioned python commands. This patch is based on
 # https://src.fedoraproject.org/rpms/chromium/c/7048e95ab61cd143
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
@@ -111,32 +108,18 @@ Patch30:    chromium-webrtc-cstring.patch
 
 # Pull patches from Gentoo
 # https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=5b7b57438d399738
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=68ee7ce691b80d8a
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=adb8703f3e0af990
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=74bedae1b414b74f
-Patch41:    chromium-base-location.patch
-Patch43:    chromium-gcc10-chrome.patch
-Patch44:    chromium-gcc10-ui.patch
-Patch45:    chromium-webrtc-gcc10.patch
-Patch46:    chromium-gcc10-content.patch
-Patch47:    chromium-gcc9-ui.patch
-Patch48:    chromium-revert-manage-ManifestManagerHost-per-document.patch
+Patch40:    chromium-base-location.patch
 
 # Pull upstream patches
 Patch50:    chromium-quiche-gcc9.patch
-Patch51:    chromium-gcc10-r769713.patch
-Patch52:    chromium-gcc10-r771840.patch
-Patch53:    chromium-gcc10-r772215.patch
-Patch54:    chromium-gcc10-r772267.patch
-Patch55:    chromium-gcc10-r772283.patch
-Patch56:    chromium-gcc10-r772542.patch
-Patch57:    chromium-gcc10-r773698.patch
-Patch58:    chromium-gcc10-r773855.patch
-Patch59:    chromium-gcc10-r774141.patch
-Patch60:    chromium-gcc10-r775439.patch
-Patch61:    chromium-gcc10-r778406.patch
-Patch62:    chromium-gcc9-r772175.patch
-Patch63:    chromium-gcc9-r772348.patch
+Patch51:    chromium-gcc10-r783489.patch
+Patch52:    chromium-gcc10-r783782.patch
+Patch53:    chromium-gcc10-r783978.patch
+Patch54:    chromium-gcc10-r784897.patch
+Patch55:    chromium-gcc10-r785035.patch
+Patch56:    chromium-gcc10-r785727.patch
+Patch57:    chromium-gcc10-r785770.patch
+Patch58:    chromium-gcc10-r785771.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -148,7 +131,6 @@ BuildRequires: clang
 BuildRequires: gcc, gcc-c++
 %endif
 BuildRequires: ninja-build, nodejs, java-headless, bison, gperf, hwdata
-BuildRequires: xcb-proto
 BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
 BuildRequires: libcap-devel, cups-devel, alsa-lib-devel, expat-devel
 %if 0%{?fedora} >= 30
@@ -393,6 +375,7 @@ find -type f -exec \
     third_party/node/node_modules/polymer-bundler/lib/third_party/UglifyJS2 \
     third_party/one_euro_filter \
     third_party/openh264 \
+    third_party/opencv \
     third_party/openscreen \
     third_party/openscreen/src/third_party/mozilla \
     third_party/openscreen/src/third_party/tinycbor/src/src \
@@ -460,6 +443,7 @@ find -type f -exec \
     third_party/widevine \
     third_party/woff2 \
     third_party/wuffs \
+    third_party/xcbproto \
     third_party/xdg-utils \
     third_party/zlib/google \
     tools/grit/third_party/six \
@@ -592,24 +576,6 @@ gn_args+=(
 ./out/Release/gn gen out/Release \
     --script-executable=/usr/bin/python2 --args="${gn_args[*]}"
 
-# The Python script ui/gfx/x/gen_xproto.py uses xcbgen library, which can be
-# found in xcb-proto package on Fedora. Surprisingly, the Chromium developer
-# decides to write this new script in Python 2 even if Python 2 is EOL in 2020.
-# Fedora only provides xcb-proto package for Python 3, so we have to patch both
-# the script and the ninja file to switch it to Python 3.
-sed -i 's|python2 \(\.\./\.\./ui/gfx/x/gen_xproto\.py\)|python3 \1|' \
-    out/Release/toolchain.ninja
-
-# It seems that Chromium cannot properly handle <list type="fd" name="buffers">
-# element of PixmapFromBuffers request in dri3.xml. It knows 'num_buffers' is
-# the size of 'buffers', but it doesn't declare the variable 'buffers' itself.
-# Therefore, the generated dri3.cc file doesn't compile because of undeclared
-# variable. Since currently there is no code using the function, assume that
-# callers never pass 'buffers' and patch 'num_buffers' to always be zero.
-%{ninja_build} -C out/Release gen/ui/gfx/x/dri3.cc
-sed -i 's|^\(  num_buffers\) = buffers.size();|\1 = 0;|' \
-    out/Release/gen/ui/gfx/x/dri3.cc
-
 %if 0%{?ninja_build:1}
 %{ninja_build} -C out/Release chrome chrome_sandbox chromedriver
 %else
@@ -645,6 +611,8 @@ install -m 755 out/Release/chromedriver %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/icudtl.dat %{buildroot}%{chromiumdir}/
 %endif
 install -m 644 out/Release/v8_context_snapshot.bin %{buildroot}%{chromiumdir}/
+install -m 644 out/Release/vk_swiftshader_icd.json %{buildroot}%{chromiumdir}/
+install -m 755 out/Release/*.so %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/*.pak %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/locales/*.pak %{buildroot}%{chromiumdir}/locales/
 install -m 644 out/Release/MEIPreload/* %{buildroot}%{chromiumdir}/MEIPreload/
@@ -701,7 +669,13 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %if !%{with system_libicu}
 %{chromiumdir}/icudtl.dat
 %endif
+%{chromiumdir}/libEGL.so
+%{chromiumdir}/libGLESv2.so
+%{chromiumdir}/libVkICD_mock_icd.so
+%{chromiumdir}/libvk_swiftshader.so
+%{chromiumdir}/libvulkan.so
 %{chromiumdir}/v8_context_snapshot.bin
+%{chromiumdir}/vk_swiftshader_icd.json
 %{chromiumdir}/*.pak
 %dir %{chromiumdir}/locales
 %{chromiumdir}/locales/*.pak
@@ -715,6 +689,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Aug 28 2020 - Ting-Wei Lan <lantw44@gmail.com> - 85.0.4183.83-100
+- Update to 85.0.4183.83
+
 * Thu Aug 20 2020 - Ting-Wei Lan <lantw44@gmail.com> - 84.0.4147.135-100
 - Update to 84.0.4147.135
 

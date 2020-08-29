@@ -1,0 +1,42 @@
+From 2e8386a047240fc3ebb53d88dee9558193adbdd2 Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Tue, 30 Jun 2020 01:48:49 +0000
+Subject: [PATCH] GCC: add explicit namespace for FrameWidget
+
+GCC is confused by multiple definitions in different namespaces
+and fails like this:
+
+../../third_party/blink/renderer/platform/widget/widget_base_client.h:153:24:
+
+error: declaration of 'virtual blink::FrameWidget*
+blink::WidgetBaseClient::FrameWidget()' changes meaning of 'FrameWidget'
+[-fpermissive]
+  153 |   virtual FrameWidget* FrameWidget() { return nullptr; }
+      |                        ^~~~~~~~~~~
+
+Bug: 819294
+Change-Id: If2f6ab4e75f5d4c87657620de84a50b85b2af960
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/2273229
+Reviewed-by: Kentaro Hara <haraken@chromium.org>
+Commit-Queue: Kentaro Hara <haraken@chromium.org>
+Cr-Commit-Position: refs/heads/master@{#783782}
+---
+ third_party/blink/renderer/platform/widget/widget_base_client.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/third_party/blink/renderer/platform/widget/widget_base_client.h b/third_party/blink/renderer/platform/widget/widget_base_client.h
+index 03d353c2b456..530360bcf8a1 100644
+--- a/third_party/blink/renderer/platform/widget/widget_base_client.h
++++ b/third_party/blink/renderer/platform/widget/widget_base_client.h
+@@ -150,7 +150,7 @@ class WidgetBaseClient {
+       mojo::PendingRemote<mojom::blink::WidgetInputHandlerHost> host) = 0;
+ 
+   // The FrameWidget interface if this is a FrameWidget.
+-  virtual FrameWidget* FrameWidget() { return nullptr; }
++  virtual blink::FrameWidget* FrameWidget() { return nullptr; }
+ 
+   // Send the composition change to the browser.
+   virtual void SendCompositionRangeChanged(
+-- 
+2.26.2
+

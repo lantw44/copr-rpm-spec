@@ -1,0 +1,45 @@
+From 3101c190bc55cb6ff7208652d0883566a3e00799 Mon Sep 17 00:00:00 2001
+From: Jose Dapena Paz <jdapena@igalia.com>
+Date: Tue, 7 Jul 2020 16:12:08 +0000
+Subject: [PATCH] fixup: do not return to 128 integer word from _mm_cmplt_ps in
+ v_wrap_virtual_index.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+After the changes to convert to SIMD several operations in
+WebAudio oscillator node, GCC refuses to compile a call to _mm_cmplt_ps
+since we try to store it in m128i, but mm_cmplt_ps returns an m128.
+
+To fix that, we reinterpret_cast<__m128i>, as that's how we want to
+interpret the bits.
+
+Verified with webaudio/Oscillator/* web tests.
+
+Bug: 819294
+Change-Id: Ia00a7695476e84996548b6c679ffeedead49213b
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/2247792
+Reviewed-by: Raymond Toy <rtoy@chromium.org>
+Commit-Queue: José Dapena Paz <jdapena@igalia.com>
+Cr-Commit-Position: refs/heads/master@{#785771}
+---
+ third_party/blink/renderer/modules/webaudio/oscillator_node.cc | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/third_party/blink/renderer/modules/webaudio/oscillator_node.cc b/third_party/blink/renderer/modules/webaudio/oscillator_node.cc
+index 08f20fc022a8..71671affd8dc 100644
+--- a/third_party/blink/renderer/modules/webaudio/oscillator_node.cc
++++ b/third_party/blink/renderer/modules/webaudio/oscillator_node.cc
+@@ -377,7 +377,8 @@ static __m128 v_wrap_virtual_index(__m128 x,
+ 
+   // cmplt(a,b) returns 0xffffffff (-1) if a < b and 0 if not.  So cmp is -1 or
+   // 0 depending on whether r < f, which is what we need to compute floor(r).
+-  const __m128i cmp = _mm_cmplt_ps(r, _mm_cvtepi32_ps(f));
++  const __m128i cmp =
++      reinterpret_cast<__m128i>(_mm_cmplt_ps(r, _mm_cvtepi32_ps(f)));
+ 
+   // This subtracts 1 if needed to get floor(r).
+   f = _mm_add_epi32(f, cmp);
+-- 
+2.26.2
+
