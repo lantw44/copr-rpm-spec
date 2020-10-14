@@ -51,7 +51,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    85.0.4183.121
+Version:    86.0.4240.75
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -106,20 +106,16 @@ Patch20:    chromium-python2.patch
 # https://src.fedoraproject.org/rpms/chromium/c/9071ee2d2f996b84
 Patch30:    chromium-webrtc-cstring.patch
 
-# Pull patches from Gentoo
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=5b7b57438d399738
-Patch40:    chromium-base-location.patch
+# Pull patches from stha09
+# https://github.com/stha09/chromium-patches/commit/13641b34f86607a8
+# https://github.com/stha09/chromium-patches/commit/a50b8d53cd0fa79c
+Patch40:    chromium-nearby-cstring.patch
+Patch41:    chromium-nearby-explicit.patch
+Patch42:    chromium-angle-string.patch
+Patch43:    chromium-base-time-constexpr.patch
 
 # Pull upstream patches
 Patch50:    chromium-quiche-gcc9.patch
-Patch51:    chromium-gcc10-r783489.patch
-Patch52:    chromium-gcc10-r783782.patch
-Patch53:    chromium-gcc10-r783978.patch
-Patch54:    chromium-gcc10-r784897.patch
-Patch55:    chromium-gcc10-r785035.patch
-Patch56:    chromium-gcc10-r785727.patch
-Patch57:    chromium-gcc10-r785770.patch
-Patch58:    chromium-gcc10-r785771.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -277,7 +273,6 @@ find -type f -exec \
     third_party/breakpad \
     third_party/breakpad/breakpad/src/third_party/curl \
     third_party/brotli \
-    third_party/cacheinvalidation \
     third_party/catapult \
     third_party/catapult/common/py_vulcanize/third_party/rcssmin \
     third_party/catapult/common/py_vulcanize/third_party/rjsmin \
@@ -309,9 +304,15 @@ find -type f -exec \
     third_party/devscripts \
     third_party/devtools-frontend \
     third_party/devtools-frontend/src/front_end/third_party/acorn \
+    third_party/devtools-frontend/src/front_end/third_party/chromium \
     third_party/devtools-frontend/src/front_end/third_party/codemirror \
     third_party/devtools-frontend/src/front_end/third_party/fabricjs \
+    third_party/devtools-frontend/src/front_end/third_party/i18n \
+    third_party/devtools-frontend/src/front_end/third_party/intl-messageformat \
     third_party/devtools-frontend/src/front_end/third_party/lighthouse \
+    third_party/devtools-frontend/src/front_end/third_party/lit-html \
+    third_party/devtools-frontend/src/front_end/third_party/lodash-isequal \
+    third_party/devtools-frontend/src/front_end/third_party/marked \
     third_party/devtools-frontend/src/front_end/third_party/wasmparser \
     third_party/devtools-frontend/src/third_party \
     third_party/dom_distiller_js \
@@ -371,6 +372,7 @@ find -type f -exec \
     third_party/metrics_proto \
     third_party/modp_b64 \
     third_party/nasm \
+    third_party/nearby \
     third_party/node \
     third_party/node/node_modules/polymer-bundler/lib/third_party/UglifyJS2 \
     third_party/one_euro_filter \
@@ -407,6 +409,7 @@ find -type f -exec \
     third_party/rnnoise \
     third_party/s2cellid \
     third_party/schema_org \
+    third_party/securemessage \
     third_party/simplejson \
     third_party/skia \
     third_party/skia/include/third_party/skcms \
@@ -426,6 +429,7 @@ find -type f -exec \
     third_party/swiftshader/third_party/subzero \
     third_party/swiftshader/third_party/SPIRV-Headers/include/spirv/unified1 \
     third_party/tcmalloc \
+    third_party/ukey2 \
     third_party/unrar \
     third_party/usb_ids \
     third_party/usrsctp \
@@ -444,6 +448,7 @@ find -type f -exec \
     third_party/woff2 \
     third_party/wuffs \
     third_party/xcbproto \
+    third_party/zxcvbn-cpp \
     third_party/xdg-utils \
     third_party/zlib/google \
     tools/grit/third_party/six \
@@ -689,6 +694,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Oct 15 2020 - Ting-Wei Lan <lantw44@gmail.com> - 86.0.4240.75-100
+- Update to 86.0.4240.75
+
 * Tue Sep 22 2020 - Ting-Wei Lan <lantw44@gmail.com> - 85.0.4183.121-100
 - Update to 85.0.4183.121
 
