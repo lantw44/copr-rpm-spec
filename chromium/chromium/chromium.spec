@@ -52,7 +52,7 @@
 
 Name:       chromium
 Version:    86.0.4240.75
-Release:    101%{?dist}
+Release:    102%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -522,12 +522,10 @@ export CC=clang CXX=clang++
 export CC=gcc CXX=g++
 %endif
 
-# GN needs gold to bootstrap
-export LDFLAGS="$LDFLAGS -fuse-ld=gold"
-
 gn_args=(
     is_debug=false
     is_component_build=false
+    use_gold=false
     use_sysroot=false
     use_custom_libcxx=false
     use_aura=true
@@ -582,6 +580,10 @@ gn_args+=(
 ./tools/gn/bootstrap/bootstrap.py --gn-gen-args "${gn_args[*]}"
 ./out/Release/gn gen out/Release \
     --script-executable=/usr/bin/python2 --args="${gn_args[*]}"
+
+# Raise the limit of open files because ld.bfd seems to open more files than
+# ld.gold. The default limit of 1024 is known to cause malformed archive error.
+ulimit -Sn "$(ulimit -Hn)"
 
 %if 0%{?ninja_build:1}
 %{ninja_build} -C out/Release chrome chrome_sandbox chromedriver
@@ -696,6 +698,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Oct 18 2020 - Ting-Wei Lan <lantw44@gmail.com> - 86.0.4240.75-102
+- Disable gold because it segfault on Fedora 33 and later
+
 * Sat Oct 17 2020 - Ting-Wei Lan <lantw44@gmail.com> - 86.0.4240.75-101
 - Fix build issues for GCC 9
 
