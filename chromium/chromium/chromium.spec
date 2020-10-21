@@ -51,8 +51,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    86.0.4240.75
-Release:    102%{?dist}
+Version:    86.0.4240.111
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -698,6 +698,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Oct 21 2020 - Ting-Wei Lan <lantw44@gmail.com> - 86.0.4240.111-100
+- Update to 86.0.4240.111
+
 * Sun Oct 18 2020 - Ting-Wei Lan <lantw44@gmail.com> - 86.0.4240.75-102
 - Disable gold because it segfault on Fedora 33 and later
 
