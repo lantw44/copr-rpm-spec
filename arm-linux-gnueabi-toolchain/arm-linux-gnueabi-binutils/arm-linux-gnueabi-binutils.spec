@@ -7,7 +7,7 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.35
+Version:    2.35.1
 Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
@@ -39,6 +39,7 @@ Requires:   %{cross_triplet}-filesystem
     --enable-multilib \
     --enable-threads \
     --enable-plugins \
+    --enable-lto \
     --disable-nls \
     --disable-shared \
     --disable-werror \
@@ -89,6 +90,10 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Tue Oct 20 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.35.1-1
+- Update to 2.35.1
+- Enable LTO
+
 * Mon Jul 27 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.35-1
 - Update to 2.35
 
