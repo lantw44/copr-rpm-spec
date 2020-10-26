@@ -3,7 +3,7 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    5.8.0
+Version:    5.9.1
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -129,6 +129,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Tue Oct 20 2020 Ting-Wei Lan <lantw44@gmail.com> - 5.9.1-1
+- Update to 5.9.1
+
 * Thu Aug 06 2020 Ting-Wei Lan <lantw44@gmail.com> - 5.8.0-1
 - Update to 5.8
 
