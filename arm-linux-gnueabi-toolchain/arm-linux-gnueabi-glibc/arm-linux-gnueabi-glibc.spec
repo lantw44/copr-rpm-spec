@@ -56,7 +56,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.32
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -86,8 +86,8 @@ BuildRequires: %{cross_triplet}-gcc-stage2, perl
 
 
 %build
-mkdir -p %{_builddir}/glibc-build
-cd %{_builddir}/glibc-build
+mkdir -p %{_builddir}/glibc-%{version}-build
+cd %{_builddir}/glibc-%{version}-build
 export BUILD_CC=%{_bindir}/gcc
 export CC=%{_bindir}/%{cross_triplet}-gcc
 export CXX=%{_bindir}/%{cross_triplet}-g++
@@ -95,15 +95,22 @@ export AR=%{_bindir}/%{cross_triplet}-ar
 export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
 %global _configure ../glibc-%{version}/configure
 %global _hardening_ldflags \\\
-    %(echo "%{_hardening_ldflags}" | sed -e 's/-specs=[^ ]*//g')
+    %(echo "%{_hardening_ldflags}" | \\\
+        sed -e 's/-specs=[^ ]*//g')
 %global __global_ldflags \\\
     %(echo "%{__global_ldflags}" | \\\
-        sed -e 's/-specs=[^ ]*//g' -e 's/-Wl,-z,defs *//g')
+        sed -e 's/-specs=[^ ]*//g' \\\
+            -e 's/-Wl,-z,defs *//g')
 %global optflags \\\
     %(echo "%{optflags}" | \\\
-        sed -e 's/-m[^ ]*//g' -e 's/-specs=[^ ]*//g' -e 's/-Werror=[^ ]*//g' \\\
-            -e 's/-Wp,[^ ]*//g' -e 's/-fasynchronous-unwind-tables *//g' \\\
-            -e 's/-fstack-clash-protection *//g' -e 's/-fcf-protection *//g')
+        sed -e 's/-m[^ ]*//g' \\\
+            -e 's/-specs=[^ ]*//g' \\\
+            -e 's/-Werror=[^ ]*//g' \\\
+            -e 's/-Wp,[^ ]*//g' \\\
+            -e 's/-fasynchronous-unwind-tables *//g' \\\
+            -e 's/-fstack-clash-protection *//g' \\\
+            -e 's/-fcf-protection *//g' \\\
+            -e 's/-flto=auto *//g')
 # Use /usr directly because it is the path in cross_sysroot
 %configure \
     --libdir=/usr/%{lib_dir_name} \
@@ -141,7 +148,7 @@ export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
 
 
 %install
-cd %{_builddir}/glibc-build
+cd %{_builddir}/glibc-%{version}-build
 %if %{headers_only}
 %{__make} install-headers install_root=%{buildroot}%{cross_sysroot} \
     install-bootstrap-headers=yes
@@ -587,6 +594,10 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Tue Oct 20 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.32-2
+- Use versioned build directory
+- Remove LTO flags because it causes section type conflict error
+
 * Sat Aug 08 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.32-1
 - Update to 2.32
 

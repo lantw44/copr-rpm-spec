@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    10.2.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -78,8 +78,8 @@ Provides:   %{cross_triplet}-gcc-stage3 = %{version}
 
 
 %build
-mkdir -p %{_builddir}/gcc-build
-cd %{_builddir}/gcc-build
+mkdir -p %{_builddir}/gcc-%{version}-build
+cd %{_builddir}/gcc-%{version}-build
 export AR_FOR_TARGET=%{_bindir}/%{cross_triplet}-ar
 export AS_FOR_TARGET=%{_bindir}/%{cross_triplet}-as
 export DLLTOOL_FOR_TARGET=%{_bindir}/%{cross_triplet}-dlltool
@@ -93,14 +93,19 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
 %global _configure ../gcc-%{version}/configure
 %global _program_prefix %{cross_triplet}-
 %global _hardening_ldflags \\\
-    %(echo "%{_hardening_ldflags}" | sed -e 's/-specs=[^ ]*//g')
+    %(echo "%{_hardening_ldflags}" | \\\
+        sed -e 's/-specs=[^ ]*//g')
 %global __global_ldflags \\\
     %(echo "%{__global_ldflags}" | \\\
-        sed -e 's/-specs=[^ ]*//g' -e 's/-Wl,-z,defs *//g')
+        sed -e 's/-specs=[^ ]*//g' \\\
+            -e 's/-Wl,-z,defs *//g')
 %global optflags \\\
     %(echo "%{optflags}" | \\\
-        sed -e 's/-m[^ ]*//g' -e 's/-specs=[^ ]*//g' -e 's/-Werror=[^ ]*//g' \\\
-            -e 's/-fstack-clash-protection *//g' -e 's/-fcf-protection *//g')
+        sed -e 's/-m[^ ]*//g' \\\
+            -e 's/-specs=[^ ]*//g' \\\
+            -e 's/-Werror=[^ ]*//g' \\\
+            -e 's/-fstack-clash-protection *//g' \\\
+            -e 's/-fcf-protection *//g')
 # GCC doesn't build without dependency tracking
 # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55930
 %configure \
@@ -113,7 +118,7 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
     --with-linker-hash-style=gnu \
     --with-system-zlib \
     --with-isl \
-	--with-zstd \
+    --with-zstd \
     --disable-nls \
     --enable-lto \
     --enable-multilib \
@@ -150,9 +155,9 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
 %endif
 %if "%{cross_stage}" == "final"
 %if %{with ada}
-    --enable-languages=c,c++,fortran,objc,obj-c++,go,d,ada \
+    --enable-languages=c,c++,fortran,objc,obj-c++,go,d,lto,ada \
 %else
-    --enable-languages=c,c++,fortran,objc,obj-c++,go,d \
+    --enable-languages=c,c++,fortran,objc,obj-c++,go,d,lto \
 %endif
 %if 0%{?fedora} <= 22
     --with-default-libstdcxx-abi=gcc4-compatible \
@@ -173,7 +178,7 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
 
 
 %install
-cd %{_builddir}/gcc-build
+cd %{_builddir}/gcc-%{version}-build
 
 %if "%{cross_stage}" == "pass1"
 %{__make} install-gcc DESTDIR=%{buildroot}
@@ -378,6 +383,10 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 
 
 %changelog
+* Tue Oct 20 2020 Ting-Wei Lan <lantw44@gmail.com> - 10.2.0-2
+- Use versioned build directory
+- Add LTO to the list of enabled languages
+
 * Sat Jul 25 2020 Ting-Wei Lan <lantw44@gmail.com> - 10.2.0-1
 - Update to new stable release 10.2.0
 
