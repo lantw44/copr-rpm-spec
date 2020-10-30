@@ -1,6 +1,6 @@
 Name:       yafu
 Version:    1.34
-Release:    16%{?dist}
+Release:    17%{?dist}
 Summary:    Automated integer factorization
 
 License:    Public Domain
@@ -47,6 +47,9 @@ install -m 755 yafu %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Oct 30 2020 Ting-Wei Lan <lantw44@gmail.com> - 1.34-17
+- Rebuilt for Fedora 33 and 34
+
 * Thu Apr 23 2020 Ting-Wei Lan <lantw44@gmail.com> - 1.34-16
 - Fix GCC 10 linking failure with -fcommon
 - Use build_* flags instead of the old optflags and __global_ldflags
