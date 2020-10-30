@@ -1,14 +1,15 @@
+%global commit 354e0b7b37655c327a6f7ddd283d3069b4cf1b8d
+%global shortcommit %(c=%{commit}; echo ${c:0:7})
+
 Name:       qelly
 Version:    1.0
-Release:    0.16.beta%{?dist}
+Release:    0.17.20160403git%{shortcommit}%{?dist}
 Summary:    Qelly is a Qt port of Nally
-
-%global     real_name     Qelly
-%global     real_version  1.0b
 
 License:    GPLv3
 URL:        https://github.com/uranusjr/Qelly
-Source0:    https://github.com/uranusjr/Qelly/archive/v%{real_version}.tar.gz#/%{name}-%{real_version}.tar.gz
+Source0:    https://github.com/uranusjr/Qelly/archive/%{commit}/Qelly-%{commit}.tar.gz
+Patch0:     qelly-qt-5.15.patch
 
 BuildRequires: gcc-c++
 BuildRequires: qt5-qtbase-devel, qt5-linguist, libqxt-qt5-devel, chrpath
@@ -22,7 +23,7 @@ minimal effort. The project is currently only a Qt version of Nally (hence the
 name), but more features from other Telnet/SSH clients are also planned.
 
 %prep
-%autosetup -n %{real_name}-%{real_version} -p1
+%autosetup -n Qelly-%{commit} -p1
 
 %build
 %{qmake_qt5}
@@ -33,8 +34,8 @@ sed -i 's| -lQxt\([^ ]*\)| -lQxt\1-qt5|g' src/Makefile
 
 %install
 mkdir -p %{buildroot}/usr/bin
-chrpath -d "bin/Qelly"
-install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
+chrpath -d bin/Qelly
+install -m 755 bin/Qelly %{buildroot}/usr/bin
 
 %files
 %{_bindir}/Qelly
@@ -42,6 +43,11 @@ install -m 755 "bin/Qelly" "%{buildroot}/usr/bin"
 %doc AUTHORS CHANGES README.md
 
 %changelog
+* Fri Oct 30 2020 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.17.20160403git354e0b7
+- Update to the latest git snapshot
+- Remove unnecessary quotes in install script
+- Fix build with Qt 5.15
+
 * Thu Apr 23 2020 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.16.beta
 - Fix BuildRequires for Fedora 33
 

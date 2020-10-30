@@ -1,0 +1,12 @@
+diff --git a/src/View_p.cpp b/src/View_p.cpp
+index 1a54161..2e79167 100644
+--- a/src/View_p.cpp
++++ b/src/View_p.cpp
+@@ -23,6 +23,7 @@
+ #include <QMenu>
+ #include <QMimeData>
+ #include <QPainter>
++#include <QPainterPath>
+ #include <QRegExp>
+ #include <QTimer>
+ #include "AbstractConnection.h"
