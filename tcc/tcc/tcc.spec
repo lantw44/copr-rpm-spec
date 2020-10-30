@@ -12,7 +12,7 @@
 
 Name:       %{pkg_fullname}
 Version:    0.9.27
-Release:    4%{?dist}
+Release:    5%{?dist}
 Summary:    Tiny C Compiler
 
 License:    LGPLv2
@@ -98,6 +98,9 @@ fi
 %doc Changelog README TODO VERSION tcc-doc.html
 
 %changelog
+* Fri Oct 30 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.9.27-5
+- Rebuilt for Fedora 33 and 34
+
 * Thu Apr 23 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.9.27-4
 - Rebuilt for Fedora 32 and 33
 
