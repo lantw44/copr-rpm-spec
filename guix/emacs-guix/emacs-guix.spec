@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.5.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
@@ -13,6 +13,7 @@ Source0:        https://emacs-guix.gitlab.io/website/releases/%{name}-%{version}
 # Fix crash when installing a package
 # https://gitlab.com/emacs-guix/emacs-guix/-/issues/18
 Patch0:         emacs-guix-0.5.2-guix-api-change.patch
+Patch1:         emacs-guix-0.5.2-emacs-27.patch
 
 %global debug_package    %{nil}
 %global guile_source_dir %{_datadir}/guile/site/2.2
@@ -20,6 +21,7 @@ Patch0:         emacs-guix-0.5.2-guix-api-change.patch
 
 BuildRequires:  emacs, texinfo
 BuildRequires:  guix >= 0.13.0
+BuildRequires:  autoconf, automake
 BuildRequires:  pkgconfig(guile-2.2), guile-gcrypt
 BuildRequires:  emacs-geiser, emacs-dash, emacs-bui, emacs-edit-indirect
 BuildRequires:  emacs-magit, emacs-magit-popup
@@ -48,6 +50,7 @@ available info about packages and to do many other things.
 
 
 %build
+autoreconf -fiv
 %configure \
     --with-lispdir=%{_emacs_sitelispdir}/%{pkg} \
     --with-geiser-lispdir=%{_emacs_sitelispdir}/geiser \
@@ -103,6 +106,9 @@ fi
 
 
 %changelog
+* Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-3
+- Fix build with Emacs 27
+
 * Tue Jun 09 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-2
 - Add a patch from upstream to fix crash when installing a package
 
