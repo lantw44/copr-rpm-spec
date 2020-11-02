@@ -1,16 +1,17 @@
 Name:           guile-git
-Version:        0.3.0
+Version:        0.4.0
 Release:        1%{?dist}
 Summary:        Guile bindings of libgit2
 
 License:        GPLv3+ and LGPLv3+
 URL:            https://gitlab.com/guile-git/guile-git
-Source0:        https://gitlab.com/guile-git/guile-git/uploads/4c563d8e7e1ff84396abe8ca7011bcaf/guile-git-%{version}.tar.gz
+Source0:        https://gitlab.com/guile-git/guile-git/uploads/2600bb0dfdfb00bfbe46811dccad51d8/guile-git-%{version}.tar.gz
 
 %global debug_package    %{nil}
 %global guile_source_dir %{_datadir}/guile/site/2.2
 %global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
+BuildRequires:  gcc
 BuildRequires:  autoconf, automake, texinfo
 BuildRequires:  pkgconfig(guile-2.2), pkgconfig(libgit2), guile-bytestructures
 Requires:       guile22, guile-bytestructures, libgit2-devel
@@ -67,6 +68,9 @@ fi
 
 
 %changelog
+* Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.4.0-1
+- Update to 0.4.0
+
 * Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.3.0-1
 - Update to 0.3.0
 
