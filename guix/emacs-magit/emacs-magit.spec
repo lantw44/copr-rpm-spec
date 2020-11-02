@@ -13,7 +13,7 @@
 
 Name:           emacs-%{pkg}
 Version:        2.13.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Emacs interface to the most common Git operations
 
 License:        GPLv3+
@@ -80,6 +80,9 @@ fi
 
 
 %changelog
+* Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.13.1-5
+- Rebuilt for Fedora 33 and 34
+
 * Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.13.1-4
 - Rebuilt for Fedora 32 and 33
 

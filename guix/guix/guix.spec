@@ -6,11 +6,11 @@
 
 Name:           guix
 Version:        1.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
-URL:            https://www.gnu.org/software/guix
+URL:            https://guix.gnu.org
 Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 
 %global guix_user         guixbuild
@@ -410,6 +410,10 @@ fi
 
 
 %changelog
+* Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-2
+- Rebuilt for Fedora 33 and 34
+- Update project website URL
+
 * Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-1
 - Update to 1.1.0
 

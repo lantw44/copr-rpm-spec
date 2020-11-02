@@ -2,7 +2,7 @@
 
 Name:           guile-json
 Version:        3.4.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        JSON module for Guile
 
 License:        GPLv3+
@@ -54,6 +54,9 @@ features:
 
 
 %changelog
+* Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 3.4.0-2
+- Rebuilt for Fedora 33 and 34
+
 * Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 3.4.0-1
 - Update to 3.4.0
 

@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.11.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Geiser is an Emacs environment to hack and have fun in Scheme
 
 License:        BSD
@@ -72,6 +72,9 @@ fi
 
 
 %changelog
+* Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.11.2-2
+- Rebuilt for Fedora 33 and 34
+
 * Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.11.2-1
 - Update to 0.11.2
 
