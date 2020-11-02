@@ -1,5 +1,5 @@
 Name:           guile-ssh
-Version:        0.12.0
+Version:        0.13.1
 Release:        1%{?dist}
 Summary:        A library that provides access to the SSH protocol for GNU Guile
 
@@ -24,10 +24,15 @@ written in GNU Guile interpreter. It is built upon the libssh library.
 
 %prep
 %autosetup -p1
+%if 0%{?fedora} >= 33
+# This test fails with the crypto policy of Fedora 33.
+# https://github.com/artyom-poptsov/guile-ssh/issues/26
+sed -i '/^	sssh-ssshd\.scm \\$/d' tests/Makefile.am
+%endif
 
 
 %build
-autoreconf -fi
+autoreconf -fiv
 %configure \
     --disable-rpath \
     --disable-static \
@@ -38,7 +43,6 @@ autoreconf -fi
 
 
 %check
-sed -i 's|/usr/bin/guile|%{_bindir}/guile2.2|g' tests/common.scm
 %{__make} %{?_smp_mflags} check
 
 
@@ -77,6 +81,9 @@ fi
 
 
 %changelog
+* Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.13.1-1
+- Update to 0.13.1
+
 * Sun Apr 26 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.12.0-1
 - Update to 0.12.0
 
