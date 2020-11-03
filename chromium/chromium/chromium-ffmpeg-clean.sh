@@ -165,7 +165,6 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/vp8data.h \
 		libavcodec/vp8dsp.h \
 		libavformat/apetag.h \
-		libavformat/audiointerleave.h \
 		libavformat/avformat.h \
 		libavformat/dv.h \
 		libavformat/img2.h \
