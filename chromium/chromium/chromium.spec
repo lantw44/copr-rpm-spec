@@ -51,7 +51,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    86.0.4240.198
+Version:    87.0.4280.66
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -109,15 +109,15 @@ Patch30:    chromium-webrtc-cstring.patch
 # Pull patches from stha09
 # https://github.com/stha09/chromium-patches/commit/13641b34f86607a8
 # https://github.com/stha09/chromium-patches/commit/a50b8d53cd0fa79c
+# https://github.com/stha09/chromium-patches/commit/23bfdb7b34fb19bf
 Patch40:    chromium-nearby-cstring.patch
 Patch41:    chromium-nearby-explicit.patch
 Patch42:    chromium-angle-string.patch
 Patch43:    chromium-base-time-constexpr.patch
+Patch44:    chromium-openscreen-stdint.patch
 
 # Pull upstream patches
 Patch50:    chromium-quiche-gcc9.patch
-Patch51:    chromium-gcc9-r800495.patch
-Patch52:    chromium-gcc9-r800697.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -306,6 +306,7 @@ find -type f -exec \
     third_party/devscripts \
     third_party/devtools-frontend \
     third_party/devtools-frontend/src/front_end/third_party/acorn \
+    third_party/devtools-frontend/src/front_end/third_party/axe-core \
     third_party/devtools-frontend/src/front_end/third_party/chromium \
     third_party/devtools-frontend/src/front_end/third_party/codemirror \
     third_party/devtools-frontend/src/front_end/third_party/fabricjs \
@@ -315,6 +316,7 @@ find -type f -exec \
     third_party/devtools-frontend/src/front_end/third_party/lit-html \
     third_party/devtools-frontend/src/front_end/third_party/lodash-isequal \
     third_party/devtools-frontend/src/front_end/third_party/marked \
+    third_party/devtools-frontend/src/front_end/third_party/puppeteer \
     third_party/devtools-frontend/src/front_end/third_party/wasmparser \
     third_party/devtools-frontend/src/third_party \
     third_party/dom_distiller_js \
@@ -401,6 +403,7 @@ find -type f -exec \
 %endif
     third_party/polymer \
     third_party/private-join-and-compute \
+    third_party/private_membership \
     third_party/protobuf \
     third_party/protobuf/third_party/six \
     third_party/pyjson5 \
@@ -412,6 +415,8 @@ find -type f -exec \
     third_party/s2cellid \
     third_party/schema_org \
     third_party/securemessage \
+    third_party/shaka-player \
+    third_party/shell-encryption \
     third_party/simplejson \
     third_party/skia \
     third_party/skia/include/third_party/skcms \
@@ -436,6 +441,7 @@ find -type f -exec \
     third_party/usb_ids \
     third_party/usrsctp \
     third_party/vulkan \
+    third_party/wayland \
     third_party/web-animations-js \
     third_party/webdriver \
     third_party/webrtc \
@@ -698,6 +704,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Nov 20 2020 - Ting-Wei Lan <lantw44@gmail.com> - 87.0.4280.66-100
+- Update to 87.0.4280.66
+
 * Thu Nov 12 2020 - Ting-Wei Lan <lantw44@gmail.com> - 86.0.4240.198-100
 - Update to 86.0.4240.198
 
