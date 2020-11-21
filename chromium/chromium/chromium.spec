@@ -52,7 +52,7 @@
 
 Name:       chromium
 Version:    87.0.4280.66
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -536,15 +536,25 @@ gn_args=(
     use_custom_libcxx=false
     use_aura=true
     use_cups=true
-    use_gnome_keyring=true
+    use_glib=true
     use_gio=true
+    use_gtk=true
+    use_gnome_keyring=true
     use_kerberos=true
     use_libpci=true
+    use_ozone=true
     use_pulseaudio=true
     use_system_freetype=true
 %if %{with system_harfbuzz}
     use_system_harfbuzz=true
 %endif
+    use_system_libdrm=true
+    use_system_minigbm=true
+    use_xkbcommon=true
+    ozone_auto_platforms=false
+    ozone_platform_headless=true
+    ozone_platform_wayland=true
+    ozone_platform_x11=true
     rtc_use_pipewire=true
     rtc_link_pipewire=true
     enable_hangout_services_extension=false
@@ -704,6 +714,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Nov 21 2020 - Ting-Wei Lan <lantw44@gmail.com> - 87.0.4280.66-101
+- Explicity enable ozone platforms for headess, X11, Wayland
+
 * Fri Nov 20 2020 - Ting-Wei Lan <lantw44@gmail.com> - 87.0.4280.66-100
 - Update to 87.0.4280.66
 
