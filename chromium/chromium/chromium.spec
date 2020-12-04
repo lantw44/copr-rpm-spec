@@ -51,8 +51,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    87.0.4280.66
-Release:    101%{?dist}
+Version:    87.0.4280.88
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -714,6 +714,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Dec 04 2020 - Ting-Wei Lan <lantw44@gmail.com> - 87.0.4280.88-100
+- Update to 87.0.4280.88
+
 * Sat Nov 21 2020 - Ting-Wei Lan <lantw44@gmail.com> - 87.0.4280.66-101
 - Explicity enable ozone platforms for headess, X11, Wayland
 
