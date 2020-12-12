@@ -4,13 +4,13 @@
 
 Name: epiphany
 Epoch: 1
-Version: 3.38.1
+Version: 3.38.2
 Release: 1%{?dist}.1
 Summary: Web browser for GNOME (Copr: lantw44/epiphany-reduce-tab-width)
 
 License: GPLv3+ and CC-BY-SA
 URL: https://wiki.gnome.org/Apps/Web
-Source0: https://download.gnome.org/sources/epiphany/3.36/%{name}-%{version}.tar.xz
+Source0: https://download.gnome.org/sources/epiphany/3.38/%{name}-%{version}.tar.xz
 
 # Fedora bookmarks
 Patch0: epiphany-default-bookmarks.patch
@@ -107,6 +107,9 @@ desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 %{_mandir}/man*/*
 
 %changelog
+* Fri Dec 11 2020 Kalev Lember <klember@redhat.com> - 1:3.38.2-1
+- Update to 3.38.2
+
 * Fri Oct  9 2020 Kalev Lember <klember@redhat.com> - 1:3.38.1-1
 - Update to 3.38.1
 
