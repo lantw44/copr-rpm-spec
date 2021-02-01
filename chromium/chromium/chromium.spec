@@ -51,7 +51,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    87.0.4280.141
+Version:    88.0.4324.96
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -107,17 +107,15 @@ Patch20:    chromium-python2.patch
 Patch30:    chromium-webrtc-cstring.patch
 
 # Pull patches from stha09
-# https://github.com/stha09/chromium-patches/commit/13641b34f86607a8
-# https://github.com/stha09/chromium-patches/commit/a50b8d53cd0fa79c
 # https://github.com/stha09/chromium-patches/commit/23bfdb7b34fb19bf
-Patch40:    chromium-nearby-cstring.patch
-Patch41:    chromium-nearby-explicit.patch
-Patch42:    chromium-angle-string.patch
-Patch43:    chromium-base-time-constexpr.patch
-Patch44:    chromium-openscreen-stdint.patch
+# https://github.com/stha09/chromium-patches/commit/3495379e353f96ef
+Patch40:    chromium-openscreen-stdint.patch
+Patch41:    chromium-ui-memory-vector.patch
 
 # Pull upstream patches
 Patch50:    chromium-quiche-gcc9.patch
+Patch51:    chromium-gcc10-r831923.patch
+Patch52:    chromium-gcc10-r838269.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -138,11 +136,10 @@ BuildRequires: minizip-devel
 %endif
 BuildRequires: mesa-libGL-devel, mesa-libEGL-devel, mesa-libgbm-devel
 BuildRequires: pkgconfig(gtk+-2.0), pkgconfig(gtk+-3.0)
-BuildRequires: pkgconfig(libexif), pkgconfig(nss)
+BuildRequires: pkgconfig(libffi), pkgconfig(nss), pkgconfig(libexif)
 BuildRequires: pkgconfig(xtst), pkgconfig(xscrnsaver)
 BuildRequires: pkgconfig(dbus-1), pkgconfig(libudev)
-BuildRequires: pkgconfig(gnome-keyring-1)
-BuildRequires: pkgconfig(libffi)
+BuildRequires: pkgconfig(libva), pkgconfig(gnome-keyring-1)
 BuildRequires: python2-setuptools
 # remove_bundled_libraries.py --do-remove
 BuildRequires: python2-rpm-macros
@@ -302,6 +299,7 @@ find -type f -exec \
     third_party/cros_system_api \
     third_party/dav1d \
     third_party/dawn \
+    third_party/dawn/third_party/khronos \
     third_party/depot_tools \
     third_party/devscripts \
     third_party/devtools-frontend \
@@ -324,6 +322,7 @@ find -type f -exec \
     third_party/ffmpeg \
     third_party/flatbuffers \
     third_party/freetype \
+    third_party/fusejs \
     third_party/libgifcodec \
     third_party/glslang \
     third_party/google_input_tools \
@@ -361,6 +360,8 @@ find -type f -exec \
     third_party/libvpx/source/libvpx/third_party/x86inc \
 %endif
     third_party/libwebm \
+    third_party/libx11 \
+    third_party/libxcb-keysyms \
 %if %{with system_libxml2}
     third_party/libxml/chromium \
 %else
@@ -425,6 +426,7 @@ find -type f -exec \
     third_party/skia/third_party/vulkan \
     third_party/smhasher \
     third_party/speech-dispatcher \
+    third_party/spirv-cross/spirv-cross \
     third_party/spirv-headers \
     third_party/SPIRV-Tools \
     third_party/sqlite \
@@ -436,6 +438,7 @@ find -type f -exec \
     third_party/swiftshader/third_party/subzero \
     third_party/swiftshader/third_party/SPIRV-Headers/include/spirv/unified1 \
     third_party/tcmalloc \
+    third_party/tint \
     third_party/ukey2 \
     third_party/unrar \
     third_party/usb_ids \
@@ -455,6 +458,7 @@ find -type f -exec \
     third_party/widevine \
     third_party/woff2 \
     third_party/wuffs \
+    third_party/x11proto \
     third_party/xcbproto \
     third_party/zxcvbn-cpp \
     third_party/xdg-utils \
@@ -714,6 +718,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Feb  2 2021 - Ting-Wei Lan <lantw44@gmail.com> - 88.0.4324.96-100
+- Update to 88.0.4324.96
+
 * Sun Jan 10 2021 - Ting-Wei Lan <lantw44@gmail.com> - 87.0.4280.141-100
 - Update to 87.0.4280.141
 

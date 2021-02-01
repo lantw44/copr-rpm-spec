@@ -1,0 +1,46 @@
+From d8f178c11d9008e528b1891371984e3ad209c776 Mon Sep 17 00:00:00 2001
+From: Jose Dapena Paz <jdapena@igalia.com>
+Date: Mon, 30 Nov 2020 18:54:07 +0000
+Subject: [PATCH] GCC: move attribute to the start of function definition in
+ VAAPI wrapper.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Fix compilation error:
+../../base/compiler_specific.h:97:28: error: attributes are not allowed on a function-definition
+   97 | #define WARN_UNUSED_RESULT __attribute__((warn_unused_result))
+      |                            ^~~~~~~~~~~~~
+../../media/gpu/vaapi/vaapi_wrapper.h:322:36: note: in expansion of macro ‘WARN_UNUSED_RESULT’
+  322 |                     const T* data) WARN_UNUSED_RESULT {
+      |                                    ^~~~~~~~~~~~~~~~~~
+
+Bug: 819294
+Change-Id: I24e2e10a96182f8705fed96164550357acdb55a4
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/2534931
+Commit-Queue: Miguel Casas <mcasas@chromium.org>
+Reviewed-by: Hirokazu Honda <hiroh@chromium.org>
+Reviewed-by: Miguel Casas <mcasas@chromium.org>
+Cr-Commit-Position: refs/heads/master@{#831923}
+---
+ media/gpu/vaapi/vaapi_wrapper.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/media/gpu/vaapi/vaapi_wrapper.h b/media/gpu/vaapi/vaapi_wrapper.h
+index 01ec58214f86..e2c95f1e2a6b 100644
+--- a/media/gpu/vaapi/vaapi_wrapper.h
++++ b/media/gpu/vaapi/vaapi_wrapper.h
+@@ -345,8 +345,8 @@ class MEDIA_GPU_EXPORT VaapiWrapper
+   // Convenient templatized version of SubmitBuffer() where |size| is deduced to
+   // be the size of the type of |*data|.
+   template <typename T>
+-  bool SubmitBuffer(VABufferType va_buffer_type,
+-                    const T* data) WARN_UNUSED_RESULT {
++  bool WARN_UNUSED_RESULT SubmitBuffer(VABufferType va_buffer_type,
++                                       const T* data) {
+     return SubmitBuffer(va_buffer_type, sizeof(T), data);
+   }
+   // Batch-version of SubmitBuffer(), where the lock for accessing libva is
+-- 
+2.29.2
+
