@@ -2,7 +2,7 @@
 %global pkgname Ghub
 
 Name:           emacs-%{pkg}
-Version:        3.4.2
+Version:        3.5.1
 Release:        1%{?dist}
 Summary:        Minuscule client libraries for the APIs of various Git forges
 
@@ -83,6 +83,9 @@ fi
 
 
 %changelog
+* Mon Feb 15 2021 Ting-Wei Lan <lantw44@gmail.com> - 3.5.1-1
+- Update to 3.5.1
+
 * Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 3.4.2-1
 - Update to 3.4.2
 
