@@ -2,18 +2,19 @@
 %global pkgname Geiser
 
 Name:           emacs-%{pkg}
-Version:        0.11.2
-Release:        2%{?dist}
+Version:        0.12
+Release:        1%{?dist}
 Summary:        Geiser is an Emacs environment to hack and have fun in Scheme
 
 License:        BSD
 URL:            https://nongnu.org/geiser
-Source0:        https://gitlab.com/jaor/geiser/uploads/56b0cd60b99f78359bba0042421ac0a6/%{pkg}-%{version}.tar.gz
+Source0:        https://gitlab.com/jaor/geiser/-/archive/%{version}/%{pkg}-%{version}.tar.gz
 
 # Use guile2.2 instead of guile because Guile 2.0 support has been dropped.
 Patch0:         emacs-geiser-default-guile-2.2.patch
 
 BuildArch:      noarch
+BuildRequires:  autoconf, automake, texinfo
 BuildRequires:  emacs
 Requires:       emacs(bin) >= %{_emacs_version}
 Requires(post): info
@@ -35,8 +36,10 @@ keep the Lisp Machine Spirit alive.
 
 
 %build
+./autogen.sh
 %configure --with-lispdir=%{_emacs_sitelispdir}/geiser
 %make_build
+%{__make} README
 
 
 %install
@@ -72,6 +75,9 @@ fi
 
 
 %changelog
+* Mon Feb 15 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.12-1
+- Update to 0.12
+
 * Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.11.2-2
 - Rebuilt for Fedora 33 and 34
 

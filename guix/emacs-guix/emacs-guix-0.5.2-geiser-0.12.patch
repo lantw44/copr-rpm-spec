@@ -1,0 +1,25 @@
+From bb2a0539f8d68b2292b3d0f3174c139b4c304028 Mon Sep 17 00:00:00 2001
+From: John Soo <jsoo1@asu.edu>
+Date: Fri, 13 Nov 2020 06:02:01 -0800
+Subject: [PATCH] elisp/repl: Support geiser 0.12.x
+
+* elisp/guix-repl.el (guix-start-repl): Set 'geiser-repl-buffer-project'.
+---
+ elisp/guix-repl.el | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/elisp/guix-repl.el b/elisp/guix-repl.el
+index c0bb3e2..5dd446f 100644
+--- a/elisp/guix-repl.el
++++ b/elisp/guix-repl.el
+@@ -309,6 +309,7 @@ this address (it should be defined by
+     (with-current-buffer buffer
+       (geiser-repl-mode)
+       (geiser-impl--set-buffer-implementation impl)
++      (geiser-repl--set-this-buffer-project 'guix)
+       (geiser-repl--autodoc-mode -1)
+       (goto-char (point-max))
+       (let ((prompt (geiser-con--combined-prompt
+-- 
+GitLab
+

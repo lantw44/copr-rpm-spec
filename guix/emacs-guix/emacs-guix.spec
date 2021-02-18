@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.5.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
@@ -14,6 +14,7 @@ Source0:        https://emacs-guix.gitlab.io/website/releases/%{name}-%{version}
 # https://gitlab.com/emacs-guix/emacs-guix/-/issues/18
 Patch0:         emacs-guix-0.5.2-guix-api-change.patch
 Patch1:         emacs-guix-0.5.2-emacs-27.patch
+Patch2:         emacs-guix-0.5.2-geiser-0.12.patch
 
 %global debug_package    %{nil}
 %global guile_source_dir %{_datadir}/guile/site/2.2
@@ -106,6 +107,9 @@ fi
 
 
 %changelog
+* Mon Feb 15 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-4
+- Make it compatible with Geiser 0.12
+
 * Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-3
 - Fix build with Emacs 27
 
