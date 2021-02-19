@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           guile-json
-Version:        3.4.0
-Release:        2%{?dist}
+Version:        4.5.2
+Release:        1%{?dist}
 Summary:        JSON module for Guile
 
 License:        GPLv3+
@@ -35,6 +35,10 @@ features:
 %make_build
 
 
+%check
+%{__make} %{?_smp_mflags} check
+
+
 %install
 %make_install
 
@@ -50,10 +54,15 @@ features:
 %{guile_ccache_dir}/json/builder.go
 %{guile_source_dir}/json/parser.scm
 %{guile_ccache_dir}/json/parser.go
-
+%{guile_source_dir}/json/record.scm
+%{guile_ccache_dir}/json/record.go
 
 
 %changelog
+* Mon Feb 15 2021 Ting-Wei Lan <lantw44@gmail.com> - 4.5.2-1
+- Update to 4.5.2
+- Run tests
+
 * Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 3.4.0-2
 - Rebuilt for Fedora 33 and 34
 

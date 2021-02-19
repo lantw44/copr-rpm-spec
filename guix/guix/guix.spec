@@ -5,13 +5,25 @@
 %global selinuxmodule guix-daemon
 
 Name:           guix
-Version:        1.1.0
-Release:        2%{?dist}
+Version:        1.2.0
+Release:        1%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
 URL:            https://guix.gnu.org
 Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+
+# Fix invalid JSON strings in tests.
+Patch0:         guix-1.2.0-json-cve-swh.patch
+Patch1:         guix-1.2.0-json-crate.patch
+
+# Make it compatible with Guile-JSON 4.5.
+Patch2:         guix-1.2.0-guile-json-4.5.patch
+
+# Revert changes using features unavailable in Guile 2.2.
+# https://issues.guix.gnu.org/44745
+# https://issues.guix.gnu.org/44751
+Patch3:         guix-1.2.0-revert-verify-swh-certificate.patch
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
@@ -26,49 +38,51 @@ Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 %global fish_completion_dir %{_datadir}/fish/vendor_completions.d
 %endif
 
-# We require Guile 2.2.4 here because both Guile 2.2.2 and 2.2.3 are known to
-# miscompile guix/build/debug-link.scm, causing the test tests/debug-link.scm
-# to fail because the function debuglink-crc32 returns a wrong result.
-#
-# To test the bug yourself, run the command:
-#   guile2.2 -c '(use-modules (guix build debug-link))(display (debuglink-crc32 (open-input-string "a")))'
-# It should print 3904355907, but Guile 2.2.2 and 2.2.3 return 4294967295.
-#
-# Note that it is not a runtime issue but a compiler issue, so simply upgrading
-# Guile to 2.2.4 is not going to fix the test. You have to delete the broken
-# bytecode and recompile them from sources to pass the test.
+# We require Guile 2.2.7 here because Guile 2.2.6 is known to crash with
+#   mmap(PROT_NONE) failed
+# during the build.
 
 BuildRequires:  gcc-c++
 BuildRequires:  autoconf, automake, gettext-devel, po4a, help2man, texinfo
-BuildRequires:  pkgconfig(guile-2.2) >= 2.2.4
-BuildRequires:  pkgconfig(sqlite3)
-BuildRequires:  zlib-devel, lzlib-devel, bzip2-devel, libgcrypt-devel
+BuildRequires:  bzip2-devel, libgcrypt-devel, pkgconfig(sqlite3)
 BuildRequires:  gettext, help2man, graphviz
 BuildRequires:  bash-completion, fish
-BuildRequires:  guile-git, guile-gcrypt, guile-json >= 3, guile-sqlite3
-BuildRequires:  guile-ssh
+BuildRequires:  selinux-policy, systemd
+
+BuildRequires:  pkgconfig(guile-2.2) >= 2.2.7
+BuildRequires:  guile-gcrypt >= 0.1.0
+BuildRequires:  guile-sqlite3 >= 0.1.0
+BuildRequires:  guile-zlib
+BuildRequires:  guile-lzlib
+BuildRequires:  guile-avahi
+BuildRequires:  guile-git >= 0.3.0
+BuildRequires:  guile-json >= 4.3.0
+BuildRequires:  guile-ssh >= 0.13.0
+BuildRequires:  guile-zstd
+BuildRequires:  guile-semver
 %if 0%{?fedora} >= 31
 BuildRequires:  gnutls-guile
 %else
 BuildRequires:  gnutls-guile22
 %endif
-BuildRequires:  selinux-policy
-BuildRequires:  systemd
 
-%{?systemd_requires}
-
-Requires:       guile22 >= 2.2.4
-Requires:       guile-git, guile-gcrypt, guile-json >= 3, guile-sqlite3
+Requires:       guile22 >= 2.2.7
+Requires:       guile-gcrypt >= 0.1.0
+Requires:       guile-sqlite3 >= 0.1.0
+Requires:       guile-zlib
+Requires:       guile-lzlib
+Requires:       guile-avahi
+Requires:       guile-git >= 0.3.0
+Requires:       guile-json >= 4.3.0
 %if 0%{?fedora} >= 31
 Requires:       gnutls-guile
 %else
 Requires:       gnutls-guile22
 %endif
+
 Requires:       gzip, bzip2, xz
 Requires:       selinux-policy
 Requires:       %{_bindir}/dot
-Requires:       %{_libdir}/libz.so
-Requires:       %{_libdir}/liblz.so
 Requires:       %{_libdir}/libgcrypt.so
 Requires(post): /usr/sbin/useradd
 Requires(post): /usr/sbin/usermod
@@ -79,7 +93,11 @@ Requires(post): libselinux-utils, policycoreutils
 Requires(post): info
 Requires(preun): info
 
-Recommends:     guile-ssh
+%{?systemd_requires}
+
+Recommends:     guile-ssh >= 0.13.0
+Recommends:     guile-zstd
+Recommends:     guile-semver
 Suggests:       emacs-guix
 
 %description
@@ -233,6 +251,8 @@ fi
 %doc AUTHORS ChangeLog CODE-OF-CONDUCT NEWS README ROADMAP THANKS TODO
 %{_bindir}/guix
 %{_bindir}/guix-daemon
+%dir %{_libexecdir}/guix
+%{_libexecdir}/guix/guile
 %{guile_source_dir}/gnu.scm
 %{guile_ccache_dir}/gnu.go
 %dir %{guile_source_dir}/gnu
@@ -251,6 +271,8 @@ fi
 %{guile_ccache_dir}/gnu/build/*.go
 %{guile_source_dir}/gnu/ci.scm
 %{guile_ccache_dir}/gnu/ci.go
+%{guile_source_dir}/gnu/image.scm
+%{guile_ccache_dir}/gnu/image.go
 %{guile_source_dir}/gnu/installer.scm
 %dir %{guile_source_dir}/gnu/installer
 %{guile_source_dir}/gnu/installer/*.scm
@@ -272,7 +294,6 @@ fi
 %{guile_source_dir}/gnu/packages/*.scm
 %{guile_ccache_dir}/gnu/packages/*.go
 %{guile_source_dir}/gnu/packages/ld-wrapper.in
-%{guile_source_dir}/gnu/packages/ld-wrapper-next.in
 %dir %{guile_source_dir}/gnu/packages/aux-files
 %dir %{guile_source_dir}/gnu/packages/aux-files/chromium
 %{guile_source_dir}/gnu/packages/aux-files/chromium/master-preferences.json
@@ -283,9 +304,12 @@ fi
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-arm64.conf
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-i686.conf
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-x86_64.conf
+%{guile_source_dir}/gnu/packages/aux-files/pack-audit.c
 %{guile_source_dir}/gnu/packages/aux-files/run-in-namespace.c
 %dir %{guile_source_dir}/gnu/packages/patches
+%{guile_source_dir}/gnu/packages/patches/*.diff
 %{guile_source_dir}/gnu/packages/patches/*.patch
+%{guile_source_dir}/gnu/packages/patches/java-antlr4-fix-code-too-large.java
 %{guile_source_dir}/gnu/services.scm
 %{guile_ccache_dir}/gnu/services.go
 %dir %{guile_source_dir}/gnu/services
@@ -301,11 +325,18 @@ fi
 %dir %{guile_source_dir}/gnu/system/examples
 %{guile_source_dir}/gnu/system/examples/asus-c201.tmpl
 %{guile_source_dir}/gnu/system/examples/bare-bones.tmpl
+%{guile_source_dir}/gnu/system/examples/bare-hurd.tmpl
 %{guile_source_dir}/gnu/system/examples/beaglebone-black.tmpl
 %{guile_source_dir}/gnu/system/examples/desktop.tmpl
 %{guile_source_dir}/gnu/system/examples/docker-image.tmpl
 %{guile_source_dir}/gnu/system/examples/lightweight-desktop.tmpl
 %{guile_source_dir}/gnu/system/examples/vm-image.tmpl
+%dir %{guile_source_dir}/gnu/system/images
+%dir %{guile_ccache_dir}/gnu/system/images
+%{guile_source_dir}/gnu/system/images/hurd.scm
+%{guile_ccache_dir}/gnu/system/images/hurd.go
+%{guile_source_dir}/gnu/system/images/pine64.scm
+%{guile_ccache_dir}/gnu/system/images/pine64.go
 %{guile_source_dir}/gnu/tests.scm
 %{guile_ccache_dir}/gnu/tests.go
 %dir %{guile_source_dir}/gnu/tests
@@ -322,6 +353,10 @@ fi
 %dir %{guile_ccache_dir}/guix/build
 %{guile_source_dir}/guix/build/*.scm
 %{guile_ccache_dir}/guix/build/*.go
+%dir %{guile_source_dir}/guix/build/maven
+%dir %{guile_ccache_dir}/guix/build/maven
+%{guile_source_dir}/guix/build/maven/*.scm
+%{guile_ccache_dir}/guix/build/maven/*.go
 %dir %{guile_source_dir}/guix/build-system
 %dir %{guile_ccache_dir}/guix/build-system
 %{guile_source_dir}/guix/build-system/*.scm
@@ -338,6 +373,10 @@ fi
 %dir %{guile_ccache_dir}/guix/scripts/container
 %{guile_source_dir}/guix/scripts/container/*.scm
 %{guile_ccache_dir}/guix/scripts/container/*.go
+%dir %{guile_source_dir}/guix/scripts/git
+%dir %{guile_ccache_dir}/guix/scripts/git
+%{guile_source_dir}/guix/scripts/git/*.scm
+%{guile_ccache_dir}/guix/scripts/git/*.go
 %dir %{guile_source_dir}/guix/scripts/import
 %dir %{guile_ccache_dir}/guix/scripts/import
 %{guile_source_dir}/guix/scripts/import/*.scm
@@ -354,9 +393,9 @@ fi
 %dir %{guile_ccache_dir}/guix/tests
 %{guile_ccache_dir}/guix/tests/*.go
 %dir %{_datadir}/guix
+%{_datadir}/guix/berlin.guix.gnu.org.pub
 %{_datadir}/guix/ci.guix.gnu.org.pub
 %{_datadir}/guix/ci.guix.info.pub
-%{_datadir}/guix/berlin.guixsd.org.pub
 %{_datadir}/selinux/packages/%{selinuxmodule}.cil
 %{_infodir}/%{name}.info*
 %{_infodir}/%{name}.de.info*
@@ -372,7 +411,7 @@ fi
 %{_infodir}/images/coreutils-bag-graph.png.gz
 %{_infodir}/images/coreutils-graph.png.gz
 %{_infodir}/images/coreutils-size-map.png.gz
-%{_infodir}/images/gcc-mesboot-bag-graph.png.gz
+%{_infodir}/images/gcc-core-mesboot0-graph.png.gz
 %{_infodir}/images/installer-network.png.gz
 %{_infodir}/images/installer-partitions.png.gz
 %{_infodir}/images/installer-resume.png.gz
@@ -383,6 +422,7 @@ fi
 %{_mandir}/man1/guix-build.1*
 %{_mandir}/man1/guix-challenge.1*
 %{_mandir}/man1/guix-daemon.1*
+%{_mandir}/man1/guix-deploy.1*
 %{_mandir}/man1/guix-download.1*
 %{_mandir}/man1/guix-edit.1*
 %{_mandir}/man1/guix-environment.1*
@@ -396,12 +436,15 @@ fi
 %{_mandir}/man1/guix-refresh.1*
 %{_mandir}/man1/guix-size.1*
 %{_mandir}/man1/guix-system.1*
+%{_mandir}/man1/guix-time-machine.1*
+%{_mandir}/man1/guix-weather.1*
 %{_mandir}/man1/guix.1*
 %{bash_completion_dir}/guix
 %{bash_completion_dir}/guix-daemon
 %{fish_completion_dir}/guix.fish
 %{_datadir}/zsh/site-functions/_guix
 %dir %{_sysconfdir}/guix
+%{_unitdir}/gnu-store.mount
 %{_unitdir}/guix-daemon.service
 %{_unitdir}/guix-daemon-latest.service
 %{_unitdir}/guix-publish.service
@@ -410,6 +453,9 @@ fi
 
 
 %changelog
+* Wed Feb 17 2021 Ting-Wei Lan <lantw44@gmail.com> - 1.2.0-1
+- Update to 1.2.0
+
 * Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 1.1.0-2
 - Rebuilt for Fedora 33 and 34
 - Update project website URL
