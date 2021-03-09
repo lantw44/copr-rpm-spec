@@ -51,7 +51,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    88.0.4324.182
+Version:    89.0.4389.72
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -102,20 +102,18 @@ Patch2:     chromium-gn-no-static-libstdc++.patch
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
 Patch20:    chromium-python2.patch
 
-# Pull patches from Fedora
-# https://src.fedoraproject.org/rpms/chromium/c/9071ee2d2f996b84
-Patch30:    chromium-webrtc-cstring.patch
-
 # Pull patches from stha09
-# https://github.com/stha09/chromium-patches/commit/23bfdb7b34fb19bf
-# https://github.com/stha09/chromium-patches/commit/3495379e353f96ef
-Patch40:    chromium-openscreen-stdint.patch
-Patch41:    chromium-ui-memory-vector.patch
+# https://github.com/stha09/chromium-patches/commit/105a1c550dad457f
+# https://github.com/stha09/chromium-patches/commit/78bc1113b1c27b72
+# https://github.com/stha09/chromium-patches/commit/a8800500faaddf82
+# https://github.com/stha09/chromium-patches/commit/34989060a7ff4b1e
+Patch30:    chromium-quiche-dcheck.patch
+Patch31:    chromium-quiche-private.patch
+Patch32:    chromium-skia-CropRect.patch
 
 # Pull upstream patches
-Patch50:    chromium-quiche-gcc9.patch
-Patch51:    chromium-gcc10-r831923.patch
-Patch52:    chromium-gcc10-r838269.patch
+Patch40:    chromium-gcc10-r847754.patch
+Patch41:    chromium-gcc10-r852287.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -137,7 +135,7 @@ BuildRequires: minizip-devel
 BuildRequires: mesa-libGL-devel, mesa-libEGL-devel, mesa-libgbm-devel
 BuildRequires: pkgconfig(gtk+-2.0), pkgconfig(gtk+-3.0)
 BuildRequires: pkgconfig(libffi), pkgconfig(nss), pkgconfig(libexif)
-BuildRequires: pkgconfig(xtst), pkgconfig(xscrnsaver)
+BuildRequires: pkgconfig(xtst), pkgconfig(xscrnsaver), pkgconfig(xshmfence)
 BuildRequires: pkgconfig(dbus-1), pkgconfig(libudev)
 BuildRequires: pkgconfig(libva), pkgconfig(gnome-keyring-1)
 BuildRequires: python2-setuptools
@@ -183,7 +181,7 @@ BuildRequires: zlib-devel
 BuildRequires: pciutils-devel
 BuildRequires: speech-dispatcher-devel
 BuildRequires: pulseaudio-libs-devel
-BuildRequires: pkgconfig(libpipewire-0.2)
+BuildRequires: pkgconfig(libpipewire-0.3)
 # install desktop files
 BuildRequires: desktop-file-utils
 # install AppData files
@@ -248,7 +246,6 @@ find -type f -exec \
     net/third_party/quic \
     net/third_party/uri_template \
     third_party/abseil-cpp \
-    third_party/adobe \
     third_party/angle \
     third_party/angle/src/common/third_party/base \
     third_party/angle/src/common/third_party/smhasher \
@@ -257,13 +254,6 @@ find -type f -exec \
     third_party/angle/src/third_party/libXNVCtrl \
     third_party/angle/src/third_party/trace_event \
     third_party/angle/src/third_party/volk \
-    third_party/angle/third_party/glslang \
-    third_party/angle/third_party/spirv-headers \
-    third_party/angle/third_party/spirv-tools \
-    third_party/angle/third_party/vulkan-headers \
-    third_party/angle/third_party/vulkan-loader \
-    third_party/angle/third_party/vulkan-tools \
-    third_party/angle/third_party/vulkan-validation-layers \
     third_party/apple_apsl \
     third_party/axe-core \
     third_party/boringssl \
@@ -324,7 +314,7 @@ find -type f -exec \
     third_party/freetype \
     third_party/fusejs \
     third_party/libgifcodec \
-    third_party/glslang \
+    third_party/liburlpattern \
     third_party/google_input_tools \
     third_party/google_input_tools/third_party/closure_library \
     third_party/google_input_tools/third_party/closure_library/third_party/closure \
@@ -355,6 +345,7 @@ find -type f -exec \
     third_party/libsrtp \
     third_party/libsync \
     third_party/libudev \
+    third_party/libva_protected_content \
 %if !%{with system_libvpx}
     third_party/libvpx \
     third_party/libvpx/source/libvpx/third_party/x86inc \
@@ -375,6 +366,7 @@ find -type f -exec \
     third_party/mako \
     third_party/mesa \
     third_party/metrics_proto \
+    third_party/minigbm \
     third_party/modp_b64 \
     third_party/nasm \
     third_party/nearby \
@@ -398,6 +390,7 @@ find -type f -exec \
     third_party/pdfium/third_party/libtiff \
     third_party/pdfium/third_party/skia_shared \
     third_party/perfetto \
+    third_party/perfetto/protos/third_party/chromium \
     third_party/pffft \
 %if !%{with system_ply}
     third_party/ply \
@@ -416,7 +409,6 @@ find -type f -exec \
     third_party/s2cellid \
     third_party/schema_org \
     third_party/securemessage \
-    third_party/shaka-player \
     third_party/shell-encryption \
     third_party/simplejson \
     third_party/skia \
@@ -426,9 +418,6 @@ find -type f -exec \
     third_party/skia/third_party/vulkan \
     third_party/smhasher \
     third_party/speech-dispatcher \
-    third_party/spirv-cross/spirv-cross \
-    third_party/spirv-headers \
-    third_party/SPIRV-Tools \
     third_party/sqlite \
     third_party/swiftshader \
     third_party/swiftshader/third_party/astc-encoder \
@@ -561,6 +550,7 @@ gn_args=(
     ozone_platform_x11=true
     rtc_use_pipewire=true
     rtc_link_pipewire=true
+    'rtc_pipewire_version="0.3"'
     enable_hangout_services_extension=false
     enable_nacl=false
     fatal_linker_warnings=false
@@ -702,7 +692,6 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/libGLESv2.so
 %{chromiumdir}/libVkICD_mock_icd.so
 %{chromiumdir}/libvk_swiftshader.so
-%{chromiumdir}/libvulkan.so
 %{chromiumdir}/v8_context_snapshot.bin
 %{chromiumdir}/vk_swiftshader_icd.json
 %{chromiumdir}/*.pak
@@ -718,6 +707,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Mar 09 2021 - Ting-Wei Lan <lantw44@gmail.com> - 89.0.4389.72-100
+- Update to 89.0.4389.72
+- Switch to PipeWire 0.3
+
 * Thu Feb 18 2021 - Ting-Wei Lan <lantw44@gmail.com> - 88.0.4324.182-100
 - Update to 88.0.4324.182
 
