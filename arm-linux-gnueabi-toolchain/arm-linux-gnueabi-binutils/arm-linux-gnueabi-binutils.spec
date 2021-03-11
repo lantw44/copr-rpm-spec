@@ -7,7 +7,7 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.35.1
+Version:    2.36.1
 Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
@@ -44,6 +44,7 @@ Requires:   %{cross_triplet}-filesystem
     --disable-shared \
     --disable-werror \
     --with-sysroot=%{cross_sysroot} \
+    --with-system-zlib \
 
 %make_build
 
@@ -52,6 +53,8 @@ Requires:   %{cross_triplet}-filesystem
 %make_install
 rm -rf %{buildroot}%{_mandir}
 rm -rf %{buildroot}%{_infodir}
+rm -f %{buildroot}%{_libdir}/bfd-plugins/*.a
+rmdir %{buildroot}%{_libdir}/bfd-plugins
 
 
 %files
@@ -90,6 +93,9 @@ rm -rf %{buildroot}%{_infodir}
 
 
 %changelog
+* Wed Mar 10 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.36.1-1
+- Update to 2.36.1
+
 * Tue Oct 20 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.35.1-1
 - Update to 2.35.1
 - Enable LTO
