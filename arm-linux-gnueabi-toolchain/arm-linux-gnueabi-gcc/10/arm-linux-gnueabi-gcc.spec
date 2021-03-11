@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    10.2.0
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -204,6 +204,7 @@ rm -rf %{buildroot}%{_infodir}
 rm -rf %{buildroot}%{_datadir}/gcc-%{major_version}/python
 rm -f %{buildroot}%{_bindir}/%{cross_triplet}-gcc-%{major_version}
 rm -f %{buildroot}%{_libdir}/libcc1.so*
+rm -f %{buildroot}%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/pthread.h
 rm -rf %{buildroot}%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/bits
 rm -rf %{buildroot}%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/install-tools
 rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools/fixincl
@@ -383,6 +384,9 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 
 
 %changelog
+* Wed Mar 10 2021 Ting-Wei Lan <lantw44@gmail.com> - 10.2.0-3
+- Remove pthread.h from include-fixed directory
+
 * Tue Oct 20 2020 Ting-Wei Lan <lantw44@gmail.com> - 10.2.0-2
 - Use versioned build directory
 - Add LTO to the list of enabled languages

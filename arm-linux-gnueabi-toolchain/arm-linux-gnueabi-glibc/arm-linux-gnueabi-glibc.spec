@@ -55,8 +55,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.32
-Release:    2%{?dist}
+Version:    2.33
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -421,7 +421,6 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/include/sys/vfs.h
 %{cross_sysroot}/usr/include/sys/vlimit.h
 %{cross_sysroot}/usr/include/sys/vt.h
-%{cross_sysroot}/usr/include/sys/vtimes.h
 %{cross_sysroot}/usr/include/sys/wait.h
 %{cross_sysroot}/usr/include/sys/xattr.h
 %{cross_sysroot}/usr/include/syscall.h
@@ -523,6 +522,7 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/bin/sprof
 %{cross_sysroot}/usr/bin/tzselect
 %{cross_sysroot}/usr/bin/xtrace
+%{cross_sysroot}/usr/bin/zdump
 %{cross_sysroot}/usr/include/gnu/lib-names%{gnu_hdr_suffix}.h
 %{cross_sysroot}/usr/include/gnu/stubs%{gnu_hdr_suffix}.h
 %{cross_sysroot}/usr/%{lib_dir_name}/?crt1.o
@@ -584,7 +584,6 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %endif
 %{cross_sysroot}/usr/sbin/iconvconfig
 %{cross_sysroot}/usr/sbin/nscd
-%{cross_sysroot}/usr/sbin/zdump
 %{cross_sysroot}/usr/sbin/zic
 %dir %{cross_sysroot}/usr/share/i18n
 %{cross_sysroot}/usr/share/i18n/charmaps
@@ -594,6 +593,9 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Wed Mar 10 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.33-1
+- Update to 2.33
+
 * Tue Oct 20 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.32-2
 - Use versioned build directory
 - Remove LTO flags because it causes section type conflict error
