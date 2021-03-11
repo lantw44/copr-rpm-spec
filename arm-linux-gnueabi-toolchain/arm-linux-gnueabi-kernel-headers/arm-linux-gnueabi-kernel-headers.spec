@@ -3,7 +3,7 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    5.9.1
+Version:    5.11.5
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -58,6 +58,7 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/linux/can/*.h
 %dir %{cross_sysroot}/usr/include/linux/cifs
 %{cross_sysroot}/usr/include/linux/cifs/cifs_mount.h
+%{cross_sysroot}/usr/include/linux/cifs/cifs_netlink.h
 %dir %{cross_sysroot}/usr/include/linux/dvb
 %{cross_sysroot}/usr/include/linux/dvb/*.h
 %dir %{cross_sysroot}/usr/include/linux/genwqe
@@ -100,8 +101,6 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/linux/tc_ematch/*.h
 %dir %{cross_sysroot}/usr/include/linux/usb
 %{cross_sysroot}/usr/include/linux/usb/*.h
-%dir %{cross_sysroot}/usr/include/linux/wimax
-%{cross_sysroot}/usr/include/linux/wimax/*.h
 %dir %{cross_sysroot}/usr/include/misc
 %{cross_sysroot}/usr/include/misc/*.h
 %dir %{cross_sysroot}/usr/include/misc/uacce
@@ -129,6 +128,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Wed Mar 10 2021 Ting-Wei Lan <lantw44@gmail.com> - 5.11.5-1
+- Update to 5.11.5
+
 * Tue Oct 20 2020 Ting-Wei Lan <lantw44@gmail.com> - 5.9.1-1
 - Update to 5.9.1
 
