@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        3.5.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Minuscule client libraries for the APIs of various Git forges
 
 License:        GPLv3+
@@ -11,7 +11,7 @@ URL:            https://magit.vc
 Source0:        https://github.com/magit/ghub/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
-BuildRequires:  emacs, texinfo
+BuildRequires:  emacs, make, texinfo
 BuildRequires:  emacs-treepy
 Requires:       emacs(bin) >= %{_emacs_version}
 Requires:       emacs-treepy
@@ -83,6 +83,9 @@ fi
 
 
 %changelog
+* Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 3.5.1-2
+- Rebuilt for Fedora 34 and 35
+
 * Mon Feb 15 2021 Ting-Wei Lan <lantw44@gmail.com> - 3.5.1-1
 - Update to 3.5.1
 

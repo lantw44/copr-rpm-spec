@@ -2,7 +2,7 @@
 
 Name:           guile-zstd
 Version:        0.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        GNU Guile bindings to the zstd compression library
 
 License:        GPLv3+
@@ -12,7 +12,8 @@ Source0:        https://notabug.org/guile-zstd/guile-zstd/archive/v%{version}.ta
 %global guile_source_dir %{_datadir}/guile/site/2.2
 %global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
-BuildRequires:  autoconf, automake, pkgconfig(guile-2.2), pkgconfig(libzstd)
+BuildRequires:  autoconf, automake, make
+BuildRequires:  pkgconfig(guile-2.2), pkgconfig(libzstd)
 Requires:       guile22, libzstd-devel
 
 %description
@@ -49,5 +50,8 @@ autoreconf -fiv
 
 
 %changelog
+* Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-2
+- Rebuilt for Fedora 34 and 35
+
 * Mon Feb 15 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-1
 - Initial packaging

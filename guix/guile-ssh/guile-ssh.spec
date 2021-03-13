@@ -1,6 +1,6 @@
 Name:           guile-ssh
 Version:        0.13.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A library that provides access to the SSH protocol for GNU Guile
 
 License:        GPLv3+
@@ -81,6 +81,9 @@ fi
 
 
 %changelog
+* Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.13.1-2
+- Rebuilt for Fedora 34 and 35
+
 * Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.13.1-1
 - Update to 0.13.1
 

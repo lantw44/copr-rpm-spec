@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.5.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
@@ -20,7 +20,7 @@ Patch2:         emacs-guix-0.5.2-geiser-0.12.patch
 %global guile_source_dir %{_datadir}/guile/site/2.2
 %global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
-BuildRequires:  emacs, texinfo
+BuildRequires:  emacs, make, texinfo
 BuildRequires:  guix >= 0.13.0
 BuildRequires:  autoconf, automake
 BuildRequires:  pkgconfig(guile-2.2), guile-gcrypt
@@ -107,6 +107,9 @@ fi
 
 
 %changelog
+* Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-5
+- Rebuilt for Fedora 34 and 35
+
 * Mon Feb 15 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-4
 - Make it compatible with Geiser 0.12
 

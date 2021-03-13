@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        2.13.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Define prefix-infix-suffix command combos for Emacs
 
 License:        GPLv3+
@@ -11,7 +11,7 @@ URL:            https://magit.vc
 Source0:        https://github.com/magit/magit-popup/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
-BuildRequires:  emacs, texinfo
+BuildRequires:  emacs, make, texinfo
 BuildRequires:  emacs-dash
 Requires:       emacs(bin) >= %{_emacs_version}
 Requires:       emacs-dash
@@ -66,6 +66,9 @@ fi
 
 
 %changelog
+* Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.13.3-2
+- Rebuilt for Fedora 34 and 35
+
 * Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.13.3-1
 - Update to 2.13.3
 

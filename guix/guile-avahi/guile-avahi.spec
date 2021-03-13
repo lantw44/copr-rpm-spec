@@ -1,6 +1,6 @@
 Name:           guile-avahi
 Version:        0.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Avahi bindings for GNU Guile
 
 License:        LGPLv3+
@@ -71,5 +71,8 @@ fi
 
 
 %changelog
+* Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.4-2
+- Rebuilt for Fedora 34 and 35
+
 * Mon Feb 15 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.4-1
 - Initial packaging

@@ -2,7 +2,7 @@
 
 Name:           guile-sqlite3
 Version:        0.1.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Guile bindings for the SQLite3 database engine
 
 License:        LGPLv3+
@@ -12,7 +12,8 @@ Source0:        https://notabug.org/guile-sqlite3/guile-sqlite3/archive/v%{versi
 %global guile_source_dir %{_datadir}/guile/site/2.2
 %global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
-BuildRequires:  autoconf, automake, pkgconfig(guile-2.2), pkgconfig(sqlite3)
+BuildRequires:  autoconf, automake, make
+BuildRequires:  pkgconfig(guile-2.2), pkgconfig(sqlite3)
 Requires:       guile22, sqlite-devel
 
 %description
@@ -45,6 +46,9 @@ autoreconf -fiv
 
 
 %changelog
+* Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.1.3-2
+- Rebuilt for Fedora 34 and 35
+
 * Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 0.1.3-1
 - Update to 0.1.3
 

@@ -13,7 +13,7 @@
 
 Name:           emacs-%{pkg}
 Version:        2.13.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Emacs interface to the most common Git operations
 
 License:        GPLv3+
@@ -23,7 +23,7 @@ URL:            https://magit.vc
 Source0:        https://github.com/magit/magit/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
-BuildRequires:  emacs, git-core, texinfo
+BuildRequires:  emacs, git-core, make, texinfo
 BuildRequires:  emacs-dash, emacs-ghub, emacs-magit-popup, emacs-with-editor
 Requires:       emacs(bin) >= %{emacs_version}
 Requires:       emacs-dash, emacs-ghub, emacs-magit-popup, emacs-with-editor
@@ -80,6 +80,9 @@ fi
 
 
 %changelog
+* Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.13.1-6
+- Rebuilt for Fedora 34 and 35
+
 * Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.13.1-5
 - Rebuilt for Fedora 33 and 34
 

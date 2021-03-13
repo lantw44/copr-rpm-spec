@@ -2,7 +2,7 @@
 
 Name:           guile-json
 Version:        4.5.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        JSON module for Guile
 
 License:        GPLv3+
@@ -12,6 +12,7 @@ Source0:        https://download.savannah.gnu.org/releases/%{name}/%{name}-%{ver
 %global guile_source_dir %{_datadir}/guile/site/2.2
 %global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
+BuildRequires:  make
 BuildRequires:  pkgconfig(guile-2.2)
 Requires:       guile22
 
@@ -59,6 +60,9 @@ features:
 
 
 %changelog
+* Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 4.5.2-2
+- Rebuilt for Fedora 34 and 35
+
 * Mon Feb 15 2021 Ting-Wei Lan <lantw44@gmail.com> - 4.5.2-1
 - Update to 4.5.2
 - Run tests

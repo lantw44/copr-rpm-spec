@@ -2,7 +2,7 @@
 
 Name:           guile-semver
 Version:        0.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Guile library for Semantic Versioning
 
 License:        GPLv3+
@@ -12,6 +12,7 @@ Source0:        https://files.ngyro.com/%{name}/%{name}-%{version}.tar.gz
 %global guile_source_dir %{_datadir}/guile/site/2.2
 %global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
+BuildRequires:  make
 BuildRequires:  pkgconfig(guile-2.2)
 Requires:       guile22
 
@@ -56,5 +57,8 @@ ranges. It supports:
 
 
 %changelog
+* Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-2
+- Rebuilt for Fedora 34 and 35
+
 * Mon Feb 15 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-1
 - Initial packaging

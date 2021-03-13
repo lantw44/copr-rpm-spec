@@ -6,7 +6,7 @@
 
 Name:           guix
 Version:        1.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -453,6 +453,9 @@ fi
 
 
 %changelog
+* Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 1.2.0-2
+- Rebuilt for Fedora 34 and 35
+
 * Wed Feb 17 2021 Ting-Wei Lan <lantw44@gmail.com> - 1.2.0-1
 - Update to 1.2.0
 
