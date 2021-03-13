@@ -29,6 +29,12 @@
 %bcond_with system_ply
 %endif
 
+%if 0%{?fedora} < 34
+%bcond_without system_markupsafe
+%else
+%bcond_with system_markupsafe
+%endif
+
 # Requires re2 2016.07.21 for re2::LazyRE2
 %bcond_with system_re2
 
@@ -51,7 +57,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    89.0.4389.82
+Version:    89.0.4389.90
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -147,7 +153,9 @@ BuildRequires: python2-beautifulsoup4
 %if %{with system_html5lib}
 BuildRequires: python2-html5lib
 %endif
+%if %{with system_markupsafe}
 BuildRequires: python2-markupsafe
+%endif
 %if %{with system_ply}
 BuildRequires: python2-ply
 %endif
@@ -364,6 +372,9 @@ find -type f -exec \
     third_party/lss \
     third_party/lzma_sdk \
     third_party/mako \
+%if !%{with system_markupsafe}
+    third_party/markupsafe \
+%endif
     third_party/mesa \
     third_party/metrics_proto \
     third_party/minigbm \
@@ -492,8 +503,10 @@ find -type f -exec \
 sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' \
     services/device/public/cpp/usb/BUILD.gn
 
+%if %{with system_markupsafe}
 rmdir third_party/markupsafe
 ln -s %{python2_sitearch}/markupsafe third_party/markupsafe
+%endif
 
 %if %{with system_ply}
 rmdir third_party/ply
@@ -707,6 +720,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Mar 13 2021 - Ting-Wei Lan <lantw44@gmail.com> - 89.0.4389.90-100
+- Update to 89.0.4389.90
+- Bundle markupsafe on Fedora 34 and later due to Python 2 library removal
+
 * Wed Mar 10 2021 - Ting-Wei Lan <lantw44@gmail.com> - 89.0.4389.82-100
 - Update to 89.0.4389.82
 
