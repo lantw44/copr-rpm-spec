@@ -2,8 +2,8 @@
 %global pkgname Dash
 
 Name:           emacs-%{pkg}
-Version:        2.17.0
-Release:        2%{?dist}
+Version:        2.18.1
+Release:        1%{?dist}
 Summary:        Dash is a modern list library for Emacs
 
 License:        GPLv3+
@@ -11,7 +11,7 @@ URL:            https://github.com/magnars/dash.el
 Source0:        https://github.com/magnars/dash.el/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
-BuildRequires:  emacs, texinfo
+BuildRequires:  emacs, make, texinfo
 Requires:       emacs(bin) >= %{_emacs_version}
 
 %description
@@ -24,19 +24,20 @@ Emacs. No cl required.
 
 
 %build
-./create-docs.sh
+%make_build
+makeinfo --no-split dash.texi
 
 
 %check
-./run-tests.sh
+%{__make} %{?_smp_mflags} check
 
 
 %install
 mkdir -p %{buildroot}%{_emacs_sitelispdir}
 install -m 755 -d %{buildroot}%{_emacs_sitelispdir}/dash
-install -m 644 dash.el dash-functional.el \
+install -m 644 dash.el dash.elc dash-functional.el \
     %{buildroot}%{_emacs_sitelispdir}/dash/
-%{_emacs_bytecompile} %{buildroot}%{_emacs_sitelispdir}/dash/dash*.el
+%{_emacs_bytecompile} %{buildroot}%{_emacs_sitelispdir}/dash/dash-functional.el
 mkdir -p %{buildroot}%{_infodir}
 gzip -9 < dash.info > %{buildroot}%{_infodir}/dash.info.gz
 
@@ -64,6 +65,9 @@ fi
 
 
 %changelog
+* Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.18.1-1
+- Update to 2.18.1
+
 * Sun Nov  1 2020 Ting-Wei Lan <lantw44@gmail.com> - 2.17.0-2
 - Rebuilt for Fedora 33 and 34
 
