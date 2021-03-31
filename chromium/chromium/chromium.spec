@@ -57,7 +57,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    89.0.4389.90
+Version:    89.0.4389.114
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -720,6 +720,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Mar 31 2021 - Ting-Wei Lan <lantw44@gmail.com> - 89.0.4389.114-100
+- Update to 89.0.4389.114
+
 * Sat Mar 13 2021 - Ting-Wei Lan <lantw44@gmail.com> - 89.0.4389.90-100
 - Update to 89.0.4389.90
 - Bundle markupsafe on Fedora 34 and later due to Python 2 library removal
