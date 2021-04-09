@@ -29,8 +29,8 @@
 %bcond_without ada
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    10.2.0
-Release:    3%{?dist}
+Version:    10.3.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -384,6 +384,9 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 
 
 %changelog
+* Fri Apr 09 2021 Ting-Wei Lan <lantw44@gmail.com> - 10.3.0-1
+- Update to new stable release 10.3.0
+
 * Wed Mar 10 2021 Ting-Wei Lan <lantw44@gmail.com> - 10.2.0-3
 - Remove pthread.h from include-fixed directory
 
