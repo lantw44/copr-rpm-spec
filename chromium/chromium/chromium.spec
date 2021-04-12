@@ -58,7 +58,7 @@
 
 Name:       chromium
 Version:    89.0.4389.114
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -120,6 +120,8 @@ Patch32:    chromium-skia-CropRect.patch
 # Pull upstream patches
 Patch40:    chromium-gcc10-r847754.patch
 Patch41:    chromium-gcc10-r852287.patch
+Patch42:    chromium-libva-r850949.patch
+Patch43:    chromium-libva-r854937.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -159,7 +161,6 @@ BuildRequires: python2-markupsafe
 %if %{with system_ply}
 BuildRequires: python2-ply
 %endif
-BuildRequires: python2-six
 # replace_gn_files.py --system-libraries
 BuildRequires: flac-devel
 BuildRequires: freetype-devel
@@ -280,6 +281,7 @@ find -type f -exec \
     third_party/catapult/third_party/html5lib-python \
 %endif
     third_party/catapult/third_party/polymer \
+    third_party/catapult/third_party/six \
     third_party/catapult/tracing/third_party/d3 \
     third_party/catapult/tracing/third_party/gl-matrix \
     third_party/catapult/tracing/third_party/jpeg-js \
@@ -720,6 +722,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Apr 10 2021 - Ting-Wei Lan <lantw44@gmail.com> - 89.0.4389.114-101
+- Drop dependency on python2-six to fix Fedora 34 build
+- Pull upstream patches for libva to fix Fedora 34 build
+
 * Wed Mar 31 2021 - Ting-Wei Lan <lantw44@gmail.com> - 89.0.4389.114-100
 - Update to 89.0.4389.114
 
