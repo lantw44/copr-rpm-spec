@@ -8,7 +8,7 @@
 %global geoclue_version 2.3.1
 
 Name:           gnome-settings-daemon
-Version:        3.38.1
+Version:        3.38.2
 Release:        1%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
@@ -197,6 +197,9 @@ mkdir $RPM_BUILD_ROOT%{_libdir}/gnome-settings-daemon-3.0/gtk-modules
 %{_libdir}/pkgconfig/gnome-settings-daemon.pc
 
 %changelog
+* Wed Apr 14 2021 Kalev Lember <klember@redhat.com> - 3.38.2-1
+- Update to 3.38.2
+
 * Fri Oct  9 2020 Kalev Lember <klember@redhat.com> - 3.38.1-1
 - Update to 3.38.1
 
