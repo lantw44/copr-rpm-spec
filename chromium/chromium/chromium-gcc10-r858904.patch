@@ -1,0 +1,30 @@
+From a5f9b4782da8690fee1814e7f5c70f843b6213c4 Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Tue, 2 Mar 2021 07:00:35 +0000
+Subject: [PATCH] IWYU: add missing cstdint for uint32_t
+
+Bug: None
+Change-Id: I815e5a9657b76832c15eb18c22d07fb53e095ef5
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/2725106
+Reviewed-by: Takashi Toyoshima <toyoshim@chromium.org>
+Commit-Queue: Stephan Hartmann <stha09@googlemail.com>
+Cr-Commit-Position: refs/heads/master@{#858904}
+---
+ .../translate/core/language_detection/quantization_utils.h       | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/components/translate/core/language_detection/quantization_utils.h b/components/translate/core/language_detection/quantization_utils.h
+index eb8f6d1e927d..699a48897564 100644
+--- a/components/translate/core/language_detection/quantization_utils.h
++++ b/components/translate/core/language_detection/quantization_utils.h
+@@ -7,6 +7,7 @@
+ 
+ #include <algorithm>
+ #include <cmath>
++#include <cstdint>
+ 
+ namespace translate {
+ 
+-- 
+2.30.2
+

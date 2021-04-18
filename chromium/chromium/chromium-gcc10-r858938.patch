@@ -1,0 +1,30 @@
+From 866dcc6aef6fb44729d73b62a48902b2cca79cb3 Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Tue, 2 Mar 2021 09:24:40 +0000
+Subject: [PATCH] IWYU: include missing cstring for strlen
+
+Bug: None
+Change-Id: Ib38cbcb18f57a3eb8a29cb205fda920412addd63
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/2727717
+Reviewed-by: David Roger <droger@chromium.org>
+Commit-Queue: Stephan Hartmann <stha09@googlemail.com>
+Cr-Commit-Position: refs/heads/master@{#858938}
+---
+ .../translate/core/language_detection/ngram_hash_ops_utils.cc    | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/components/translate/core/language_detection/ngram_hash_ops_utils.cc b/components/translate/core/language_detection/ngram_hash_ops_utils.cc
+index cf9103358f30..dd03a3db4e35 100644
+--- a/components/translate/core/language_detection/ngram_hash_ops_utils.cc
++++ b/components/translate/core/language_detection/ngram_hash_ops_utils.cc
+@@ -4,6 +4,7 @@
+ 
+ #include "components/translate/core/language_detection/ngram_hash_ops_utils.h"
+ 
++#include <cstring>
+ #include <vector>
+ 
+ #include "third_party/utf/src/include/utf.h"
+-- 
+2.30.2
+

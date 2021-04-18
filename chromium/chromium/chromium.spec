@@ -57,7 +57,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    89.0.4389.128
+Version:    90.0.4430.72
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -108,20 +108,17 @@ Patch2:     chromium-gn-no-static-libstdc++.patch
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
 Patch20:    chromium-python2.patch
 
+# Fix build issues for GCC 11
+Patch21:    chromium-ruy-limits.patch
+
 # Pull patches from stha09
-# https://github.com/stha09/chromium-patches/commit/105a1c550dad457f
-# https://github.com/stha09/chromium-patches/commit/78bc1113b1c27b72
-# https://github.com/stha09/chromium-patches/commit/a8800500faaddf82
-# https://github.com/stha09/chromium-patches/commit/34989060a7ff4b1e
-Patch30:    chromium-quiche-dcheck.patch
-Patch31:    chromium-quiche-private.patch
-Patch32:    chromium-skia-CropRect.patch
+# https://github.com/stha09/chromium-patches/commit/1c969e50cc334fbd
+Patch30:    chromium-angle-constexpr.patch
 
 # Pull upstream patches
-Patch40:    chromium-gcc10-r847754.patch
-Patch41:    chromium-gcc10-r852287.patch
-Patch42:    chromium-libva-r850949.patch
-Patch43:    chromium-libva-r854937.patch
+Patch40:    chromium-gcc10-r858574.patch
+Patch41:    chromium-gcc10-r858904.patch
+Patch42:    chromium-gcc10-r858938.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -318,13 +315,19 @@ find -type f -exec \
     third_party/devtools-frontend/src/front_end/third_party/wasmparser \
     third_party/devtools-frontend/src/third_party \
     third_party/dom_distiller_js \
+    third_party/eigen3 \
     third_party/emoji-segmenter \
+    third_party/farmhash \
+    third_party/fdlibm \
+    third_party/fft2d \
     third_party/ffmpeg \
     third_party/flatbuffers \
     third_party/freetype \
     third_party/fusejs \
     third_party/libgifcodec \
     third_party/liburlpattern \
+    third_party/libzip \
+    third_party/gemmlowp \
     third_party/google_input_tools \
     third_party/google_input_tools/third_party/closure_library \
     third_party/google_input_tools/third_party/closure_library/third_party/closure \
@@ -346,9 +349,11 @@ find -type f -exec \
     third_party/leveldatabase \
     third_party/libaddressinput \
     third_party/libaom \
+    third_party/libaom/source/libaom/third_party/fastfeat \
     third_party/libaom/source/libaom/third_party/vector \
     third_party/libaom/source/libaom/third_party/x86inc \
     third_party/libavif \
+    third_party/libgav1 \
     third_party/libjingle \
     third_party/libphonenumber \
     third_party/libsecret \
@@ -383,6 +388,7 @@ find -type f -exec \
     third_party/modp_b64 \
     third_party/nasm \
     third_party/nearby \
+    third_party/neon_2_sse \
     third_party/node \
     third_party/node/node_modules/polymer-bundler/lib/third_party/UglifyJS2 \
     third_party/one_euro_filter \
@@ -439,12 +445,19 @@ find -type f -exec \
     third_party/swiftshader/third_party/marl \
     third_party/swiftshader/third_party/subzero \
     third_party/swiftshader/third_party/SPIRV-Headers/include/spirv/unified1 \
+    third_party/tensorflow-text \
+    third_party/tflite \
+    third_party/tflite/src/third_party/eigen3 \
+    third_party/tflite/src/third_party/fft2d \
+    third_party/tflite-support \
     third_party/tcmalloc \
     third_party/tint \
+    third_party/ruy \
     third_party/ukey2 \
     third_party/unrar \
     third_party/usb_ids \
     third_party/usrsctp \
+    third_party/utf \
     third_party/vulkan \
     third_party/wayland \
     third_party/web-animations-js \
@@ -722,6 +735,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Apr 17 2021 - Ting-Wei Lan <lantw44@gmail.com> - 90.0.4430.72-100
+- Update to 90.0.4430.72
+
 * Wed Apr 14 2021 - Ting-Wei Lan <lantw44@gmail.com> - 89.0.4389.128-100
 - Update to 89.0.4389.128
 

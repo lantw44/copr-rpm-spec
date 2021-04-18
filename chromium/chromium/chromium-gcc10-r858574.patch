@@ -1,0 +1,36 @@
+From ea572f5fb9944cf48bb39292e9c123b170ec25f0 Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Mon, 1 Mar 2021 16:36:07 +0000
+Subject: [PATCH] GCC: remove extra qualification from CrossThreadCopier
+
+Extra qualification used here is invalid C++ and also
+not required, because it is already inside namespace WTF.
+
+Bug: 819294
+Change-Id: I88cae0647357f9777f8908f700669301da9633e9
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/2720283
+Reviewed-by: Chris Harrelson <chrishtr@chromium.org>
+Commit-Queue: Stephan Hartmann <stha09@googlemail.com>
+Cr-Commit-Position: refs/heads/master@{#858574}
+---
+ .../blink/renderer/platform/graphics/resource_id_traits.h     | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/third_party/blink/renderer/platform/graphics/resource_id_traits.h b/third_party/blink/renderer/platform/graphics/resource_id_traits.h
+index b370d7c1801f..565dfee48a20 100644
+--- a/third_party/blink/renderer/platform/graphics/resource_id_traits.h
++++ b/third_party/blink/renderer/platform/graphics/resource_id_traits.h
+@@ -15,8 +15,8 @@
+ namespace WTF {
+ 
+ template <>
+-struct WTF::CrossThreadCopier<viz::ResourceId>
+-    : public WTF::CrossThreadCopierPassThrough<viz::ResourceId> {};
++struct CrossThreadCopier<viz::ResourceId>
++    : public CrossThreadCopierPassThrough<viz::ResourceId> {};
+ 
+ template <>
+ struct HashTraits<viz::ResourceId> : GenericHashTraits<viz::ResourceId> {
+-- 
+2.30.2
+

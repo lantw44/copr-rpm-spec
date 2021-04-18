@@ -1,0 +1,12 @@
+diff --git a/ruy/block_map.cc b/ruy/block_map.cc
+index 8240de2..4b435d3 100644
+--- a/third_party/ruy/src/ruy/block_map.cc
++++ b/third_party/ruy/src/ruy/block_map.cc
+@@ -17,6 +17,7 @@ limitations under the License.
+ 
+ #include <algorithm>
+ #include <cstdint>
++#include <limits>
+ 
+ #ifdef RUY_MAKEBLOCKMAP_DEBUG
+ #include <cstdio>
