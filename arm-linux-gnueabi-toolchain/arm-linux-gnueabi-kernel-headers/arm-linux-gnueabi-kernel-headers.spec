@@ -3,7 +3,7 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    5.11.6
+Version:    5.12.0
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -71,6 +71,8 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/linux/iio/*.h
 %dir %{cross_sysroot}/usr/include/linux/isdn
 %{cross_sysroot}/usr/include/linux/isdn/*.h
+%dir %{cross_sysroot}/usr/include/linux/misc
+%{cross_sysroot}/usr/include/linux/misc/*.h
 %dir %{cross_sysroot}/usr/include/linux/mmc
 %{cross_sysroot}/usr/include/linux/mmc/*.h
 %dir %{cross_sysroot}/usr/include/linux/netfilter
@@ -95,6 +97,8 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/linux/spi/*.h
 %dir %{cross_sysroot}/usr/include/linux/sunrpc
 %{cross_sysroot}/usr/include/linux/sunrpc/*.h
+%dir %{cross_sysroot}/usr/include/linux/surface_aggregator
+%{cross_sysroot}/usr/include/linux/surface_aggregator/*.h
 %dir %{cross_sysroot}/usr/include/linux/tc_act
 %{cross_sysroot}/usr/include/linux/tc_act/*.h
 %dir %{cross_sysroot}/usr/include/linux/tc_ematch
@@ -128,6 +132,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Mon Apr 26 2021 Ting-Wei Lan <lantw44@gmail.com> - 5.12.0-1
+- Update to 5.12
+
 * Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 5.11.6-1
 - Update to 5.11.6
 
