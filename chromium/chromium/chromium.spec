@@ -57,7 +57,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    90.0.4430.212
+Version:    91.0.4472.77
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -111,14 +111,9 @@ Patch20:    chromium-python2.patch
 # Fix build issues for GCC 11
 Patch21:    chromium-ruy-limits.patch
 
-# Pull patches from stha09
-# https://github.com/stha09/chromium-patches/commit/1c969e50cc334fbd
-Patch30:    chromium-angle-constexpr.patch
-
 # Pull upstream patches
-Patch40:    chromium-gcc10-r858574.patch
-Patch41:    chromium-gcc10-r858904.patch
-Patch42:    chromium-gcc10-r858938.patch
+Patch30:    chromium-gcc11-r871265.patch
+Patch31:    chromium-gcc11-r872164.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -131,7 +126,8 @@ BuildRequires: gcc, gcc-c++
 %endif
 BuildRequires: ninja-build, nodejs, java-headless, bison, gperf, hwdata
 BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
-BuildRequires: libcap-devel, cups-devel, alsa-lib-devel, expat-devel
+BuildRequires: alsa-lib-devel, cups-devel, expat-devel
+BuildRequires: libcap-devel, libcurl-devel
 %if 0%{?fedora} >= 30
 BuildRequires: minizip-compat-devel
 %else
@@ -324,6 +320,7 @@ find -type f -exec \
     third_party/flatbuffers \
     third_party/freetype \
     third_party/fusejs \
+    third_party/highway \
     third_party/libgifcodec \
     third_party/liburlpattern \
     third_party/libzip \
@@ -355,6 +352,7 @@ find -type f -exec \
     third_party/libavif \
     third_party/libgav1 \
     third_party/libjingle \
+    third_party/libjxl \
     third_party/libphonenumber \
     third_party/libsecret \
     third_party/libsrtp \
@@ -426,7 +424,6 @@ find -type f -exec \
 %endif
     third_party/rnnoise \
     third_party/s2cellid \
-    third_party/schema_org \
     third_party/securemessage \
     third_party/shell-encryption \
     third_party/simplejson \
@@ -445,6 +442,7 @@ find -type f -exec \
     third_party/swiftshader/third_party/marl \
     third_party/swiftshader/third_party/subzero \
     third_party/swiftshader/third_party/SPIRV-Headers/include/spirv/unified1 \
+    third_party/tcmalloc \
     third_party/tensorflow-text \
     third_party/tflite \
     third_party/tflite/src/third_party/eigen3 \
@@ -462,6 +460,7 @@ find -type f -exec \
     third_party/wayland \
     third_party/web-animations-js \
     third_party/webdriver \
+    third_party/webgpu-cts \
     third_party/webrtc \
     third_party/webrtc/common_audio/third_party/ooura \
     third_party/webrtc/common_audio/third_party/spl_sqrt_floor \
@@ -530,6 +529,8 @@ ln -s %{python2_sitelib}/ply third_party/ply
 
 mkdir -p third_party/node/linux/node-linux-x64/bin
 ln -s %{_bindir}/node third_party/node/linux/node-linux-x64/bin/node
+
+ln -s %{_bindir}/java third_party/jdk/current/bin/java
 
 
 %build
@@ -735,6 +736,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon May 31 2021 - Ting-Wei Lan <lantw44@gmail.com> - 91.0.4472.77-100
+- Update to 91.0.4472.77
+
 * Tue May 11 2021 - Ting-Wei Lan <lantw44@gmail.com> - 90.0.4430.212-100
 - Update to 90.0.4430.212
 
