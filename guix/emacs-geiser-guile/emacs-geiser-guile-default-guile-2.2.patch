@@ -1,7 +1,7 @@
 diff --git a/elisp/geiser-guile.el b/elisp/geiser-guile.el
 index 522c4eb..75e33c7 100644
---- a/elisp/geiser-guile.el
-+++ b/elisp/geiser-guile.el
+--- a/geiser-guile.el
++++ b/geiser-guile.el
 @@ -37,7 +37,7 @@
  (geiser-custom--defcustom geiser-guile-binary
      (cond ((eq system-type 'windows-nt) "guile.exe")

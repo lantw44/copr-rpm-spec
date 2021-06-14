@@ -2,25 +2,20 @@
 %global pkgname Geiser
 
 Name:           emacs-%{pkg}
-Version:        0.12
-Release:        2%{?dist}
-Summary:        Geiser is an Emacs environment to hack and have fun in Scheme
+Version:        0.16
+Release:        1%{?dist}
+Summary:        Geiser is a generic Emacs/Scheme interaction mode
 
 License:        BSD
 URL:            https://nongnu.org/geiser
-Source0:        https://gitlab.com/jaor/geiser/-/archive/%{version}/%{pkg}-%{version}.tar.gz
-
-# Use guile2.2 instead of guile because Guile 2.0 support has been dropped.
-Patch0:         emacs-geiser-default-guile-2.2.patch
+Source0:        https://gitlab.com/emacs-geiser/geiser/-/archive/%{version}/%{pkg}-%{version}.tar.gz
 
 BuildArch:      noarch
-BuildRequires:  autoconf, automake, make, texinfo
+BuildRequires:  texinfo
 BuildRequires:  emacs
 Requires:       emacs(bin) >= %{_emacs_version}
 Requires(post): info
 Requires(preun): info
-
-Suggests:       guile22
 
 Obsoletes:      emacs-%{pkg}-el <= 0.7-2
 Provides:       emacs-%{pkg}-el <= 0.7-2
@@ -36,16 +31,16 @@ keep the Lisp Machine Spirit alive.
 
 
 %build
-./autogen.sh
-%configure --with-lispdir=%{_emacs_sitelispdir}/geiser
-%make_build
-%{__make} README
+makeinfo --no-split doc/geiser.texi
 
 
 %install
-%make_install
-mkdir -p %{buildroot}%{_datadir}/guile/site
-ln -s %{_datadir}/geiser/guile/geiser %{buildroot}%{_datadir}/guile/site/geiser
+install -m 755 -d %{buildroot}%{_emacs_sitelispdir}/geiser
+install -m 644 elisp/*.el %{buildroot}%{_emacs_sitelispdir}/geiser/
+%{_emacs_bytecompile} %{buildroot}%{_emacs_sitelispdir}/geiser/*.el
+install -m 755 -d %{buildroot}%{_emacs_sitelispdir}/geiser/src
+install -m 755 -d %{buildroot}%{_infodir}
+gzip -9 < geiser.info > %{buildroot}%{_infodir}/geiser.info.gz
 
 
 %post
@@ -59,22 +54,21 @@ fi
 
 
 %files
-%license COPYING
-%doc AUTHORS ChangeLog NEWS README README.elpa README.org THANKS
-%{_bindir}/geiser-racket
-%{_infodir}/geiser.info.gz
-%{_datadir}/geiser/
-%{_datadir}/guile/site/geiser
-%dir %{_emacs_sitelispdir}/geiser
+%license license
+%doc news.org readme.org
 %{_emacs_sitelispdir}/geiser/geiser.el
 %{_emacs_sitelispdir}/geiser/geiser.elc
 %{_emacs_sitelispdir}/geiser/geiser-*.el
 %{_emacs_sitelispdir}/geiser/geiser-*.elc
-%exclude %{_infodir}/dir
-
+%dir %{_emacs_sitelispdir}/geiser/src
+%{_infodir}/geiser.info.gz
 
 
 %changelog
+* Mon Jun 14 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.16-1
+- Update to 0.16
+- Move support for Scheme implementations to separate packages
+
 * Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.12-2
 - Rebuilt for Fedora 34 and 35
 

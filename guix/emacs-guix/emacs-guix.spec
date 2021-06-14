@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.5.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
@@ -24,12 +24,12 @@ BuildRequires:  emacs, make, texinfo
 BuildRequires:  guix >= 0.13.0
 BuildRequires:  autoconf, automake
 BuildRequires:  pkgconfig(guile-2.2), guile-gcrypt
-BuildRequires:  emacs-geiser, emacs-dash, emacs-bui, emacs-edit-indirect
-BuildRequires:  emacs-magit, emacs-magit-popup
+BuildRequires:  emacs-dash, emacs-bui, emacs-edit-indirect, emacs-magit-popup
+BuildRequires:  (emacs-geiser-guile >= 0.13 or emacs-geiser < 0.13)
 
 Requires:       emacs(bin) >= %{_emacs_version}
-Requires:       emacs-geiser, emacs-dash, emacs-bui, emacs-edit-indirect
-Requires:       emacs-magit, emacs-magit-popup
+Requires:       emacs-dash, emacs-bui, emacs-edit-indirect, emacs-magit-popup
+Requires:       (emacs-geiser-guile >= 0.13 or emacs-geiser < 0.13)
 Suggests:       guix
 
 Obsoletes:      guix-emacs <= 0.8.3-1
@@ -107,6 +107,10 @@ fi
 
 
 %changelog
+* Mon Jun 14 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-6
+- Drop dependency on emacs-magit because it only needs emacs-magit-popup
+- Update dependency for Geiser 0.13 package split
+
 * Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-5
 - Rebuilt for Fedora 34 and 35
 
