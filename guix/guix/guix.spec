@@ -5,25 +5,21 @@
 %global selinuxmodule guix-daemon
 
 Name:           guix
-Version:        1.2.0
-Release:        2%{?dist}
+Version:        1.3.0
+Release:        1%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
 URL:            https://guix.gnu.org
 Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 
-# Fix invalid JSON strings in tests.
-Patch0:         guix-1.2.0-json-cve-swh.patch
-Patch1:         guix-1.2.0-json-crate.patch
-
-# Make it compatible with Guile-JSON 4.5.
-Patch2:         guix-1.2.0-guile-json-4.5.patch
-
-# Revert changes using features unavailable in Guile 2.2.
-# https://issues.guix.gnu.org/44745
-# https://issues.guix.gnu.org/44751
-Patch3:         guix-1.2.0-revert-verify-swh-certificate.patch
+# Revert the commit causing tests/guix-environment.sh to fail on Guile 2.2.7.
+# The commit uses the expression
+#   zero? (modulo (round (* 100. (/ 65536 2656076))) 10))
+# in function display-download-progress, but it throws an error
+#   Wrong type (expecting exact integer): 2.0
+# when running on Guile 2.2.7.
+Patch0:         guix-1.3.0-revert-display-download-progress-tty.patch
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
@@ -38,10 +34,6 @@ Patch3:         guix-1.2.0-revert-verify-swh-certificate.patch
 %global fish_completion_dir %{_datadir}/fish/vendor_completions.d
 %endif
 
-# We require Guile 2.2.7 here because Guile 2.2.6 is known to crash with
-#   mmap(PROT_NONE) failed
-# during the build.
-
 BuildRequires:  gcc-c++
 BuildRequires:  autoconf, automake, gettext-devel, po4a, help2man, texinfo
 BuildRequires:  bzip2-devel, libgcrypt-devel, pkgconfig(sqlite3)
@@ -49,10 +41,14 @@ BuildRequires:  gettext, help2man, graphviz
 BuildRequires:  bash-completion, fish
 BuildRequires:  selinux-policy, systemd
 
+# We require Guile 2.2.7 here because Guile 2.2.6 is known to crash with
+#   mmap(PROT_NONE) failed
+# during the build.
+
 BuildRequires:  pkgconfig(guile-2.2) >= 2.2.7
 BuildRequires:  guile-gcrypt >= 0.1.0
 BuildRequires:  guile-sqlite3 >= 0.1.0
-BuildRequires:  guile-zlib
+BuildRequires:  guile-zlib >= 0.1.0
 BuildRequires:  guile-lzlib
 BuildRequires:  guile-avahi
 BuildRequires:  guile-git >= 0.3.0
@@ -60,6 +56,7 @@ BuildRequires:  guile-json >= 4.3.0
 BuildRequires:  guile-ssh >= 0.13.0
 BuildRequires:  guile-zstd
 BuildRequires:  guile-semver
+BuildRequires:  guile-lib
 %if 0%{?fedora} >= 31
 BuildRequires:  gnutls-guile
 %else
@@ -69,7 +66,7 @@ BuildRequires:  gnutls-guile22
 Requires:       guile22 >= 2.2.7
 Requires:       guile-gcrypt >= 0.1.0
 Requires:       guile-sqlite3 >= 0.1.0
-Requires:       guile-zlib
+Requires:       guile-zlib >= 0.1.0
 Requires:       guile-lzlib
 Requires:       guile-avahi
 Requires:       guile-git >= 0.3.0
@@ -98,6 +95,7 @@ Requires(preun): info
 Recommends:     guile-ssh >= 0.13.0
 Recommends:     guile-zstd
 Recommends:     guile-semver
+Recommends:     guile-lib
 Suggests:       emacs-guix
 
 %description
@@ -200,6 +198,8 @@ rm %{buildroot}%{_libdir}/upstart/system/guix-daemon.conf
 rm %{buildroot}%{_libdir}/upstart/system/guix-publish.conf
 rmdir %{buildroot}%{_libdir}/upstart/system
 rmdir %{buildroot}%{_libdir}/upstart
+# drop useless openrc service files
+rm %{buildroot}%{_sysconfdir}/openrc/guix-daemon
 # drop useless sysvinit service files
 rm %{buildroot}%{_sysconfdir}/init.d/guix-daemon
 # own the configuration directory
@@ -299,6 +299,7 @@ fi
 %{guile_source_dir}/gnu/packages/aux-files/chromium/master-preferences.json
 %dir %{guile_source_dir}/gnu/packages/aux-files/emacs
 %{guile_source_dir}/gnu/packages/aux-files/emacs/guix-emacs.el
+%{guile_source_dir}/gnu/packages/aux-files/guix.vim
 %dir %{guile_source_dir}/gnu/packages/aux-files/linux-libre
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-arm.conf
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-arm64.conf
@@ -335,8 +336,14 @@ fi
 %dir %{guile_ccache_dir}/gnu/system/images
 %{guile_source_dir}/gnu/system/images/hurd.scm
 %{guile_ccache_dir}/gnu/system/images/hurd.go
+%{guile_source_dir}/gnu/system/images/novena.scm
+%{guile_ccache_dir}/gnu/system/images/novena.go
 %{guile_source_dir}/gnu/system/images/pine64.scm
 %{guile_ccache_dir}/gnu/system/images/pine64.go
+%{guile_source_dir}/gnu/system/images/pinebook-pro.scm
+%{guile_ccache_dir}/gnu/system/images/pinebook-pro.go
+%{guile_source_dir}/gnu/system/images/rock64.scm
+%{guile_ccache_dir}/gnu/system/images/rock64.go
 %{guile_source_dir}/gnu/tests.scm
 %{guile_ccache_dir}/gnu/tests.go
 %dir %{guile_source_dir}/gnu/tests
@@ -347,6 +354,8 @@ fi
 %{guile_ccache_dir}/guix.go
 %dir %{guile_source_dir}/guix
 %dir %{guile_ccache_dir}/guix
+%{guile_source_dir}/guix/d3.v3.js
+%{guile_source_dir}/guix/graph.js
 %{guile_source_dir}/guix/*.scm
 %{guile_ccache_dir}/guix/*.go
 %dir %{guile_source_dir}/guix/build
@@ -400,11 +409,20 @@ fi
 %{_infodir}/%{name}.info*
 %{_infodir}/%{name}.de.info*
 %{_infodir}/%{name}.es.info*
+%{_infodir}/%{name}.fa.info*
 %{_infodir}/%{name}.fr.info*
+%{_infodir}/%{name}.it.info*
+%{_infodir}/%{name}.ko.info*
+%{_infodir}/%{name}.pt_BR.info*
 %{_infodir}/%{name}.ru.info*
+%{_infodir}/%{name}.sk.info*
 %{_infodir}/%{name}.zh_CN.info*
 %{_infodir}/%{name}-cookbook.info*
 %{_infodir}/%{name}-cookbook.de.info*
+%{_infodir}/%{name}-cookbook.fa.info*
+%{_infodir}/%{name}-cookbook.fr.info*
+%{_infodir}/%{name}-cookbook.ko.info*
+%{_infodir}/%{name}-cookbook.zh_Hans.info*
 %dir %{_infodir}/images
 %{_infodir}/images/bootstrap-graph.png.gz
 %{_infodir}/images/bootstrap-packages.png.gz
@@ -453,6 +471,9 @@ fi
 
 
 %changelog
+* Mon Jun 14 2021 Ting-Wei Lan <lantw44@gmail.com> - 1.3.0-1
+- Update to 1.3.0
+
 * Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 1.2.0-2
 - Rebuilt for Fedora 34 and 35
 
