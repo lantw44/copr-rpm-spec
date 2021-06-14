@@ -1,11 +1,13 @@
 Name:           guile-ssh
 Version:        0.13.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A library that provides access to the SSH protocol for GNU Guile
 
 License:        GPLv3+
 URL:            https://github.com/artyom-poptsov/guile-ssh
 Source0:        https://github.com/artyom-poptsov/guile-ssh/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+
+Patch0:         guile-ssh-0.13.1-tests-sssh-ecdsa.patch
 
 %global guile_source_dir %{_datadir}/guile/site/2.2
 %global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
@@ -24,11 +26,6 @@ written in GNU Guile interpreter. It is built upon the libssh library.
 
 %prep
 %autosetup -p1
-%if 0%{?fedora} >= 33
-# This test fails with the crypto policy of Fedora 33.
-# https://github.com/artyom-poptsov/guile-ssh/issues/26
-sed -i '/^	sssh-ssshd\.scm \\$/d' tests/Makefile.am
-%endif
 
 
 %build
@@ -81,6 +78,9 @@ fi
 
 
 %changelog
+* Mon Jun 14 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.13.1-3
+- Fix sssh-ssshd.scm on Fedora 33 and later
+
 * Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.13.1-2
 - Rebuilt for Fedora 34 and 35
 
