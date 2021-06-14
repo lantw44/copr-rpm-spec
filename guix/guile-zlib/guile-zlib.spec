@@ -1,13 +1,13 @@
 %global debug_package %{nil}
 
 Name:           guile-zlib
-Version:        0.0.1
-Release:        2%{?dist}
+Version:        0.1.0
+Release:        1%{?dist}
 Summary:        Guile bindings for zlib
 
 License:        GPLv3+
 URL:            https://notabug.org/guile-zlib/guile-zlib
-Source0:        https://notabug.org/guile-zlib/guile-zlib/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        https://notabug.org/guile-zlib/guile-zlib/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %global guile_source_dir %{_datadir}/guile/site/2.2
 %global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
@@ -51,6 +51,9 @@ autoreconf -fiv
 
 
 %changelog
+* Mon Jun 14 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-1
+- Update to 0.1.0
+
 * Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.0.1-2
 - Rebuilt for Fedora 34 and 35
 
