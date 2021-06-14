@@ -2,8 +2,8 @@
 %global pkgname Ghub
 
 Name:           emacs-%{pkg}
-Version:        3.5.1
-Release:        2%{?dist}
+Version:        3.5.3
+Release:        1%{?dist}
 Summary:        Minuscule client libraries for the APIs of various Git forges
 
 License:        GPLv3+
@@ -83,6 +83,9 @@ fi
 
 
 %changelog
+* Mon Jun 14 2021 Ting-Wei Lan <lantw44@gmail.com> - 3.5.3-1
+- Update to 3.5.3
+
 * Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 3.5.1-2
 - Rebuilt for Fedora 34 and 35
 
