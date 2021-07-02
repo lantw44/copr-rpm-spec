@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    11.1.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -38,6 +38,9 @@ Summary:    The GNU Compiler Collection (%{cross_triplet})
 License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
 URL:        https://gcc.gnu.org
 Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
+
+# https://gcc.gnu.org/git/gitweb.cgi?p=gcc.git;a=patch;h=2bf34b9f4e446bf9be7f04458058dd5319fb396e
+Patch0:     gcc-11-libsanitizer-cyclades.patch
 
 BuildRequires: gcc, gcc-c++, gcc-gnat
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel
@@ -387,6 +390,9 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 
 
 %changelog
+* Fri Jul 02 2021 Ting-Wei Lan <lantw44@gmail.com> - 11.1.0-2
+- Fix build failure with Linux 5.13
+
 * Wed Apr 28 2021 Ting-Wei Lan <lantw44@gmail.com> - 11.1.0-1
 - Update to new stable release 11.1.0
 
