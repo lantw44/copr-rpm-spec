@@ -12,7 +12,7 @@
 
 Name:       %{pkg_fullname}
 Version:    0.9.27
-Release:    6%{?dist}
+Release:    7%{?dist}
 Summary:    Tiny C Compiler
 
 License:    LGPLv2
@@ -32,7 +32,7 @@ It can also run C source code as a script.
 # We cannot use configure macro here because it will pass unsupported compiler
 # flags to tcc. These flags are passed to gcc with make command line instead.
 ./configure --prefix=%{_prefix} --libdir=%{_libdir} \
-            --cc=%{use_cc} --enable-cross
+            --cc=%{use_cc} --with-selinux --enable-cross
 %make_build \
 %ifarch x86_64 amd64
 %if %{use_gcc}
@@ -98,6 +98,9 @@ fi
 %doc Changelog README TODO VERSION tcc-doc.html
 
 %changelog
+* Sun Jul 11 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.9.27-7
+- Fix tcc -run when SELinux is enforcing
+
 * Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.9.27-6
 - Rebuilt for Fedora 34 and 35
 
