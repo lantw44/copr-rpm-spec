@@ -18,23 +18,6 @@
 # Require libxml2 > 2.9.4 for XML_PARSE_NOXXE
 %bcond_without system_libxml2
 
-# Python 2 libraries
-%if 0%{?fedora} < 32
-%bcond_without system_beautifulsoup4
-%bcond_without system_html5lib
-%bcond_without system_ply
-%else
-%bcond_with system_beautifulsoup4
-%bcond_with system_html5lib
-%bcond_with system_ply
-%endif
-
-%if 0%{?fedora} < 34
-%bcond_without system_markupsafe
-%else
-%bcond_with system_markupsafe
-%endif
-
 # Requires re2 2016.07.21 for re2::LazyRE2
 %bcond_with system_re2
 
@@ -57,7 +40,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    91.0.4472.164
+Version:    92.0.4515.107
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -106,14 +89,10 @@ Patch2:     chromium-gn-no-static-libstdc++.patch
 # Don't use unversioned python commands. This patch is based on
 # https://src.fedoraproject.org/rpms/chromium/c/7048e95ab61cd143
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
-Patch20:    chromium-python2.patch
+Patch20:    chromium-python3.patch
 
 # Fix build issues for GCC 11
 Patch21:    chromium-ruy-limits.patch
-
-# Pull upstream patches
-Patch30:    chromium-gcc11-r871265.patch
-Patch31:    chromium-gcc11-r872164.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -124,7 +103,8 @@ BuildRequires: clang
 %else
 BuildRequires: gcc, gcc-c++
 %endif
-BuildRequires: ninja-build, nodejs, java-headless, bison, gperf, hwdata
+BuildRequires: java-headless, nodejs, python2, python3
+BuildRequires: bison, gperf, hwdata, ninja-build
 BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
 BuildRequires: alsa-lib-devel, cups-devel, expat-devel
 BuildRequires: libcap-devel, libcurl-devel
@@ -139,21 +119,6 @@ BuildRequires: pkgconfig(libffi), pkgconfig(nss), pkgconfig(libexif)
 BuildRequires: pkgconfig(xtst), pkgconfig(xscrnsaver), pkgconfig(xshmfence)
 BuildRequires: pkgconfig(dbus-1), pkgconfig(libudev)
 BuildRequires: pkgconfig(libva), pkgconfig(gnome-keyring-1)
-BuildRequires: python2-setuptools
-# remove_bundled_libraries.py --do-remove
-BuildRequires: python2-rpm-macros
-%if %{with system_beautifulsoup4}
-BuildRequires: python2-beautifulsoup4
-%endif
-%if %{with system_html5lib}
-BuildRequires: python2-html5lib
-%endif
-%if %{with system_markupsafe}
-BuildRequires: python2-markupsafe
-%endif
-%if %{with system_ply}
-BuildRequires: python2-ply
-%endif
 # replace_gn_files.py --system-libraries
 BuildRequires: flac-devel
 BuildRequires: freetype-devel
@@ -223,7 +188,7 @@ Conflicts:     chromedriver-unstable
 # Don't use unversioned python commands in shebangs. This command is based on
 # https://src.fedoraproject.org/rpms/chromium/c/cdad6219176a7615
 find -type f -exec \
-    sed -i '1s:^#!/usr/bin/\(python\|env python\)$:#!%{__python2}:' '{}' '+'
+    sed -i '1s:^#!/usr/bin/\(python\|env python\)$:#!%{__python3}:' '{}' '+'
 
 ./build/linux/unbundle/remove_bundled_libraries.py --do-remove \
     base/third_party/cityhash \
@@ -267,12 +232,8 @@ find -type f -exec \
     third_party/catapult \
     third_party/catapult/common/py_vulcanize/third_party/rcssmin \
     third_party/catapult/common/py_vulcanize/third_party/rjsmin \
-%if !%{with system_beautifulsoup4}
     third_party/catapult/third_party/beautifulsoup4 \
-%endif
-%if !%{with system_html5lib}
     third_party/catapult/third_party/html5lib-python \
-%endif
     third_party/catapult/third_party/polymer \
     third_party/catapult/third_party/six \
     third_party/catapult/tracing/third_party/d3 \
@@ -293,6 +254,7 @@ find -type f -exec \
     third_party/dav1d \
     third_party/dawn \
     third_party/dawn/third_party/khronos \
+    third_party/dawn/third_party/tint \
     third_party/depot_tools \
     third_party/devscripts \
     third_party/devtools-frontend \
@@ -300,7 +262,7 @@ find -type f -exec \
     third_party/devtools-frontend/src/front_end/third_party/axe-core \
     third_party/devtools-frontend/src/front_end/third_party/chromium \
     third_party/devtools-frontend/src/front_end/third_party/codemirror \
-    third_party/devtools-frontend/src/front_end/third_party/fabricjs \
+    third_party/devtools-frontend/src/front_end/third_party/diff \
     third_party/devtools-frontend/src/front_end/third_party/i18n \
     third_party/devtools-frontend/src/front_end/third_party/intl-messageformat \
     third_party/devtools-frontend/src/front_end/third_party/lighthouse \
@@ -377,9 +339,7 @@ find -type f -exec \
     third_party/lss \
     third_party/lzma_sdk \
     third_party/mako \
-%if !%{with system_markupsafe}
     third_party/markupsafe \
-%endif
     third_party/mesa \
     third_party/metrics_proto \
     third_party/minigbm \
@@ -409,9 +369,7 @@ find -type f -exec \
     third_party/perfetto \
     third_party/perfetto/protos/third_party/chromium \
     third_party/pffft \
-%if !%{with system_ply}
     third_party/ply \
-%endif
     third_party/polymer \
     third_party/private-join-and-compute \
     third_party/private_membership \
@@ -449,7 +407,6 @@ find -type f -exec \
     third_party/tflite/src/third_party/fft2d \
     third_party/tflite-support \
     third_party/tcmalloc \
-    third_party/tint \
     third_party/ruy \
     third_party/ukey2 \
     third_party/unrar \
@@ -517,25 +474,17 @@ find -type f -exec \
 sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' \
     services/device/public/cpp/usb/BUILD.gn
 
-%if %{with system_markupsafe}
-rmdir third_party/markupsafe
-ln -s %{python2_sitearch}/markupsafe third_party/markupsafe
-%endif
-
-%if %{with system_ply}
-rmdir third_party/ply
-ln -s %{python2_sitelib}/ply third_party/ply
-%endif
-
 mkdir -p third_party/node/linux/node-linux-x64/bin
 ln -s %{_bindir}/node third_party/node/linux/node-linux-x64/bin/node
 
 ln -s %{_bindir}/java third_party/jdk/current/bin/java
 
+mkdir -p buildtools/third_party/eu-strip/bin
+ln -s %{_bindir}/true buildtools/third_party/eu-strip/bin/eu-strip
+
 
 %build
 export AR=ar NM=nm
-export PNACLPYTHON=%{__python2}
 
 # Fedora 25 doesn't have __global_cxxflags
 %if %{with fedora_compilation_flags}
@@ -618,7 +567,7 @@ gn_args+=(
 
 ./tools/gn/bootstrap/bootstrap.py --gn-gen-args "${gn_args[*]}"
 ./out/Release/gn gen out/Release \
-    --script-executable=/usr/bin/python2 --args="${gn_args[*]}"
+    --script-executable=/usr/bin/python3 --args="${gn_args[*]}"
 
 # Raise the limit of open files because ld.bfd seems to open more files than
 # ld.gold. The default limit of 1024 is known to cause malformed archive error.
@@ -629,6 +578,8 @@ ulimit -Sn "$(ulimit -Hn)"
 %else
 ninja -v %{_smp_mflags} -C out/Release chrome chrome_sandbox chromedriver
 %endif
+
+mv out/Release/chromedriver{.unstripped,}
 
 
 %install
@@ -655,6 +606,7 @@ install -m 644 chrome.1 %{buildroot}%{_mandir}/man1/chromium-browser.1
 install -m 755 out/Release/chrome %{buildroot}%{chromiumdir}/chromium-browser
 install -m 4755 out/Release/chrome_sandbox %{buildroot}%{chromiumdir}/chrome-sandbox
 install -m 755 out/Release/chromedriver %{buildroot}%{chromiumdir}/
+install -m 755 out/Release/crashpad_handler %{buildroot}%{chromiumdir}/
 %if !%{with system_libicu}
 install -m 644 out/Release/icudtl.dat %{buildroot}%{chromiumdir}/
 %endif
@@ -714,6 +666,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/chromium-browser
 %{chromiumdir}/chrome-sandbox
 %{chromiumdir}/chromedriver
+%{chromiumdir}/crashpad_handler
 %if !%{with system_libicu}
 %{chromiumdir}/icudtl.dat
 %endif
@@ -734,8 +687,13 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{chromiumdir}/swiftshader/libGLESv2.so
 
 
-
 %changelog
+* Sun Jul 25 2021 - Ting-Wei Lan <lantw44@gmail.com> - 92.0.4515.107-100
+- Update to 92.0.4515.107
+- Switch to Python 3
+- Remove unbundling options for Python dependencies because porting these mostly
+  broken options to Python 3 is unlikely to be useful
+
 * Sat Jul 17 2021 - Ting-Wei Lan <lantw44@gmail.com> - 91.0.4472.164-100
 - Update to 91.0.4472.164
 
