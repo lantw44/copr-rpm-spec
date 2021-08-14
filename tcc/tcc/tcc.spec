@@ -10,56 +10,84 @@
 %global debug_package %{nil}
 %endif
 
+%global date 20210803
+%global gitrev 675046bd59bc6977bb2016c7d2e115ace8a6ae6c
+%global shortgitrev %(c=%{gitrev}; echo "${c:0:7}")
+
 Name:       %{pkg_fullname}
-Version:    0.9.27
-Release:    7%{?dist}
+Version:    0.9.28
+Release:    0.1.%{date}git%{shortgitrev}%{?dist}
 Summary:    Tiny C Compiler
 
 License:    LGPLv2
 URL:        https://bellard.org/tcc
-Source0:    https://download.savannah.gnu.org/releases/tinycc/%{pkg_name}-%{version}.tar.bz2
+Source0:    https://repo.or.cz/tinycc.git/snapshot/%{gitrev}.tar.gz#/%{pkg_name}-%{gitrev}.tar.gz
 
-BuildRequires: %{use_cc}, glibc-devel, texinfo, perl-podlators
+BuildRequires: %{use_cc}, glibc-devel, make, texinfo, perl-podlators
 
 %description
 Tiny C Compiler is a small C compiler, which can already compile itself.
 It can also run C source code as a script.
 
+
 %prep
-%autosetup -n %{pkg_name}-%{version} -p1
+%autosetup -n tinycc-%{shortgitrev} -p1
+
 
 %build
 # We cannot use configure macro here because it will pass unsupported compiler
-# flags to tcc. These flags are passed to gcc with make command line instead.
-./configure --prefix=%{_prefix} --libdir=%{_libdir} \
-            --cc=%{use_cc} --with-selinux --enable-cross
-%make_build \
-%ifarch x86_64 amd64
+# flags to TCC. These flags are passed to GCC with configure options instead.
+./configure \
+    --prefix=%{_prefix} \
+    --libdir=%{_libdir} \
+    --with-selinux \
+    --enable-cross \
+    --cc=%{use_cc} \
 %if %{use_gcc}
-    CC="gcc %{optflags} %{__global_ldflags}"
+    --debug \
+    --extra-cflags='%{optflags}' \
+    --extra-ldflags='%{__global_ldflags}' \
 %endif
+
+%make_build
+
+
+%check
+# TCC linker segfault on GCC LTO objects.
+sed -i 's|-flto=[^ ]*||g' config.mak
+# Running tests in parallel can cause them to fail.
+%ifnarch i686
+%{__make} test
 %endif
+
 
 %install
 %make_install
 rm %{buildroot}%{_datadir}/doc/tcc-doc.html
 
+
 %post
 /sbin/install-info %{_infodir}/tcc-doc.info.gz %{_infodir}/dir || :
+
 
 %preun
 if [ "$1" = 0 ]; then
     /sbin/install-info --del %{_infodir}/tcc-doc.info.gz %{_infodir}/dir || :
 fi
 
+
 %files
+%license COPYING
+%doc Changelog README TODO USES VERSION tcc-doc.html
 %{_bindir}/tcc
 %{_bindir}/arm-tcc
 %{_bindir}/arm-wince-tcc
 %{_bindir}/arm64-tcc
+%{_bindir}/arm64-osx-tcc
 %{_bindir}/c67-tcc
 %{_bindir}/i386-tcc
 %{_bindir}/i386-win32-tcc
+%{_bindir}/riscv64-tcc
 %{_bindir}/x86_64-tcc
 %{_bindir}/x86_64-osx-tcc
 %{_bindir}/x86_64-win32-tcc
@@ -69,7 +97,12 @@ fi
 %{_libdir}/tcc/libtcc1.a
 %{_libdir}/tcc/arm-libtcc1.a
 %{_libdir}/tcc/arm64-libtcc1.a
+%{_libdir}/tcc/arm64-osx-libtcc1.a
+%{_libdir}/tcc/bcheck.o
+%{_libdir}/tcc/bt-exe.o
+%{_libdir}/tcc/bt-log.o
 %{_libdir}/tcc/i386-libtcc1.a
+%{_libdir}/tcc/riscv64-libtcc1.a
 %{_libdir}/tcc/x86_64-libtcc1.a
 %{_libdir}/tcc/x86_64-osx-libtcc1.a
 %dir %{_libdir}/tcc/include
@@ -94,10 +127,15 @@ fi
 %{_libdir}/tcc/win32/lib/*.def
 %{_mandir}/man1/tcc.1.gz
 %{_infodir}/tcc-doc.info.gz
-%license COPYING
-%doc Changelog README TODO VERSION tcc-doc.html
+
 
 %changelog
+* Sat Aug 14 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.9.28-0.1.20210803git675046b
+- Update to a git snapshot from mob branch to fix tcc linker crash on
+  Fedora 29, CentOS 8 and their later versions
+- Use distribution build flags on all architectures
+- Run tests on x86_64
+
 * Sun Jul 11 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.9.27-7
 - Fix tcc -run when SELinux is enforcing
 
