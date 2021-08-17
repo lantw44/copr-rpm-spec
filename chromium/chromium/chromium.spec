@@ -40,7 +40,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    92.0.4515.131
+Version:    92.0.4515.159
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -688,6 +688,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Aug 17 2021 - Ting-Wei Lan <lantw44@gmail.com> - 92.0.4515.159-100
+- Update to 92.0.4515.159
+
 * Tue Aug 03 2021 - Ting-Wei Lan <lantw44@gmail.com> - 92.0.4515.131-100
 - Update to 92.0.4515.131
 
