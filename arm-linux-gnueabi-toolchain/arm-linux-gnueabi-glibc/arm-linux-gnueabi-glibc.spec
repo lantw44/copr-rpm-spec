@@ -6,14 +6,6 @@
 %global _find_debuginfo_opts --build-id-seed "%{name}-%{version}-%{release}"
 %endif
 
-%if 0%{?fedora} >= 28
-%global enable_obsolete_rpc  0
-%global enable_obsolete_nsl  0
-%else
-%global enable_obsolete_rpc  1
-%global enable_obsolete_nsl  1
-%endif
-
 %if 0%{?bootstrap:1}
 %global headers_only    1
 %global pkg_suffix      -headers
@@ -55,8 +47,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.33
-Release:    2%{?dist}
+Version:    2.34
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -120,12 +112,6 @@ export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
     --enable-shared \
     --enable-add-ons \
     --enable-multi-arch \
-%if %{enable_obsolete_rpc}
-    --enable-obsolete-rpc \
-%endif
-%if %{enable_obsolete_nsl}
-    --enable-obsolete-nsl \
-%endif
     --enable-stack-protector=strong \
     --enable-tunables \
     --disable-profile \
@@ -205,6 +191,7 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/include/execinfo.h
 %{cross_sysroot}/usr/include/fcntl.h
 %{cross_sysroot}/usr/include/features.h
+%{cross_sysroot}/usr/include/features-time64.h
 %{cross_sysroot}/usr/include/fenv.h
 %dir %{cross_sysroot}/usr/include/finclude
 %{cross_sysroot}/usr/include/finclude/math-vector-fortran.h
@@ -309,23 +296,6 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/include/resolv.h
 %dir %{cross_sysroot}/usr/include/rpc
 %{cross_sysroot}/usr/include/rpc/netdb.h
-%if %{enable_obsolete_rpc}
-%{cross_sysroot}/usr/include/rpc/auth_des.h
-%{cross_sysroot}/usr/include/rpc/auth.h
-%{cross_sysroot}/usr/include/rpc/auth_unix.h
-%{cross_sysroot}/usr/include/rpc/clnt.h
-%{cross_sysroot}/usr/include/rpc/key_prot.h
-%{cross_sysroot}/usr/include/rpc/pmap_clnt.h
-%{cross_sysroot}/usr/include/rpc/pmap_prot.h
-%{cross_sysroot}/usr/include/rpc/pmap_rmt.h
-%{cross_sysroot}/usr/include/rpc/rpc.h
-%{cross_sysroot}/usr/include/rpc/rpc_msg.h
-%{cross_sysroot}/usr/include/rpc/svc_auth.h
-%{cross_sysroot}/usr/include/rpc/svc.h
-%{cross_sysroot}/usr/include/rpc/types.h
-%{cross_sysroot}/usr/include/rpc/xdr.h
-%{cross_sysroot}/usr/include/rpcsvc
-%endif
 %{cross_sysroot}/usr/include/sched.h
 %{cross_sysroot}/usr/include/scsi
 %{cross_sysroot}/usr/include/search.h
@@ -457,49 +427,26 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %else
 %{cross_sysroot}/%{lib_dir_name}/ld-linux%{loader_suffix}.so.%{loader_version}
 %endif
-%{cross_sysroot}/%{lib_dir_name}/ld-%{version}.so
-%{cross_sysroot}/%{lib_dir_name}/libBrokenLocale-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libBrokenLocale.so.1
 %{cross_sysroot}/%{lib_dir_name}/libSegFault.so
-%{cross_sysroot}/%{lib_dir_name}/libanl-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libanl.so.1
-%{cross_sysroot}/%{lib_dir_name}/libc-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libc.so.6
-%{cross_sysroot}/%{lib_dir_name}/libcrypt-%{version}.so
+%{cross_sysroot}/%{lib_dir_name}/libc_malloc_debug.so.0
 %{cross_sysroot}/%{lib_dir_name}/libcrypt.so.1
-%{cross_sysroot}/%{lib_dir_name}/libdl-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libdl.so.2
-%{cross_sysroot}/%{lib_dir_name}/libm-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libm.so.6
 %{cross_sysroot}/%{lib_dir_name}/libmemusage.so
-%{cross_sysroot}/%{lib_dir_name}/libnsl-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libnsl.so.1
-%{cross_sysroot}/%{lib_dir_name}/libnss_compat-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libnss_compat.so.2
-%{cross_sysroot}/%{lib_dir_name}/libnss_db-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libnss_db.so.2
-%{cross_sysroot}/%{lib_dir_name}/libnss_dns-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libnss_dns.so.2
-%{cross_sysroot}/%{lib_dir_name}/libnss_files-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libnss_files.so.2
-%{cross_sysroot}/%{lib_dir_name}/libnss_hesiod-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libnss_hesiod.so.2
-%if %{enable_obsolete_nsl}
-%{cross_sysroot}/%{lib_dir_name}/libnss_nis-%{version}.so
-%{cross_sysroot}/%{lib_dir_name}/libnss_nis.so.2
-%{cross_sysroot}/%{lib_dir_name}/libnss_nisplus-%{version}.so
-%{cross_sysroot}/%{lib_dir_name}/libnss_nisplus.so.2
-%endif
 %{cross_sysroot}/%{lib_dir_name}/libpcprofile.so
-%{cross_sysroot}/%{lib_dir_name}/libpthread-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libpthread.so.0
-%{cross_sysroot}/%{lib_dir_name}/libresolv-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libresolv.so.2
-%{cross_sysroot}/%{lib_dir_name}/librt-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/librt.so.1
-%{cross_sysroot}/%{lib_dir_name}/libthread_db-1.0.so
 %{cross_sysroot}/%{lib_dir_name}/libthread_db.so.1
-%{cross_sysroot}/%{lib_dir_name}/libutil-%{version}.so
 %{cross_sysroot}/%{lib_dir_name}/libutil.so.1
 %{cross_sysroot}/sbin/ldconfig
 %{cross_sysroot}/sbin/sln
@@ -515,9 +462,6 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/bin/mtrace
 %{cross_sysroot}/usr/bin/pcprofiledump
 %{cross_sysroot}/usr/bin/pldd
-%if %{enable_obsolete_rpc}
-%{cross_sysroot}/usr/bin/rpcgen
-%endif
 %{cross_sysroot}/usr/bin/sotruss
 %{cross_sysroot}/usr/bin/sprof
 %{cross_sysroot}/usr/bin/tzselect
@@ -533,40 +477,24 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/%{lib_dir_name}/libanl.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libanl.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libc.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libc_malloc_debug.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libc_nonshared.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libcrypt.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libcrypt.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libdl.a
-%{cross_sysroot}/usr/%{lib_dir_name}/libdl.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libg.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libm.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libm.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libmcheck.a
-%if %{enable_obsolete_nsl}
-%{cross_sysroot}/usr/%{lib_dir_name}/libnsl.a
-%{cross_sysroot}/usr/%{lib_dir_name}/libnsl.so
-%endif
 %{cross_sysroot}/usr/%{lib_dir_name}/libnss_compat.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libnss_db.so
-%{cross_sysroot}/usr/%{lib_dir_name}/libnss_dns.so
-%{cross_sysroot}/usr/%{lib_dir_name}/libnss_files.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libnss_hesiod.so
-%if %{enable_obsolete_nsl}
-%{cross_sysroot}/usr/%{lib_dir_name}/libnss_nis.so
-%{cross_sysroot}/usr/%{lib_dir_name}/libnss_nisplus.so
-%endif
 %{cross_sysroot}/usr/%{lib_dir_name}/libpthread.a
-%{cross_sysroot}/usr/%{lib_dir_name}/libpthread.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libresolv.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libresolv.so
-%if %{enable_obsolete_rpc}
-%{cross_sysroot}/usr/%{lib_dir_name}/librpcsvc.a
-%endif
 %{cross_sysroot}/usr/%{lib_dir_name}/librt.a
-%{cross_sysroot}/usr/%{lib_dir_name}/librt.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libthread_db.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libutil.a
-%{cross_sysroot}/usr/%{lib_dir_name}/libutil.so
 %dir %{cross_sysroot}/usr/libexec/getconf
 %if "%{cross_arch}" == "arm"
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V6_ILP32_OFF32
@@ -593,6 +521,10 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Sat Aug 21 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.34-1
+- Update to 2.34
+- Remove Sun RPC and libnsl options because GLIBC 2.32 removed them
+
 * Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.33-2
 - Rebuilt for Fedora 34 and 35
 
