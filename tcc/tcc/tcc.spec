@@ -10,13 +10,13 @@
 %global debug_package %{nil}
 %endif
 
-%global date 20210803
-%global gitrev 675046bd59bc6977bb2016c7d2e115ace8a6ae6c
+%global date 20210821
+%global gitrev c7a57bf1fa734005f0f058060069fbdc1df1d82f
 %global shortgitrev %(c=%{gitrev}; echo "${c:0:7}")
 
 Name:       %{pkg_fullname}
 Version:    0.9.28
-Release:    0.1.%{date}git%{shortgitrev}%{?dist}
+Release:    0.2.%{date}git%{shortgitrev}%{?dist}
 Summary:    Tiny C Compiler
 
 License:    LGPLv2
@@ -63,7 +63,14 @@ sed -i 's|-flto=[^ ]*||g' config.mak
 
 %install
 %make_install
+# Handle the file with doc macro.
 rm %{buildroot}%{_datadir}/doc/tcc-doc.html
+# Drop unnecessary executable bits to avoid missing build ID errors.
+chmod -x \
+    %{buildroot}%{_libdir}/libtcc.a \
+    %{buildroot}%{_libdir}/tcc/*.a \
+    %{buildroot}%{_libdir}/tcc/*.o \
+    %{buildroot}%{_libdir}/tcc/win32/lib/*.a
 
 
 %post
@@ -130,6 +137,10 @@ fi
 
 
 %changelog
+* Mon Aug 23 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.9.28-0.2.20210821gitc7a57bf
+- Update to the latest git snapshot
+- Drop unnecessary executable bits to fix build on CentOS 8
+
 * Sat Aug 14 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.9.28-0.1.20210803git675046b
 - Update to a git snapshot from mob branch to fix tcc linker crash on
   Fedora 29, CentOS 8 and their later versions
