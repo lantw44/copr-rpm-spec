@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    11.2.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -58,6 +58,7 @@ Provides:   %{cross_triplet}-gcc-stage2 = %{version}
 %if "%{cross_stage}" == "final"
 BuildRequires: %{cross_triplet}-glibc
 BuildRequires: gcc-gnat, libstdc++-static
+BuildRequires: chrpath
 Requires:   %{cross_triplet}-glibc
 Provides:   %{cross_triplet}-gcc-stage2 = %{version}
 Provides:   %{cross_triplet}-gcc-stage3 = %{version}
@@ -196,6 +197,7 @@ mkdir -p %{buildroot}%{cross_sysroot}/%{lib_dir_name}
 mv %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}/* \
     %{buildroot}%{cross_sysroot}/%{lib_dir_name}
 rmdir %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}
+chrpath -d %{buildroot}%{cross_sysroot}/%{lib_dir_name}/lib*san.so
 %endif
 
 find %{buildroot} -name '*.la' -delete
@@ -387,6 +389,9 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 
 
 %changelog
+* Mon Aug 23 2021 Ting-Wei Lan <lantw44@gmail.com> - 11.2.0-2
+- Remove invalid RPATH to fix build on Fedora 35 and later
+
 * Sat Aug 21 2021 Ting-Wei Lan <lantw44@gmail.com> - 11.2.0-1
 - Update to new stable release 11.2.0
 
