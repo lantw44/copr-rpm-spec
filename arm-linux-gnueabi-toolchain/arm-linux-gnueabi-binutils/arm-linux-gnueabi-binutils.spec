@@ -8,7 +8,7 @@
 
 Name:       %{cross_triplet}-binutils
 Version:    2.37
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 License:    GPLv3+
@@ -93,6 +93,9 @@ rmdir %{buildroot}%{_libdir}/bfd-plugins
 
 
 %changelog
+* Mon Aug 23 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.37-2
+- Rebuilt for Fedora 35 and 36
+
 * Sat Aug 21 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.37-1
 - Update to 2.37
 

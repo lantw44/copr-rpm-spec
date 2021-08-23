@@ -48,7 +48,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.34
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -521,6 +521,9 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Mon Aug 23 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.34-2
+- Rebuilt for Fedora 35 and 36
+
 * Sat Aug 21 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.34-1
 - Update to 2.34
 - Remove Sun RPC and libnsl options because GLIBC 2.32 removed them
