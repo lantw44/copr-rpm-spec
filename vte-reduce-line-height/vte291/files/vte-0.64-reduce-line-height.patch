@@ -1,0 +1,13 @@
+diff --git a/src/fonts-pangocairo.cc b/src/fonts-pangocairo.cc
+index fc0f4e54..a8bd2049 100644
+--- a/src/fonts-pangocairo.cc
++++ b/src/fonts-pangocairo.cc
+@@ -227,7 +227,7 @@ FontInfo::FontInfo(PangoContext *context)
+ 
+         measure_font();
+ 
+-#if PANGO_VERSION_CHECK(1, 44, 0)
++#if 0
+         /* Try using the font's metrics; see issue#163. */
+         if (auto metrics = vte::take_freeable
+             (pango_context_get_metrics(context,
