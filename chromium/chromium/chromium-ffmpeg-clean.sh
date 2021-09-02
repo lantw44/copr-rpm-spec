@@ -288,7 +288,6 @@ mp3_files="	libavcodec/aarch64/aacpsdsp_init_aarch64.c \
 		libavcodec/aacsbr.c \
 		libavcodec/aactab.c \
 		libavcodec/ac3tab.c \
-		libavcodec/autorename_libavcodec_aacdec.c \
 		libavcodec/autorename_libavcodec_mpegaudiodsp.c \
 		libavcodec/autorename_libavcodec_sbrdsp.c \
 		libavcodec/cbrt_data.c \

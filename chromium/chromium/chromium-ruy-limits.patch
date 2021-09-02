@@ -1,5 +1,14 @@
+From 3c93cda8211efa01128d48950f0d6ee5233c5b9b Mon Sep 17 00:00:00 2001
+From: stha09 <51720730+stha09@users.noreply.github.com>
+Date: Thu, 6 May 2021 18:31:30 +0200
+Subject: [PATCH] IWYU: include limits for std::numeric_limits (#253)
+
+---
+ ruy/block_map.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
 diff --git a/ruy/block_map.cc b/ruy/block_map.cc
-index 8240de2..4b435d3 100644
+index 6c01e52..e04e7af 100644
 --- a/third_party/ruy/src/ruy/block_map.cc
 +++ b/third_party/ruy/src/ruy/block_map.cc
 @@ -17,6 +17,7 @@ limitations under the License.
@@ -10,3 +19,6 @@ index 8240de2..4b435d3 100644
  
  #ifdef RUY_MAKEBLOCKMAP_DEBUG
  #include <cstdio>
+-- 
+2.31.1
+

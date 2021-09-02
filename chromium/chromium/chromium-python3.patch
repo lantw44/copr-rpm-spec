@@ -8,15 +8,3 @@
          '--args=%s' % gn_gen_args, "--root=" + SRC_ROOT
      ])
  
-diff -up chromium-67.0.3396.99/third_party/catapult/common/py_vulcanize/py_vulcanize/generate.py.py2 chromium-67.0.3396.99/third_party/catapult/common/py_vulcanize/py_vulcanize/generate.py
---- chromium-67.0.3396.99/third_party/catapult/common/py_vulcanize/py_vulcanize/generate.py.py2	2018-07-25 14:14:02.004886479 -0400
-+++ chromium-67.0.3396.99/third_party/catapult/common/py_vulcanize/py_vulcanize/generate.py	2018-07-25 14:15:30.167896461 -0400
-@@ -58,7 +58,7 @@ def _MinifyJS(input_js):
- 
-   with tempfile.NamedTemporaryFile() as _:
-     args = [
--        'python',
-+        'python3',
-         rjsmin_path
-     ]
-     p = subprocess.Popen(args,

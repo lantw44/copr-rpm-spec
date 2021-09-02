@@ -40,7 +40,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    92.0.4515.159
+Version:    93.0.4577.63
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -91,8 +91,18 @@ Patch2:     chromium-gn-no-static-libstdc++.patch
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
 Patch20:    chromium-python3.patch
 
-# Fix build issues for GCC 11
-Patch21:    chromium-ruy-limits.patch
+# Pull upstream patches
+Patch30:    chromium-angle-typedef.patch
+Patch31:    chromium-pdfium-string.patch
+Patch32:    chromium-ruy-limits.patch
+Patch33:    chromium-gcc-11-r903595.patch
+Patch34:    chromium-gcc-11-r903819.patch
+Patch35:    chromium-gcc-11-r903820.patch
+Patch36:    chromium-gcc-11-r904696.patch
+Patch37:    chromium-gcc-11-r905300.patch
+Patch38:    chromium-gcc-11-r905634.patch
+Patch39:    chromium-glibc-2.33-r902981.patch
+Patch40:    chromium-glibc-2.33-r903873.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -217,7 +227,6 @@ find -type f -exec \
     third_party/angle/src/common/third_party/base \
     third_party/angle/src/common/third_party/smhasher \
     third_party/angle/src/common/third_party/xxhash \
-    third_party/angle/src/third_party/compiler \
     third_party/angle/src/third_party/libXNVCtrl \
     third_party/angle/src/third_party/trace_event \
     third_party/angle/src/third_party/volk \
@@ -232,8 +241,8 @@ find -type f -exec \
     third_party/catapult \
     third_party/catapult/common/py_vulcanize/third_party/rcssmin \
     third_party/catapult/common/py_vulcanize/third_party/rjsmin \
-    third_party/catapult/third_party/beautifulsoup4 \
-    third_party/catapult/third_party/html5lib-python \
+    third_party/catapult/third_party/beautifulsoup4-4.9.3 \
+    third_party/catapult/third_party/html5lib-1.1 \
     third_party/catapult/third_party/polymer \
     third_party/catapult/third_party/six \
     third_party/catapult/tracing/third_party/d3 \
@@ -408,6 +417,7 @@ find -type f -exec \
     third_party/tflite-support \
     third_party/tcmalloc \
     third_party/ruy \
+    third_party/six \
     third_party/ukey2 \
     third_party/unrar \
     third_party/usb_ids \
@@ -434,7 +444,6 @@ find -type f -exec \
     third_party/zxcvbn-cpp \
     third_party/xdg-utils \
     third_party/zlib/google \
-    tools/grit/third_party/six \
     tools/gn/src/base/third_party/icu \
     url/third_party/mozilla \
     v8/src/third_party/siphash \
@@ -688,6 +697,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Sep 03 2021 - Ting-Wei Lan <lantw44@gmail.com> - 93.0.4577.63-100
+- Update to 93.0.4577.63
+- Fix text rendering on Fedora 34
+
 * Tue Aug 17 2021 - Ting-Wei Lan <lantw44@gmail.com> - 92.0.4515.159-100
 - Update to 92.0.4515.159
 
