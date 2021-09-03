@@ -3,8 +3,8 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    5.13.0
-Release:    2%{?dist}
+Version:    5.14.0
+Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
 %global debug_package   %{nil}
@@ -132,6 +132,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Fri Sep 03 2021 Ting-Wei Lan <lantw44@gmail.com> - 5.14.0-1
+- Update to 5.14
+
 * Mon Aug 23 2021 Ting-Wei Lan <lantw44@gmail.com> - 5.13.0-2
 - Rebuilt for Fedora 35 and 36
 
