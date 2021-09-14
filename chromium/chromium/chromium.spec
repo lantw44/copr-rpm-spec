@@ -40,7 +40,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    93.0.4577.63
+Version:    93.0.4577.82
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -697,6 +697,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Sep 14 2021 - Ting-Wei Lan <lantw44@gmail.com> - 93.0.4577.82-100
+- Update to 93.0.4577.82
+
 * Fri Sep 03 2021 - Ting-Wei Lan <lantw44@gmail.com> - 93.0.4577.63-100
 - Update to 93.0.4577.63
 - Fix text rendering on Fedora 34
