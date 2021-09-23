@@ -8,8 +8,8 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
-# Require harfbuzz >= 2.4.0 for hb_subset_input_set_retain_gids
-%if 0%{?fedora} >= 31
+# Require harfbuzz >= 3.0.0 for hb_subset_input_set_flags
+%if 0%{?fedora} >= 36
 %bcond_without system_harfbuzz
 %else
 %bcond_with system_harfbuzz
@@ -40,7 +40,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    93.0.4577.82
+Version:    94.0.4606.54
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -92,17 +92,8 @@ Patch2:     chromium-gn-no-static-libstdc++.patch
 Patch20:    chromium-python3.patch
 
 # Pull upstream patches
-Patch30:    chromium-angle-typedef.patch
-Patch31:    chromium-pdfium-string.patch
-Patch32:    chromium-ruy-limits.patch
-Patch33:    chromium-gcc-11-r903595.patch
-Patch34:    chromium-gcc-11-r903819.patch
-Patch35:    chromium-gcc-11-r903820.patch
-Patch36:    chromium-gcc-11-r904696.patch
-Patch37:    chromium-gcc-11-r905300.patch
-Patch38:    chromium-gcc-11-r905634.patch
-Patch39:    chromium-glibc-2.33-r902981.patch
-Patch40:    chromium-glibc-2.33-r903873.patch
+Patch30:    chromium-ruy-limits.patch
+Patch31:    chromium-gcc-11-r911787.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -280,6 +271,7 @@ find -type f -exec \
     third_party/devtools-frontend/src/front_end/third_party/marked \
     third_party/devtools-frontend/src/front_end/third_party/puppeteer \
     third_party/devtools-frontend/src/front_end/third_party/wasmparser \
+    third_party/devtools-frontend/src/test/unittests/front_end/third_party/i18n \
     third_party/devtools-frontend/src/third_party \
     third_party/dom_distiller_js \
     third_party/eigen3 \
@@ -511,6 +503,8 @@ export CC=gcc CXX=g++
 gn_args=(
     is_debug=false
     is_component_build=false
+    dcheck_always_on=false
+    dcheck_is_configurable=false
     use_gold=false
     use_sysroot=false
     use_custom_libcxx=false
@@ -542,7 +536,7 @@ gn_args=(
     enable_nacl=false
     fatal_linker_warnings=false
     treat_warnings_as_errors=false
-    fieldtrial_testing_like_official_build=true
+    disable_fieldtrial_testing_config=true
     'system_libdir="%{_lib}"'
     'custom_toolchain="//build/toolchain/linux/unbundle:default"'
     'host_toolchain="//build/toolchain/linux/unbundle:default"'
@@ -614,8 +608,8 @@ sed -e "s|@@MENUNAME@@|Chromium|g" -e "s|@@PACKAGE@@|chromium|g" \
 install -m 644 chrome.1 %{buildroot}%{_mandir}/man1/chromium-browser.1
 install -m 755 out/Release/chrome %{buildroot}%{chromiumdir}/chromium-browser
 install -m 4755 out/Release/chrome_sandbox %{buildroot}%{chromiumdir}/chrome-sandbox
+install -m 755 out/Release/chrome_crashpad_handler %{buildroot}%{chromiumdir}/
 install -m 755 out/Release/chromedriver %{buildroot}%{chromiumdir}/
-install -m 755 out/Release/crashpad_handler %{buildroot}%{chromiumdir}/
 %if !%{with system_libicu}
 install -m 644 out/Release/icudtl.dat %{buildroot}%{chromiumdir}/
 %endif
@@ -674,14 +668,15 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %dir %{chromiumdir}
 %{chromiumdir}/chromium-browser
 %{chromiumdir}/chrome-sandbox
+%{chromiumdir}/chrome_crashpad_handler
 %{chromiumdir}/chromedriver
-%{chromiumdir}/crashpad_handler
 %if !%{with system_libicu}
 %{chromiumdir}/icudtl.dat
 %endif
 %{chromiumdir}/libEGL.so
 %{chromiumdir}/libGLESv2.so
 %{chromiumdir}/libVkICD_mock_icd.so
+%{chromiumdir}/libVkLayer_khronos_validation.so
 %{chromiumdir}/libvk_swiftshader.so
 %{chromiumdir}/v8_context_snapshot.bin
 %{chromiumdir}/vk_swiftshader_icd.json
@@ -697,6 +692,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Sep 23 2021 - Ting-Wei Lan <lantw44@gmail.com> - 94.0.4606.54-100
+- Update to 94.0.4606.54
+- Explicitly disable DCHECK because it is now enabled by default
+
 * Tue Sep 14 2021 - Ting-Wei Lan <lantw44@gmail.com> - 93.0.4577.82-100
 - Update to 93.0.4577.82
 
