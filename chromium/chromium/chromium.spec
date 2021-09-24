@@ -47,8 +47,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    94.0.4606.54
-Release:    101%{?dist}
+Version:    94.0.4606.61
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -718,6 +718,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Sep 25 2021 - Ting-Wei Lan <lantw44@gmail.com> - 94.0.4606.61-100
+- Update to 94.0.4606.61
+
 * Fri Sep 24 2021 - Ting-Wei Lan <lantw44@gmail.com> - 94.0.4606.54-101
 - Use dnl macro to avoid the rpmbuild warning
 - Fix Python 3.10 and GLIBC 2.34 build issues for Fedora 35
