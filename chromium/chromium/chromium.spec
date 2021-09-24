@@ -8,6 +8,13 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
+# Require freetype > 2.11.0 for FT_ClipBox
+%if 0
+%bcond_without system_freetype
+%else
+%bcond_with system_freetype
+%endif
+
 # Require harfbuzz >= 3.0.0 for hb_subset_input_set_flags
 %if 0%{?fedora} >= 36
 %bcond_without system_harfbuzz
@@ -19,7 +26,7 @@
 %bcond_without system_libxml2
 
 # Requires re2 2016.07.21 for re2::LazyRE2
-%bcond_with system_re2
+%bcond_without system_re2
 
 # Allow testing whether icu can be unbundled
 %bcond_with system_libicu
@@ -41,7 +48,7 @@
 
 Name:       chromium
 Version:    94.0.4606.54
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -57,7 +64,7 @@ URL:        https://www.chromium.org/Home
 #
 # If you don't use Fedora services, you can uncomment the following line and
 # use the upstream source tarball instead of the repackaged one.
-# Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/chromium-%{version}.tar.xz
+%dnl Source0:    https://commondatastorage.googleapis.com/chromium-browser-official/chromium-%{version}.tar.xz
 #
 # The repackaged source tarball used here is produced by:
 # ./chromium-latest.py --stable --ffmpegclean --ffmpegarm --deleteunrar
@@ -89,7 +96,13 @@ Patch2:     chromium-gn-no-static-libstdc++.patch
 # Don't use unversioned python commands. This patch is based on
 # https://src.fedoraproject.org/rpms/chromium/c/7048e95ab61cd143
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
-Patch20:    chromium-python3.patch
+Patch10:    chromium-python3.patch
+
+# Pull patches from Fedora
+# https://src.fedoraproject.org/rpms/chromium/c/edc94b008fe5da8a
+# https://src.fedoraproject.org/rpms/chromium/c/c3fea076996d62bf
+Patch20:    chromium-jinja2-python-3.10-collections.patch
+Patch21:    chromium-breakpad-glibc-2.34-signal.patch
 
 # Pull upstream patches
 Patch30:    chromium-ruy-limits.patch
@@ -122,7 +135,9 @@ BuildRequires: pkgconfig(dbus-1), pkgconfig(libudev)
 BuildRequires: pkgconfig(libva), pkgconfig(gnome-keyring-1)
 # replace_gn_files.py --system-libraries
 BuildRequires: flac-devel
+%if %{with system_freetype}
 BuildRequires: freetype-devel
+%endif
 %if %{with system_harfbuzz}
 BuildRequires: harfbuzz-devel
 %endif
@@ -185,6 +200,11 @@ Conflicts:     chromedriver-unstable
 
 %prep
 %autosetup -p1
+# This patch is only valid for GLIBC 2.34.
+%if 0%{?fedora} <= 34
+%patch21 -p1 -R
+%endif
+
 
 # Don't use unversioned python commands in shebangs. This command is based on
 # https://src.fedoraproject.org/rpms/chromium/c/cdad6219176a7615
@@ -281,7 +301,9 @@ find -type f -exec \
     third_party/fft2d \
     third_party/ffmpeg \
     third_party/flatbuffers \
+%if !%{with system_freetype}
     third_party/freetype \
+%endif
     third_party/fusejs \
     third_party/highway \
     third_party/libgifcodec \
@@ -446,7 +468,9 @@ find -type f -exec \
 
 ./build/linux/unbundle/replace_gn_files.py --system-libraries \
     flac \
+%if %{with system_freetype}
     freetype \
+%endif
     fontconfig \
 %if %{with system_harfbuzz}
     harfbuzz-ng \
@@ -518,7 +542,9 @@ gn_args=(
     use_libpci=true
     use_ozone=true
     use_pulseaudio=true
+%if %{with system_freetype}
     use_system_freetype=true
+%endif
 %if %{with system_harfbuzz}
     use_system_harfbuzz=true
 %endif
@@ -692,9 +718,16 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Sep 24 2021 - Ting-Wei Lan <lantw44@gmail.com> - 94.0.4606.54-101
+- Use dnl macro to avoid the rpmbuild warning
+- Fix Python 3.10 and GLIBC 2.34 build issues for Fedora 35
+- Bundle freetype because it needs features from an unreleased version
+- Unbundle re2
+
 * Thu Sep 23 2021 - Ting-Wei Lan <lantw44@gmail.com> - 94.0.4606.54-100
 - Update to 94.0.4606.54
 - Explicitly disable DCHECK because it is now enabled by default
+- Bundle harfbuzz on Fedora 35 and older because it needs harfbuzz 3.0.0
 
 * Tue Sep 14 2021 - Ting-Wei Lan <lantw44@gmail.com> - 93.0.4577.82-100
 - Update to 93.0.4577.82
