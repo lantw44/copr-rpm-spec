@@ -1,8 +1,14 @@
 %global debug_package %{nil}
 
+# Workaround brp-strip failures on Fedora 35.
+# https://github.com/rpm-software-management/rpm/issues/1765
+%if 0%{?fedora} >= 35
+%global __brp_strip   %{nil}
+%endif
+
 Name:           guile-sqlite3
 Version:        0.1.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Guile bindings for the SQLite3 database engine
 
 License:        LGPLv3+
@@ -46,6 +52,9 @@ autoreconf -fiv
 
 
 %changelog
+* Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.1.3-3
+- Disable brp-strip on Fedora 35 and later because it fails on Guile objects
+
 * Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.1.3-2
 - Rebuilt for Fedora 34 and 35
 

@@ -1,9 +1,17 @@
+%global debug_package %{nil}
+
+# Workaround brp-strip failures on Fedora 35.
+# https://github.com/rpm-software-management/rpm/issues/1765
+%if 0%{?fedora} >= 35
+%global __brp_strip   %{nil}
+%endif
+
 %global pkg guix
 %global pkgname Guix
 
 Name:           emacs-%{pkg}
 Version:        0.5.2
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
@@ -16,7 +24,6 @@ Patch0:         emacs-guix-0.5.2-guix-api-change.patch
 Patch1:         emacs-guix-0.5.2-emacs-27.patch
 Patch2:         emacs-guix-0.5.2-geiser-0.12.patch
 
-%global debug_package    %{nil}
 %global guile_source_dir %{_datadir}/guile/site/2.2
 %global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
@@ -107,6 +114,9 @@ fi
 
 
 %changelog
+* Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-7
+- Disable brp-strip on Fedora 35 and later because it fails on Guile objects
+
 * Mon Jun 14 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-6
 - Drop dependency on emacs-magit because it only needs emacs-magit-popup
 - Update dependency for Geiser 0.13 package split

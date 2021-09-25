@@ -1,8 +1,14 @@
 %global debug_package %{nil}
 
+# Workaround brp-strip failures on Fedora 35.
+# https://github.com/rpm-software-management/rpm/issues/1765
+%if 0%{?fedora} >= 35
+%global __brp_strip   %{nil}
+%endif
+
 Name:           guile-lib
 Version:        0.2.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Guile-Lib is a repository of useful code written in Guile Scheme
 
 License:        GPLv3+
@@ -134,5 +140,8 @@ fi
 
 
 %changelog
+* Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.2.7-2
+- Disable brp-strip on Fedora 35 and later because it fails on Guile objects
+
 * Mon Jun 14 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.2.7-1
 - Initial packaging

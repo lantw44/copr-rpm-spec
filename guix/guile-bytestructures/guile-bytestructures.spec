@@ -1,13 +1,20 @@
+%global debug_package %{nil}
+
+# Workaround brp-strip failures on Fedora 35.
+# https://github.com/rpm-software-management/rpm/issues/1765
+%if 0%{?fedora} >= 35
+%global __brp_strip   %{nil}
+%endif
+
 Name:           guile-bytestructures
 Version:        1.0.10
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Structured access library to bytevector contents for Guile
 
 License:        GPLv3+
 URL:            https://github.com/TaylanUB/scheme-bytestructures
 Source0:        https://github.com/TaylanUB/scheme-bytestructures/releases/download/v%{version}/bytestructures-%{version}.tar.gz
 
-%global debug_package    %{nil}
 %global guile_source_dir %{_datadir}/guile/site/2.2
 %global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
@@ -56,6 +63,9 @@ first-class status.
 
 
 %changelog
+* Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 1.0.10-2
+- Disable brp-strip on Fedora 35 and later because it fails on Guile objects
+
 * Mon Mar 15 2021 Ting-Wei Lan <lantw44@gmail.com> - 1.0.10-1
 - Update to 1.0.10
 
