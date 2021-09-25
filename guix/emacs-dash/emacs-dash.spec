@@ -2,7 +2,7 @@
 %global pkgname Dash
 
 Name:           emacs-%{pkg}
-Version:        2.18.1
+Version:        2.19.1
 Release:        1%{?dist}
 Summary:        Dash is a modern list library for Emacs
 
@@ -65,6 +65,9 @@ fi
 
 
 %changelog
+* Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.19.1-1
+- Update to 2.19.1
+
 * Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.18.1-1
 - Update to 2.18.1
 
