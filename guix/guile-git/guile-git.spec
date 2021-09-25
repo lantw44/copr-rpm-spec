@@ -1,13 +1,20 @@
+%global debug_package %{nil}
+
+# Workaround brp-strip failures on Fedora 35.
+# https://github.com/rpm-software-management/rpm/issues/1765
+%if 0%{?fedora} >= 35
+%global __brp_strip   %{nil}
+%endif
+
 Name:           guile-git
-Version:        0.5.1
+Version:        0.5.2
 Release:        1%{?dist}
 Summary:        Guile bindings of libgit2
 
 License:        GPLv3+ and LGPLv3+
 URL:            https://gitlab.com/guile-git/guile-git
-Source0:        https://gitlab.com/guile-git/guile-git/uploads/4ffd7377b0b74da4051356121b46116f/guile-git-%{version}.tar.gz
+Source0:        https://gitlab.com/guile-git/guile-git/uploads/6450f3991aa524484038cdcea3fb248d/guile-git-%{version}.tar.gz
 
-%global debug_package    %{nil}
 %global guile_source_dir %{_datadir}/guile/site/2.2
 %global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
 
@@ -68,6 +75,10 @@ fi
 
 
 %changelog
+* Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-1
+- Update to 0.5.2
+- Disable brp-strip on Fedora 35 and later because it fails on Guile objects
+
 * Mon Jun 14 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.5.1-1
 - Update to 0.5.1
 
