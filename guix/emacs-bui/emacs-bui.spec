@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        1.2.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Buffer interface library for Emacs
 
 License:        GPLv3+
@@ -48,6 +48,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/bui/
 
 
 %changelog
+* Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 1.2.1-6
+- Rebuilt for Fedora 35 and 36
+
 * Sat Mar 13 2021 Ting-Wei Lan <lantw44@gmail.com> - 1.2.1-5
 - Rebuilt for Fedora 34 and 35
 

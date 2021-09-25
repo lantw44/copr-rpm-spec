@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        3.5.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Minuscule client libraries for the APIs of various Git forges
 
 License:        GPLv3+
@@ -83,6 +83,9 @@ fi
 
 
 %changelog
+* Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 3.5.3-2
+- Rebuilt for Fedora 35 and 36
+
 * Mon Jun 14 2021 Ting-Wei Lan <lantw44@gmail.com> - 3.5.3-1
 - Update to 3.5.3
 
