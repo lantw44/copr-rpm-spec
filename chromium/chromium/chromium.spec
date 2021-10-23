@@ -47,7 +47,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    94.0.4606.81
+Version:    95.0.4638.54
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -105,8 +105,9 @@ Patch20:    chromium-jinja2-python-3.10-collections.patch
 Patch21:    chromium-breakpad-glibc-2.34-signal.patch
 
 # Pull upstream patches
-Patch30:    chromium-ruy-limits.patch
-Patch31:    chromium-gcc-11-r911787.patch
+Patch30:    chromium-quiche-stddef.patch
+Patch31:    chromium-webrtc-template.patch
+Patch32:    chromium-gcc-11-r921717.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -362,6 +363,9 @@ find -type f -exec \
     third_party/lss \
     third_party/lzma_sdk \
     third_party/mako \
+    third_party/maldoca \
+    third_party/maldoca/src/third_party/tensorflow_protos \
+    third_party/maldoca/src/third_party/zlibwrapper \
     third_party/markupsafe \
     third_party/mesa \
     third_party/metrics_proto \
@@ -552,12 +556,12 @@ gn_args=(
     use_system_minigbm=true
     use_xkbcommon=true
     ozone_auto_platforms=false
+    'ozone_platform="x11"'
     ozone_platform_headless=true
     ozone_platform_wayland=true
     ozone_platform_x11=true
     rtc_use_pipewire=true
     rtc_link_pipewire=true
-    'rtc_pipewire_version="0.3"'
     enable_hangout_services_extension=false
     enable_nacl=false
     fatal_linker_warnings=false
@@ -718,6 +722,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Oct 23 2021 - Ting-Wei Lan <lantw44@gmail.com> - 95.0.4638.54-100
+- Update to 95.0.4638.54
+- Set the default ozone platform to X11 because it cannot automatically choose
+  the appropriate platform at runtime
+
 * Fri Oct 08 2021 - Ting-Wei Lan <lantw44@gmail.com> - 94.0.4606.81-100
 - Update to 94.0.4606.81
 
