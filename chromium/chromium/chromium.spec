@@ -48,7 +48,7 @@
 
 Name:       chromium
 Version:    95.0.4638.54
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -108,6 +108,7 @@ Patch21:    chromium-breakpad-glibc-2.34-signal.patch
 Patch30:    chromium-quiche-stddef.patch
 Patch31:    chromium-webrtc-template.patch
 Patch32:    chromium-gcc-11-r921717.patch
+Patch33:    chromium-gcc-11-r925776.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -722,6 +723,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Oct 24 2021 - Ting-Wei Lan <lantw44@gmail.com> - 95.0.4638.54-101
+- Update to 95.0.4638.54
+- Fix build issues for HarfBuzz 3.0
+
 * Sat Oct 23 2021 - Ting-Wei Lan <lantw44@gmail.com> - 95.0.4638.54-100
 - Update to 95.0.4638.54
 - Set the default ozone platform to X11 because it cannot automatically choose
