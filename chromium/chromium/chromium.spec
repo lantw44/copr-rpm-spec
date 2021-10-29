@@ -47,8 +47,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    95.0.4638.54
-Release:    101%{?dist}
+Version:    95.0.4638.69
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -723,8 +723,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Oct 29 2021 - Ting-Wei Lan <lantw44@gmail.com> - 95.0.4638.69-101
+- Update to 95.0.4638.69
+
 * Sun Oct 24 2021 - Ting-Wei Lan <lantw44@gmail.com> - 95.0.4638.54-101
-- Update to 95.0.4638.54
 - Fix build issues for HarfBuzz 3.0
 
 * Sat Oct 23 2021 - Ting-Wei Lan <lantw44@gmail.com> - 95.0.4638.54-100
