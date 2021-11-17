@@ -38,6 +38,15 @@
 # Enabled by default because Fedora Copr has enough memory
 %bcond_without symbol
 
+# Allow linking with ld.gold
+# Enabled by default because it is faster than ld.bfd
+# Disabled on Fedora 34 and older because it segfault too frequently
+%if 0%{?fedora} >= 35
+%bcond_without gold
+%else
+%bcond_with gold
+%endif
+
 # Allow compiling with clang
 # Disabled by default becaue gcc is the system compiler
 %bcond_with clang
@@ -47,7 +56,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    95.0.4638.69
+Version:    96.0.4664.45
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -99,16 +108,14 @@ Patch2:     chromium-gn-no-static-libstdc++.patch
 Patch10:    chromium-python3.patch
 
 # Pull patches from Fedora
-# https://src.fedoraproject.org/rpms/chromium/c/edc94b008fe5da8a
 # https://src.fedoraproject.org/rpms/chromium/c/c3fea076996d62bf
-Patch20:    chromium-jinja2-python-3.10-collections.patch
 Patch21:    chromium-breakpad-glibc-2.34-signal.patch
 
 # Pull upstream patches
-Patch30:    chromium-quiche-stddef.patch
-Patch31:    chromium-webrtc-template.patch
-Patch32:    chromium-gcc-11-r921717.patch
-Patch33:    chromium-gcc-11-r925776.patch
+Patch30:    chromium-gcc-11-r929597.patch
+Patch31:    chromium-gcc-11-r929634.patch
+Patch32:    chromium-gcc-11-r930076.patch
+Patch33:    chromium-gcc-11-r930696.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -295,6 +302,7 @@ find -type f -exec \
     third_party/devtools-frontend/src/front_end/third_party/wasmparser \
     third_party/devtools-frontend/src/test/unittests/front_end/third_party/i18n \
     third_party/devtools-frontend/src/third_party \
+    third_party/distributed_point_functions \
     third_party/dom_distiller_js \
     third_party/eigen3 \
     third_party/emoji-segmenter \
@@ -433,7 +441,6 @@ find -type f -exec \
     third_party/tflite \
     third_party/tflite/src/third_party/eigen3 \
     third_party/tflite/src/third_party/fft2d \
-    third_party/tflite-support \
     third_party/tcmalloc \
     third_party/ruy \
     third_party/six \
@@ -534,7 +541,6 @@ gn_args=(
     is_component_build=false
     dcheck_always_on=false
     dcheck_is_configurable=false
-    use_gold=false
     use_sysroot=false
     use_custom_libcxx=false
     use_aura=true
@@ -574,6 +580,14 @@ gn_args=(
     'google_api_key="AIzaSyCcK3laItm4Ik9bm6IeGFC6tVgy4eut0_o"'
     'google_default_client_id="82546407293.apps.googleusercontent.com"'
     'google_default_client_secret="GuvPB069ONrHxN7Y_y0txLKn"'
+)
+
+gn_args+=(
+%if %{with gold}
+    use_gold=true
+%else
+    use_gold=false
+%endif
 )
 
 gn_args+=(
@@ -723,7 +737,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
-* Fri Oct 29 2021 - Ting-Wei Lan <lantw44@gmail.com> - 95.0.4638.69-101
+* Wed Nov 17 2021 - Ting-Wei Lan <lantw44@gmail.com> - 96.0.4664.45-100
+- Update to 96.0.4664.45
+- Enable gold on Fedora 35 and later because it doesn't crash there
+
+* Fri Oct 29 2021 - Ting-Wei Lan <lantw44@gmail.com> - 95.0.4638.69-100
 - Update to 95.0.4638.69
 
 * Sun Oct 24 2021 - Ting-Wei Lan <lantw44@gmail.com> - 95.0.4638.54-101
