@@ -56,7 +56,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    96.0.4664.45
+Version:    96.0.4664.93
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -737,6 +737,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Dec 10 2021 - Ting-Wei Lan <lantw44@gmail.com> - 96.0.4664.93-100
+- Update to 96.0.4664.93
+
 * Wed Nov 17 2021 - Ting-Wei Lan <lantw44@gmail.com> - 96.0.4664.45-100
 - Update to 96.0.4664.45
 - Enable gold on Fedora 35 and later because it doesn't crash there
