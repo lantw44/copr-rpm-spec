@@ -57,7 +57,7 @@
 
 Name:       chromium
 Version:    96.0.4664.93
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -94,10 +94,6 @@ Source12:   chromium-browser.xml
 # Stub unrar wrapper
 # https://bugs.chromium.org/p/chromium/issues/detail?id=884521
 Patch0:     chromium-stub-unrar-wrapper.patch
-
-# Workaround certificate transparency error
-# https://bugs.chromium.org/p/chromium/issues/detail?id=992287
-Patch1:     chromium-certificate-transparency-google.patch
 
 # Don't require static libstdc++
 Patch2:     chromium-gn-no-static-libstdc++.patch
@@ -737,6 +733,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Dec 12 2021 - Ting-Wei Lan <lantw44@gmail.com> - 96.0.4664.93-101
+- Drop certificate transparency patch because the error can no longer be
+  reproduced on current Fedora releases
+
 * Fri Dec 10 2021 - Ting-Wei Lan <lantw44@gmail.com> - 96.0.4664.93-100
 - Update to 96.0.4664.93
 
