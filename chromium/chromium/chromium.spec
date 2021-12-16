@@ -56,8 +56,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    96.0.4664.93
-Release:    101%{?dist}
+Version:    96.0.4664.110
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -733,6 +733,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Dec 16 2021 - Ting-Wei Lan <lantw44@gmail.com> - 96.0.4664.110-100
+- Update to 96.0.4664.110
+
 * Sun Dec 12 2021 - Ting-Wei Lan <lantw44@gmail.com> - 96.0.4664.93-101
 - Drop certificate transparency patch because the error can no longer be
   reproduced on current Fedora releases
