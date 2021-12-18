@@ -10,7 +10,7 @@
 %global pcre2_version 10.21
 
 Name:           vte291
-Version:        0.66.1
+Version:        0.66.2
 Release:        1%{?dist}.1
 Summary:        Terminal emulator library (Copr: lantw44/vte-reduce-line-height)
 
@@ -18,7 +18,7 @@ Summary:        Terminal emulator library (Copr: lantw44/vte-reduce-line-height)
 License:        LGPLv3+ and MIT
 
 URL:            https://wiki.gnome.org/Apps/Terminal/VTE
-Source0:        https://gitlab.gnome.org/GNOME/vte/-/archive/%{version}/vte-%{version}.tar.bz2
+Source0:        https://download.gnome.org/sources/vte/0.66/vte-%{version}.tar.xz
 
 # https://bugzilla.gnome.org/show_bug.cgi?id=711059
 # https://bugzilla.redhat.com/show_bug.cgi?id=1103380
@@ -136,6 +136,9 @@ sed -i -e "/^vte_systemduserunitdir =/s|vte_prefix|'/usr'|" meson.build
 %{_sysconfdir}/profile.d/vte.sh
 
 %changelog
+* Thu Dec 16 2021 David King <amigadave@amigadave.com> - 0.66.2-1
+- Update to 0.66.2
+
 * Mon Nov 01 2021 David King <amigadave@amigadave.com> - 0.66.1-1
 - Update to 0.66.1
 
