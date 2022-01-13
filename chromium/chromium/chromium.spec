@@ -56,7 +56,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    96.0.4664.110
+Version:    97.0.4692.71
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -107,11 +107,12 @@ Patch10:    chromium-python3.patch
 # https://src.fedoraproject.org/rpms/chromium/c/c3fea076996d62bf
 Patch21:    chromium-breakpad-glibc-2.34-signal.patch
 
+# Pull patches from stha09
+# https://github.com/stha09/chromium-patches/commit/9f05cb354fee3dc8
+Patch30:    chromium-ui-ScrollView-reference.patch
+
 # Pull upstream patches
-Patch30:    chromium-gcc-11-r929597.patch
-Patch31:    chromium-gcc-11-r929634.patch
-Patch32:    chromium-gcc-11-r930076.patch
-Patch33:    chromium-gcc-11-r930696.patch
+Patch40:    chromium-gcc-11-r939512.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -618,9 +619,11 @@ gn_args+=(
 ulimit -Sn "$(ulimit -Hn)"
 
 %if 0%{?ninja_build:1}
-%{ninja_build} -C out/Release chrome chrome_sandbox chromedriver
+%{ninja_build} -C out/Release chrome chrome_sandbox chromedriver \
+    vk_swiftshader_icd.json
 %else
-ninja -v %{_smp_mflags} -C out/Release chrome chrome_sandbox chromedriver
+ninja -v %{_smp_mflags} -C out/Release chrome chrome_sandbox chromedriver \
+    vk_swiftshader_icd.json
 %endif
 
 mv out/Release/chromedriver{.unstripped,}
@@ -733,6 +736,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Jan 13 2022 - Ting-Wei Lan <lantw44@gmail.com> - 97.0.4692.71-100
+- Update to 97.0.4692.71
+
 * Thu Dec 16 2021 - Ting-Wei Lan <lantw44@gmail.com> - 96.0.4664.110-100
 - Update to 96.0.4664.110
 
