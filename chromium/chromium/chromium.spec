@@ -56,7 +56,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    97.0.4692.99
+Version:    98.0.4758.80
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -108,11 +108,12 @@ Patch10:    chromium-python3.patch
 Patch21:    chromium-breakpad-glibc-2.34-signal.patch
 
 # Pull patches from stha09
-# https://github.com/stha09/chromium-patches/commit/9f05cb354fee3dc8
-Patch30:    chromium-ui-ScrollView-reference.patch
+# https://github.com/stha09/chromium-patches/commit/3e41b072b05e08ec
+Patch30:    chromium-MiraclePtr-gcc-internal-compiler-error.patch
 
 # Pull upstream patches
-Patch40:    chromium-gcc-11-r939512.patch
+Patch40:    chromium-gcc-11-r956174.patch
+Patch41:    chromium-gcc-11-r963119.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -736,6 +737,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Feb 11 2022 - Ting-Wei Lan <lantw44@gmail.com> - 98.0.4758.80-100
+- Update to 98.0.4758.80
+
 * Mon Jan 24 2022 - Ting-Wei Lan <lantw44@gmail.com> - 97.0.4692.99-100
 - Update to 97.0.4692.99
 

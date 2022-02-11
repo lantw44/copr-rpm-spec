@@ -1,0 +1,34 @@
+From 806e4aa83091f324c94846184ff8740a311a1a42 Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Thu, 6 Jan 2022 18:21:09 +0000
+Subject: [PATCH] libstdc++: fix DCHECK_NE in ui::WaylandFrameManager
+
+There is no CheckOpValueStr() for std::unique_ptr. Use get() to
+compare pointer values.
+
+Bug: 957519
+Change-Id: I09b5fae424249046c58a3ca105d3c39902b0a67b
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3370382
+Reviewed-by: Alexander Dunaev <adunaev@igalia.com>
+Commit-Queue: Stephan Hartmann <stha09@googlemail.com>
+Cr-Commit-Position: refs/heads/main@{#956174}
+---
+ ui/ozone/platform/wayland/host/wayland_frame_manager.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ui/ozone/platform/wayland/host/wayland_frame_manager.cc b/ui/ozone/platform/wayland/host/wayland_frame_manager.cc
+index 6817600132a4b..b825eea20afb4 100644
+--- a/ui/ozone/platform/wayland/host/wayland_frame_manager.cc
++++ b/ui/ozone/platform/wayland/host/wayland_frame_manager.cc
+@@ -400,7 +400,7 @@ void WaylandFrameManager::OnPresentation(
+       // Investigate the issue with surface sync.
+       frame->feedback = gfx::PresentationFeedback::Failure();
+     }
+-    CHECK_NE(frame, submitted_frames_.back());
++    CHECK_NE(frame.get(), submitted_frames_.back().get());
+   }
+   MaybeProcessSubmittedFrames();
+ }
+-- 
+2.34.1
+
