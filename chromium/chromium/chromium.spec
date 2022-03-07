@@ -56,7 +56,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    98.0.4758.102
+Version:    99.0.4844.51
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -98,21 +98,16 @@ Patch0:     chromium-stub-unrar-wrapper.patch
 # Don't require static libstdc++
 Patch2:     chromium-gn-no-static-libstdc++.patch
 
+# Fix missing opus dependency for media/mojo/services/gpu_mojo_media_client.cc
+Patch3:     chromium-media-mojo-services-opus.patch
+
 # Don't use unversioned python commands. This patch is based on
 # https://src.fedoraproject.org/rpms/chromium/c/7048e95ab61cd143
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
 Patch10:    chromium-python3.patch
 
-# Pull patches from Fedora
-# https://src.fedoraproject.org/rpms/chromium/c/c3fea076996d62bf
-Patch21:    chromium-breakpad-glibc-2.34-signal.patch
-
-# Pull patches from stha09
-# https://github.com/stha09/chromium-patches/commit/3e41b072b05e08ec
-Patch30:    chromium-MiraclePtr-gcc-internal-compiler-error.patch
-
 # Pull upstream patches
-Patch40:    chromium-gcc-11-r956174.patch
+Patch40:    chromium-gcc-11-r962407.patch
 Patch41:    chromium-gcc-11-r963119.patch
 
 # I don't have time to test whether it work on other architectures
@@ -207,10 +202,6 @@ Conflicts:     chromedriver-unstable
 
 %prep
 %autosetup -p1
-# This patch is only valid for GLIBC 2.34.
-%if 0%{?fedora} <= 34
-%patch21 -p1 -R
-%endif
 
 
 # Don't use unversioned python commands in shebangs. This command is based on
@@ -286,6 +277,7 @@ find -type f -exec \
     third_party/devscripts \
     third_party/devtools-frontend \
     third_party/devtools-frontend/src/front_end/third_party/acorn \
+    third_party/devtools-frontend/src/front_end/third_party/additional_readme_paths.json \
     third_party/devtools-frontend/src/front_end/third_party/axe-core \
     third_party/devtools-frontend/src/front_end/third_party/chromium \
     third_party/devtools-frontend/src/front_end/third_party/codemirror \
@@ -737,6 +729,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Mar 08 2022 - Ting-Wei Lan <lantw44@gmail.com> - 99.0.4844.51-100
+- Update to 99.0.4844.51
+
 * Sat Feb 19 2022 - Ting-Wei Lan <lantw44@gmail.com> - 98.0.4758.102-100
 - Update to 98.0.4758.102
 
