@@ -1,0 +1,23 @@
+diff -up chromium-98.0.4758.102/base/third_party/symbolize/symbolize.h.missing-utility-for-std-exchange chromium-98.0.4758.102/base/third_party/symbolize/symbolize.h
+--- chromium-98.0.4758.102/base/third_party/symbolize/symbolize.h.missing-utility-for-std-exchange	2022-02-25 22:30:02.833745309 +0000
++++ chromium-98.0.4758.102/base/third_party/symbolize/symbolize.h	2022-02-25 22:30:02.832745344 +0000
+@@ -58,6 +58,8 @@
+ #include "config.h"
+ #include "glog/logging.h"
+ 
++#include <utility>
++
+ #ifdef HAVE_SYMBOLIZE
+ 
+ #include <algorithm>
+diff -up chromium-98.0.4758.102/v8/src/heap/cppgc/prefinalizer-handler.h.missing-utility-for-std-exchange chromium-98.0.4758.102/v8/src/heap/cppgc/prefinalizer-handler.h
+--- chromium-98.0.4758.102/v8/src/heap/cppgc/prefinalizer-handler.h.missing-utility-for-std-exchange	2022-02-27 20:08:40.027930037 +0000
++++ chromium-98.0.4758.102/v8/src/heap/cppgc/prefinalizer-handler.h	2022-02-27 20:08:52.945490126 +0000
+@@ -5,6 +5,7 @@
+ #ifndef V8_HEAP_CPPGC_PREFINALIZER_HANDLER_H_
+ #define V8_HEAP_CPPGC_PREFINALIZER_HANDLER_H_
+ 
++#include <utility>
+ #include <vector>
+ 
+ #include "include/cppgc/prefinalizer.h"

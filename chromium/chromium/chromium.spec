@@ -8,8 +8,8 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
-# Require freetype > 2.11.0 for FT_ClipBox
-%if 0
+# Require freetype >= 2.11.1 for FT_ClipBox
+%if 0%{?fedora} >= 36
 %bcond_without system_freetype
 %else
 %bcond_with system_freetype
@@ -57,7 +57,7 @@
 
 Name:       chromium
 Version:    99.0.4844.51
-Release:    100%{?dist}
+Release:    101%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -105,6 +105,12 @@ Patch3:     chromium-media-mojo-services-opus.patch
 # https://src.fedoraproject.org/rpms/chromium/c/7048e95ab61cd143
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
 Patch10:    chromium-python3.patch
+
+# Pull patches from Fedora
+# https://src.fedoraproject.org/rpms/chromium/c/bf83007e0323548f
+# https://src.fedoraproject.org/rpms/chromium/c/8dff5fe57ed46b4e
+Patch20:    chromium-base-v8-utility.patch
+Patch21:    chromium-gcc-12-subzero-undefined-reference.patch
 
 # Pull upstream patches
 Patch40:    chromium-gcc-11-r962407.patch
@@ -195,6 +201,10 @@ Conflicts:     chromedriver-unstable
 
 %if !%{with symbol}
 %global debug_package %{nil}
+%endif
+
+%if !%{with fedora_compilation_flags}
+%undefine _auto_set_build_flags
 %endif
 
 %description
@@ -729,6 +739,12 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Mar 12 2022 - Ting-Wei Lan <lantw44@gmail.com> - 99.0.4844.51-101
+- Fix build issues for GCC 12
+- Unbundle FreeType on Fedora 36 and later
+- Disable automatic set_build_flags by default because it can introduce
+  incompatible compiler flags into the build
+
 * Tue Mar 08 2022 - Ting-Wei Lan <lantw44@gmail.com> - 99.0.4844.51-100
 - Update to 99.0.4844.51
 
