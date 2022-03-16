@@ -56,8 +56,8 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    99.0.4844.51
-Release:    101%{?dist}
+Version:    99.0.4844.74
+Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
 License:    BSD and LGPLv2+ and ASL 2.0 and IJG and MIT and GPLv2+ and ISC and OpenSSL and (MPLv1.1 or GPLv2 or LGPLv2)
@@ -739,6 +739,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Mar 16 2022 - Ting-Wei Lan <lantw44@gmail.com> - 99.0.4844.74-100
+- Update to 99.0.4844.74
+
 * Sat Mar 12 2022 - Ting-Wei Lan <lantw44@gmail.com> - 99.0.4844.51-101
 - Fix build issues for GCC 12
 - Unbundle FreeType on Fedora 36 and later
