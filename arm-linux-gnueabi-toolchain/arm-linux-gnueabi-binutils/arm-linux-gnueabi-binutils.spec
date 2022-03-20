@@ -7,8 +7,8 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.37
-Release:    2%{?dist}
+Version:    2.38
+Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 License:    GPLv3+
@@ -40,6 +40,7 @@ Requires:   %{cross_triplet}-filesystem
     --enable-threads \
     --enable-plugins \
     --enable-lto \
+    --enable-separate-code \
     --disable-nls \
     --disable-shared \
     --disable-werror \
@@ -93,6 +94,9 @@ rmdir %{buildroot}%{_libdir}/bfd-plugins
 
 
 %changelog
+* Sun Mar 20 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.38-1
+- Update to 2.38
+
 * Mon Aug 23 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.37-2
 - Rebuilt for Fedora 35 and 36
 
