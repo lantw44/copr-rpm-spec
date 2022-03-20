@@ -47,8 +47,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.34
-Release:    2%{?dist}
+Version:    2.35
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -88,6 +88,9 @@ export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
 %global _configure ../glibc-%{version}/configure
 %global _hardening_ldflags \\\
     %(echo "%{_hardening_ldflags}" | \\\
+        sed -e 's/-specs=[^ ]*//g')
+%global _annotation_ldflags \\\
+    %(echo "%{_annotation_ldflags}" | \\\
         sed -e 's/-specs=[^ ]*//g')
 %global __global_ldflags \\\
     %(echo "%{__global_ldflags}" | \\\
@@ -355,6 +358,7 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/include/sys/raw.h
 %{cross_sysroot}/usr/include/sys/reboot.h
 %{cross_sysroot}/usr/include/sys/resource.h
+%{cross_sysroot}/usr/include/sys/rseq.h
 %{cross_sysroot}/usr/include/sys/select.h
 %{cross_sysroot}/usr/include/sys/sem.h
 %{cross_sysroot}/usr/include/sys/sendfile.h
@@ -428,7 +432,6 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/%{lib_dir_name}/ld-linux%{loader_suffix}.so.%{loader_version}
 %endif
 %{cross_sysroot}/%{lib_dir_name}/libBrokenLocale.so.1
-%{cross_sysroot}/%{lib_dir_name}/libSegFault.so
 %{cross_sysroot}/%{lib_dir_name}/libanl.so.1
 %{cross_sysroot}/%{lib_dir_name}/libc.so.6
 %{cross_sysroot}/%{lib_dir_name}/libc_malloc_debug.so.0
@@ -450,11 +453,11 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/%{lib_dir_name}/libutil.so.1
 %{cross_sysroot}/sbin/ldconfig
 %{cross_sysroot}/sbin/sln
-%{cross_sysroot}/usr/bin/catchsegv
 %{cross_sysroot}/usr/bin/gencat
 %{cross_sysroot}/usr/bin/getconf
 %{cross_sysroot}/usr/bin/getent
 %{cross_sysroot}/usr/bin/iconv
+%{cross_sysroot}/usr/bin/ld.so
 %{cross_sysroot}/usr/bin/ldd
 %{cross_sysroot}/usr/bin/locale
 %{cross_sysroot}/usr/bin/localedef
@@ -470,6 +473,9 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/include/gnu/lib-names%{gnu_hdr_suffix}.h
 %{cross_sysroot}/usr/include/gnu/stubs%{gnu_hdr_suffix}.h
 %{cross_sysroot}/usr/%{lib_dir_name}/?crt1.o
+%if "%{cross_arch}" == "arm64"
+%{cross_sysroot}/usr/%{lib_dir_name}/??crt1.o
+%endif
 %{cross_sysroot}/usr/%{lib_dir_name}/audit
 %{cross_sysroot}/usr/%{lib_dir_name}/gconv
 %{cross_sysroot}/usr/%{lib_dir_name}/libBrokenLocale.a
@@ -521,6 +527,10 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Sun Mar 20 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.35-1
+- Update to 2.35
+- Remove -specs from _annotation_ldflags because it is now used directly
+
 * Mon Aug 23 2021 Ting-Wei Lan <lantw44@gmail.com> - 2.34-2
 - Rebuilt for Fedora 35 and 36
 

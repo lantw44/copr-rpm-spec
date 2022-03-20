@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    11.2.0
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -95,6 +95,9 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
 %global _program_prefix %{cross_triplet}-
 %global _hardening_ldflags \\\
     %(echo "%{_hardening_ldflags}" | \\\
+        sed -e 's/-specs=[^ ]*//g')
+%global _annotation_ldflags \\\
+    %(echo "%{_annotation_ldflags}" | \\\
         sed -e 's/-specs=[^ ]*//g')
 %global __global_ldflags \\\
     %(echo "%{__global_ldflags}" | \\\
@@ -207,6 +210,7 @@ rm -rf %{buildroot}%{_datadir}/gcc-%{major_version}/python
 rm -f %{buildroot}%{_bindir}/%{cross_triplet}-gcc-%{major_version}
 rm -f %{buildroot}%{_libdir}/libcc1.so*
 rm -f %{buildroot}%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/pthread.h
+rm -f %{buildroot}%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/sys/rseq.h
 rm -rf %{buildroot}%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/bits
 rm -rf %{buildroot}%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/install-tools
 rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools/fixincl
@@ -389,6 +393,9 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 
 
 %changelog
+* Sun Mar 20 2022 Ting-Wei Lan <lantw44@gmail.com> - 11.2.0-3
+- Remove -specs from _annotation_ldflags because it is now used directly
+
 * Mon Aug 23 2021 Ting-Wei Lan <lantw44@gmail.com> - 11.2.0-2
 - Remove invalid RPATH to fix build on Fedora 35 and later
 
