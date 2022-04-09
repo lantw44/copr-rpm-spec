@@ -56,7 +56,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    99.0.4844.84
+Version:    100.0.4896.60
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -113,8 +113,9 @@ Patch20:    chromium-base-v8-utility.patch
 Patch21:    chromium-gcc-12-subzero-undefined-reference.patch
 
 # Pull upstream patches
-Patch40:    chromium-gcc-11-r962407.patch
-Patch41:    chromium-gcc-11-r963119.patch
+Patch40:    chromium-gcc-11-r972974.patch
+Patch41:    chromium-gcc-11-r975992.patch
+Patch42:    chromium-gcc-11-r976299.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -436,12 +437,10 @@ find -type f -exec \
     third_party/swiftshader/third_party/marl \
     third_party/swiftshader/third_party/subzero \
     third_party/swiftshader/third_party/SPIRV-Headers/include/spirv/unified1 \
-    third_party/tcmalloc \
     third_party/tensorflow-text \
     third_party/tflite \
     third_party/tflite/src/third_party/eigen3 \
     third_party/tflite/src/third_party/fft2d \
-    third_party/tcmalloc \
     third_party/ruy \
     third_party/six \
     third_party/ukey2 \
@@ -739,6 +738,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Apr 10 2022 - Ting-Wei Lan <lantw44@gmail.com> - 100.0.4896.60-100
+- Update to 100.0.4896.60
+
 * Thu Mar 31 2022 - Ting-Wei Lan <lantw44@gmail.com> - 99.0.4844.84-100
 - Update to 99.0.4844.84
 
