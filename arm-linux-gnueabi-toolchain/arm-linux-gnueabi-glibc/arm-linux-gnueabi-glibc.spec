@@ -6,12 +6,13 @@
 %global _find_debuginfo_opts --build-id-seed "%{name}-%{version}-%{release}"
 %endif
 
-%if 0%{?bootstrap:1}
-%global headers_only    1
-%global pkg_suffix      -headers
-%global debug_package   %{nil}
+%if 0%{!?cross_stage:1}
+%global cross_stage     final
+%endif
+
+%if "%{cross_stage}" != "final"
+%global pkg_suffix      -%{cross_stage}
 %else
-%global headers_only    0
 %global pkg_suffix      %{nil}
 %endif
 
@@ -48,23 +49,25 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.35
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
 URL:        https://www.gnu.org/software/libc
 Source0:    https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 
-BuildRequires: bison, make, python3
+BuildRequires: bison, make, perl, python3
 BuildRequires: %{cross_triplet}-filesystem
-BuildRequires: %{cross_triplet}-gcc-stage1
 BuildRequires: %{cross_triplet}-kernel-headers
+BuildRequires: %{cross_triplet}-gcc-stage1
 Requires:   %{cross_triplet}-filesystem
 Requires:   %{cross_triplet}-kernel-headers
-Provides:   %{cross_triplet}-glibc-stage1
+Provides:   %{cross_triplet}-glibc-stage1 = %{version}
 
-%if !%{headers_only}
-BuildRequires: %{cross_triplet}-gcc-stage2, perl
+%if "%{cross_stage}" == "final"
+BuildRequires: %{cross_triplet}-gcc-stage2
+BuildRequires: %{cross_triplet}-glibc-stage1
+Provides:   %{cross_triplet}-glibc-stage2 = %{version}
 %endif
 
 %global __provides_exclude_from ^%{cross_sysroot}
@@ -102,8 +105,6 @@ export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
             -e 's/-specs=[^ ]*//g' \\\
             -e 's/-Werror=[^ ]*//g' \\\
             -e 's/-Wp,[^ ]*//g' \\\
-            -e 's/-fasynchronous-unwind-tables *//g' \\\
-            -e 's/-fstack-clash-protection *//g' \\\
             -e 's/-fcf-protection *//g' \\\
             -e 's/-flto=auto *//g')
 # Use /usr directly because it is the path in cross_sysroot
@@ -124,35 +125,16 @@ export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
     --with-__thread \
     --without-cvs \
     --without-gd \
-%if %{headers_only}
-    libc_cv_forced_unwind=yes \
-    libc_cv_c_cleanup=yes \
-%endif
 
-%if %{headers_only}
-%make_build csu/subdir_lib
-%else
 %make_build
-%endif
 
 
 %install
 cd %{_builddir}/glibc-%{version}-build
-%if %{headers_only}
-%{__make} install-headers install_root=%{buildroot}%{cross_sysroot} \
-    install-bootstrap-headers=yes
-touch %{buildroot}%{cross_sysroot}/usr/include/gnu/stubs.h
-mkdir -p %{buildroot}%{cross_sysroot}/usr/%{lib_dir_name}
-cp csu/crt1.o csu/crti.o csu/crtn.o \
-    %{buildroot}%{cross_sysroot}/usr/%{lib_dir_name}
-%{cross_triplet}-gcc -nostdlib -nostartfiles -shared -x c /dev/null \
-    -o %{buildroot}%{cross_sysroot}/usr/%{lib_dir_name}/libc.so
-%else
 %{__make} install install_root=%{buildroot}%{cross_sysroot}
 rm -rf %{buildroot}%{cross_sysroot}/usr/share/man
 rm -rf %{buildroot}%{cross_sysroot}/usr/share/info
 rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
-%endif
 
 # Don't strip anything - /usr/bin/strip does not work on other architectures
 %undefine __strip
@@ -162,6 +144,51 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %files
 %license COPYING COPYING.LIB LICENSES
 %doc MAINTAINERS NEWS README
+%{cross_sysroot}/etc/rpc
+%if "%{cross_arch}" == "arm64"
+%{cross_sysroot}/lib/ld-linux%{loader_suffix}.so.%{loader_version}
+%else
+%{cross_sysroot}/%{lib_dir_name}/ld-linux%{loader_suffix}.so.%{loader_version}
+%endif
+%{cross_sysroot}/%{lib_dir_name}/libBrokenLocale.so.1
+%{cross_sysroot}/%{lib_dir_name}/libanl.so.1
+%{cross_sysroot}/%{lib_dir_name}/libc.so.6
+%{cross_sysroot}/%{lib_dir_name}/libc_malloc_debug.so.0
+%{cross_sysroot}/%{lib_dir_name}/libcrypt.so.1
+%{cross_sysroot}/%{lib_dir_name}/libdl.so.2
+%{cross_sysroot}/%{lib_dir_name}/libm.so.6
+%{cross_sysroot}/%{lib_dir_name}/libmemusage.so
+%{cross_sysroot}/%{lib_dir_name}/libnsl.so.1
+%{cross_sysroot}/%{lib_dir_name}/libnss_compat.so.2
+%{cross_sysroot}/%{lib_dir_name}/libnss_db.so.2
+%{cross_sysroot}/%{lib_dir_name}/libnss_dns.so.2
+%{cross_sysroot}/%{lib_dir_name}/libnss_files.so.2
+%{cross_sysroot}/%{lib_dir_name}/libnss_hesiod.so.2
+%{cross_sysroot}/%{lib_dir_name}/libpcprofile.so
+%{cross_sysroot}/%{lib_dir_name}/libpthread.so.0
+%{cross_sysroot}/%{lib_dir_name}/libresolv.so.2
+%{cross_sysroot}/%{lib_dir_name}/librt.so.1
+%{cross_sysroot}/%{lib_dir_name}/libthread_db.so.1
+%{cross_sysroot}/%{lib_dir_name}/libutil.so.1
+%{cross_sysroot}/sbin/ldconfig
+%{cross_sysroot}/sbin/sln
+%{cross_sysroot}/usr/bin/gencat
+%{cross_sysroot}/usr/bin/getconf
+%{cross_sysroot}/usr/bin/getent
+%{cross_sysroot}/usr/bin/iconv
+%{cross_sysroot}/usr/bin/ld.so
+%{cross_sysroot}/usr/bin/ldd
+%{cross_sysroot}/usr/bin/locale
+%{cross_sysroot}/usr/bin/localedef
+%{cross_sysroot}/usr/bin/makedb
+%{cross_sysroot}/usr/bin/mtrace
+%{cross_sysroot}/usr/bin/pcprofiledump
+%{cross_sysroot}/usr/bin/pldd
+%{cross_sysroot}/usr/bin/sotruss
+%{cross_sysroot}/usr/bin/sprof
+%{cross_sysroot}/usr/bin/tzselect
+%{cross_sysroot}/usr/bin/xtrace
+%{cross_sysroot}/usr/bin/zdump
 %{cross_sysroot}/usr/include/a.out.h
 %{cross_sysroot}/usr/include/aio.h
 %{cross_sysroot}/usr/include/aliases.h
@@ -210,7 +237,9 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/include/gnu-versions.h
 %dir %{cross_sysroot}/usr/include/gnu
 %{cross_sysroot}/usr/include/gnu/lib-names.h
+%{cross_sysroot}/usr/include/gnu/lib-names%{gnu_hdr_suffix}.h
 %{cross_sysroot}/usr/include/gnu/libc-version.h
+%{cross_sysroot}/usr/include/gnu/stubs%{gnu_hdr_suffix}.h
 %{cross_sysroot}/usr/include/gnu/stubs.h
 %{cross_sysroot}/usr/include/grp.h
 %{cross_sysroot}/usr/include/gshadow.h
@@ -424,54 +453,6 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/%{lib_dir_name}/crti.o
 %{cross_sysroot}/usr/%{lib_dir_name}/crtn.o
 %{cross_sysroot}/usr/%{lib_dir_name}/libc.so
-%if !%{headers_only}
-%{cross_sysroot}/etc/rpc
-%if "%{cross_arch}" == "arm64"
-%{cross_sysroot}/lib/ld-linux%{loader_suffix}.so.%{loader_version}
-%else
-%{cross_sysroot}/%{lib_dir_name}/ld-linux%{loader_suffix}.so.%{loader_version}
-%endif
-%{cross_sysroot}/%{lib_dir_name}/libBrokenLocale.so.1
-%{cross_sysroot}/%{lib_dir_name}/libanl.so.1
-%{cross_sysroot}/%{lib_dir_name}/libc.so.6
-%{cross_sysroot}/%{lib_dir_name}/libc_malloc_debug.so.0
-%{cross_sysroot}/%{lib_dir_name}/libcrypt.so.1
-%{cross_sysroot}/%{lib_dir_name}/libdl.so.2
-%{cross_sysroot}/%{lib_dir_name}/libm.so.6
-%{cross_sysroot}/%{lib_dir_name}/libmemusage.so
-%{cross_sysroot}/%{lib_dir_name}/libnsl.so.1
-%{cross_sysroot}/%{lib_dir_name}/libnss_compat.so.2
-%{cross_sysroot}/%{lib_dir_name}/libnss_db.so.2
-%{cross_sysroot}/%{lib_dir_name}/libnss_dns.so.2
-%{cross_sysroot}/%{lib_dir_name}/libnss_files.so.2
-%{cross_sysroot}/%{lib_dir_name}/libnss_hesiod.so.2
-%{cross_sysroot}/%{lib_dir_name}/libpcprofile.so
-%{cross_sysroot}/%{lib_dir_name}/libpthread.so.0
-%{cross_sysroot}/%{lib_dir_name}/libresolv.so.2
-%{cross_sysroot}/%{lib_dir_name}/librt.so.1
-%{cross_sysroot}/%{lib_dir_name}/libthread_db.so.1
-%{cross_sysroot}/%{lib_dir_name}/libutil.so.1
-%{cross_sysroot}/sbin/ldconfig
-%{cross_sysroot}/sbin/sln
-%{cross_sysroot}/usr/bin/gencat
-%{cross_sysroot}/usr/bin/getconf
-%{cross_sysroot}/usr/bin/getent
-%{cross_sysroot}/usr/bin/iconv
-%{cross_sysroot}/usr/bin/ld.so
-%{cross_sysroot}/usr/bin/ldd
-%{cross_sysroot}/usr/bin/locale
-%{cross_sysroot}/usr/bin/localedef
-%{cross_sysroot}/usr/bin/makedb
-%{cross_sysroot}/usr/bin/mtrace
-%{cross_sysroot}/usr/bin/pcprofiledump
-%{cross_sysroot}/usr/bin/pldd
-%{cross_sysroot}/usr/bin/sotruss
-%{cross_sysroot}/usr/bin/sprof
-%{cross_sysroot}/usr/bin/tzselect
-%{cross_sysroot}/usr/bin/xtrace
-%{cross_sysroot}/usr/bin/zdump
-%{cross_sysroot}/usr/include/gnu/lib-names%{gnu_hdr_suffix}.h
-%{cross_sysroot}/usr/include/gnu/stubs%{gnu_hdr_suffix}.h
 %{cross_sysroot}/usr/%{lib_dir_name}/?crt1.o
 %if "%{cross_arch}" == "arm64"
 %{cross_sysroot}/usr/%{lib_dir_name}/??crt1.o
@@ -523,10 +504,14 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/share/i18n/charmaps
 %{cross_sysroot}/usr/share/i18n/locales
 %{cross_sysroot}/var/db/Makefile
-%endif
 
 
 %changelog
+* Tue Apr 26 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.35-2
+- Remove the headers-only bulid because we no longer need it to bootstrap GCC
+- Replace bootstrap macro with cross_stage macro copied from our GCC package
+- Restore -fasynchronous-unwind-tables and -fstack-clash-protection flags
+
 * Sun Mar 20 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.35-1
 - Update to 2.35
 - Remove -specs from _annotation_ldflags because it is now used directly

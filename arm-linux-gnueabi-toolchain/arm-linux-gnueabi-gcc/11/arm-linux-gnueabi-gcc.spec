@@ -29,8 +29,8 @@
 %bcond_without ada
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    11.2.0
-Release:    3%{?dist}
+Version:    11.3.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -39,7 +39,7 @@ License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGP
 URL:        https://gcc.gnu.org
 Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
 
-BuildRequires: gcc, gcc-c++, gcc-gnat
+BuildRequires: gcc, gcc-c++
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel
 BuildRequires: gmp-devel, mpfr-devel, libmpc-devel, isl-devel
 BuildRequires: elfutils-libelf-devel, libzstd-devel
@@ -50,12 +50,14 @@ Requires:   %{cross_triplet}-binutils
 Provides:   %{cross_triplet}-gcc-stage1 = %{version}
 
 %if "%{cross_stage}" == "pass2"
+BuildRequires: %{cross_triplet}-gcc-stage1
 BuildRequires: %{cross_triplet}-glibc-stage1
 Requires:   %{cross_triplet}-glibc-stage1
 Provides:   %{cross_triplet}-gcc-stage2 = %{version}
 %endif
 
 %if "%{cross_stage}" == "final"
+BuildRequires: %{cross_triplet}-gcc-stage2
 BuildRequires: %{cross_triplet}-glibc
 BuildRequires: gcc-gnat, libstdc++-static
 BuildRequires: chrpath
@@ -108,7 +110,6 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
         sed -e 's/-m[^ ]*//g' \\\
             -e 's/-specs=[^ ]*//g' \\\
             -e 's/-Werror=[^ ]*//g' \\\
-            -e 's/-fstack-clash-protection *//g' \\\
             -e 's/-fcf-protection *//g')
 # GCC doesn't build without dependency tracking
 # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55930
@@ -145,17 +146,16 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
     --enable-languages=c \
     --disable-shared \
     --disable-threads \
-    --disable-libmudflap \
 
-%make_build all-gcc
+%make_build all-gcc all-target-libgcc
 %endif
 %if "%{cross_stage}" == "pass2"
     --enable-languages=c \
     --enable-shared \
-    --disable-libgomp \
-    --disable-libmudflap \
+    --enable-threads=posix \
+    --enable-libssp \
 
-%make_build all-gcc all-target-libgcc
+%make_build all-gcc all-target-libgcc all-target-libssp
 %endif
 %if "%{cross_stage}" == "final"
 %if %{with ada}
@@ -167,6 +167,7 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
     --with-default-libstdcxx-abi=gcc4-compatible \
 %endif
     --enable-shared \
+    --enable-threads=posix \
     --enable-libmulflap \
     --enable-libgomp \
     --enable-libssp \
@@ -175,7 +176,6 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
     --enable-libsanitizer \
     --enable-gold \
     --enable-plugin \
-    --enable-threads=posix \
 
 %make_build
 %endif
@@ -185,10 +185,12 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
 cd %{_builddir}/gcc-%{version}-build
 
 %if "%{cross_stage}" == "pass1"
-%{__make} install-gcc DESTDIR=%{buildroot}
+%{__make} DESTDIR=%{buildroot} \
+    install-gcc install-target-libgcc
 %endif
 %if "%{cross_stage}" == "pass2"
-%{__make} install-gcc install-target-libgcc DESTDIR=%{buildroot}
+%{__make} DESTDIR=%{buildroot} \
+    install-gcc install-target-libgcc install-target-libssp
 mkdir -p %{buildroot}%{cross_sysroot}/%{lib_dir_name}
 mv %{buildroot}%{_prefix}/%{cross_triplet}/%{lib_dir_name}/* \
     %{buildroot}%{cross_sysroot}/%{lib_dir_name}
@@ -243,35 +245,42 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/limits.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed/syslimits.h
 %dir %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stddef.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdarg.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdfix.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/varargs.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/float.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdbool.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/gcov.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/iso646.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdalign.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdarg.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdatomic.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdbool.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stddef.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdfix.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdint.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdint-gcc.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdalign.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdnoreturn.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/stdatomic.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/unwind.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/varargs.h
 %if "%{cross_arch}" == "arm"
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/unwind-arm-common.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/mmintrin.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_cmse.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_cde.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_cmse.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_mve.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_mve_types.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/mmintrin.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/unwind-arm-common.h
 %endif
 %if "%{cross_arch}" == "arm64"
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_sve.h
 %endif
 %if "%{cross_arch}" == "arm" || "%{cross_arch}" == "arm64"
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_neon.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_acle.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_fp16.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_bf16.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_fp16.h
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/arm_neon.h
 %endif
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/crtbegin*.o
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/crtend*.o
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/crtfastmath.o
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/libgcc.a
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/libgcov.a
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/plugin
 %dir %{_libexecdir}/gcc/%{cross_triplet}
 %dir %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}
@@ -283,16 +292,14 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 %dir %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/plugin
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/plugin/gengtype
 %if "%{cross_stage}" != "pass1"
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/gcov.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/unwind.h
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/crtbegin*.o
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/crtend*.o
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/crtfastmath.o
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/libgcc.a
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/ssp
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/libgcc_eh.a
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/libgcov.a
 %{cross_sysroot}/%{lib_dir_name}/libgcc_s.so
 %{cross_sysroot}/%{lib_dir_name}/libgcc_s.so.1
+%{cross_sysroot}/%{lib_dir_name}/libssp.a
+%{cross_sysroot}/%{lib_dir_name}/libssp_nonshared.a
+%{cross_sysroot}/%{lib_dir_name}/libssp.so
+%{cross_sysroot}/%{lib_dir_name}/libssp.so.0*
 %endif
 %if "%{cross_stage}" == "final"
 %{_bindir}/%{cross_triplet}-c++
@@ -310,7 +317,6 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/acc_prof.h
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/d
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/objc
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/ssp
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/sanitizer
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/finclude
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/libcaf_single.a
@@ -349,10 +355,6 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 %{cross_sysroot}/%{lib_dir_name}/libobjc.a
 %{cross_sysroot}/%{lib_dir_name}/libobjc.so*
 %{cross_sysroot}/%{lib_dir_name}/libsanitizer.spec
-%{cross_sysroot}/%{lib_dir_name}/libssp.a
-%{cross_sysroot}/%{lib_dir_name}/libssp_nonshared.a
-%{cross_sysroot}/%{lib_dir_name}/libssp.so
-%{cross_sysroot}/%{lib_dir_name}/libssp.so.0*
 %{cross_sysroot}/%{lib_dir_name}/libstdc++fs.a
 %{cross_sysroot}/%{lib_dir_name}/libstdc++.a
 %{cross_sysroot}/%{lib_dir_name}/libstdc++.so
@@ -393,6 +395,12 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 
 
 %changelog
+* Tue Apr 26 2022 Ting-Wei Lan <lantw44@gmail.com> - 11.3.0-1
+- Update to new stable release 11.3.0
+- Build libgcc in the first bootstrap stage
+- Build libssp in the second bootstrap stage
+- Restore -fstack-clash-protection flag
+
 * Sun Mar 20 2022 Ting-Wei Lan <lantw44@gmail.com> - 11.2.0-3
 - Remove -specs from _annotation_ldflags because it is now used directly
 

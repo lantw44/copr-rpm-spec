@@ -69,12 +69,14 @@ create_boot_spec () {
       cat -- "${arg_src_spec}"; } > "${var_dst_spec}"
 }
 
-base_pkg_name="${new_triplet}-glibc"
-new_pkg_name="${new_triplet}-glibc-headers"
-create_boot_spec \
-    "${new_pkg_name}" \
-    "${new_dir}/${base_pkg_name}/${base_pkg_name}.spec" \
-    '%global bootstrap 1'
+for stage in pass1; do
+    base_pkg_name="${new_triplet}-glibc"
+    new_pkg_name="${new_triplet}-glibc-${stage}"
+    create_boot_spec \
+        "${new_pkg_name}" \
+        "${new_dir}/${base_pkg_name}/${base_pkg_name}.spec" \
+        "%global cross_stage ${stage}"
+done
 
 for stage in pass1 pass2; do
     base_pkg_name="${new_triplet}-gcc"
