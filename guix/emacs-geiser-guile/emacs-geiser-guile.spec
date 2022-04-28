@@ -2,8 +2,8 @@
 %global pkgname Geiser-Guile
 
 Name:           emacs-%{pkg}
-Version:        0.17
-Release:        2%{?dist}
+Version:        0.23.2
+Release:        1%{?dist}
 Summary:        Support for Guile in Geiser
 
 License:        BSD
@@ -50,6 +50,9 @@ install -m 644 src/geiser/*.scm %{buildroot}%{_emacs_sitelispdir}/geiser/src/gei
 
 
 %changelog
+* Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.23.2-1
+- Update to 0.23.2
+
 * Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.17-2
 - Rebuilt for Fedora 35 and 36
 

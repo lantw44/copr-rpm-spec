@@ -1,13 +1,13 @@
-diff --git a/elisp/geiser-guile.el b/elisp/geiser-guile.el
-index 522c4eb..75e33c7 100644
+diff --git a/geiser-guile.el b/geiser-guile.el
+index db42945..dc691f5 100644
 --- a/geiser-guile.el
 +++ b/geiser-guile.el
-@@ -37,7 +37,7 @@
+@@ -48,7 +48,7 @@
  (geiser-custom--defcustom geiser-guile-binary
      (cond ((eq system-type 'windows-nt) "guile.exe")
            ((eq system-type 'darwin) "guile")
 -          (t "guile"))
 +          (t "guile2.2"))
    "Name to use to call the Guile executable when starting a REPL."
-   :type '(choice string (repeat string))
-   :group 'geiser-guile)
+   :type '(choice string (repeat string)))
+ 
