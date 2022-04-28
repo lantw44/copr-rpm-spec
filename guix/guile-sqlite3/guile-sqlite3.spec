@@ -8,7 +8,7 @@
 
 Name:           guile-sqlite3
 Version:        0.1.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Guile bindings for the SQLite3 database engine
 
 License:        LGPLv3+
@@ -52,6 +52,9 @@ autoreconf -fiv
 
 
 %changelog
+* Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.1.3-4
+- Rebuilt for Fedora 36 and 37
+
 * Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.1.3-3
 - Disable brp-strip on Fedora 35 and later because it fails on Guile objects
 

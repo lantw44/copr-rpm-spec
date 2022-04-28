@@ -8,7 +8,7 @@
 
 Name:           guile-lib
 Version:        0.2.7
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Guile-Lib is a repository of useful code written in Guile Scheme
 
 License:        GPLv3+
@@ -140,6 +140,9 @@ fi
 
 
 %changelog
+* Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.2.7-3
+- Rebuilt for Fedora 36 and 37
+
 * Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.2.7-2
 - Disable brp-strip on Fedora 35 and later because it fails on Guile objects
 

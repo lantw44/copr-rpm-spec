@@ -8,7 +8,7 @@
 
 Name:           guile-git
 Version:        0.5.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Guile bindings of libgit2
 
 License:        GPLv3+ and LGPLv3+
@@ -75,6 +75,9 @@ fi
 
 
 %changelog
+* Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-2
+- Rebuilt for Fedora 36 and 37
+
 * Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-1
 - Update to 0.5.2
 - Disable brp-strip on Fedora 35 and later because it fails on Guile objects

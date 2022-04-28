@@ -8,7 +8,7 @@
 
 Name:           guile-gcrypt
 Version:        0.3.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Guile bindings to Libgcrypt
 
 License:        GPLv3+
@@ -73,6 +73,9 @@ fi
 
 
 %changelog
+* Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.3.0-4
+- Rebuilt for Fedora 36 and 37
+
 * Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.3.0-3
 - Disable brp-strip on Fedora 35 and later because it fails on Guile objects
 

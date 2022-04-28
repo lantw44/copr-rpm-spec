@@ -8,7 +8,7 @@
 
 Name:           guile-bytestructures
 Version:        1.0.10
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Structured access library to bytevector contents for Guile
 
 License:        GPLv3+
@@ -63,6 +63,9 @@ first-class status.
 
 
 %changelog
+* Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 1.0.10-3
+- Rebuilt for Fedora 36 and 37
+
 * Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 1.0.10-2
 - Disable brp-strip on Fedora 35 and later because it fails on Guile objects
 
