@@ -2,19 +2,20 @@
 %global pkgname Geiser
 
 Name:           emacs-%{pkg}
-Version:        0.17
+Version:        0.23.2
 Release:        1%{?dist}
 Summary:        Geiser is a generic Emacs/Scheme interaction mode
 
 License:        BSD
 URL:            https://nongnu.org/geiser
 Source0:        https://gitlab.com/emacs-geiser/geiser/-/archive/%{version}/%{pkg}-%{version}.tar.gz
-Patch0:         emacs-geiser-0.17-doc-install.patch
 
 BuildArch:      noarch
 BuildRequires:  texinfo
 BuildRequires:  emacs
+BuildRequires:  emacs-transient
 Requires:       emacs(bin) >= %{_emacs_version}
+Requires:       emacs-transient
 Requires(post): info
 Requires(preun): info
 
@@ -66,6 +67,9 @@ fi
 
 
 %changelog
+* Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.23.2-1
+- Update to 0.23.2
+
 * Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.17-1
 - Update to 0.17
 

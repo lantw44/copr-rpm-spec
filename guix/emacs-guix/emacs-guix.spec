@@ -11,7 +11,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.5.2
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
@@ -68,7 +68,7 @@ autoreconf -fiv
     --with-popup-lispdir=%{_emacs_sitelispdir}/magit-popup \
     GUILE=%{_bindir}/guile2.2 \
     GUILD=%{_bindir}/guild2.2
-%make_build
+%make_build ELCFLAGS='-L %{_emacs_sitelispdir}/transient'
 
 
 %install
@@ -114,6 +114,9 @@ fi
 
 
 %changelog
+* Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-8
+- Include the path to emacs-transient because emacs-geiser needs it
+
 * Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-7
 - Disable brp-strip on Fedora 35 and later because it fails on Guile objects
 
