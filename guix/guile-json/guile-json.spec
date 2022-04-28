@@ -7,8 +7,8 @@
 %endif
 
 Name:           guile-json
-Version:        4.5.2
-Release:        3%{?dist}
+Version:        4.7.1
+Release:        1%{?dist}
 Summary:        JSON module for Guile
 
 License:        GPLv3+
@@ -66,6 +66,9 @@ features:
 
 
 %changelog
+* Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 4.7.1-1
+- Update to 4.7.1
+
 * Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 4.5.2-3
 - Disable brp-strip on Fedora 35 and later because it fails on Guile objects
 
