@@ -2,8 +2,8 @@
 %global pkgname Ghub
 
 Name:           emacs-%{pkg}
-Version:        3.5.3
-Release:        2%{?dist}
+Version:        3.5.6
+Release:        1%{?dist}
 Summary:        Minuscule client libraries for the APIs of various Git forges
 
 License:        GPLv3+
@@ -11,7 +11,7 @@ URL:            https://magit.vc
 Source0:        https://github.com/magit/ghub/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
-BuildRequires:  emacs, make, texinfo
+BuildRequires:  emacs, make, texinfo, texinfo-tex
 BuildRequires:  emacs-treepy
 Requires:       emacs(bin) >= %{_emacs_version}
 Requires:       emacs-treepy
@@ -35,17 +35,17 @@ as well as the REST APIs of Gitlab, Gitea, Gogs and Bitbucket.
 %install
 mkdir -p %{buildroot}%{_emacs_sitelispdir} %{buildroot}%{_emacs_sitestartdir}
 install -m 755 -d %{buildroot}%{_emacs_sitelispdir}/ghub
-for filename in ghub gsexp ghub-graphql glab gtea gogs buck; do
+for filename in buck ghub{,-graphql} glab gogs gsexp gtea; do
     for suffix in el elc; do
-        install -m 644 "${filename}.${suffix}" \
+        install -m 644 "lisp/${filename}.${suffix}" \
             %{buildroot}%{_emacs_sitelispdir}/ghub/
     done
 done
-install -m 644 ghub-autoloads.el %{buildroot}%{_emacs_sitelispdir}/ghub/
+install -m 644 lisp/ghub-autoloads.el %{buildroot}%{_emacs_sitelispdir}/ghub/
 ln -rs %{buildroot}%{_emacs_sitelispdir}/ghub/ghub-autoloads.el \
     %{buildroot}%{_emacs_sitestartdir}
 mkdir -p %{buildroot}%{_infodir}
-gzip -9 < ghub.info > %{buildroot}%{_infodir}/ghub.info.gz
+gzip -9 < docs/ghub.info > %{buildroot}%{_infodir}/ghub.info.gz
 
 
 %post
@@ -60,7 +60,8 @@ fi
 
 %files
 %license LICENSE
-%doc CHANGELOG README.md ghub.org
+%doc CHANGELOG README.md
+%doc docs/ghub.html docs/ghub.org docs/ghub.pdf
 %dir %{_emacs_sitelispdir}/ghub
 %{_emacs_sitelispdir}/ghub/buck.el
 %{_emacs_sitelispdir}/ghub/buck.elc
@@ -81,8 +82,10 @@ fi
 %{_infodir}/ghub.info.gz
 
 
-
 %changelog
+* Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 3.5.6-1
+- Update to 3.5.6
+
 * Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 3.5.3-2
 - Rebuilt for Fedora 35 and 36
 
