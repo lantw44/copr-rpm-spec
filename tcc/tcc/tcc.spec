@@ -10,13 +10,13 @@
 %global debug_package %{nil}
 %endif
 
-%global date 20210821
-%global gitrev c7a57bf1fa734005f0f058060069fbdc1df1d82f
+%global date 20220428
+%global gitrev fa9c31c3db1898d804db2289a11d9f368da88dd1
 %global shortgitrev %(c=%{gitrev}; echo "${c:0:7}")
 
 Name:       %{pkg_fullname}
 Version:    0.9.28
-Release:    0.2.%{date}git%{shortgitrev}%{?dist}
+Release:    0.3.%{date}git%{shortgitrev}%{?dist}
 Summary:    Tiny C Compiler
 
 License:    LGPLv2
@@ -47,6 +47,9 @@ It can also run C source code as a script.
     --debug \
     --extra-cflags='%{optflags}' \
     --extra-ldflags='%{__global_ldflags}' \
+%else
+    --extra-cflags= \
+    --extra-ldflags= \
 %endif
 
 %make_build
@@ -137,6 +140,10 @@ fi
 
 
 %changelog
+* Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.9.28-0.3.20220428gitfa9c31c
+- Update to the latest git snapshot
+- Fix build on Fedora 36
+
 * Mon Aug 23 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.9.28-0.2.20210821gitc7a57bf
 - Update to the latest git snapshot
 - Drop unnecessary executable bits to fix build on CentOS 8
