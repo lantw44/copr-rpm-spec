@@ -2,8 +2,8 @@
 %global pkgname With-Editor
 
 Name:           emacs-%{pkg}
-Version:        3.0.4
-Release:        2%{?dist}
+Version:        3.2.0
+Release:        1%{?dist}
 Summary:        Use the Emacsclient as the editor of child processes
 
 License:        GPLv3+
@@ -11,7 +11,7 @@ URL:            https://magit.vc
 Source0:        https://github.com/magit/with-editor/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
-BuildRequires:  emacs, make, texinfo
+BuildRequires:  emacs, make, texinfo, texinfo-tex
 Requires:       emacs(bin) >= %{_emacs_version}
 
 %description
@@ -31,14 +31,14 @@ call home.
 %install
 mkdir -p %{buildroot}%{_emacs_sitelispdir} %{buildroot}%{_emacs_sitestartdir}
 install -m 755 -d %{buildroot}%{_emacs_sitelispdir}/with-editor
-install -m 644 with-editor.el with-editor.elc \
+install -m 644 lisp/with-editor.{el,elc} \
     %{buildroot}%{_emacs_sitelispdir}/with-editor/
-install -m 644 with-editor-autoloads.el \
+install -m 644 lisp/with-editor-autoloads.el \
     %{buildroot}%{_emacs_sitelispdir}/with-editor/
 ln -rs %{buildroot}%{_emacs_sitelispdir}/with-editor/with-editor-autoloads.el \
     %{buildroot}%{_emacs_sitestartdir}
 mkdir -p %{buildroot}%{_infodir}
-gzip -9 < with-editor.info > %{buildroot}%{_infodir}/with-editor.info.gz
+gzip -9 < docs/with-editor.info > %{buildroot}%{_infodir}/with-editor.info.gz
 
 
 %post
@@ -53,7 +53,8 @@ fi
 
 %files
 %license LICENSE
-%doc AUTHORS.md README.md with-editor.org
+%doc README.md
+%doc docs/with-editor.html docs/with-editor.org docs/with-editor.pdf
 %dir %{_emacs_sitelispdir}/with-editor
 %{_emacs_sitelispdir}/with-editor/with-editor.el
 %{_emacs_sitelispdir}/with-editor/with-editor.elc
@@ -62,8 +63,10 @@ fi
 %{_infodir}/with-editor.info.gz
 
 
-
 %changelog
+* Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 3.2.0-1
+- Update to 3.2.0
+
 * Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 3.0.4-2
 - Rebuilt for Fedora 35 and 36
 
