@@ -1,13 +1,11 @@
 Name:           guile-ssh
-Version:        0.13.1
-Release:        4%{?dist}
+Version:        0.15.1
+Release:        1%{?dist}
 Summary:        A library that provides access to the SSH protocol for GNU Guile
 
 License:        GPLv3+
 URL:            https://github.com/artyom-poptsov/guile-ssh
 Source0:        https://github.com/artyom-poptsov/guile-ssh/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
-
-Patch0:         guile-ssh-0.13.1-tests-sssh-ecdsa.patch
 
 %global guile_source_dir %{_datadir}/guile/site/2.2
 %global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
@@ -34,9 +32,9 @@ autoreconf -fiv
     --disable-rpath \
     --disable-static \
     GUILE=%{_bindir}/guile2.2 \
-    GUILD=%{_bindir}/guild2.2
-%make_build \
-    GUILE_SNARF=%{_bindir}/guile-snarf2.2
+    GUILD=%{_bindir}/guild2.2 \
+    guile_snarf=%{_bindir}/guile-snarf2.2
+%make_build
 
 
 %check
@@ -78,6 +76,9 @@ fi
 
 
 %changelog
+* Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.15.1-1
+- Update to 0.15.1
+
 * Sat Sep 25 2021 Ting-Wei Lan <lantw44@gmail.com> - 0.13.1-4
 - Rebuilt for Fedora 35 and 36
 
