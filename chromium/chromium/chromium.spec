@@ -56,7 +56,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    100.0.4896.127
+Version:    101.0.4951.41
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -113,9 +113,9 @@ Patch20:    chromium-base-v8-utility.patch
 Patch21:    chromium-gcc-12-subzero-undefined-reference.patch
 
 # Pull upstream patches
-Patch40:    chromium-gcc-11-r972974.patch
-Patch41:    chromium-gcc-11-r975992.patch
-Patch42:    chromium-gcc-11-r976299.patch
+Patch40:    chromium-gcc-11-r987566.patch
+Patch41:    chromium-gcc-12-r991529.patch
+Patch42:    chromium-libxml2-r995726.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -738,6 +738,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Apr 30 2022 - Ting-Wei Lan <lantw44@gmail.com> - 101.0.4951.41-100
+- Update to 101.0.4951.41
+
 * Sat Apr 16 2022 - Ting-Wei Lan <lantw44@gmail.com> - 100.0.4896.127-100
 - Update to 100.0.4896.127
 
