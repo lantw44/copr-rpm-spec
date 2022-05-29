@@ -56,7 +56,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    101.0.4951.64
+Version:    102.0.5005.61
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -113,9 +113,8 @@ Patch20:    chromium-base-v8-utility.patch
 Patch21:    chromium-gcc-12-subzero-undefined-reference.patch
 
 # Pull upstream patches
-Patch40:    chromium-gcc-11-r987566.patch
-Patch41:    chromium-gcc-12-r991529.patch
-Patch42:    chromium-libxml2-r995726.patch
+Patch40:    chromium-libxml2-r995726.patch
+Patch41:    chromium-gcc-11-r998791.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -127,7 +126,7 @@ BuildRequires: clang
 BuildRequires: gcc, gcc-c++
 %endif
 BuildRequires: java-headless, nodejs, python2, python3
-BuildRequires: bison, gperf, hwdata, ninja-build
+BuildRequires: bison, git, gperf, hwdata, ninja-build
 BuildRequires: libgcc(x86-32), glibc(x86-32), libatomic
 BuildRequires: alsa-lib-devel, cups-devel, expat-devel
 BuildRequires: libcap-devel, libcurl-devel
@@ -252,9 +251,9 @@ find -type f -exec \
     third_party/angle/src/third_party/volk \
     third_party/apple_apsl \
     third_party/axe-core \
+    third_party/blink \
     third_party/boringssl \
     third_party/boringssl/src/third_party/fiat \
-    third_party/blink \
     third_party/breakpad \
     third_party/breakpad/breakpad/src/third_party/curl \
     third_party/brotli \
@@ -282,8 +281,8 @@ find -type f -exec \
     third_party/cros_system_api \
     third_party/dav1d \
     third_party/dawn \
+    third_party/dawn/third_party/gn/webgpu-cts \
     third_party/dawn/third_party/khronos \
-    third_party/dawn/third_party/tint \
     third_party/depot_tools \
     third_party/devscripts \
     third_party/devtools-frontend \
@@ -309,17 +308,13 @@ find -type f -exec \
     third_party/emoji-segmenter \
     third_party/farmhash \
     third_party/fdlibm \
-    third_party/fft2d \
     third_party/ffmpeg \
+    third_party/fft2d \
     third_party/flatbuffers \
 %if !%{with system_freetype}
     third_party/freetype \
 %endif
     third_party/fusejs \
-    third_party/highway \
-    third_party/libgifcodec \
-    third_party/liburlpattern \
-    third_party/libzip \
     third_party/gemmlowp \
     third_party/google_input_tools \
     third_party/google_input_tools/third_party/closure_library \
@@ -329,6 +324,7 @@ find -type f -exec \
     third_party/harfbuzz-ng \
 %endif
     third_party/harfbuzz-ng/utils \
+    third_party/highway \
     third_party/hunspell \
     third_party/iccjpeg \
 %if !%{with system_libicu}
@@ -347,6 +343,7 @@ find -type f -exec \
     third_party/libaom/source/libaom/third_party/x86inc \
     third_party/libavif \
     third_party/libgav1 \
+    third_party/libgifcodec \
     third_party/libjingle \
     third_party/libjxl \
     third_party/libphonenumber \
@@ -354,6 +351,7 @@ find -type f -exec \
     third_party/libsrtp \
     third_party/libsync \
     third_party/libudev \
+    third_party/liburlpattern \
     third_party/libva_protected_content \
 %if !%{with system_libvpx}
     third_party/libvpx \
@@ -367,8 +365,8 @@ find -type f -exec \
 %else
     third_party/libxml \
 %endif
-    third_party/libXNVCtrl \
     third_party/libyuv \
+    third_party/libzip \
     third_party/lottie \
     third_party/lss \
     third_party/lzma_sdk \
@@ -388,7 +386,6 @@ find -type f -exec \
     third_party/node/node_modules/polymer-bundler/lib/third_party/UglifyJS2 \
     third_party/one_euro_filter \
     third_party/openh264 \
-    third_party/opencv \
     third_party/openscreen \
     third_party/openscreen/src/third_party/mozilla \
     third_party/openscreen/src/third_party/tinycbor/src/src \
@@ -418,10 +415,12 @@ find -type f -exec \
     third_party/re2 \
 %endif
     third_party/rnnoise \
+    third_party/ruy \
     third_party/s2cellid \
     third_party/securemessage \
     third_party/shell-encryption \
     third_party/simplejson \
+    third_party/six \
     third_party/skia \
     third_party/skia/include/third_party/skcms \
     third_party/skia/include/third_party/vulkan \
@@ -435,18 +434,16 @@ find -type f -exec \
     third_party/swiftshader/third_party/llvm-10.0 \
     third_party/swiftshader/third_party/llvm-subzero \
     third_party/swiftshader/third_party/marl \
-    third_party/swiftshader/third_party/subzero \
     third_party/swiftshader/third_party/SPIRV-Headers/include/spirv/unified1 \
+    third_party/swiftshader/third_party/SPIRV-Tools \
+    third_party/swiftshader/third_party/subzero \
     third_party/tensorflow-text \
     third_party/tflite \
     third_party/tflite/src/third_party/eigen3 \
     third_party/tflite/src/third_party/fft2d \
-    third_party/ruy \
-    third_party/six \
     third_party/ukey2 \
     third_party/unrar \
     third_party/usb_ids \
-    third_party/usrsctp \
     third_party/utf \
     third_party/vulkan \
     third_party/wayland \
@@ -466,23 +463,23 @@ find -type f -exec \
     third_party/wuffs \
     third_party/x11proto \
     third_party/xcbproto \
-    third_party/zxcvbn-cpp \
     third_party/xdg-utils \
     third_party/zlib/google \
+    third_party/zxcvbn-cpp \
     tools/gn/src/base/third_party/icu \
     url/third_party/mozilla \
     v8/src/third_party/siphash \
-    v8/src/third_party/valgrind \
     v8/src/third_party/utf8-decoder \
+    v8/src/third_party/valgrind \
     v8/third_party/inspector_protocol \
     v8/third_party/v8
 
 ./build/linux/unbundle/replace_gn_files.py --system-libraries \
     flac \
+    fontconfig \
 %if %{with system_freetype}
     freetype \
 %endif
-    fontconfig \
 %if %{with system_harfbuzz}
     harfbuzz-ng \
 %endif
@@ -621,11 +618,9 @@ gn_args+=(
 ulimit -Sn "$(ulimit -Hn)"
 
 %if 0%{?ninja_build:1}
-%{ninja_build} -C out/Release chrome chrome_sandbox chromedriver \
-    vk_swiftshader_icd.json
+%{ninja_build} -C out/Release chrome chrome_sandbox chromedriver
 %else
-ninja -v %{_smp_mflags} -C out/Release chrome chrome_sandbox chromedriver \
-    vk_swiftshader_icd.json
+ninja -v %{_smp_mflags} -C out/Release chrome chrome_sandbox chromedriver
 %endif
 
 mv out/Release/chromedriver{.unstripped,}
@@ -635,7 +630,6 @@ mv out/Release/chromedriver{.unstripped,}
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{chromiumdir}/locales
 mkdir -p %{buildroot}%{chromiumdir}/MEIPreload
-mkdir -p %{buildroot}%{chromiumdir}/swiftshader
 mkdir -p %{buildroot}%{_mandir}/man1
 mkdir -p %{buildroot}%{_datadir}/applications
 mkdir -p %{buildroot}%{_datadir}/gnome-control-center/default-apps
@@ -665,7 +659,6 @@ install -m 755 out/Release/*.so %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/*.pak %{buildroot}%{chromiumdir}/
 install -m 644 out/Release/locales/*.pak %{buildroot}%{chromiumdir}/locales/
 install -m 644 out/Release/MEIPreload/* %{buildroot}%{chromiumdir}/MEIPreload/
-install -m 755 out/Release/swiftshader/*.so %{buildroot}%{chromiumdir}/swiftshader/
 for i in 16 32; do
     mkdir -p %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps
     install -m 644 chrome/app/theme/default_100_percent/chromium/product_logo_$i.png \
@@ -732,12 +725,12 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %dir %{chromiumdir}/MEIPreload
 %{chromiumdir}/MEIPreload/manifest.json
 %{chromiumdir}/MEIPreload/preloaded_data.pb
-%dir %{chromiumdir}/swiftshader
-%{chromiumdir}/swiftshader/libEGL.so
-%{chromiumdir}/swiftshader/libGLESv2.so
 
 
 %changelog
+* Sun May 29 2022 - Ting-Wei Lan <lantw44@gmail.com> - 102.0.5005.61-100
+- Update to 102.0.5005.61
+
 * Thu May 12 2022 - Ting-Wei Lan <lantw44@gmail.com> - 101.0.4951.64-100
 - Update to 101.0.4951.64
 

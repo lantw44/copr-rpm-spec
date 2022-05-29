@@ -90,6 +90,7 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/cbrt_tablegen.h \
 		libavcodec/codec.h \
 		libavcodec/codec_id.h \
+		libavcodec/codec_internal.h \
 		libavcodec/codec_par.h \
 		libavcodec/dct.h \
 		libavcodec/dct32.h \
@@ -105,6 +106,7 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/get_bits.h \
 		libavcodec/h263dsp.h \
 		libavcodec/h264chroma.h \
+		libavcodec/hevc.h \
 		libavcodec/hpeldsp.h \
 		libavcodec/hwaccels.h \
 		libavcodec/hwconfig.h \
@@ -153,9 +155,12 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/sbrdsp.h \
 		libavcodec/sinewin.h \
 		libavcodec/sinewin_tablegen.h \
+		libavcodec/startcode.h \
 		libavcodec/thread.h \
+		libavcodec/threadframe.h \
 		libavcodec/unary.h \
 		libavcodec/version.h \
+		libavcodec/version_major.h \
 		libavcodec/videodsp.h \
 		libavcodec/vlc.h \
 		libavcodec/vorbisdsp.h \
@@ -172,29 +177,30 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavformat/img2.h \
 		libavformat/internal.h \
 		libavformat/mov_chan.h \
+		libavformat/options_table.h \
 		libavformat/pcm.h \
 		libavformat/rdt.h \
 		libavformat/rtp.h \
 		libavformat/rtpdec.h \
 		libavformat/spdif.h \
 		libavformat/srtp.h \
-		libavformat/options_table.h \
 		libavformat/version.h \
+		libavformat/version_major.h \
 		libavformat/w64.h \
 		libavutil/x86/asm.h \
 		libavutil/x86/bswap.h \
 		libavutil/x86/cpu.h \
 		libavutil/x86/emms.h
-		libavutil/x86/intreadwrite.h \
 		libavutil/x86/intmath.h
+		libavutil/x86/intreadwrite.h \
 		libavutil/x86/timer.h \
 		libavutil/attributes.h \
 		libavutil/audio_fifo.h \
 		libavutil/avassert.h \
 		libavutil/avutil.h \
 		libavutil/bswap.h \
-		libavutil/common.h \
 		libavutil/colorspace.h \
+		libavutil/common.h \
 		libavutil/cpu.h \
 		libavutil/cpu_internal.h \
 		libavutil/dynarray.h \
@@ -221,8 +227,9 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavutil/version.h \
 		libswresample/swresample.h \
 		libswresample/version.h \
-		compat/va_copy.h \
-		compat/atomics/gcc/stdatomic.h "
+		libswresample/version_major.h \
+		compat/atomics/gcc/stdatomic.h \
+		compat/va_copy.h "
 
 manual_files="	libavcodec/aarch64/fft_neon.S \
 		libavcodec/aarch64/h264pred_neon.S \
