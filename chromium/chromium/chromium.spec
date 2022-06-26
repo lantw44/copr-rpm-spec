@@ -56,7 +56,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    102.0.5005.115
+Version:    103.0.5060.53
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -106,15 +106,9 @@ Patch3:     chromium-media-mojo-services-opus.patch
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
 Patch10:    chromium-python3.patch
 
-# Pull patches from Fedora
-# https://src.fedoraproject.org/rpms/chromium/c/bf83007e0323548f
-# https://src.fedoraproject.org/rpms/chromium/c/8dff5fe57ed46b4e
-Patch20:    chromium-base-v8-utility.patch
-Patch21:    chromium-gcc-12-subzero-undefined-reference.patch
-
 # Pull upstream patches
-Patch40:    chromium-libxml2-r995726.patch
-Patch41:    chromium-gcc-11-r998791.patch
+Patch40:    chromium-gcc-12-r1003039.patch
+Patch41:    chromium-gcc-12-r1004139.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -274,6 +268,7 @@ find -type f -exec \
     third_party/ced \
     third_party/cld_3 \
     third_party/closure_compiler \
+    third_party/cpuinfo \
     third_party/crashpad \
     third_party/crashpad/crashpad/third_party/lss \
     third_party/crashpad/crashpad/third_party/zlib \
@@ -311,10 +306,12 @@ find -type f -exec \
     third_party/ffmpeg \
     third_party/fft2d \
     third_party/flatbuffers \
+    third_party/fp16 \
 %if !%{with system_freetype}
     third_party/freetype \
 %endif
     third_party/fusejs \
+    third_party/fxdiv \
     third_party/gemmlowp \
     third_party/google_input_tools \
     third_party/google_input_tools/third_party/closure_library \
@@ -409,6 +406,7 @@ find -type f -exec \
     third_party/private_membership \
     third_party/protobuf \
     third_party/protobuf/third_party/six \
+    third_party/pthreadpool \
     third_party/pyjson5 \
     third_party/qcms \
 %if !%{with system_re2}
@@ -434,7 +432,7 @@ find -type f -exec \
     third_party/swiftshader/third_party/llvm-10.0 \
     third_party/swiftshader/third_party/llvm-subzero \
     third_party/swiftshader/third_party/marl \
-    third_party/swiftshader/third_party/SPIRV-Headers/include/spirv/unified1 \
+    third_party/swiftshader/third_party/SPIRV-Headers/include/spirv \
     third_party/swiftshader/third_party/SPIRV-Tools \
     third_party/swiftshader/third_party/subzero \
     third_party/tensorflow-text \
@@ -463,6 +461,7 @@ find -type f -exec \
     third_party/wuffs \
     third_party/x11proto \
     third_party/xcbproto \
+    third_party/xnnpack \
     third_party/xdg-utils \
     third_party/zlib/google \
     third_party/zxcvbn-cpp \
@@ -728,6 +727,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon Jun 27 2022 - Ting-Wei Lan <lantw44@gmail.com> - 103.0.5060.53-100
+- Update to 103.0.5060.53
+
 * Sat Jun 11 2022 - Ting-Wei Lan <lantw44@gmail.com> - 102.0.5005.115-100
 - Update to 102.0.5005.115
 
