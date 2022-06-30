@@ -6,11 +6,18 @@
 %global gtk3_version 3.15.3
 %global geoclue_version 2.3.1
 
+%ifnarch s390 s390x
+%global wacom_unit org.gnome.SettingsDaemon.Wacom.service
+%else
+%global wacom_unit %{nil}
+%endif
+%global systemd_units org.gnome.SettingsDaemon.A11ySettings.service org.gnome.SettingsDaemon.Color.service org.gnome.SettingsDaemon.Datetime.service org.gnome.SettingsDaemon.Housekeeping.service org.gnome.SettingsDaemon.Keyboard.service org.gnome.SettingsDaemon.MediaKeys.service org.gnome.SettingsDaemon.Power.service org.gnome.SettingsDaemon.PrintNotifications.service org.gnome.SettingsDaemon.Rfkill.service org.gnome.SettingsDaemon.ScreensaverProxy.service org.gnome.SettingsDaemon.Sharing.service org.gnome.SettingsDaemon.Smartcard.service org.gnome.SettingsDaemon.Sound.service org.gnome.SettingsDaemon.UsbProtection.service org.gnome.SettingsDaemon.Wwan.service org.gnome.SettingsDaemon.XSettings.service %%{wacom_unit}
+
 %global tarball_version %%(echo %{version} | tr '~' '.')
 %global major_version %%(echo %{version} | cut -f 1 -d '~' | cut -f 1 -d '.')
 
 Name:           gnome-settings-daemon
-Version:        42.1
+Version:        42.2
 Release:        1%{?dist}.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
@@ -21,13 +28,14 @@ Source1:        org.gnome.settings-daemon.plugins.power.gschema.override
 
 Patch4:         %{name}-42-respect-menus-buttons-icons.patch
 
-BuildRequires:  meson >= 0.44.0
 BuildRequires:  gcc
-BuildRequires:  cups-devel
 BuildRequires:  gettext
+BuildRequires:  meson >= 0.49.0
 BuildRequires:  perl-interpreter
+BuildRequires:  systemd-rpm-macros
 BuildRequires:  pkgconfig(alsa)
 BuildRequires:  pkgconfig(colord) >= %{colord_version}
+BuildRequires:  pkgconfig(cups)
 BuildRequires:  pkgconfig(fontconfig)
 BuildRequires:  pkgconfig(gcr-base-3)
 BuildRequires:  pkgconfig(geoclue-2.0) >= %{geoclue_version}
@@ -98,9 +106,15 @@ install -p %{SOURCE1} $RPM_BUILD_ROOT%{_datadir}/glib-2.0/schemas
 
 %find_lang %{name} --with-gnome
 
+%post
+%systemd_user_post %{systemd_units}
+
+%preun
+%systemd_user_preun %{systemd_units}
+
 %files -f %{name}.lang
 %license COPYING
-%doc AUTHORS NEWS
+%doc AUTHORS NEWS README
 
 # list daemons explicitly, so we notice if one goes missing
 # some of these don't have a separate gschema
@@ -177,8 +191,11 @@ install -p %{SOURCE1} $RPM_BUILD_ROOT%{_datadir}/glib-2.0/schemas
 %{_libdir}/gnome-settings-daemon-%{major_version}/libgsd.so
 
 %{_sysconfdir}/xdg/Xwayland-session.d/00-xrdb
-%{_userunitdir}/*
-/usr/lib/udev/rules.d/*.rules
+%{_userunitdir}/gnome-session-x11-services-ready.target.wants/
+%{_userunitdir}/gnome-session-x11-services.target.wants/
+%{lua: for service in string.gmatch(rpm.expand('%{systemd_units}'), "[^%s]+") do print(rpm.expand('%{_userunitdir}/')..service..'\n') end}
+%{_userunitdir}/*.target
+%{_udevrulesdir}/61-gnome-settings-daemon-rfkill.rules
 %{_datadir}/gnome-settings-daemon/
 %{_datadir}/GConf/gsettings/gnome-settings-daemon.convert
 
@@ -190,6 +207,9 @@ install -p %{SOURCE1} $RPM_BUILD_ROOT%{_datadir}/glib-2.0/schemas
 %{_libdir}/pkgconfig/gnome-settings-daemon.pc
 
 %changelog
+* Thu Jun 16 2022 David King <amigadave@amigadave.com> - 42.2-1
+- Update to 42.2
+
 * Sun Mar 20 2022 David King <amigadave@amigadave.com> - 42.1-1
 - Update to 42.1
 
