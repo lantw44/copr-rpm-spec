@@ -3,7 +3,7 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    5.17.4
+Version:    5.18.8
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -131,6 +131,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Fri Jul 01 2022 Ting-Wei Lan <lantw44@gmail.com> - 5.18.8-1
+- Update to 5.18.8
+
 * Tue Apr 26 2022 Ting-Wei Lan <lantw44@gmail.com> - 5.17.4-1
 - Update to 5.17.4
 
