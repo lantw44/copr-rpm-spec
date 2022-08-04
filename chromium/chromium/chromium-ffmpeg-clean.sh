@@ -81,6 +81,7 @@ header_files="	libavcodec/x86/inline_asm.h \
 		libavcodec/aac_ac3_parser.h \
 		libavcodec/aac_defines.h \
 		libavcodec/ac3.h \
+		libavcodec/ac3defs.h \
 		libavcodec/ac3tab.h \
 		libavcodec/adts_header.h \
 		libavcodec/avcodec.h \

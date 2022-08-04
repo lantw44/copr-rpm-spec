@@ -56,7 +56,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    103.0.5060.134
+Version:    104.0.5112.79
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -96,19 +96,22 @@ Source12:   chromium-browser.xml
 Patch0:     chromium-stub-unrar-wrapper.patch
 
 # Don't require static libstdc++
-Patch2:     chromium-gn-no-static-libstdc++.patch
-
-# Fix missing opus dependency for media/mojo/services/gpu_mojo_media_client.cc
-Patch3:     chromium-media-mojo-services-opus.patch
+Patch1:     chromium-gn-no-static-libstdc++.patch
 
 # Don't use unversioned python commands. This patch is based on
 # https://src.fedoraproject.org/rpms/chromium/c/7048e95ab61cd143
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
-Patch10:    chromium-python3.patch
+Patch2:     chromium-python3.patch
+
+# Fix missing opus dependency for media/mojo/services/gpu_mojo_media_client.cc
+Patch3:     chromium-media-mojo-services-opus.patch
+
+# Pull patches from Gentoo
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=cc8b4484b9a3461e
+Patch10:    chromium-tflite-minizip.patch
 
 # Pull upstream patches
-Patch40:    chromium-gcc-12-r1003039.patch
-Patch41:    chromium-gcc-12-r1004139.patch
+Patch20:    chromium-gcc-12-r1016345.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -727,6 +730,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Aug 04 2022 - Ting-Wei Lan <lantw44@gmail.com> - 104.0.5112.79-100
+- Update to 104.0.5112.79
+
 * Thu Jul 21 2022 - Ting-Wei Lan <lantw44@gmail.com> - 103.0.5060.134-100
 - Update to 103.0.5060.134
 
