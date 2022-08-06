@@ -3,7 +3,7 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    5.18.8
+Version:    5.19.0
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -122,6 +122,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/scsi/fc/*.h
 %dir %{cross_sysroot}/usr/include/sound
 %{cross_sysroot}/usr/include/sound/*.h
+%dir %{cross_sysroot}/usr/include/sound/intel
+%dir %{cross_sysroot}/usr/include/sound/intel/avs
+%{cross_sysroot}/usr/include/sound/intel/avs/tokens.h
 %dir %{cross_sysroot}/usr/include/sound/sof
 %{cross_sysroot}/usr/include/sound/sof/*.h
 %dir %{cross_sysroot}/usr/include/video
@@ -131,6 +134,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Sat Aug 06 2022 Ting-Wei Lan <lantw44@gmail.com> - 5.19.0-1
+- Update to 5.19
+
 * Fri Jul 01 2022 Ting-Wei Lan <lantw44@gmail.com> - 5.18.8-1
 - Update to 5.18.8
 
