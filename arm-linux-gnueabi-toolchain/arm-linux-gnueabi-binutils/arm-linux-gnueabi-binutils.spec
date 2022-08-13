@@ -7,8 +7,8 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.38
-Release:    2%{?dist}
+Version:    2.39
+Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 License:    GPLv3+
@@ -16,7 +16,7 @@ URL:        https://www.gnu.org/software/binutils
 Source0:    https://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.xz
 
 BuildRequires: gcc, gcc-c++
-BuildRequires: texinfo, gettext, flex, bison, zlib-devel
+BuildRequires: texinfo, gettext, flex, bison, jansson-devel, zlib-devel
 BuildRequires: %{cross_triplet}-filesystem
 Requires:   %{cross_triplet}-filesystem
 
@@ -36,6 +36,8 @@ Requires:   %{cross_triplet}-filesystem
     --enable-64-bit-bfd \
     --enable-ld=default \
     --enable-gold=yes \
+    --enable-gprofng=yes \
+    --enable-jansson=yes \
     --enable-multilib \
     --enable-threads \
     --enable-plugins \
@@ -56,6 +58,14 @@ rm -rf %{buildroot}%{_mandir}
 rm -rf %{buildroot}%{_infodir}
 rm -f %{buildroot}%{_libdir}/bfd-plugins/*.a
 rmdir %{buildroot}%{_libdir}/bfd-plugins
+%if "%{cross_arch}" == "arm64"
+rm -f %{buildroot}%{_includedir}/collectorAPI.h
+rm -f %{buildroot}%{_includedir}/libcollector.h
+rm -f %{buildroot}%{_includedir}/libfcollector.h
+rmdir %{buildroot}%{_includedir}
+rm -f %{buildroot}%{_sysconfdir}/gprofng.rc
+rmdir %{buildroot}%{_sysconfdir}
+%endif
 
 
 %files
@@ -68,6 +78,14 @@ rmdir %{buildroot}%{_libdir}/bfd-plugins
 %{_bindir}/%{cross_triplet}-dwp
 %{_bindir}/%{cross_triplet}-elfedit
 %{_bindir}/%{cross_triplet}-gprof
+%if "%{cross_arch}" == "arm64"
+%{_bindir}/%{cross_triplet}-gprofng
+%{_bindir}/%{cross_triplet}-gp-archive
+%{_bindir}/%{cross_triplet}-gp-collect-app
+%{_bindir}/%{cross_triplet}-gp-display-html
+%{_bindir}/%{cross_triplet}-gp-display-src
+%{_bindir}/%{cross_triplet}-gp-display-text
+%endif
 %{_bindir}/%{cross_triplet}-ld
 %{_bindir}/%{cross_triplet}-ld.bfd
 %{_bindir}/%{cross_triplet}-ld.gold
@@ -94,6 +112,9 @@ rmdir %{buildroot}%{_libdir}/bfd-plugins
 
 
 %changelog
+* Sat Aug 13 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.39-1
+- Update to 2.39
+
 * Tue Apr 26 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.38-2
 - Rebuilt for Fedora 36 and 37
 
