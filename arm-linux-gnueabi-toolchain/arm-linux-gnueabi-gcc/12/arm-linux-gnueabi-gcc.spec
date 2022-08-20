@@ -29,7 +29,7 @@
 %bcond_without ada
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    12.1.0
+Version:    12.2.0
 Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
@@ -399,6 +399,9 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 
 
 %changelog
+* Sat Aug 20 2022 Ting-Wei Lan <lantw44@gmail.com> - 12.2.0-1
+- Update to new stable release 12.2.0
+
 * Fri Jul 01 2022 Ting-Wei Lan <lantw44@gmail.com> - 12.1.0-1
 - Update to new stable release 12.1.0
 
