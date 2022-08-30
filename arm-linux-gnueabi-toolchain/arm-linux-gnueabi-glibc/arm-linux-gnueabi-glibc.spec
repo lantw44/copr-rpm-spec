@@ -48,8 +48,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.35
-Release:    2%{?dist}
+Version:    2.36
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -376,6 +376,7 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/include/sys/param.h
 %{cross_sysroot}/usr/include/sys/pci.h
 %{cross_sysroot}/usr/include/sys/personality.h
+%{cross_sysroot}/usr/include/sys/pidfd.h
 %{cross_sysroot}/usr/include/sys/poll.h
 %{cross_sysroot}/usr/include/sys/prctl.h
 %{cross_sysroot}/usr/include/sys/procfs.h
@@ -507,6 +508,9 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Tue Aug 30 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.36-1
+- Update to 2.36
+
 * Tue Apr 26 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.35-2
 - Remove the headers-only bulid because we no longer need it to bootstrap GCC
 - Replace bootstrap macro with cross_stage macro copied from our GCC package

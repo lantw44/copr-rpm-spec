@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    11.3.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -38,6 +38,8 @@ Summary:    The GNU Compiler Collection (%{cross_triplet})
 License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
 URL:        https://gcc.gnu.org
 Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
+Patch0:     gcc-11-libsanitizer-glibc-2.36.patch
+Patch1:     gcc-11-libgo-glibc-2.36.patch
 
 BuildRequires: gcc, gcc-c++
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel
@@ -395,6 +397,9 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 
 
 %changelog
+* Tue Aug 30 2022 Ting-Wei Lan <lantw44@gmail.com> - 11.3.0-2
+- Fix build failure with GLIBC 2.36
+
 * Tue Apr 26 2022 Ting-Wei Lan <lantw44@gmail.com> - 11.3.0-1
 - Update to new stable release 11.3.0
 - Build libgcc in the first bootstrap stage
