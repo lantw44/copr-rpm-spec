@@ -1,5 +1,5 @@
 diff --git a/third_party/unrar/BUILD.gn b/third_party/unrar/BUILD.gn
-index 96756a8a538a..5b300ef5667f 100644
+index 96756a8a538a1..5b300ef5667f9 100644
 --- a/third_party/unrar/BUILD.gn
 +++ b/third_party/unrar/BUILD.gn
 @@ -23,54 +23,7 @@ config("unrar_warnings") {
@@ -58,7 +58,7 @@ index 96756a8a538a..5b300ef5667f 100644
    if (is_win) {
      sources += [ "src/isnt.cpp" ]
 diff --git a/third_party/unrar/src/unrar_wrapper.cc b/third_party/unrar/src/unrar_wrapper.cc
-index 827514b02bd8..6879a2d84988 100644
+index b20de6fec29f5..6879a2d849889 100644
 --- a/third_party/unrar/src/unrar_wrapper.cc
 +++ b/third_party/unrar/src/unrar_wrapper.cc
 @@ -9,7 +9,6 @@
@@ -69,7 +69,7 @@ index 827514b02bd8..6879a2d84988 100644
  
  namespace third_party_unrar {
  
-@@ -18,57 +17,10 @@ RarReader::RarReader() {}
+@@ -18,74 +17,10 @@ RarReader::RarReader() {}
  RarReader::~RarReader() {}
  
  bool RarReader::Open(base::File rar_file, base::File temp_file) {
@@ -121,7 +121,24 @@ index 827514b02bd8..6879a2d84988 100644
 -      current_entry_.is_directory = archive_->FileHead.Dir;
 -      current_entry_.is_encrypted = archive_->FileHead.Encrypted;
 -      current_entry_.file_size = extractor_->GetCurrentFileSize();
--      return true;
+-
+-      if (success) {
+-        return true;
+-      }
+-
+-      if (archive_->FileHead.Encrypted) {
+-        // Since Chromium doesn't have the password, manually skip over the
+-        // encrypted data and fill in the metadata we do have.
+-        archive_->SeekToNext();
+-        return true;
+-      }
+-
+-      if (extractor_->IsMissingNextVolume()) {
+-        // Since Chromium doesn't have the next volume, manually skip over this
+-        // file, but report the metadata we do have.
+-        archive_->SeekToNext();
+-        return true;
+-      }
 -    }
 -  }
 -
@@ -129,7 +146,7 @@ index 827514b02bd8..6879a2d84988 100644
  }
  
 diff --git a/third_party/unrar/src/unrar_wrapper.h b/third_party/unrar/src/unrar_wrapper.h
-index 05bf5b256383..b96260c70971 100644
+index 05bf5b256383f..b96260c709717 100644
 --- a/third_party/unrar/src/unrar_wrapper.h
 +++ b/third_party/unrar/src/unrar_wrapper.h
 @@ -12,9 +12,9 @@

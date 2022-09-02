@@ -56,7 +56,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    104.0.5112.101
+Version:    105.0.5195.52
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -111,7 +111,10 @@ Patch3:     chromium-media-mojo-services-opus.patch
 Patch10:    chromium-tflite-minizip.patch
 
 # Pull upstream patches
-Patch20:    chromium-gcc-12-r1016345.patch
+Patch20:    chromium-gcc-12-r1027289.patch
+Patch21:    chromium-gcc-12-r1027342.patch
+Patch22:    chromium-gcc-12-r1030277.patch
+Patch23:    chromium-gcc-12-r1035128.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -167,8 +170,8 @@ BuildRequires: snappy-devel
 BuildRequires: zlib-devel
 # *_use_*
 BuildRequires: pciutils-devel
-BuildRequires: speech-dispatcher-devel
 BuildRequires: pulseaudio-libs-devel
+BuildRequires: wayland-devel
 BuildRequires: pkgconfig(libpipewire-0.3)
 # install desktop files
 BuildRequires: desktop-file-utils
@@ -221,7 +224,6 @@ find -type f -exec \
     base/third_party/double_conversion \
     base/third_party/dynamic_annotations \
     base/third_party/icu \
-    base/third_party/libevent \
     base/third_party/nspr \
     base/third_party/superfasthash \
     base/third_party/symbolize \
@@ -271,6 +273,7 @@ find -type f -exec \
     third_party/ced \
     third_party/cld_3 \
     third_party/closure_compiler \
+    third_party/content_analysis_sdk \
     third_party/cpuinfo \
     third_party/crashpad \
     third_party/crashpad/crashpad/third_party/lss \
@@ -342,6 +345,7 @@ find -type f -exec \
     third_party/libaom/source/libaom/third_party/vector \
     third_party/libaom/source/libaom/third_party/x86inc \
     third_party/libavif \
+    third_party/libevent \
     third_party/libgav1 \
     third_party/libgifcodec \
     third_party/libjingle \
@@ -396,7 +400,7 @@ find -type f -exec \
     third_party/pdfium/third_party/bigint \
     third_party/pdfium/third_party/freetype \
     third_party/pdfium/third_party/lcms \
-    third_party/pdfium/third_party/libopenjpeg20 \
+    third_party/pdfium/third_party/libopenjpeg \
     third_party/pdfium/third_party/libpng16 \
     third_party/pdfium/third_party/libtiff \
     third_party/pdfium/third_party/skia_shared \
@@ -517,6 +521,8 @@ ln -s %{_bindir}/java third_party/jdk/current/bin/java
 mkdir -p buildtools/third_party/eu-strip/bin
 ln -s %{_bindir}/true buildtools/third_party/eu-strip/bin/eu-strip
 
+rm -r third_party/wayland/src
+
 
 %build
 export AR=ar NM=nm
@@ -559,6 +565,7 @@ gn_args=(
 %endif
     use_system_libdrm=true
     use_system_minigbm=true
+    use_system_wayland_scanner=true
     use_xkbcommon=true
     ozone_auto_platforms=false
     'ozone_platform="x11"'
@@ -730,6 +737,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Sep 02 2022 - Ting-Wei Lan <lantw44@gmail.com> - 105.0.5195.52-100
+- Update to 105.0.5195.52
+
 * Thu Aug 18 2022 - Ting-Wei Lan <lantw44@gmail.com> - 104.0.5112.101-100
 - Update to 104.0.5112.101
 
