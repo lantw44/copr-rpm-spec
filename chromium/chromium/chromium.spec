@@ -56,7 +56,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    105.0.5195.125
+Version:    106.0.5249.91
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -106,15 +106,9 @@ Patch2:     chromium-python3.patch
 # Fix missing opus dependency for media/mojo/services/gpu_mojo_media_client.cc
 Patch3:     chromium-media-mojo-services-opus.patch
 
-# Pull patches from Gentoo
-# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=cc8b4484b9a3461e
-Patch10:    chromium-tflite-minizip.patch
-
 # Pull upstream patches
-Patch20:    chromium-gcc-12-r1027289.patch
-Patch21:    chromium-gcc-12-r1027342.patch
-Patch22:    chromium-gcc-12-r1030277.patch
-Patch23:    chromium-gcc-12-r1035128.patch
+Patch10:    chromium-gcc-12-r1037800.patch
+Patch11:    chromium-gcc-12-r1042121.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -250,6 +244,7 @@ find -type f -exec \
     third_party/angle/src/third_party/volk \
     third_party/apple_apsl \
     third_party/axe-core \
+    third_party/bidimapper \
     third_party/blink \
     third_party/boringssl \
     third_party/boringssl/src/third_party/fiat \
@@ -334,6 +329,7 @@ find -type f -exec \
     third_party/icu \
 %endif
     third_party/inspector_protocol \
+    third_party/ipcz \
     third_party/jinja2 \
     third_party/jsoncpp \
     third_party/jstemplate \
@@ -737,6 +733,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Oct 05 2022 - Ting-Wei Lan <lantw44@gmail.com> - 106.0.5249.91-100
+- Update to 106.0.5249.91
+
 * Thu Sep 15 2022 - Ting-Wei Lan <lantw44@gmail.com> - 105.0.5195.125-100
 - Update to 105.0.5195.125
 
