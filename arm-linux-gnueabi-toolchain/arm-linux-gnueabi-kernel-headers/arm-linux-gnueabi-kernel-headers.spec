@@ -3,7 +3,7 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    5.19.0
+Version:    6.0.5
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -12,7 +12,7 @@ Summary:    Header files for the Linux kernel (%{cross_triplet})
 
 License:    GPLv2
 URL:        https://www.kernel.org/
-Source0:    https://www.kernel.org/pub/linux/kernel/v5.x/linux-%{kversion}.tar.xz
+Source0:    https://www.kernel.org/pub/linux/kernel/v6.x/linux-%{kversion}.tar.xz
 
 BuildRequires: %{cross_triplet}-filesystem
 BuildRequires: perl, rsync
@@ -134,6 +134,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 6.0.5-1
+- Update to 6.0.5
+
 * Sat Aug 06 2022 Ting-Wei Lan <lantw44@gmail.com> - 5.19.0-1
 - Update to 5.19
 
