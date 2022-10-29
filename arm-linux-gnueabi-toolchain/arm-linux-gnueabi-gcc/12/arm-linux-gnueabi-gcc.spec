@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    12.2.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -243,6 +243,7 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 %{_bindir}/%{cross_triplet}-gcov-dump
 %{_bindir}/%{cross_triplet}-gcov-tool
 %{_bindir}/%{cross_triplet}-lto-dump
+%dir %{_prefix}/lib/gcc
 %dir %{_prefix}/lib/gcc/%{cross_triplet}
 %dir %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}
 %dir %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include-fixed
@@ -287,6 +288,7 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/libgcc.a
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/libgcov.a
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/plugin
+%dir %{_libexecdir}/gcc
 %dir %{_libexecdir}/gcc/%{cross_triplet}
 %dir %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/cc1
@@ -399,6 +401,9 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 
 
 %changelog
+* Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 12.2.0-2
+- Own /usr/lib/gcc and /usr/libexec/gcc
+
 * Sat Aug 20 2022 Ting-Wei Lan <lantw44@gmail.com> - 12.2.0-1
 - Update to new stable release 12.2.0
 
