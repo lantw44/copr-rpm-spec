@@ -49,7 +49,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.36
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -508,6 +508,9 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.36-2
+- Rebuilt for Fedora 37 and 38
+
 * Tue Aug 30 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.36-1
 - Update to 2.36
 

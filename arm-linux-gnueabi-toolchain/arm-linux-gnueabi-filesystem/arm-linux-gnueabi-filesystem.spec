@@ -14,7 +14,7 @@
 
 Name:       %{cross_triplet}-filesystem
 Version:    3
-Release:    16%{?dist}
+Release:    17%{?dist}
 Summary:    Cross compilation toolchain filesystem layout (%{cross_triplet})
 
 License:    Public Domain
@@ -83,6 +83,9 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 
 
 %changelog
+* Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 3-17
+- Rebuilt for Fedora 37 and 38
+
 * Tue Apr 26 2022 Ting-Wei Lan <lantw44@gmail.com> - 3-16
 - Rebuilt for Fedora 36 and 37
 
