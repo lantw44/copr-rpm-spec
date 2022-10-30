@@ -2,7 +2,7 @@
 %global pkgname edit-indirect
 
 Name:           emacs-%{pkg}
-Version:        0.1.8
+Version:        0.1.10
 Release:        1%{?dist}
 Summary:        Edit regions in separate buffers
 
@@ -41,6 +41,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/edit-indirect/
 
 
 %changelog
+* Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.1.10-1
+- Update to 0.1.10
+
 * Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.1.8-1
 - Update to 0.1.8
 
