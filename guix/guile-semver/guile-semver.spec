@@ -8,7 +8,7 @@
 
 Name:           guile-semver
 Version:        0.1.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Guile library for Semantic Versioning
 
 License:        GPLv3+
@@ -63,6 +63,9 @@ ranges. It supports:
 
 
 %changelog
+* Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-5
+- Rebuilt for Fedora 37 and 38
+
 * Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-4
 - Rebuilt for Fedora 36 and 37
 

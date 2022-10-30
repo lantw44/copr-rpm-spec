@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.3.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Transient commands
 
 License:        GPLv3+
@@ -66,5 +66,8 @@ fi
 
 
 %changelog
+* Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.3.7-2
+- Rebuilt for Fedora 37 and 38
+
 * Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.3.7-1
 - Initial packaging

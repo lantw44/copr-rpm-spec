@@ -8,7 +8,7 @@
 
 Name:           guile-lzlib
 Version:        0.0.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Guile bindings for lzlib
 
 License:        GPLv3+
@@ -58,6 +58,9 @@ autoreconf -fiv
 
 
 %changelog
+* Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.0.2-5
+- Rebuilt for Fedora 37 and 38
+
 * Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.0.2-4
 - Rebuilt for Fedora 36 and 37
 
