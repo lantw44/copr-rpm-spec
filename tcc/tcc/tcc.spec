@@ -10,13 +10,13 @@
 %global debug_package %{nil}
 %endif
 
-%global date 20220428
-%global gitrev fa9c31c3db1898d804db2289a11d9f368da88dd1
+%global date 20221023
+%global gitrev df6fd04aafc9a6f06f3d319eba07031e835a6f2c
 %global shortgitrev %(c=%{gitrev}; echo "${c:0:7}")
 
 Name:       %{pkg_fullname}
 Version:    0.9.28
-Release:    0.3.%{date}git%{shortgitrev}%{?dist}
+Release:    0.4.%{date}git%{shortgitrev}%{?dist}
 Summary:    Tiny C Compiler
 
 License:    LGPLv2
@@ -140,6 +140,9 @@ fi
 
 
 %changelog
+* Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.9.28-0.4.20221023gitdf6fd04
+- Update to the latest git snapshot
+
 * Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.9.28-0.3.20220428gitfa9c31c
 - Update to the latest git snapshot
 - Fix build on Fedora 36
