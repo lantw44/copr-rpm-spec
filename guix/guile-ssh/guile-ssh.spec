@@ -1,10 +1,10 @@
 Name:           guile-ssh
-Version:        0.15.1
+Version:        0.16.0
 Release:        1%{?dist}
 Summary:        A library that provides access to the SSH protocol for GNU Guile
 
 License:        GPLv3+
-URL:            https://github.com/artyom-poptsov/guile-ssh
+URL:            https://memory-heap.org/~avp/projects/guile-ssh
 Source0:        https://github.com/artyom-poptsov/guile-ssh/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %global guile_source_dir %{_datadir}/guile/site/2.2
@@ -76,6 +76,9 @@ fi
 
 
 %changelog
+* Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.16.0-1
+- Update to 0.16.0
+
 * Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.15.1-1
 - Update to 0.15.1
 
