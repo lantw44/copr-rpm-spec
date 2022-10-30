@@ -7,7 +7,7 @@
 %endif
 
 Name:           guile-json
-Version:        4.7.1
+Version:        4.7.2
 Release:        1%{?dist}
 Summary:        JSON module for Guile
 
@@ -66,6 +66,9 @@ features:
 
 
 %changelog
+* Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 4.7.2-1
+- Update to 4.7.2
+
 * Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 4.7.1-1
 - Update to 4.7.1
 
