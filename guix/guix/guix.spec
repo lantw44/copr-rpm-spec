@@ -1,4 +1,4 @@
-# Bootstrap binaries provided by guix don't have build IDs
+# Bootstrap binaries provided by guix don't have build IDs.
 %global _missing_build_ids_terminate_build 0
 
 %global selinuxtype   targeted
@@ -6,7 +6,7 @@
 
 Name:           guix
 Version:        1.3.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -147,37 +147,20 @@ if [ "${cwd_len}" -gt 36 ]; then
     echo 'The working directory cannot be longer than 36 bytes.'
     exit 1
 fi
-# replace guile with guile2.2
+# Replace guile with guile2.2.
 sed -i 's|guile -c|guile2.2 -c|g' tests/*.sh
 sed -i 's|-- guile2.2|-- guile|g' tests/*.sh
-# user namespace may be unsupported
-if ! unshare -Ur true; then
-    sed -i 's|tests/guix-pack\.sh||' Makefile
-fi
-# don't run tests as root
-if [ "$(id -u)" = 0 ]; then
-    if [ %{_topdir} = /builddir/build ]; then
-        chown -R nobody:nobody %{_topdir}
-        setfacl -m u:nobody:x /builddir
-    fi
-    runuser -u nobody -- %{__make} %{?_smp_mflags} check
-else
-    %{__make} %{?_smp_mflags} check
-fi
-# print the log on failure
-ret="$?"
-if [ "${ret}" != 0 ]; then
-    cat test-suite.log
-fi
-exit "${ret}"
+%{__make} %{?_smp_mflags} check
+# Grant write permission so rpmbuild can clean the build root.
+chmod -R u+w "$(pwd)/t"
 
 
 %install
 %make_install systemdservicedir=%{_unitdir}
-# rename systemd service files provided by upstream
+# Rename systemd service files provided by upstream.
 mv %{buildroot}%{_unitdir}/guix-daemon{,-latest}.service
 mv %{buildroot}%{_unitdir}/guix-publish{,-latest}.service
-# generate default systemd service files from upstream ones
+# Generate default systemd service files from upstream ones.
 sed -e 's|^ExecStart=%{guix_profile_root}/bin|ExecStart=%{_bindir}|' \
     -e 's|^Description=\(.*\)|Description=\1 (default)|' \
     -e '/^Environment=/d' %{buildroot}%{_unitdir}/guix-daemon-latest.service \
@@ -186,23 +169,23 @@ sed -e 's|^ExecStart=%{guix_profile_root}/bin|ExecStart=%{_bindir}|' \
     -e 's|^Description=\(.*\)|Description=\1 (default)|' \
     -e '/^Environment=/d' %{buildroot}%{_unitdir}/guix-publish-latest.service \
     > %{buildroot}%{_unitdir}/guix-publish.service
-# generated files must be different from upstream ones
+# Generated files must be different from upstream ones.
 ! cmp %{buildroot}%{_unitdir}/guix-daemon{,-latest}.service
 ! cmp %{buildroot}%{_unitdir}/guix-publish{,-latest}.service
-# edit the description of upstream systemd service files
+# Edit the description of upstream systemd service files.
 sed -i 's|^Description=\(.*\)|Description=\1 (upstream)|' \
     %{buildroot}%{_unitdir}/guix-daemon-latest.service \
     %{buildroot}%{_unitdir}/guix-publish-latest.service
-# drop useless upstart service files
+# Drop useless upstart service files.
 rm %{buildroot}%{_libdir}/upstart/system/guix-daemon.conf
 rm %{buildroot}%{_libdir}/upstart/system/guix-publish.conf
 rmdir %{buildroot}%{_libdir}/upstart/system
 rmdir %{buildroot}%{_libdir}/upstart
-# drop useless openrc service files
+# Drop useless openrc service files.
 rm %{buildroot}%{_sysconfdir}/openrc/guix-daemon
-# drop useless sysvinit service files
+# Drop useless sysvinit service files.
 rm %{buildroot}%{_sysconfdir}/init.d/guix-daemon
-# own the configuration directory
+# Own the configuration directory.
 mkdir -p %{buildroot}%{_sysconfdir}/guix
 %find_lang guix
 %find_lang guix-packages
@@ -471,6 +454,10 @@ fi
 
 
 %changelog
+* Thu Nov 03 2022 Ting-Wei Lan <lantw44@gmail.com> - 1.3.0-4
+- Drop unused code from the check stage
+- Grant write permission to fix the rmbuild stage on Fedora 37 and later
+
 * Thu Apr 28 2022 Ting-Wei Lan <lantw44@gmail.com> - 1.3.0-3
 - Rebuilt for Fedora 36 and 37
 
