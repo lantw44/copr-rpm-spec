@@ -58,7 +58,7 @@ index 96756a8a538a1..5b300ef5667f9 100644
    if (is_win) {
      sources += [ "src/isnt.cpp" ]
 diff --git a/third_party/unrar/src/unrar_wrapper.cc b/third_party/unrar/src/unrar_wrapper.cc
-index b20de6fec29f5..6879a2d849889 100644
+index 04f44784a4ddd..6879a2d849889 100644
 --- a/third_party/unrar/src/unrar_wrapper.cc
 +++ b/third_party/unrar/src/unrar_wrapper.cc
 @@ -9,7 +9,6 @@
@@ -69,7 +69,7 @@ index b20de6fec29f5..6879a2d849889 100644
  
  namespace third_party_unrar {
  
-@@ -18,74 +17,10 @@ RarReader::RarReader() {}
+@@ -18,75 +17,10 @@ RarReader::RarReader() {}
  RarReader::~RarReader() {}
  
  bool RarReader::Open(base::File rar_file, base::File temp_file) {
@@ -120,7 +120,8 @@ index b20de6fec29f5..6879a2d849889 100644
 -#endif
 -      current_entry_.is_directory = archive_->FileHead.Dir;
 -      current_entry_.is_encrypted = archive_->FileHead.Encrypted;
--      current_entry_.file_size = extractor_->GetCurrentFileSize();
+-      current_entry_.file_size =
+-          current_entry_.is_directory ? 0 : extractor_->GetCurrentFileSize();
 -
 -      if (success) {
 -        return true;

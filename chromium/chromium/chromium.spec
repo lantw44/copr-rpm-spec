@@ -8,6 +8,13 @@
 # Get the version number of latest stable version
 # $ curl -s 'https://omahaproxy.appspot.com/all?os=linux&channel=stable' | sed 1d | cut -d , -f 3
 
+# Require dav1d >= 1.0.0 for Dav1dSettings.n_threads
+%if 0%{?fedora} >= 37
+%bcond_without system_dav1d
+%else
+%bcond_with system_dav1d
+%endif
+
 # Require freetype >= 2.11.1 for FT_ClipBox
 %if 0%{?fedora} >= 36
 %bcond_without system_freetype
@@ -20,6 +27,13 @@
 %bcond_without system_harfbuzz
 %else
 %bcond_with system_harfbuzz
+%endif
+
+# Require libaom >= 3.4.0 for AOM_IMG_FMT_NV12
+%if 0%{?fedora} >= 37
+%bcond_without system_libaom
+%else
+%bcond_with system_libaom
 %endif
 
 # Require libxml2 > 2.9.4 for XML_PARSE_NOXXE
@@ -56,7 +70,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    106.0.5249.119
+Version:    107.0.5304.87
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -107,8 +121,7 @@ Patch2:     chromium-python3.patch
 Patch3:     chromium-media-mojo-services-opus.patch
 
 # Pull upstream patches
-Patch10:    chromium-gcc-12-r1037800.patch
-Patch11:    chromium-gcc-12-r1042121.patch
+Patch10:    chromium-minizip-r1063478.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -154,6 +167,12 @@ BuildRequires: libpng-devel
 BuildRequires: libvpx-devel
 %endif
 BuildRequires: libwebp-devel
+%if %{with system_libaom}
+BuildRequires: pkgconfig(aom)
+%endif
+%if %{with system_dav1d}
+BuildRequires: pkgconfig(dav1d)
+%endif
 %if %{with system_libxml2}
 BuildRequires: pkgconfig(libxml-2.0)
 %endif
@@ -167,6 +186,7 @@ BuildRequires: pciutils-devel
 BuildRequires: pulseaudio-libs-devel
 BuildRequires: wayland-devel
 BuildRequires: pkgconfig(libpipewire-0.3)
+BuildRequires: pkgconfig(Qt5Core), pkgconfig(Qt5Widgets)
 # install desktop files
 BuildRequires: desktop-file-utils
 # install AppData files
@@ -275,7 +295,9 @@ find -type f -exec \
     third_party/crashpad/crashpad/third_party/zlib \
     third_party/crc32c \
     third_party/cros_system_api \
+%if !%{with system_dav1d}
     third_party/dav1d \
+%endif
     third_party/dawn \
     third_party/dawn/third_party/gn/webgpu-cts \
     third_party/dawn/third_party/khronos \
@@ -336,10 +358,12 @@ find -type f -exec \
     third_party/khronos \
     third_party/leveldatabase \
     third_party/libaddressinput \
+%if !%{with system_libaom}
     third_party/libaom \
     third_party/libaom/source/libaom/third_party/fastfeat \
     third_party/libaom/source/libaom/third_party/vector \
     third_party/libaom/source/libaom/third_party/x86inc \
+%endif
     third_party/libavif \
     third_party/libevent \
     third_party/libgav1 \
@@ -383,7 +407,7 @@ find -type f -exec \
     third_party/nearby \
     third_party/neon_2_sse \
     third_party/node \
-    third_party/node/node_modules/polymer-bundler/lib/third_party/UglifyJS2 \
+    third_party/omnibox_proto \
     third_party/one_euro_filter \
     third_party/openh264 \
     third_party/openscreen \
@@ -423,9 +447,7 @@ find -type f -exec \
     third_party/simplejson \
     third_party/six \
     third_party/skia \
-    third_party/skia/include/third_party/skcms \
     third_party/skia/include/third_party/vulkan \
-    third_party/skia/third_party/skcms \
     third_party/skia/third_party/vulkan \
     third_party/smhasher \
     third_party/speech-dispatcher \
@@ -477,6 +499,9 @@ find -type f -exec \
     v8/third_party/v8
 
 ./build/linux/unbundle/replace_gn_files.py --system-libraries \
+%if %{with system_dav1d}
+    dav1d \
+%endif
     flac \
     fontconfig \
 %if %{with system_freetype}
@@ -487,6 +512,9 @@ find -type f -exec \
 %endif
 %if %{with system_libicu}
     icu \
+%endif
+%if %{with system_libaom}
+    libaom \
 %endif
     libdrm \
     libjpeg \
@@ -553,6 +581,7 @@ gn_args=(
     use_libpci=true
     use_ozone=true
     use_pulseaudio=true
+    use_qt=true
 %if %{with system_freetype}
     use_system_freetype=true
 %endif
@@ -560,6 +589,7 @@ gn_args=(
     use_system_harfbuzz=true
 %endif
     use_system_libdrm=true
+    use_system_libwayland_server=true
     use_system_minigbm=true
     use_system_wayland_scanner=true
     use_xkbcommon=true
@@ -719,6 +749,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %endif
 %{chromiumdir}/libEGL.so
 %{chromiumdir}/libGLESv2.so
+%{chromiumdir}/libqt5_shim.so
 %{chromiumdir}/libVkICD_mock_icd.so
 %{chromiumdir}/libVkLayer_khronos_validation.so
 %{chromiumdir}/libvk_swiftshader.so
@@ -733,6 +764,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Nov 03 2022 - Ting-Wei Lan <lantw44@gmail.com> - 107.0.5304.87-100
+- Update to 107.0.5304.87
+- Unbundle dav1d and libaom on Fedora 37 and later
+- Enable Qt backend
+
 * Wed Oct 12 2022 - Ting-Wei Lan <lantw44@gmail.com> - 106.0.5249.119-100
 - Update to 106.0.5249.119
 
