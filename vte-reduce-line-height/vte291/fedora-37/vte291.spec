@@ -11,8 +11,8 @@
 %global pcre2_version 10.21
 
 Name:           vte291
-Version:        0.70.0
-Release:        2%{?dist}.1
+Version:        0.70.1
+Release:        1%{?dist}.1
 Summary:        GTK+ 3 terminal emulator library (Copr: lantw44/vte-reduce-line-height)
 
 # libvte-2.91.so is generated from LGPLv2+ and MIT sources
@@ -188,6 +188,9 @@ sed -i -e "/^vte_systemduserunitdir =/s|vte_prefix|'/usr'|" meson.build
 %{_sysconfdir}/profile.d/vte.sh
 
 %changelog
+* Fri Oct 28 2022 David King <amigadave@amigadave.com> - 0.70.1-1
+- Update to 0.70.1
+
 * Mon Sep 26 2022 David King <amigadave@amigadave.com> - 0.70.0-2
 - Fix GTK4 ABI padding (#2122922)
 
