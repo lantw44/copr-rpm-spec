@@ -70,7 +70,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    107.0.5304.87
+Version:    107.0.5304.110
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -764,6 +764,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Nov 10 2022 - Ting-Wei Lan <lantw44@gmail.com> - 107.0.5304.110-100
+- Update to 107.0.5304.110
+
 * Thu Nov 03 2022 - Ting-Wei Lan <lantw44@gmail.com> - 107.0.5304.87-100
 - Update to 107.0.5304.87
 - Unbundle dav1d and libaom on Fedora 37 and later
