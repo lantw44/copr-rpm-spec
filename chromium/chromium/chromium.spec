@@ -22,8 +22,8 @@
 %bcond_with system_freetype
 %endif
 
-# Require harfbuzz >= 3.0.0 for hb_subset_input_set_flags
-%if 0%{?fedora} >= 36
+# Require harfbuzz >= 4.4.0 for hb-cplusplus.hh
+%if 0%{?fedora} >= 37
 %bcond_without system_harfbuzz
 %else
 %bcond_with system_harfbuzz
@@ -70,7 +70,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    107.0.5304.121
+Version:    108.0.5359.94
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -121,7 +121,9 @@ Patch2:     chromium-python3.patch
 Patch3:     chromium-media-mojo-services-opus.patch
 
 # Pull upstream patches
-Patch10:    chromium-minizip-r1063478.patch
+Patch10:    chromium-gcc-12-r1061645.patch
+Patch11:    chromium-minizip-r1063478.patch
+Patch12:    chromium-crashpad-template.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -343,7 +345,6 @@ find -type f -exec \
 %if !%{with system_harfbuzz}
     third_party/harfbuzz-ng \
 %endif
-    third_party/harfbuzz-ng/utils \
     third_party/highway \
     third_party/hunspell \
     third_party/iccjpeg \
@@ -361,13 +362,13 @@ find -type f -exec \
 %if !%{with system_libaom}
     third_party/libaom \
     third_party/libaom/source/libaom/third_party/fastfeat \
+    third_party/libaom/source/libaom/third_party/SVT-AV1 \
     third_party/libaom/source/libaom/third_party/vector \
     third_party/libaom/source/libaom/third_party/x86inc \
 %endif
     third_party/libavif \
     third_party/libevent \
     third_party/libgav1 \
-    third_party/libgifcodec \
     third_party/libjingle \
     third_party/libjxl \
     third_party/libphonenumber \
@@ -545,11 +546,9 @@ ln -s %{_bindir}/java third_party/jdk/current/bin/java
 mkdir -p buildtools/third_party/eu-strip/bin
 ln -s %{_bindir}/true buildtools/third_party/eu-strip/bin/eu-strip
 
-rm -r third_party/wayland/src
-
 
 %build
-export AR=ar NM=nm
+export AR=ar NM=nm PATH="${PATH}:%{_qt5_bindir}"
 
 # Fedora 25 doesn't have __global_cxxflags
 %if %{with fedora_compilation_flags}
@@ -589,7 +588,7 @@ gn_args=(
     use_system_harfbuzz=true
 %endif
     use_system_libdrm=true
-    use_system_libwayland_server=true
+    use_system_libwayland=true
     use_system_minigbm=true
     use_system_wayland_scanner=true
     use_xkbcommon=true
@@ -764,6 +763,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon Dec 05 2022 - Ting-Wei Lan <lantw44@gmail.com> - 108.0.5359.94-100
+- Update to 108.0.5359.94
+
 * Sat Nov 26 2022 - Ting-Wei Lan <lantw44@gmail.com> - 107.0.5304.121-100
 - Update to 107.0.5304.121
 
