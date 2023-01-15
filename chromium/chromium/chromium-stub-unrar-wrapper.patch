@@ -1,11 +1,11 @@
 diff --git a/third_party/unrar/BUILD.gn b/third_party/unrar/BUILD.gn
-index 96756a8a538a1..5b300ef5667f9 100644
+index 97f4e0460ad7c..0d665e199e4b4 100644
 --- a/third_party/unrar/BUILD.gn
 +++ b/third_party/unrar/BUILD.gn
-@@ -23,54 +23,7 @@ config("unrar_warnings") {
- 
- static_library("unrar") {
+@@ -25,53 +25,6 @@ static_library("unrar") {
    sources = [
+     "google/unrar_wrapper.cc",
+     "google/unrar_wrapper.h",
 -    "src/archive.cpp",
 -    "src/arcread.cpp",
 -    "src/blake2s.cpp",
@@ -52,15 +52,14 @@ index 96756a8a538a1..5b300ef5667f9 100644
 -    "src/ui.cpp",
 -    "src/unicode.cpp",
 -    "src/unpack.cpp",
-     "src/unrar_wrapper.cc",
 -    "src/volume.cpp",
    ]
    if (is_win) {
      sources += [ "src/isnt.cpp" ]
-diff --git a/third_party/unrar/src/unrar_wrapper.cc b/third_party/unrar/src/unrar_wrapper.cc
-index 04f44784a4ddd..6879a2d849889 100644
---- a/third_party/unrar/src/unrar_wrapper.cc
-+++ b/third_party/unrar/src/unrar_wrapper.cc
+diff --git a/third_party/unrar/google/unrar_wrapper.cc b/third_party/unrar/google/unrar_wrapper.cc
+index 1b777d2275099..135ba83abbedd 100644
+--- a/third_party/unrar/google/unrar_wrapper.cc
++++ b/third_party/unrar/google/unrar_wrapper.cc
 @@ -9,7 +9,6 @@
  #include "base/files/file_path.h"
  #include "base/metrics/histogram_macros.h"
@@ -146,10 +145,10 @@ index 04f44784a4ddd..6879a2d849889 100644
    return false;
  }
  
-diff --git a/third_party/unrar/src/unrar_wrapper.h b/third_party/unrar/src/unrar_wrapper.h
-index 05bf5b256383f..b96260c709717 100644
---- a/third_party/unrar/src/unrar_wrapper.h
-+++ b/third_party/unrar/src/unrar_wrapper.h
+diff --git a/third_party/unrar/google/unrar_wrapper.h b/third_party/unrar/google/unrar_wrapper.h
+index 9e5a08bf092b0..01a1f7b023e4c 100644
+--- a/third_party/unrar/google/unrar_wrapper.h
++++ b/third_party/unrar/google/unrar_wrapper.h
 @@ -12,9 +12,9 @@
  
  // Forward declare the unrar symbols needed for extraction, so users of

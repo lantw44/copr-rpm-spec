@@ -70,7 +70,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    108.0.5359.124
+Version:    109.0.5414.74
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -119,11 +119,6 @@ Patch2:     chromium-python3.patch
 
 # Fix missing opus dependency for media/mojo/services/gpu_mojo_media_client.cc
 Patch3:     chromium-media-mojo-services-opus.patch
-
-# Pull upstream patches
-Patch10:    chromium-gcc-12-r1061645.patch
-Patch11:    chromium-minizip-r1063478.patch
-Patch12:    chromium-crashpad-template.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -319,6 +314,7 @@ find -type f -exec \
     third_party/devtools-frontend/src/front_end/third_party/lodash-isequal \
     third_party/devtools-frontend/src/front_end/third_party/marked \
     third_party/devtools-frontend/src/front_end/third_party/puppeteer \
+    third_party/devtools-frontend/src/front_end/third_party/puppeteer/package/lib/esm/third_party/mitt \
     third_party/devtools-frontend/src/front_end/third_party/wasmparser \
     third_party/devtools-frontend/src/test/unittests/front_end/third_party/i18n \
     third_party/devtools-frontend/src/third_party \
@@ -436,6 +432,7 @@ find -type f -exec \
     third_party/protobuf/third_party/six \
     third_party/pthreadpool \
     third_party/pyjson5 \
+    third_party/pyyaml \
     third_party/qcms \
 %if !%{with system_re2}
     third_party/re2 \
@@ -444,6 +441,7 @@ find -type f -exec \
     third_party/ruy \
     third_party/s2cellid \
     third_party/securemessage \
+    third_party/selenium-atoms \
     third_party/shell-encryption \
     third_party/simplejson \
     third_party/six \
@@ -461,6 +459,7 @@ find -type f -exec \
     third_party/swiftshader/third_party/SPIRV-Headers/include/spirv \
     third_party/swiftshader/third_party/SPIRV-Tools \
     third_party/swiftshader/third_party/subzero \
+    third_party/tensorflow_models \
     third_party/tensorflow-text \
     third_party/tflite \
     third_party/tflite/src/third_party/eigen3 \
@@ -763,6 +762,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Jan 14 2023 - Ting-Wei Lan <lantw44@gmail.com> - 109.0.5414.74-100
+- Update to 109.0.5414.74
+
 * Sat Dec 17 2022 - Ting-Wei Lan <lantw44@gmail.com> - 108.0.5359.124-100
 - Update to 108.0.5359.124
 

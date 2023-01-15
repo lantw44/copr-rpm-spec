@@ -312,12 +312,8 @@ if __name__ == '__main__':
   if (args.deleteunrar):
     unrar_dir = 'third_party/unrar'
     for filename in os.listdir(os.path.join(latest_dir, unrar_dir)):
-      if filename not in ['BUILD.gn', 'DEPS', 'src']:
+      if filename not in ['BUILD.gn', 'DEPS', 'google']:
         delete_chromium_dir_or_file(os.path.join(unrar_dir, filename))
-    unrar_src_dir = os.path.join(unrar_dir, 'src')
-    for filename in os.listdir(os.path.join(latest_dir, unrar_src_dir)):
-      if filename not in ['unrar_wrapper.h', 'unrar_wrapper.cc']:
-        delete_chromium_dir_or_file(os.path.join(unrar_src_dir, filename))
 
   if (not args.prep):
     print("Compressing cleaned tree, please wait...")
