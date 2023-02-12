@@ -5,26 +5,21 @@
 %global selinuxmodule guix-daemon
 
 Name:           guix
-Version:        1.3.0
-Release:        4%{?dist}
+Version:        1.4.0
+Release:        1%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
 URL:            https://guix.gnu.org
 Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 
-# Revert the commit causing tests/guix-environment.sh to fail on Guile 2.2.7.
-# The commit uses the expression
-#   zero? (modulo (round (* 100. (/ 65536 2656076))) 10))
-# in function display-download-progress, but it throws an error
-#   Wrong type (expecting exact integer): 2.0
-# when running on Guile 2.2.7.
-Patch0:         guix-1.3.0-revert-display-download-progress-tty.patch
+# Fix tests/guix-home.sh when Guix is not installed.
+Patch0:         guix-1.4.0-tests-guix-home.patch
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
-%global guile_source_dir  %{_datadir}/guile/site/2.2
-%global guile_ccache_dir  %{_libdir}/guile/2.2/site-ccache
+%global guile_source_dir  %{_datadir}/guile/site/3.0
+%global guile_ccache_dir  %{_libdir}/guile/3.0/site-ccache
 %global guix_profile_root %{_localstatedir}/guix/profiles/per-user/root/current-guix
 
 %global bash_completion_dir %(pkg-config --variable=completionsdir bash-completion)
@@ -37,44 +32,45 @@ Patch0:         guix-1.3.0-revert-display-download-progress-tty.patch
 BuildRequires:  gcc-c++
 BuildRequires:  autoconf, automake, gettext-devel, po4a, help2man, texinfo
 BuildRequires:  bzip2-devel, libgcrypt-devel, pkgconfig(sqlite3)
-BuildRequires:  gettext, help2man, graphviz
+BuildRequires:  gettext, graphviz
 BuildRequires:  bash-completion, fish
 BuildRequires:  selinux-policy, systemd
 
-# We require Guile 2.2.7 here because Guile 2.2.6 is known to crash with
-#   mmap(PROT_NONE) failed
-# during the build.
-
-BuildRequires:  pkgconfig(guile-2.2) >= 2.2.7
+BuildRequires:  glibc-langpack-en
+BuildRequires:  pkgconfig(guile-3.0) >= 3.0.3
 BuildRequires:  guile-gcrypt >= 0.1.0
 BuildRequires:  guile-sqlite3 >= 0.1.0
 BuildRequires:  guile-zlib >= 0.1.0
 BuildRequires:  guile-lzlib
 BuildRequires:  guile-avahi
-BuildRequires:  guile-git >= 0.3.0
+BuildRequires:  guile-git >= 0.5.0
 BuildRequires:  guile-json >= 4.3.0
 BuildRequires:  guile-ssh >= 0.13.0
 BuildRequires:  guile-zstd
 BuildRequires:  guile-semver
 BuildRequires:  guile-lib
-%if 0%{?fedora} >= 31
+BuildRequires:  guile-lzma
+BuildRequires:  disarchive
+%if 0
 BuildRequires:  gnutls-guile
 %else
-BuildRequires:  gnutls-guile22
+BuildRequires:  gnutls-guile30
 %endif
 
-Requires:       guile22 >= 2.2.7
+Requires:       guile30 >= 3.0.3
 Requires:       guile-gcrypt >= 0.1.0
 Requires:       guile-sqlite3 >= 0.1.0
 Requires:       guile-zlib >= 0.1.0
 Requires:       guile-lzlib
 Requires:       guile-avahi
-Requires:       guile-git >= 0.3.0
+Requires:       guile-git >= 0.5.0
 Requires:       guile-json >= 4.3.0
-%if 0%{?fedora} >= 31
+Requires:       guile-lzma
+Requires:       disarchive
+%if 0
 Requires:       gnutls-guile
 %else
-Requires:       gnutls-guile22
+Requires:       gnutls-guile30
 %endif
 
 Requires:       gzip, bzip2, xz
@@ -118,14 +114,9 @@ composed.
     --with-bash-completion-dir=%{bash_completion_dir} \
     --with-fish-completion-dir=%{fish_completion_dir} \
     --with-selinux-policy-dir=%{_datadir}/selinux/packages \
-    GUILE=%{_bindir}/guile2.2 \
-    GUILD=%{_bindir}/guild2.2 \
     ac_cv_guix_test_root="$(pwd)/t"
 # The progress bar of Guile compilation does not work with -O option.
 %global _make_output_sync %{nil}
-# Guile may crash with 'mmap(PROT_NONE) failed' when it uses too many threads
-# for compilation.
-%global _smp_ncpus_max 2
 %make_build
 
 
@@ -147,10 +138,10 @@ if [ "${cwd_len}" -gt 36 ]; then
     echo 'The working directory cannot be longer than 36 bytes.'
     exit 1
 fi
-# Replace guile with guile2.2.
-sed -i 's|guile -c|guile2.2 -c|g' tests/*.sh
-sed -i 's|-- guile2.2|-- guile|g' tests/*.sh
-%{__make} %{?_smp_mflags} check
+# Running tests in parallel causes errors:
+# In procedure copy-file: Permission denied:
+# "/builddir/build/BUILD/guix-1.4.0/gnu/packages/bootstrap/i686-linux/bash"
+%{__make} check
 # Grant write permission so rpmbuild can clean the build root.
 chmod -R u+w "$(pwd)/t"
 
@@ -159,6 +150,7 @@ chmod -R u+w "$(pwd)/t"
 %make_install systemdservicedir=%{_unitdir}
 # Rename systemd service files provided by upstream.
 mv %{buildroot}%{_unitdir}/guix-daemon{,-latest}.service
+mv %{buildroot}%{_unitdir}/guix-gc{,-latest}.service
 mv %{buildroot}%{_unitdir}/guix-publish{,-latest}.service
 # Generate default systemd service files from upstream ones.
 sed -e 's|^ExecStart=%{guix_profile_root}/bin|ExecStart=%{_bindir}|' \
@@ -167,14 +159,20 @@ sed -e 's|^ExecStart=%{guix_profile_root}/bin|ExecStart=%{_bindir}|' \
     > %{buildroot}%{_unitdir}/guix-daemon.service
 sed -e 's|^ExecStart=%{guix_profile_root}/bin|ExecStart=%{_bindir}|' \
     -e 's|^Description=\(.*\)|Description=\1 (default)|' \
+    -e '/^Environment=/d' %{buildroot}%{_unitdir}/guix-gc-latest.service \
+    > %{buildroot}%{_unitdir}/guix-gc.service
+sed -e 's|^ExecStart=%{guix_profile_root}/bin|ExecStart=%{_bindir}|' \
+    -e 's|^Description=\(.*\)|Description=\1 (default)|' \
     -e '/^Environment=/d' %{buildroot}%{_unitdir}/guix-publish-latest.service \
     > %{buildroot}%{_unitdir}/guix-publish.service
 # Generated files must be different from upstream ones.
 ! cmp %{buildroot}%{_unitdir}/guix-daemon{,-latest}.service
+! cmp %{buildroot}%{_unitdir}/guix-gc{,-latest}.service
 ! cmp %{buildroot}%{_unitdir}/guix-publish{,-latest}.service
 # Edit the description of upstream systemd service files.
 sed -i 's|^Description=\(.*\)|Description=\1 (upstream)|' \
     %{buildroot}%{_unitdir}/guix-daemon-latest.service \
+    %{buildroot}%{_unitdir}/guix-gc-latest.service \
     %{buildroot}%{_unitdir}/guix-publish-latest.service
 # Drop useless upstart service files.
 rm %{buildroot}%{_libdir}/upstart/system/guix-daemon.conf
@@ -183,8 +181,10 @@ rmdir %{buildroot}%{_libdir}/upstart/system
 rmdir %{buildroot}%{_libdir}/upstart
 # Drop useless openrc service files.
 rm %{buildroot}%{_sysconfdir}/openrc/guix-daemon
+rmdir %{buildroot}%{_sysconfdir}/openrc
 # Drop useless sysvinit service files.
 rm %{buildroot}%{_sysconfdir}/init.d/guix-daemon
+rmdir %{buildroot}%{_sysconfdir}/init.d
 # Own the configuration directory.
 mkdir -p %{buildroot}%{_sysconfdir}/guix
 %find_lang guix
@@ -207,6 +207,7 @@ elif [ "$1" -gt 1 ]; then
     /usr/sbin/usermod -l %{guix_user} -d /var/empty guix-builder 2>/dev/null || :
 fi
 %systemd_post guix-daemon.service guix-daemon-latest.service
+%systemd_post guix-gc.service guix-gc-latest.service
 %systemd_post guix-publish.service guix-publish-latest.service
 #selinux_modules_install -s %{selinuxtype} %{_datadir}/selinux/packages/%{selinuxmodule}.cil
 
@@ -217,11 +218,13 @@ if [ "$1" = 0 ]; then
     #selinux_modules_uninstall -s %{selinuxtype} %{selinuxmodule}
 fi
 %systemd_preun guix-daemon.service guix-daemon-latest.service
+%systemd_preun guix-gc.service guix-gc-latest.service
 %systemd_preun guix-publish.service guix-publish-latest.service
 
 
 %postun
 %systemd_postun_with_restart guix-daemon.service guix-daemon-latest.service
+%systemd_postun_with_restart guix-gc.service guix-gc-latest.service
 %systemd_postun_with_restart guix-publish.service guix-publish-latest.service
 
 
@@ -254,6 +257,18 @@ fi
 %{guile_ccache_dir}/gnu/build/*.go
 %{guile_source_dir}/gnu/ci.scm
 %{guile_ccache_dir}/gnu/ci.go
+%{guile_source_dir}/gnu/compression.scm
+%{guile_ccache_dir}/gnu/compression.go
+%{guile_source_dir}/gnu/home.scm
+%{guile_ccache_dir}/gnu/home.go
+%dir %{guile_source_dir}/gnu/home
+%dir %{guile_ccache_dir}/gnu/home
+%{guile_source_dir}/gnu/home/services.scm
+%{guile_ccache_dir}/gnu/home/services.go
+%dir %{guile_source_dir}/gnu/home/services
+%dir %{guile_ccache_dir}/gnu/home/services
+%{guile_source_dir}/gnu/home/services/*.scm
+%{guile_ccache_dir}/gnu/home/services/*.go
 %{guile_source_dir}/gnu/image.scm
 %{guile_ccache_dir}/gnu/image.go
 %{guile_source_dir}/gnu/installer.scm
@@ -289,11 +304,16 @@ fi
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-i686.conf
 %{guile_source_dir}/gnu/packages/aux-files/linux-libre/*-x86_64.conf
 %{guile_source_dir}/gnu/packages/aux-files/pack-audit.c
+%dir %{guile_source_dir}/gnu/packages/aux-files/python
+%{guile_source_dir}/gnu/packages/aux-files/python/sanity-check.py
+%{guile_source_dir}/gnu/packages/aux-files/python/sanity-check-next.py
+%{guile_source_dir}/gnu/packages/aux-files/python/sitecustomize.py
+%dir %{guile_source_dir}/gnu/packages/aux-files/renpy
+%{guile_source_dir}/gnu/packages/aux-files/renpy/renpy.in
 %{guile_source_dir}/gnu/packages/aux-files/run-in-namespace.c
 %dir %{guile_source_dir}/gnu/packages/patches
 %{guile_source_dir}/gnu/packages/patches/*.diff
 %{guile_source_dir}/gnu/packages/patches/*.patch
-%{guile_source_dir}/gnu/packages/patches/java-antlr4-fix-code-too-large.java
 %{guile_source_dir}/gnu/services.scm
 %{guile_ccache_dir}/gnu/services.go
 %dir %{guile_source_dir}/gnu/services
@@ -327,12 +347,16 @@ fi
 %{guile_ccache_dir}/gnu/system/images/pinebook-pro.go
 %{guile_source_dir}/gnu/system/images/rock64.scm
 %{guile_ccache_dir}/gnu/system/images/rock64.go
+%{guile_source_dir}/gnu/system/images/wsl2.scm
+%{guile_ccache_dir}/gnu/system/images/wsl2.go
 %{guile_source_dir}/gnu/tests.scm
 %{guile_ccache_dir}/gnu/tests.go
 %dir %{guile_source_dir}/gnu/tests
 %dir %{guile_ccache_dir}/gnu/tests
 %{guile_source_dir}/gnu/tests/*.scm
 %{guile_ccache_dir}/gnu/tests/*.go
+%dir %{guile_source_dir}/gnu/tests/data
+%{guile_source_dir}/gnu/tests/data/jami-dummy-account.dat
 %{guile_source_dir}/guix.scm
 %{guile_ccache_dir}/guix.go
 %dir %{guile_source_dir}/guix
@@ -357,6 +381,10 @@ fi
 %dir %{guile_ccache_dir}/guix/import
 %{guile_source_dir}/guix/import/*.scm
 %{guile_ccache_dir}/guix/import/*.go
+%dir %{guile_source_dir}/guix/platforms
+%dir %{guile_ccache_dir}/guix/platforms
+%{guile_source_dir}/guix/platforms/*.scm
+%{guile_ccache_dir}/guix/platforms/*.go
 %dir %{guile_source_dir}/guix/scripts
 %dir %{guile_ccache_dir}/guix/scripts
 %{guile_source_dir}/guix/scripts/*.scm
@@ -369,6 +397,10 @@ fi
 %dir %{guile_ccache_dir}/guix/scripts/git
 %{guile_source_dir}/guix/scripts/git/*.scm
 %{guile_ccache_dir}/guix/scripts/git/*.go
+%dir %{guile_source_dir}/guix/scripts/home
+%dir %{guile_ccache_dir}/guix/scripts/home
+%{guile_source_dir}/guix/scripts/home/*.scm
+%{guile_ccache_dir}/guix/scripts/home/*.go
 %dir %{guile_source_dir}/guix/scripts/import
 %dir %{guile_ccache_dir}/guix/scripts/import
 %{guile_source_dir}/guix/scripts/import/*.scm
@@ -386,26 +418,22 @@ fi
 %{guile_ccache_dir}/guix/tests/*.go
 %dir %{_datadir}/guix
 %{_datadir}/guix/berlin.guix.gnu.org.pub
+%{_datadir}/guix/bordeaux.guix.gnu.org.pub
 %{_datadir}/guix/ci.guix.gnu.org.pub
 %{_datadir}/guix/ci.guix.info.pub
 %{_datadir}/selinux/packages/%{selinuxmodule}.cil
 %{_infodir}/%{name}.info*
 %{_infodir}/%{name}.de.info*
 %{_infodir}/%{name}.es.info*
-%{_infodir}/%{name}.fa.info*
 %{_infodir}/%{name}.fr.info*
-%{_infodir}/%{name}.it.info*
-%{_infodir}/%{name}.ko.info*
 %{_infodir}/%{name}.pt_BR.info*
 %{_infodir}/%{name}.ru.info*
-%{_infodir}/%{name}.sk.info*
 %{_infodir}/%{name}.zh_CN.info*
 %{_infodir}/%{name}-cookbook.info*
 %{_infodir}/%{name}-cookbook.de.info*
-%{_infodir}/%{name}-cookbook.fa.info*
 %{_infodir}/%{name}-cookbook.fr.info*
 %{_infodir}/%{name}-cookbook.ko.info*
-%{_infodir}/%{name}-cookbook.zh_Hans.info*
+%{_infodir}/%{name}-cookbook.sk.info*
 %dir %{_infodir}/images
 %{_infodir}/images/bootstrap-graph.png.gz
 %{_infodir}/images/bootstrap-packages.png.gz
@@ -422,20 +450,32 @@ fi
 %{_mandir}/man1/guix-archive.1*
 %{_mandir}/man1/guix-build.1*
 %{_mandir}/man1/guix-challenge.1*
+%{_mandir}/man1/guix-container.1*
+%{_mandir}/man1/guix-copy.1*
 %{_mandir}/man1/guix-daemon.1*
 %{_mandir}/man1/guix-deploy.1*
+%{_mandir}/man1/guix-describe.1*
 %{_mandir}/man1/guix-download.1*
 %{_mandir}/man1/guix-edit.1*
 %{_mandir}/man1/guix-environment.1*
 %{_mandir}/man1/guix-gc.1*
+%{_mandir}/man1/guix-git.1*
+%{_mandir}/man1/guix-graph.1*
 %{_mandir}/man1/guix-hash.1*
+%{_mandir}/man1/guix-home.1*
 %{_mandir}/man1/guix-import.1*
 %{_mandir}/man1/guix-lint.1*
+%{_mandir}/man1/guix-offload.1*
+%{_mandir}/man1/guix-pack.1*
 %{_mandir}/man1/guix-package.1*
+%{_mandir}/man1/guix-processes.1*
 %{_mandir}/man1/guix-publish.1*
 %{_mandir}/man1/guix-pull.1*
 %{_mandir}/man1/guix-refresh.1*
+%{_mandir}/man1/guix-repl.1*
+%{_mandir}/man1/guix-shell.1*
 %{_mandir}/man1/guix-size.1*
+%{_mandir}/man1/guix-style.1*
 %{_mandir}/man1/guix-system.1*
 %{_mandir}/man1/guix-time-machine.1*
 %{_mandir}/man1/guix-weather.1*
@@ -448,12 +488,18 @@ fi
 %{_unitdir}/gnu-store.mount
 %{_unitdir}/guix-daemon.service
 %{_unitdir}/guix-daemon-latest.service
+%{_unitdir}/guix-gc.service
+%{_unitdir}/guix-gc-latest.service
 %{_unitdir}/guix-publish.service
 %{_unitdir}/guix-publish-latest.service
 
 
 
 %changelog
+* Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 1.4.0-1
+- Update to 1.4.0
+- Switch to Guile 3.0 because Guile 2.2 is no longer supported
+
 * Thu Nov 03 2022 Ting-Wei Lan <lantw44@gmail.com> - 1.3.0-4
 - Drop unused code from the check stage
 - Grant write permission to fix the rmbuild stage on Fedora 37 and later
