@@ -7,31 +7,30 @@
 %endif
 
 Name:           guile-gcrypt
-Version:        0.3.0
-Release:        5%{?dist}
+Version:        0.4.0
+Release:        1%{?dist}
 Summary:        Guile bindings to Libgcrypt
 
 License:        GPLv3+
 URL:            https://notabug.org/cwebber/guile-gcrypt
 Source0:        https://notabug.org/cwebber/guile-gcrypt/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
-%global guile_source_dir %{_datadir}/guile/site/2.2
-%global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
+%global guile_source_dir %{_datadir}/guile/site/3.0
+%global guile_ccache_dir %{_libdir}/guile/3.0/site-ccache
 
 BuildRequires:  autoconf, automake, make, texinfo
-BuildRequires:  pkgconfig(guile-2.2), libgcrypt-devel
-Requires:       guile22, libgcrypt-devel
+BuildRequires:  pkgconfig(guile-3.0), libgcrypt-devel
+Requires:       guile30, libgcrypt-devel
 Requires(post): info
 Requires(preun): info
 
 %description
-Guile-Gcrypt provides a Guile 2.x interface to a subset of the GNU Libgcrypt
-crytographic library, which is itself used by the GNU Privacy Guard (GPG).
+Guile-Gcrypt provides a Guile 3.x/2.x interface to a subset of the GNU Libgcrypt
+cryptographic library, which is itself used by the GNU Privacy Guard (GPG).
 
 Guile-Gcrypt provides modules for cryptographic hash functions, message
-authentication codes (MAC), public-key crytography, strong randomness, and
+authentication codes (MAC), public-key cryptography, strong randomness, and
 more. It is implemented using the foreign function interface (FFI) of Guile.
-
 
 %prep
 %autosetup -n %{name} -p1
@@ -73,6 +72,10 @@ fi
 
 
 %changelog
+* Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.4.0-1
+- Update to 0.4.0
+- Switch to Guile 3.0
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.3.0-5
 - Rebuilt for Fedora 37 and 38
 
