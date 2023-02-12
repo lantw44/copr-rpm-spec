@@ -7,7 +7,7 @@ index db42945..dc691f5 100644
      (cond ((eq system-type 'windows-nt) "guile.exe")
            ((eq system-type 'darwin) "guile")
 -          (t "guile"))
-+          (t "guile2.2"))
++          (t "guile3.0"))
    "Name to use to call the Guile executable when starting a REPL."
    :type '(choice string (repeat string)))
  
