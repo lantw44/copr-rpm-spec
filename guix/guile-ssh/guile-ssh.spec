@@ -1,5 +1,5 @@
 Name:           guile-ssh
-Version:        0.16.0
+Version:        0.16.2
 Release:        1%{?dist}
 Summary:        A library that provides access to the SSH protocol for GNU Guile
 
@@ -7,13 +7,13 @@ License:        GPLv3+
 URL:            https://memory-heap.org/~avp/projects/guile-ssh
 Source0:        https://github.com/artyom-poptsov/guile-ssh/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
-%global guile_source_dir %{_datadir}/guile/site/2.2
-%global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
+%global guile_source_dir %{_datadir}/guile/site/3.0
+%global guile_ccache_dir %{_libdir}/guile/3.0/site-ccache
 
 BuildRequires:  gcc
 BuildRequires:  autoconf, automake, libtool, texinfo
-BuildRequires:  pkgconfig(guile-2.2), pkgconfig(libssh)
-Requires:       guile22
+BuildRequires:  pkgconfig(guile-3.0), pkgconfig(libssh)
+Requires:       guile30
 Requires(post): info
 Requires(preun): info
 
@@ -31,9 +31,7 @@ autoreconf -fiv
 %configure \
     --disable-rpath \
     --disable-static \
-    GUILE=%{_bindir}/guile2.2 \
-    GUILD=%{_bindir}/guild2.2 \
-    guile_snarf=%{_bindir}/guile-snarf2.2
+    guile_snarf=%{_bindir}/guile-snarf3.0
 %make_build
 
 
@@ -76,6 +74,10 @@ fi
 
 
 %changelog
+* Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.16.2-1
+- Update to 0.16.2
+- Switch to Guile 3.0
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.16.0-1
 - Update to 0.16.0
 
