@@ -8,19 +8,19 @@
 
 Name:           guile-lib
 Version:        0.2.7
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Guile-Lib is a repository of useful code written in Guile Scheme
 
 License:        GPLv3+
 URL:            https://www.nongnu.org/guile-lib
 Source0:        https://download.savannah.nongnu.org/releases/%{name}/%{name}-%{version}.tar.gz
 
-%global guile_source_dir %{_datadir}/guile/site/2.2
-%global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
+%global guile_source_dir %{_datadir}/guile/site/3.0
+%global guile_ccache_dir %{_libdir}/guile/3.0/site-ccache
 
 BuildRequires:  gcc
-BuildRequires:  pkgconfig(guile-2.2)
-Requires:       guile22
+BuildRequires:  pkgconfig(guile-3.0)
+Requires:       guile30
 
 %description
 Guile-Lib is intended as an accumulation place for pure-scheme Guile modules,
@@ -35,11 +35,11 @@ Think "a down-scaled, limited-scope CPAN for Guile".
 
 %prep
 %autosetup -p1
-sed -i 's|"guile"|"guile2.2"|g' unit-tests/os.process.scm
+sed -i 's|"guile"|"guile3.0"|g' unit-tests/os.process.scm
 
 
 %build
-%configure GUILE=%{_bindir}/guile2.2 GUILD=%{_bindir}/guild2.2
+%configure GUILE=%{_bindir}/guile3.0 GUILD=%{_bindir}/guild3.0
 %make_build moddir=%{guile_source_dir} godir=%{guile_ccache_dir}
 
 
@@ -140,6 +140,9 @@ fi
 
 
 %changelog
+* Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.2.7-5
+- Switch to Guile 3.0
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.2.7-4
 - Rebuilt for Fedora 37 and 38
 

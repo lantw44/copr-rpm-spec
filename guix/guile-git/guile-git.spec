@@ -8,20 +8,23 @@
 
 Name:           guile-git
 Version:        0.5.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Guile bindings of libgit2
 
 License:        GPLv3+ and LGPLv3+
 URL:            https://gitlab.com/guile-git/guile-git
 Source0:        https://gitlab.com/guile-git/guile-git/uploads/6450f3991aa524484038cdcea3fb248d/guile-git-%{version}.tar.gz
+Patch0:         guile-git-merge-31-fix-clone-tests.patch
+Patch1:         guile-git-merge-32-libgit2-1.2.0.patch
 
-%global guile_source_dir %{_datadir}/guile/site/2.2
-%global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
+%global guile_source_dir %{_datadir}/guile/site/3.0
+%global guile_ccache_dir %{_libdir}/guile/3.0/site-ccache
 
 BuildRequires:  gcc
 BuildRequires:  autoconf, automake, texinfo
-BuildRequires:  pkgconfig(guile-2.2), pkgconfig(libgit2), guile-bytestructures
-Requires:       guile22, guile-bytestructures, libgit2-devel
+BuildRequires:  pkgconfig(guile-3.0), pkgconfig(libgit2), guile-bytestructures
+BuildRequires:  git, openssh-clients, openssh-server
+Requires:       guile30, guile-bytestructures, libgit2-devel
 Requires(post): info
 Requires(preun): info
 
@@ -35,7 +38,8 @@ repositories of the Git version control system.
 
 
 %build
-%configure GUILE=%{_bindir}/guile2.2 GUILD=%{_bindir}/guild2.2
+autoreconf -fiv
+%configure
 %make_build
 
 
@@ -75,6 +79,10 @@ fi
 
 
 %changelog
+* Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-4
+- Switch to Guile 3.0
+- Run SSH tests
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-3
 - Rebuilt for Fedora 37 and 38
 

@@ -8,19 +8,19 @@
 
 Name:           guile-lzlib
 Version:        0.0.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Guile bindings for lzlib
 
 License:        GPLv3+
 URL:            https://notabug.org/guile-lzlib/guile-lzlib
 Source0:        https://notabug.org/guile-lzlib/guile-lzlib/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
-%global guile_source_dir %{_datadir}/guile/site/2.2
-%global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
+%global guile_source_dir %{_datadir}/guile/site/3.0
+%global guile_ccache_dir %{_libdir}/guile/3.0/site-ccache
 
 BuildRequires:  gcc
-BuildRequires:  autoconf, automake, pkgconfig(guile-2.2), lzlib-devel
-Requires:       guile22, lzlib-devel
+BuildRequires:  autoconf, automake, pkgconfig(guile-3.0), lzlib-devel
+Requires:       guile30, lzlib-devel
 
 %description
 Guile-lzlib: Guile bindings for lzlib, a C library for in-memory LZMA
@@ -58,6 +58,9 @@ autoreconf -fiv
 
 
 %changelog
+* Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.0.2-6
+- Switch to Guile 3.0
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.0.2-5
 - Rebuilt for Fedora 37 and 38
 

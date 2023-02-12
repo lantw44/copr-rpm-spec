@@ -8,19 +8,19 @@
 
 Name:           guile-json
 Version:        4.7.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        JSON module for Guile
 
 License:        GPLv3+
 URL:            https://savannah.nongnu.org/projects/guile-json
 Source0:        https://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.gz
 
-%global guile_source_dir %{_datadir}/guile/site/2.2
-%global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
+%global guile_source_dir %{_datadir}/guile/site/3.0
+%global guile_ccache_dir %{_libdir}/guile/3.0/site-ccache
 
 BuildRequires:  make
-BuildRequires:  pkgconfig(guile-2.2)
-Requires:       guile22
+BuildRequires:  pkgconfig(guile-3.0)
+Requires:       guile30
 
 %description
 guile-json is a JSON module for Guile. It supports parsing and building JSON
@@ -66,6 +66,9 @@ features:
 
 
 %changelog
+* Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 4.7.3-2
+- Switch to Guile 3.0
+
 * Mon Dec 05 2022 Ting-Wei Lan <lantw44@gmail.com> - 4.7.3-1
 - Update to 4.7.3
 
