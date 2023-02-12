@@ -1,3 +1,5 @@
+%global commit cf5b7a402ea503c3dcda85a86b9a6c6dd01896e0
+%global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global debug_package %{nil}
 
 # Workaround brp-strip failures on Fedora 35.
@@ -11,26 +13,20 @@
 
 Name:           emacs-%{pkg}
 Version:        0.5.2
-Release:        9%{?dist}
+Release:        10.20221011git%{shortcommit}%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
-URL:            https://emacs-guix.gitlab.io/website
-Source0:        https://emacs-guix.gitlab.io/website/releases/%{name}-%{version}.tar.gz
+URL:            https://guix.gnu.org
+Source0:        https://git.savannah.gnu.org/cgit/guix/%{name}.git/snapshot/%{name}-%{commit}.tar.gz
 
-# Fix crash when installing a package
-# https://gitlab.com/emacs-guix/emacs-guix/-/issues/18
-Patch0:         emacs-guix-0.5.2-guix-api-change.patch
-Patch1:         emacs-guix-0.5.2-emacs-27.patch
-Patch2:         emacs-guix-0.5.2-geiser-0.12.patch
-
-%global guile_source_dir %{_datadir}/guile/site/2.2
-%global guile_ccache_dir %{_libdir}/guile/2.2/site-ccache
+%global guile_source_dir %{_datadir}/guile/site/3.0
+%global guile_ccache_dir %{_libdir}/guile/3.0/site-ccache
 
 BuildRequires:  emacs, make, texinfo
 BuildRequires:  guix >= 0.13.0
 BuildRequires:  autoconf, automake
-BuildRequires:  pkgconfig(guile-2.2), guile-gcrypt
+BuildRequires:  pkgconfig(guile-3.0), guile-gcrypt
 BuildRequires:  emacs-dash, emacs-bui, emacs-edit-indirect, emacs-magit-popup
 BuildRequires:  (emacs-geiser-guile >= 0.13 or emacs-geiser < 0.13)
 
@@ -54,7 +50,7 @@ available info about packages and to do many other things.
 
 
 %prep
-%autosetup -p1
+%autosetup -p1 -n %{name}-%{commit}
 
 
 %build
@@ -66,8 +62,8 @@ autoreconf -fiv
     --with-bui-lispdir=%{_emacs_sitelispdir}/bui \
     --with-editindirect-lispdir=%{_emacs_sitelispdir}/edit-indirect \
     --with-popup-lispdir=%{_emacs_sitelispdir}/magit-popup \
-    GUILE=%{_bindir}/guile2.2 \
-    GUILD=%{_bindir}/guild2.2
+    GUILE=%{_bindir}/guile3.0 \
+    GUILD=%{_bindir}/guild3.0
 %make_build ELCFLAGS='-L %{_emacs_sitelispdir}/transient'
 
 
@@ -108,12 +104,15 @@ fi
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/images
 %{_datadir}/%{name}/images/guix-logo.svg
-%{_datadir}/%{name}/images/guixsd-logo.svg
 %{_infodir}/%{name}.info.gz
 %exclude %{_infodir}/dir
 
 
 %changelog
+* Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-10.20221011gitcf5b7a4
+- Update to the latest git snapshot
+- Switch to Guile 3.0
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-9
 - Rebuilt for Fedora 37 and 38
 
