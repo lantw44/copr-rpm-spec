@@ -70,7 +70,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    109.0.5414.119
+Version:    110.0.5481.77
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -119,6 +119,17 @@ Patch2:     chromium-python3.patch
 
 # Fix missing opus dependency for media/mojo/services/gpu_mojo_media_client.cc
 Patch3:     chromium-media-mojo-services-opus.patch
+
+# Pull upstream patches
+Patch10:    chromium-gcc-12-r1084697.patch
+Patch11:    chromium-gcc-12-r1084785.patch
+Patch12:    chromium-gcc-12-r1084808.patch
+Patch13:    chromium-gcc-12-r1084924.patch
+Patch14:    chromium-gcc-12-r1084983.patch
+Patch15:    chromium-gcc-12-r1085034.patch
+Patch16:    chromium-gcc-12-r1085617.patch
+Patch17:    chromium-gcc-12-r1086011.patch
+Patch18:    chromium-gcc-12-r1086362.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -253,11 +264,8 @@ find -type f -exec \
     net/third_party/uri_template \
     third_party/abseil-cpp \
     third_party/angle \
-    third_party/angle/src/common/third_party/base \
-    third_party/angle/src/common/third_party/smhasher \
     third_party/angle/src/common/third_party/xxhash \
     third_party/angle/src/third_party/libXNVCtrl \
-    third_party/angle/src/third_party/trace_event \
     third_party/angle/src/third_party/volk \
     third_party/apple_apsl \
     third_party/axe-core \
@@ -310,7 +318,7 @@ find -type f -exec \
     third_party/devtools-frontend/src/front_end/third_party/i18n \
     third_party/devtools-frontend/src/front_end/third_party/intl-messageformat \
     third_party/devtools-frontend/src/front_end/third_party/lighthouse \
-    third_party/devtools-frontend/src/front_end/third_party/lit-html \
+    third_party/devtools-frontend/src/front_end/third_party/lit \
     third_party/devtools-frontend/src/front_end/third_party/lodash-isequal \
     third_party/devtools-frontend/src/front_end/third_party/marked \
     third_party/devtools-frontend/src/front_end/third_party/puppeteer \
@@ -366,7 +374,6 @@ find -type f -exec \
     third_party/libevent \
     third_party/libgav1 \
     third_party/libjingle \
-    third_party/libjxl \
     third_party/libphonenumber \
     third_party/libsecret \
     third_party/libsrtp \
@@ -418,7 +425,6 @@ find -type f -exec \
     third_party/pdfium/third_party/freetype \
     third_party/pdfium/third_party/lcms \
     third_party/pdfium/third_party/libopenjpeg \
-    third_party/pdfium/third_party/libpng16 \
     third_party/pdfium/third_party/libtiff \
     third_party/pdfium/third_party/skia_shared \
     third_party/perfetto \
@@ -495,6 +501,7 @@ find -type f -exec \
     v8/src/third_party/siphash \
     v8/src/third_party/utf8-decoder \
     v8/src/third_party/valgrind \
+    v8/third_party/glibc \
     v8/third_party/inspector_protocol \
     v8/third_party/v8
 
@@ -587,6 +594,7 @@ gn_args=(
     use_system_harfbuzz=true
 %endif
     use_system_libdrm=true
+    use_system_libffi=true
     use_system_libwayland=true
     use_system_minigbm=true
     use_system_wayland_scanner=true
@@ -762,6 +770,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Feb 14 2023 - Ting-Wei Lan <lantw44@gmail.com> - 110.0.5481.77-100
+- Update to 110.0.5481.77
+
 * Sun Jan 29 2023 - Ting-Wei Lan <lantw44@gmail.com> - 109.0.5414.119-100
 - Update to 109.0.5414.119
 
