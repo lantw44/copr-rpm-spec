@@ -6,7 +6,7 @@
 
 Name:           guix
 Version:        1.4.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -39,6 +39,7 @@ BuildRequires:  selinux-policy, systemd
 BuildRequires:  glibc-langpack-en
 BuildRequires:  pkgconfig(guile-3.0) >= 3.0.3
 BuildRequires:  guile-gcrypt >= 0.1.0
+BuildRequires:  guile30-gnutls
 BuildRequires:  guile-sqlite3 >= 0.1.0
 BuildRequires:  guile-zlib >= 0.1.0
 BuildRequires:  guile-lzlib
@@ -51,14 +52,10 @@ BuildRequires:  guile-semver
 BuildRequires:  guile-lib
 BuildRequires:  guile-lzma
 BuildRequires:  disarchive
-%if 0
-BuildRequires:  gnutls-guile
-%else
-BuildRequires:  gnutls-guile30
-%endif
 
 Requires:       guile30 >= 3.0.3
 Requires:       guile-gcrypt >= 0.1.0
+Requires:       guile30-gnutls
 Requires:       guile-sqlite3 >= 0.1.0
 Requires:       guile-zlib >= 0.1.0
 Requires:       guile-lzlib
@@ -67,11 +64,6 @@ Requires:       guile-git >= 0.5.0
 Requires:       guile-json >= 4.3.0
 Requires:       guile-lzma
 Requires:       disarchive
-%if 0
-Requires:       gnutls-guile
-%else
-Requires:       gnutls-guile30
-%endif
 
 Requires:       gzip, bzip2, xz
 Requires:       selinux-policy
@@ -496,6 +488,9 @@ fi
 
 
 %changelog
+* Tue Feb 28 2023 Ting-Wei Lan <lantw44@gmail.com> - 1.4.0-2
+- Switch to the standalone GnuTLS Guile bindings
+
 * Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 1.4.0-1
 - Update to 1.4.0
 - Switch to Guile 3.0 because Guile 2.2 is no longer supported
