@@ -48,8 +48,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.36
-Release:    2%{?dist}
+Version:    2.37
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -113,9 +113,10 @@ export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
     --host=%{cross_triplet} \
     --build=%{_target_platform} \
     --enable-kernel=2.6.32 \
-    --enable-shared \
     --enable-add-ons \
+    --enable-bind-now \
     --enable-multi-arch \
+    --enable-shared \
     --enable-stack-protector=strong \
     --enable-tunables \
     --disable-profile \
@@ -508,6 +509,9 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Sat Mar 04 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.37-1
+- Update to 2.37
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.36-2
 - Rebuilt for Fedora 37 and 38
 
