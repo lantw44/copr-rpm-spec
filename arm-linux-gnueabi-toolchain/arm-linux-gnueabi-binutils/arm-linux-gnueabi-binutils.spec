@@ -7,8 +7,8 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.39
-Release:    2%{?dist}
+Version:    2.40
+Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 License:    GPLv3+
@@ -38,12 +38,15 @@ Requires:   %{cross_triplet}-filesystem
     --enable-gold=yes \
     --enable-gprofng=yes \
     --enable-jansson=yes \
-    --enable-multilib \
-    --enable-threads \
-    --enable-plugins \
     --enable-lto \
+    --enable-multilib \
+    --enable-new-dtags \
+    --enable-plugins \
+    --enable-relro \
     --enable-separate-code \
+    --enable-threads \
     --disable-nls \
+    --disable-rpath \
     --disable-shared \
     --disable-werror \
     --with-sysroot=%{cross_sysroot} \
@@ -112,6 +115,9 @@ rmdir %{buildroot}%{_sysconfdir}
 
 
 %changelog
+* Sat Mar 04 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.40-1
+- Update to 2.40
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.39-2
 - Rebuilt for Fedora 37 and 38
 
