@@ -1,0 +1,26 @@
+diff --git a/src/codegen/code-stub-assembler.h b/src/codegen/code-stub-assembler.h
+index d4d6e12baef..1f4940541c3 100644
+--- a/v8/src/codegen/code-stub-assembler.h
++++ b/v8/src/codegen/code-stub-assembler.h
+@@ -7,6 +7,10 @@
+ 
+ #include <functional>
+ 
++#if V8_ENABLE_WEBASSEMBLY
++#include "src/wasm/wasm-objects.h"
++#endif  // V8_ENABLE_WEBASSEMBLY
++
+ #include "src/base/macros.h"
+ #include "src/codegen/bailout-reason.h"
+ #include "src/codegen/code-factory.h"
+@@ -33,10 +37,6 @@
+ #include "src/roots/roots.h"
+ #include "torque-generated/exported-macros-assembler.h"
+ 
+-#if V8_ENABLE_WEBASSEMBLY
+-#include "src/wasm/wasm-objects.h"
+-#endif  // V8_ENABLE_WEBASSEMBLY
+-
+ namespace v8 {
+ namespace internal {
+ 

@@ -1,0 +1,12 @@
+diff --git a/components/omnibox/browser/on_device_head_model.h b/components/omnibox/browser/on_device_head_model.h
+index d51277918cf1e..754e9cda41b7f 100644
+--- a/components/omnibox/browser/on_device_head_model.h
++++ b/components/omnibox/browser/on_device_head_model.h
+@@ -5,6 +5,7 @@
+ #ifndef COMPONENTS_OMNIBOX_BROWSER_ON_DEVICE_HEAD_MODEL_H_
+ #define COMPONENTS_OMNIBOX_BROWSER_ON_DEVICE_HEAD_MODEL_H_
+ 
++#include <cstdint>
+ #include <string>
+ #include <utility>
+ #include <vector>

@@ -1,0 +1,12 @@
+diff --git a/components/crash/core/app/crash_reporter_client.h b/components/crash/core/app/crash_reporter_client.h
+index 9f8f20dfa6506..ea7ad43ffb552 100644
+--- a/components/crash/core/app/crash_reporter_client.h
++++ b/components/crash/core/app/crash_reporter_client.h
+@@ -5,6 +5,7 @@
+ #ifndef COMPONENTS_CRASH_CORE_APP_CRASH_REPORTER_CLIENT_H_
+ #define COMPONENTS_CRASH_CORE_APP_CRASH_REPORTER_CLIENT_H_
+ 
++#include <cstdint>
+ #include <string>
+ 
+ #include "build/build_config.h"

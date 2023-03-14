@@ -1,0 +1,12 @@
+diff --git a/components/autofill/core/browser/autofill_ablation_study.h b/components/autofill/core/browser/autofill_ablation_study.h
+index ada8121982ecc..35cce67d5c284 100644
+--- a/components/autofill/core/browser/autofill_ablation_study.h
++++ b/components/autofill/core/browser/autofill_ablation_study.h
+@@ -5,6 +5,7 @@
+ #ifndef COMPONENTS_AUTOFILL_CORE_BROWSER_AUTOFILL_ABLATION_STUDY_H_
+ #define COMPONENTS_AUTOFILL_CORE_BROWSER_AUTOFILL_ABLATION_STUDY_H_
+ 
++#include <cstdint>
+ #include <string>
+ 
+ class GURL;

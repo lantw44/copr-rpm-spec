@@ -1,0 +1,12 @@
+diff --git a/components/viz/common/view_transition_element_resource_id.h b/components/viz/common/view_transition_element_resource_id.h
+index fd0d06b16d6a0..1e7b6a07be50a 100644
+--- a/components/viz/common/view_transition_element_resource_id.h
++++ b/components/viz/common/view_transition_element_resource_id.h
+@@ -5,6 +5,7 @@
+ #ifndef COMPONENTS_VIZ_COMMON_VIEW_TRANSITION_ELEMENT_RESOURCE_ID_H_
+ #define COMPONENTS_VIZ_COMMON_VIEW_TRANSITION_ELEMENT_RESOURCE_ID_H_
+ 
++#include <cstdint>
+ #include <string>
+ #include <vector>
+ 

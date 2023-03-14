@@ -1,0 +1,12 @@
+diff --git a/third_party/s2cellid/src/s2/util/math/vector.h b/third_party/s2cellid/src/s2/util/math/vector.h
+index ded669c1d7145..487edc3f93b3e 100644
+--- a/third_party/s2cellid/src/s2/util/math/vector.h
++++ b/third_party/s2cellid/src/s2/util/math/vector.h
+@@ -22,6 +22,7 @@
+ 
+ #include <algorithm>
+ #include <cmath>
++#include <cstdint>
+ #include <cstdlib>
+ #include <iosfwd>
+ #include <iostream>  // NOLINT(readability/streams)

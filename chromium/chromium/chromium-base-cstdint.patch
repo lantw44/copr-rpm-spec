@@ -1,0 +1,12 @@
+diff --git a/base/debug/profiler.h b/base/debug/profiler.h
+index 5f0deadd5d301..7d3eeaf35fa51 100644
+--- a/base/debug/profiler.h
++++ b/base/debug/profiler.h
+@@ -7,6 +7,7 @@
+ 
+ #include <stddef.h>
+ 
++#include <cstdint>
+ #include <string>
+ 
+ #include "base/base_export.h"

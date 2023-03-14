@@ -1,0 +1,12 @@
+diff --git a/ruy/profiler/instrumentation.h b/ruy/profiler/instrumentation.h
+index c4df1e6..2b15ae3 100644
+--- a/third_party/ruy/src/ruy/profiler/instrumentation.h
++++ b/third_party/ruy/src/ruy/profiler/instrumentation.h
+@@ -19,6 +19,7 @@ limitations under the License.
+ #ifdef RUY_PROFILER
+ #include <cstdio>
+ #include <mutex>
++#include <string>
+ #include <vector>
+ #endif
+ 

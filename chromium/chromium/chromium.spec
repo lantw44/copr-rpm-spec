@@ -70,7 +70,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    110.0.5481.177
+Version:    111.0.5563.64
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -109,8 +109,8 @@ Source12:   chromium-browser.xml
 # https://bugs.chromium.org/p/chromium/issues/detail?id=884521
 Patch0:     chromium-stub-unrar-wrapper.patch
 
-# Don't require static libstdc++
-Patch1:     chromium-gn-no-static-libstdc++.patch
+# Don't use static libstdc++ or -Werror
+Patch1:     chromium-gn-no-static-libstdc++-allow-warnings.patch
 
 # Don't use unversioned python commands. This patch is based on
 # https://src.fedoraproject.org/rpms/chromium/c/7048e95ab61cd143
@@ -120,16 +120,41 @@ Patch2:     chromium-python3.patch
 # Fix missing opus dependency for media/mojo/services/gpu_mojo_media_client.cc
 Patch3:     chromium-media-mojo-services-opus.patch
 
+# Fix incomplete type error for v8/src/codegen/tnode.h
+Patch4:     chromium-v8-WasmArray-incomplete-type.patch
+
 # Pull upstream patches
-Patch10:    chromium-gcc-12-r1084697.patch
-Patch11:    chromium-gcc-12-r1084785.patch
-Patch12:    chromium-gcc-12-r1084808.patch
-Patch13:    chromium-gcc-12-r1084924.patch
-Patch14:    chromium-gcc-12-r1084983.patch
-Patch15:    chromium-gcc-12-r1085034.patch
-Patch16:    chromium-gcc-12-r1085617.patch
-Patch17:    chromium-gcc-12-r1086011.patch
-Patch18:    chromium-gcc-12-r1086362.patch
+Patch10:    chromium-gcc-12-r1105184.patch
+Patch11:    chromium-vulkan_memory_allocator-gcc-13.patch
+Patch12:    chromium-webrtc-gcc-13.patch
+
+# Fix missing includes
+Patch20:    chromium-autofill-cstdint.patch
+Patch21:    chromium-base-cstdint.patch
+Patch22:    chromium-blink-cstdint.patch
+Patch23:    chromium-cc-cstdint.patch
+Patch24:    chromium-chrome-cstdint.patch
+Patch25:    chromium-crash-cstdint.patch
+Patch26:    chromium-dawn-cstdint.patch
+Patch27:    chromium-device-cstdint.patch
+Patch28:    chromium-feature_engagement-cstdint.patch
+Patch29:    chromium-gpu-cstdint.patch
+Patch30:    chromium-maldoca-cstdint.patch
+Patch31:    chromium-net-cstdint.patch
+Patch32:    chromium-omnibox-cstdint.patch
+Patch33:    chromium-openscreen-cstdint.patch
+Patch34:    chromium-password_manager-cstdint.patch
+Patch35:    chromium-payments-cstdint.patch
+Patch36:    chromium-pdf-cstdint.patch
+Patch37:    chromium-pdfium-cstdint.patch
+Patch38:    chromium-perfetto-cstdint.patch
+Patch39:    chromium-quiche-cstdint.patch
+Patch40:    chromium-ruy-string.patch
+Patch41:    chromium-s2cellid-cstdint.patch
+Patch42:    chromium-swiftshader-cstdint.patch
+Patch43:    chromium-tflite-cstdint.patch
+Patch44:    chromium-ui-cstdint.patch
+Patch45:    chromium-viz-cstdint.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -265,7 +290,9 @@ find -type f -exec \
     third_party/abseil-cpp \
     third_party/angle \
     third_party/angle/src/common/third_party/xxhash \
+    third_party/angle/src/third_party/ceval \
     third_party/angle/src/third_party/libXNVCtrl \
+    third_party/angle/src/third_party/systeminfo \
     third_party/angle/src/third_party/volk \
     third_party/apple_apsl \
     third_party/axe-core \
@@ -323,6 +350,7 @@ find -type f -exec \
     third_party/devtools-frontend/src/front_end/third_party/marked \
     third_party/devtools-frontend/src/front_end/third_party/puppeteer \
     third_party/devtools-frontend/src/front_end/third_party/puppeteer/package/lib/esm/third_party/mitt \
+    third_party/devtools-frontend/src/front_end/third_party/vscode.web-custom-data \
     third_party/devtools-frontend/src/front_end/third_party/wasmparser \
     third_party/devtools-frontend/src/test/unittests/front_end/third_party/i18n \
     third_party/devtools-frontend/src/third_party \
@@ -403,6 +431,7 @@ find -type f -exec \
     third_party/maldoca/src/third_party/tensorflow_protos \
     third_party/maldoca/src/third_party/zlibwrapper \
     third_party/markupsafe \
+    third_party/material_color_utilities \
     third_party/mesa \
     third_party/metrics_proto \
     third_party/minigbm \
@@ -435,7 +464,6 @@ find -type f -exec \
     third_party/private-join-and-compute \
     third_party/private_membership \
     third_party/protobuf \
-    third_party/protobuf/third_party/six \
     third_party/pthreadpool \
     third_party/pyjson5 \
     third_party/pyyaml \
@@ -567,6 +595,9 @@ export LDFLAGS='%{__global_ldflags}'
 export CC=clang CXX=clang++
 %else
 export CC=gcc CXX=g++
+%if 0%{?fedora} >= 38
+export CXXFLAGS="$CXXFLAGS -Wno-error=changes-meaning"
+%endif
 %endif
 
 gn_args=(
@@ -595,9 +626,7 @@ gn_args=(
 %endif
     use_system_libdrm=true
     use_system_libffi=true
-    use_system_libwayland=true
     use_system_minigbm=true
-    use_system_wayland_scanner=true
     use_xkbcommon=true
     ozone_auto_platforms=false
     'ozone_platform="x11"'
@@ -770,6 +799,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Mar 15 2023 - Ting-Wei Lan <lantw44@gmail.com> - 111.0.5563.64-100
+- Update to 111.0.5563.64
+- Fix build issues for GCC 13
+
 * Sat Feb 25 2023 - Ting-Wei Lan <lantw44@gmail.com> - 110.0.5481.177-100
 - Update to 110.0.5481.177
 

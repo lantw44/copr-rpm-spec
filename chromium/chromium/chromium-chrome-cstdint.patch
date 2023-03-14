@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/privacy_budget/encountered_surface_tracker.h b/chrome/browser/privacy_budget/encountered_surface_tracker.h
+index 012ca2c5952de..d7d9eb6ec4913 100644
+--- a/chrome/browser/privacy_budget/encountered_surface_tracker.h
++++ b/chrome/browser/privacy_budget/encountered_surface_tracker.h
+@@ -5,6 +5,7 @@
+ #ifndef CHROME_BROWSER_PRIVACY_BUDGET_ENCOUNTERED_SURFACE_TRACKER_H_
+ #define CHROME_BROWSER_PRIVACY_BUDGET_ENCOUNTERED_SURFACE_TRACKER_H_
+ 
++#include <cstdint>
+ #include <map>
+ 
+ #include "base/containers/flat_set.h"

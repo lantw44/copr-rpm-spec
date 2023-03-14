@@ -1,0 +1,24 @@
+diff --git a/net/cert/pki/string_util.h b/net/cert/pki/string_util.h
+index 1687b088606ee..429f926f2ef93 100644
+--- a/net/cert/pki/string_util.h
++++ b/net/cert/pki/string_util.h
+@@ -7,6 +7,7 @@
+ 
+ #include "net/base/net_export.h"
+ 
++#include <cstdint>
+ #include <string_view>
+ #include <vector>
+ 
+diff --git a/net/cookies/cookie_inclusion_status.h b/net/cookies/cookie_inclusion_status.h
+index 51fb970be72b5..e8dd6d8d9faea 100644
+--- a/net/cookies/cookie_inclusion_status.h
++++ b/net/cookies/cookie_inclusion_status.h
+@@ -6,6 +6,7 @@
+ #define NET_COOKIES_COOKIE_INCLUSION_STATUS_H_
+ 
+ #include <bitset>
++#include <cstdint>
+ #include <ostream>
+ #include <string>
+ #include <vector>

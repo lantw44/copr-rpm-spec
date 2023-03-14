@@ -1,0 +1,38 @@
+diff --git a/ui/base/prediction/kalman_filter.h b/ui/base/prediction/kalman_filter.h
+index bee3f946e9c96..f7c8716ca3332 100644
+--- a/ui/base/prediction/kalman_filter.h
++++ b/ui/base/prediction/kalman_filter.h
+@@ -5,6 +5,8 @@
+ #ifndef UI_BASE_PREDICTION_KALMAN_FILTER_H_
+ #define UI_BASE_PREDICTION_KALMAN_FILTER_H_
+ 
++#include <cstdint>
++
+ #include "base/component_export.h"
+ #include "ui/gfx/geometry/matrix3_f.h"
+ 
+diff --git a/ui/events/types/scroll_types.h b/ui/events/types/scroll_types.h
+index be6b2779f41ba..dbe2e5cf746f5 100644
+--- a/ui/events/types/scroll_types.h
++++ b/ui/events/types/scroll_types.h
+@@ -5,6 +5,8 @@
+ #ifndef UI_EVENTS_TYPES_SCROLL_TYPES_H_
+ #define UI_EVENTS_TYPES_SCROLL_TYPES_H_
+ 
++#include <cstdint>
++
+ namespace ui {
+ 
+ enum class ScrollGranularity : uint8_t {
+diff --git a/ui/gfx/geometry/linear_gradient.h b/ui/gfx/geometry/linear_gradient.h
+index 65cd4cb07c7c2..ab0ce5808c39b 100644
+--- a/ui/gfx/geometry/linear_gradient.h
++++ b/ui/gfx/geometry/linear_gradient.h
+@@ -6,6 +6,7 @@
+ #define UI_GFX_LINEAR_GRADIENT_H_
+ 
+ #include <array>
++#include <cstdint>
+ #include <string>
+ 
+ #include "ui/gfx/geometry/geometry_skia_export.h"
