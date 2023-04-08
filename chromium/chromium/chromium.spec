@@ -70,7 +70,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    111.0.5563.146
+Version:    112.0.5615.49
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -124,9 +124,11 @@ Patch3:     chromium-media-mojo-services-opus.patch
 Patch4:     chromium-v8-WasmArray-incomplete-type.patch
 
 # Pull upstream patches
-Patch10:    chromium-gcc-12-r1105184.patch
-Patch11:    chromium-vulkan_memory_allocator-gcc-13.patch
-Patch12:    chromium-webrtc-gcc-13.patch
+Patch10:    chromium-gcc-12-r1111077.patch
+Patch11:    chromium-gcc-12-r1113983.patch
+Patch12:    chromium-gcc-13-r1126024.patch
+Patch13:    chromium-vulkan_memory_allocator-gcc-13.patch
+Patch14:    chromium-webrtc-gcc-13.patch
 
 # Fix missing includes
 Patch20:    chromium-autofill-cstdint.patch
@@ -799,6 +801,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Apr 08 2023 - Ting-Wei Lan <lantw44@gmail.com> - 112.0.5615.49-100
+- Update to 112.0.5615.49
+
 * Fri Mar 31 2023 - Ting-Wei Lan <lantw44@gmail.com> - 111.0.5563.146-100
 - Update to 111.0.5563.146
 
