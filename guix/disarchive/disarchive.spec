@@ -1,6 +1,6 @@
 Name:           disarchive
 Version:        0.5.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Disassembler of software archives for long-term preservation
 
 License:        GPLv3+
@@ -76,5 +76,8 @@ and the compression parameters used by Gzip.
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.5.0-2
+- Rebuilt for Fedora 38 and 39
+
 * Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.5.0-1
 - Initial packaging

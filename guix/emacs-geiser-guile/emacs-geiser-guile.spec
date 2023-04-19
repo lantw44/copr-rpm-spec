@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.28.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Support for Guile in Geiser
 
 License:        BSD
@@ -67,6 +67,9 @@ fi
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.28.1-2
+- Rebuilt for Fedora 38 and 39
+
 * Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.28.1-1
 - Update to 0.28.1
 - Switch to Guile 3.0

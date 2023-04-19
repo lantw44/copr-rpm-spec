@@ -8,7 +8,7 @@
 
 Name:           guile-lib
 Version:        0.2.7
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Guile-Lib is a repository of useful code written in Guile Scheme
 
 License:        GPLv3+
@@ -140,6 +140,9 @@ fi
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.2.7-6
+- Rebuilt for Fedora 38 and 39
+
 * Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.2.7-5
 - Switch to Guile 3.0
 

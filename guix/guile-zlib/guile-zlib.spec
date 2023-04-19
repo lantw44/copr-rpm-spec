@@ -8,7 +8,7 @@
 
 Name:           guile-zlib
 Version:        0.1.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Guile bindings for zlib
 
 License:        GPLv3+
@@ -57,6 +57,9 @@ autoreconf -fiv
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-6
+- Rebuilt for Fedora 38 and 39
+
 * Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-5
 - Switch to Guile 3.0
 

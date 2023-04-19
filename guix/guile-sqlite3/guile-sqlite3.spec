@@ -8,7 +8,7 @@
 
 Name:           guile-sqlite3
 Version:        0.1.3
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Guile bindings for the SQLite3 database engine
 
 License:        LGPLv3+
@@ -52,6 +52,9 @@ autoreconf -fiv
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.1.3-7
+- Rebuilt for Fedora 38 and 39
+
 * Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.1.3-6
 - Switch to Guile 3.0
 

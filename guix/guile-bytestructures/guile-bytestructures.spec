@@ -8,7 +8,7 @@
 
 Name:           guile-bytestructures
 Version:        1.0.10
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Structured access library to bytevector contents for Guile
 
 License:        GPLv3+
@@ -63,6 +63,9 @@ first-class status.
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 1.0.10-6
+- Rebuilt for Fedora 38 and 39
+
 * Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 1.0.10-5
 - Switch to Guile 3.0
 

@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        3.2.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Use the Emacsclient as the editor of child processes
 
 License:        GPLv3+
@@ -64,6 +64,9 @@ fi
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 3.2.0-3
+- Rebuilt for Fedora 38 and 39
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 3.2.0-2
 - Rebuilt for Fedora 37 and 38
 

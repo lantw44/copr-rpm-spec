@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.1.10
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Edit regions in separate buffers
 
 License:        BSD
@@ -41,6 +41,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/edit-indirect/
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.1.10-2
+- Rebuilt for Fedora 38 and 39
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.1.10-1
 - Update to 0.1.10
 

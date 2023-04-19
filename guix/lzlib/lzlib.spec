@@ -3,7 +3,7 @@
 
 Name:           lzlib
 Version:        1.13
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A compression library for the lzip file format
 
 License:        GPLv2+
@@ -60,6 +60,9 @@ developing applications that use %{name}.
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 1.13-3
+- Rebuilt for Fedora 38 and 39
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 1.13-2
 - Rebuilt for Fedora 37 and 38
 

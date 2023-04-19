@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.28.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Geiser is a generic Emacs/Scheme interaction mode
 
 License:        BSD
@@ -67,6 +67,9 @@ fi
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.28.2-2
+- Rebuilt for Fedora 38 and 39
+
 * Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.28.2-1
 - Update to 0.28.2
 

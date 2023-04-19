@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.1.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Functions for traversing tree-like data
 
 License:        GPLv3+
@@ -44,6 +44,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/treepy/
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.1.2-6
+- Rebuilt for Fedora 38 and 39
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 0.1.2-5
 - Rebuilt for Fedora 37 and 38
 

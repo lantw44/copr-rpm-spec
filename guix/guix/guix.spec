@@ -6,7 +6,7 @@
 
 Name:           guix
 Version:        1.4.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -488,6 +488,9 @@ fi
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 1.4.0-3
+- Rebuilt for Fedora 38 and 39
+
 * Tue Feb 28 2023 Ting-Wei Lan <lantw44@gmail.com> - 1.4.0-2
 - Switch to the standalone GnuTLS Guile bindings
 

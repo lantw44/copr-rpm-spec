@@ -8,7 +8,7 @@
 
 Name:           guile-quickcheck
 Version:        0.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Randomized property-based testing for Guile
 
 License:        GPLv3+
@@ -59,5 +59,8 @@ seeing if it holds.
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-2
+- Rebuilt for Fedora 38 and 39
+
 * Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-1
 - Initial packaging

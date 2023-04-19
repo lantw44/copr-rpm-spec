@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        2.19.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Dash is a modern list library for Emacs
 
 License:        GPLv3+
@@ -66,6 +66,9 @@ fi
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.19.1-4
+- Rebuilt for Fedora 38 and 39
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.19.1-3
 - Fix build with Emacs 28
 

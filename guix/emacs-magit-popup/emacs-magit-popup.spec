@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        2.13.3
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Define prefix-infix-suffix command combos for Emacs
 
 License:        GPLv3+
@@ -66,6 +66,9 @@ fi
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.13.3-6
+- Rebuilt for Fedora 38 and 39
+
 * Sat Oct 29 2022 Ting-Wei Lan <lantw44@gmail.com> - 2.13.3-5
 - Rebuilt for Fedora 37 and 38
 
