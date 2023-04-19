@@ -1,5 +1,5 @@
 Name:           guile-ssh
-Version:        0.16.2
+Version:        0.16.3
 Release:        1%{?dist}
 Summary:        A library that provides access to the SSH protocol for GNU Guile
 
@@ -74,6 +74,9 @@ fi
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.16.3-1
+- Update to 0.16.3
+
 * Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.16.2-1
 - Update to 0.16.2
 - Switch to Guile 3.0
