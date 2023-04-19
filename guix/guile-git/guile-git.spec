@@ -8,7 +8,7 @@
 
 Name:           guile-git
 Version:        0.5.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Guile bindings of libgit2
 
 License:        GPLv3+ and LGPLv3+
@@ -44,6 +44,11 @@ autoreconf -fiv
 
 
 %check
+# libgit2 needs known_hosts to verify the server public key.
+# https://gitlab.com/guile-git/guile-git/-/issues/29
+%if 0%{?fedora} >= 38
+sed -i 's|tests/clone\.scm||' Makefile
+%endif
 %{__make} %{?_smp_mflags} check
 
 
@@ -79,6 +84,9 @@ fi
 
 
 %changelog
+* Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-5
+- Skip tests/clone.scm on Fedora 38 and later because it needs known_hosts
+
 * Sun Feb 12 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-4
 - Switch to Guile 3.0
 - Run SSH tests
