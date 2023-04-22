@@ -2,7 +2,7 @@
 ## (rpmautospec version 0.3.5)
 ## RPMAUTOSPEC: autorelease, autochangelog
 %define autorelease(e:s:pb:n) %{?-p:0.}%{lua:
-    release_number = 2;
+    release_number = 1;
     base_release_number = tonumber(rpm.expand("%{?-b*}%{!?-b:1}"));
     print(release_number + base_release_number - 1);
 }%{?-e:.%{-e*}}%{?-s:.%{-s*}}%{!?-n:%{?dist}}
@@ -27,19 +27,14 @@
 %global major_version %%(echo %{version} | cut -f 1 -d '~' | cut -f 1 -d '.')
 
 Name:           gnome-settings-daemon
-Version:        44.0
+Version:        44.1
 Release:        %autorelease.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
 License:        GPL-2.0-or-later AND LGPL-2.1-or-later
 URL:            https://gitlab.gnome.org/GNOME/gnome-settings-daemon
 Source0:        https://download.gnome.org/sources/%{name}/%{major_version}/%{name}-%{tarball_version}.tar.xz
-# https://gitlab.gnome.org/GNOME/gnome-settings-daemon/-/merge_requests/325
-# https://gitlab.gnome.org/GNOME/gnome-settings-daemon/-/issues/736
-# https://bugzilla.redhat.com/show_bug.cgi?id=2180047
-# Ensure auto-suspend does not apply to VMs
-Patch0:         325.patch
-Patch4:         %{name}-42-respect-menus-buttons-icons.patch
+Patch4:         %{name}-44-respect-menus-buttons-icons.patch
 
 BuildRequires:  gcc
 BuildRequires:  gettext
@@ -217,6 +212,9 @@ developing applications that use %{name}.
 %{_libdir}/pkgconfig/gnome-settings-daemon.pc
 
 %changelog
+* Wed Apr 19 2023 David King <amigadave@amigadave.com> - 44.1-1
+- Update to 44.1
+
 * Wed Mar 22 2023 Adam Williamson <awilliam@redhat.com> - 44.0-2
 - Backport MR #325 to avoid auto-suspend on VMs (#2180047)
 
