@@ -7,7 +7,6 @@ Start the `guix-daemon` by using systemd or manually running command
 `guix-daemon --build-users-group=guixbuild` as root. `guix-daemon`
 will create most necessary files and directories when you first using it.
 
-If you want to use prebuilt packages provided by
-[GNU Hydra](https://hydra.gnu.org), you should run
-`guix archive --authorize --import < /usr/share/guix/hydra.gnu.org.pub`
+If you want to use prebuilt packages, you should run
+`for i in /usr/share/guix/*.pub; do guix archive --authorize < "$i"; done`
 as root before using `guix package`.
