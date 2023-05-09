@@ -29,8 +29,8 @@
 %bcond_with system_harfbuzz
 %endif
 
-# Require libaom >= 3.4.0 for AOM_IMG_FMT_NV12
-%if 0%{?fedora} >= 37
+# Require libaom > 3.6.0 for AV1E_SET_QUANTIZER_ONE_PASS
+%if 0
 %bcond_without system_libaom
 %else
 %bcond_with system_libaom
@@ -70,7 +70,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    112.0.5615.165
+Version:    113.0.5672.63
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -124,15 +124,16 @@ Patch3:     chromium-media-mojo-services-opus.patch
 Patch4:     chromium-v8-WasmArray-incomplete-type.patch
 
 # Pull upstream patches
-Patch10:    chromium-gcc-12-r1111077.patch
-Patch11:    chromium-gcc-12-r1113983.patch
-Patch12:    chromium-gcc-13-r1126024.patch
-Patch13:    chromium-vulkan_memory_allocator-gcc-13.patch
-Patch14:    chromium-webrtc-gcc-13.patch
+Patch10:    chromium-gcc-12-r1122463.patch
+Patch11:    chromium-gcc-12-r1123011.patch
+Patch12:    chromium-gcc-12-r1127041.patch
+Patch13:    chromium-gcc-13-r1125558.patch
+Patch14:    chromium-gcc-13-r1126024.patch
+Patch15:    chromium-vulkan_memory_allocator-gcc-13.patch
+Patch16:    chromium-vulkan-validation-layers-gcc-13.patch
 
 # Fix missing includes
 Patch20:    chromium-autofill-cstdint.patch
-Patch21:    chromium-base-cstdint.patch
 Patch22:    chromium-blink-cstdint.patch
 Patch23:    chromium-cc-cstdint.patch
 Patch24:    chromium-chrome-cstdint.patch
@@ -149,14 +150,12 @@ Patch34:    chromium-password_manager-cstdint.patch
 Patch35:    chromium-payments-cstdint.patch
 Patch36:    chromium-pdf-cstdint.patch
 Patch37:    chromium-pdfium-cstdint.patch
-Patch38:    chromium-perfetto-cstdint.patch
-Patch39:    chromium-quiche-cstdint.patch
-Patch40:    chromium-ruy-string.patch
-Patch41:    chromium-s2cellid-cstdint.patch
-Patch42:    chromium-swiftshader-cstdint.patch
-Patch43:    chromium-tflite-cstdint.patch
-Patch44:    chromium-ui-cstdint.patch
-Patch45:    chromium-viz-cstdint.patch
+Patch38:    chromium-ruy-string.patch
+Patch39:    chromium-s2cellid-cstdint.patch
+Patch40:    chromium-swiftshader-cstdint.patch
+Patch41:    chromium-tflite-cstdint.patch
+Patch42:    chromium-ui-cstdint.patch
+Patch43:    chromium-viz-cstdint.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -801,6 +800,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue May 09 2023 - Ting-Wei Lan <lantw44@gmail.com> - 113.0.5672.63-100
+- Update to 113.0.5672.63
+
 * Sat Apr 22 2023 - Ting-Wei Lan <lantw44@gmail.com> - 112.0.5615.165-100
 - Update to 112.0.5615.165
 
