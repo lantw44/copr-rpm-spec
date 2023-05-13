@@ -1,6 +1,6 @@
 Name:           guile30-gnutls
-Version:        3.7.11
-Release:        3%{?dist}
+Version:        3.7.12
+Release:        1%{?dist}
 Summary:        Guile bindings for the GnuTLS library
 
 License:        GPL-3.0-or-later AND LGPL-2.1-or-later
@@ -61,6 +61,9 @@ rm %{buildroot}%{guile_extensions_dir}/guile-gnutls-v-2.la
 
 
 %changelog
+* Sat May 13 2023 Ting-Wei Lan <lantw44@gmail.com> - 3.7.12-1
+- Update to 3.7.12
+
 * Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 3.7.11-3
 - Disable SRP authentication on Fedora 38 and later
 
