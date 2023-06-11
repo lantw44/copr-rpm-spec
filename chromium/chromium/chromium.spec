@@ -70,7 +70,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    113.0.5672.126
+Version:    114.0.5735.106
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -117,45 +117,15 @@ Patch1:     chromium-gn-no-static-libstdc++-allow-warnings.patch
 # https://src.fedoraproject.org/rpms/chromium/c/cb0be2c990fc724e
 Patch2:     chromium-python3.patch
 
-# Fix missing opus dependency for media/mojo/services/gpu_mojo_media_client.cc
-Patch3:     chromium-media-mojo-services-opus.patch
-
-# Fix incomplete type error for v8/src/codegen/tnode.h
-Patch4:     chromium-v8-WasmArray-incomplete-type.patch
-
 # Pull upstream patches
-Patch10:    chromium-gcc-12-r1122463.patch
-Patch11:    chromium-gcc-12-r1123011.patch
-Patch12:    chromium-gcc-12-r1127041.patch
-Patch13:    chromium-gcc-13-r1125558.patch
-Patch14:    chromium-gcc-13-r1126024.patch
-Patch15:    chromium-vulkan_memory_allocator-gcc-13.patch
-Patch16:    chromium-vulkan-validation-layers-gcc-13.patch
+Patch10:    chromium-gcc-12-r1147184.patch
+Patch11:    chromium-gcc-12-r1149296.patch
+Patch12:    chromium-vulkan_memory_allocator-gcc-13.patch
 
 # Fix missing includes
-Patch20:    chromium-autofill-cstdint.patch
-Patch22:    chromium-blink-cstdint.patch
-Patch23:    chromium-cc-cstdint.patch
-Patch24:    chromium-chrome-cstdint.patch
-Patch25:    chromium-crash-cstdint.patch
-Patch26:    chromium-dawn-cstdint.patch
-Patch27:    chromium-device-cstdint.patch
-Patch28:    chromium-feature_engagement-cstdint.patch
-Patch29:    chromium-gpu-cstdint.patch
-Patch30:    chromium-maldoca-cstdint.patch
-Patch31:    chromium-net-cstdint.patch
-Patch32:    chromium-omnibox-cstdint.patch
-Patch33:    chromium-openscreen-cstdint.patch
-Patch34:    chromium-password_manager-cstdint.patch
-Patch35:    chromium-payments-cstdint.patch
-Patch36:    chromium-pdf-cstdint.patch
-Patch37:    chromium-pdfium-cstdint.patch
-Patch38:    chromium-ruy-string.patch
-Patch39:    chromium-s2cellid-cstdint.patch
-Patch40:    chromium-swiftshader-cstdint.patch
-Patch41:    chromium-tflite-cstdint.patch
-Patch42:    chromium-ui-cstdint.patch
-Patch43:    chromium-viz-cstdint.patch
+Patch20:    chromium-maldoca-cstdint.patch
+Patch21:    chromium-ruy-string.patch
+Patch22:    chromium-tflite-cstdint.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -180,7 +150,7 @@ BuildRequires: mesa-libGL-devel, mesa-libEGL-devel, mesa-libgbm-devel
 BuildRequires: pkgconfig(gtk+-2.0), pkgconfig(gtk+-3.0)
 BuildRequires: pkgconfig(libffi), pkgconfig(nss), pkgconfig(libexif)
 BuildRequires: pkgconfig(xtst), pkgconfig(xscrnsaver), pkgconfig(xshmfence)
-BuildRequires: pkgconfig(dbus-1), pkgconfig(libudev)
+BuildRequires: pkgconfig(dbus-1), pkgconfig(libudev), pkgconfig(libevdev)
 BuildRequires: pkgconfig(libva), pkgconfig(gnome-keyring-1)
 # replace_gn_files.py --system-libraries
 BuildRequires: flac-devel
@@ -505,7 +475,6 @@ find -type f -exec \
     third_party/utf \
     third_party/vulkan \
     third_party/wayland \
-    third_party/web-animations-js \
     third_party/webdriver \
     third_party/webgpu-cts \
     third_party/webrtc \
@@ -800,6 +769,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Jun 11 2023 - Ting-Wei Lan <lantw44@gmail.com> - 114.0.5735.106-100
+- Update to 114.0.5735.106
+
 * Wed May 17 2023 - Ting-Wei Lan <lantw44@gmail.com> - 113.0.5672.126-100
 - Update to 113.0.5672.126
 
