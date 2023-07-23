@@ -70,7 +70,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    114.0.5735.198
+Version:    115.0.5790.98
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -118,9 +118,10 @@ Patch1:     chromium-gn-no-static-libstdc++-allow-warnings.patch
 Patch2:     chromium-python3.patch
 
 # Pull upstream patches
-Patch10:    chromium-gcc-12-r1147184.patch
-Patch11:    chromium-gcc-12-r1149296.patch
-Patch12:    chromium-vulkan_memory_allocator-gcc-13.patch
+Patch10:    chromium-gcc-12-r1149296.patch
+Patch11:    chromium-gcc-12-r1150817.patch
+Patch12:    chromium-gcc-12-r1151307.patch
+Patch13:    chromium-vulkan_memory_allocator-gcc-13.patch
 
 # Fix missing includes
 Patch20:    chromium-maldoca-cstdint.patch
@@ -436,6 +437,7 @@ find -type f -exec \
     third_party/private_membership \
     third_party/protobuf \
     third_party/pthreadpool \
+    third_party/puffin \
     third_party/pyjson5 \
     third_party/pyyaml \
     third_party/qcms \
@@ -607,6 +609,7 @@ gn_args=(
     rtc_link_pipewire=true
     enable_hangout_services_extension=false
     enable_nacl=false
+    enable_rust=false
     fatal_linker_warnings=false
     treat_warnings_as_errors=false
     disable_fieldtrial_testing_config=true
@@ -769,6 +772,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Jul 23 2023 - Ting-Wei Lan <lantw44@gmail.com> - 115.0.5790.98-100
+- Update to 115.0.5790.98
+- Disable Rust because it is only used for testing
+
 * Wed Jun 28 2023 - Ting-Wei Lan <lantw44@gmail.com> - 114.0.5735.198-100
 - Update to 114.0.5735.198
 
