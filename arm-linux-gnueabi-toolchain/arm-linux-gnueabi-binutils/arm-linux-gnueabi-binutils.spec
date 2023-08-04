@@ -7,8 +7,8 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.40
-Release:    2%{?dist}
+Version:    2.41
+Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 License:    GPLv3+
@@ -57,11 +57,16 @@ Requires:   %{cross_triplet}-filesystem
 
 %install
 %make_install
+find %{buildroot} -name '*.la' -delete
 rm -rf %{buildroot}%{_mandir}
 rm -rf %{buildroot}%{_infodir}
 rm -f %{buildroot}%{_libdir}/bfd-plugins/*.a
 rmdir %{buildroot}%{_libdir}/bfd-plugins
 %if "%{cross_arch}" == "arm64"
+rm -f %{buildroot}%{_libdir}/gprofng/*.a
+rmdir %{buildroot}%{_libdir}/gprofng
+rm -f %{buildroot}%{_libdir}/libgprofng.a
+rmdir %{buildroot}%{_libdir}
 rm -f %{buildroot}%{_includedir}/collectorAPI.h
 rm -f %{buildroot}%{_includedir}/libcollector.h
 rm -f %{buildroot}%{_includedir}/libfcollector.h
@@ -115,6 +120,9 @@ rmdir %{buildroot}%{_sysconfdir}
 
 
 %changelog
+* Fri Aug 04 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.41-1
+- Update to 2.41
+
 * Mon Apr 17 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.40-2
 - Rebuilt for Fedora 38 and 39
 
