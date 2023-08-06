@@ -48,8 +48,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.37
-Release:    2%{?dist}
+Version:    2.38
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -106,6 +106,7 @@ export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
             -e 's/-Werror=[^ ]*//g' \\\
             -e 's/-Wp,[^ ]*//g' \\\
             -e 's/-fcf-protection *//g' \\\
+            -e 's/-fexceptions *//g' \\\
             -e 's/-flto=auto *//g')
 # Use /usr directly because it is the path in cross_sysroot
 %configure \
@@ -115,10 +116,11 @@ export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
     --enable-kernel=2.6.32 \
     --enable-add-ons \
     --enable-bind-now \
+    --enable-crypt \
+    --enable-fortify-source \
     --enable-multi-arch \
     --enable-shared \
     --enable-stack-protector=strong \
-    --enable-tunables \
     --disable-profile \
     --disable-werror \
     --with-headers=%{cross_sysroot}/usr/include \
@@ -159,6 +161,9 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/%{lib_dir_name}/libdl.so.2
 %{cross_sysroot}/%{lib_dir_name}/libm.so.6
 %{cross_sysroot}/%{lib_dir_name}/libmemusage.so
+%if "%{cross_arch}" == "arm64"
+%{cross_sysroot}/%{lib_dir_name}/libmvec.so.1
+%endif
 %{cross_sysroot}/%{lib_dir_name}/libnsl.so.1
 %{cross_sysroot}/%{lib_dir_name}/libnss_compat.so.2
 %{cross_sysroot}/%{lib_dir_name}/libnss_db.so.2
@@ -475,6 +480,11 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/%{lib_dir_name}/libm.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libm.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libmcheck.a
+%if "%{cross_arch}" == "arm64"
+%{cross_sysroot}/usr/%{lib_dir_name}/libm-%{version}.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libmvec.a
+%{cross_sysroot}/usr/%{lib_dir_name}/libmvec.so
+%endif
 %{cross_sysroot}/usr/%{lib_dir_name}/libnss_compat.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libnss_db.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libnss_hesiod.so
@@ -509,6 +519,11 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Fri Aug 04 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.38-1
+- Update to 2.38
+- Enable _FORTIFY_SOURCE
+- Remove tunables option because it is now always enabled
+
 * Mon Apr 17 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.37-2
 - Rebuilt for Fedora 38 and 39
 
