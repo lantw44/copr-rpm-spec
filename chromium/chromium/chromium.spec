@@ -29,18 +29,19 @@
 %bcond_with system_harfbuzz
 %endif
 
-# Require libaom > 3.6.0 for AV1E_SET_QUANTIZER_ONE_PASS
+# Require libaom >= 3.7.0 for AV1E_SET_QUANTIZER_ONE_PASS
 %if 0
 %bcond_without system_libaom
 %else
 %bcond_with system_libaom
 %endif
 
-# Require libxml2 > 2.9.4 for XML_PARSE_NOXXE
-%bcond_without system_libxml2
-
-# Requires re2 2016.07.21 for re2::LazyRE2
+# Requires re2 >= 2023-06-01 for absl::string_view
+%if 0
 %bcond_without system_re2
+%else
+%bcond_with system_re2
+%endif
 
 # Allow testing whether icu can be unbundled
 %bcond_with system_libicu
@@ -70,7 +71,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    115.0.5790.170
+Version:    116.0.5845.96
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -118,15 +119,14 @@ Patch1:     chromium-gn-no-static-libstdc++-allow-warnings.patch
 Patch2:     chromium-python3.patch
 
 # Pull upstream patches
-Patch10:    chromium-gcc-12-r1149296.patch
-Patch11:    chromium-gcc-12-r1150817.patch
-Patch12:    chromium-gcc-12-r1151307.patch
+Patch10:    chromium-gcc-12-r1162286.patch
+Patch11:    chromium-gcc-12-r1162011.patch
+Patch12:    chromium-gcc-12-r1160564.patch
 Patch13:    chromium-vulkan_memory_allocator-gcc-13.patch
 
 # Fix missing includes
 Patch20:    chromium-maldoca-cstdint.patch
 Patch21:    chromium-ruy-string.patch
-Patch22:    chromium-tflite-cstdint.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -178,9 +178,7 @@ BuildRequires: pkgconfig(aom)
 %if %{with system_dav1d}
 BuildRequires: pkgconfig(dav1d)
 %endif
-%if %{with system_libxml2}
 BuildRequires: pkgconfig(libxml-2.0)
-%endif
 BuildRequires: pkgconfig(libxslt)
 BuildRequires: opus-devel
 BuildRequires: re2-devel
@@ -299,6 +297,7 @@ find -type f -exec \
     third_party/crashpad/crashpad/third_party/zlib \
     third_party/crc32c \
     third_party/cros_system_api \
+    third_party/d3 \
 %if !%{with system_dav1d}
     third_party/dav1d \
 %endif
@@ -388,11 +387,7 @@ find -type f -exec \
     third_party/libwebm \
     third_party/libx11 \
     third_party/libxcb-keysyms \
-%if %{with system_libxml2}
     third_party/libxml/chromium \
-%else
-    third_party/libxml \
-%endif
     third_party/libyuv \
     third_party/libzip \
     third_party/lottie \
@@ -530,9 +525,7 @@ find -type f -exec \
     libvpx \
 %endif
     libwebp \
-%if %{with system_libxml2}
     libxml \
-%endif
     libxslt \
     opus \
 %if %{with system_re2}
@@ -584,7 +577,6 @@ gn_args=(
     use_glib=true
     use_gio=true
     use_gtk=true
-    use_gnome_keyring=true
     use_kerberos=true
     use_libpci=true
     use_ozone=true
@@ -772,6 +764,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Aug 20 2023 - Ting-Wei Lan <lantw44@gmail.com> - 116.0.5845.96-100
+- Update to 116.0.5845.96
+- Remove the option for bundling libxml2
+
 * Thu Aug 03 2023 - Ting-Wei Lan <lantw44@gmail.com> - 115.0.5790.170-100
 - Update to 115.0.5790.170
 
