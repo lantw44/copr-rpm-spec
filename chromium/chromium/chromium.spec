@@ -71,7 +71,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    116.0.5845.187
+Version:    117.0.5938.88
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -119,14 +119,18 @@ Patch1:     chromium-gn-no-static-libstdc++-allow-warnings.patch
 Patch2:     chromium-python3.patch
 
 # Pull upstream patches
-Patch10:    chromium-gcc-12-r1162286.patch
-Patch11:    chromium-gcc-12-r1162011.patch
-Patch12:    chromium-gcc-12-r1160564.patch
-Patch13:    chromium-vulkan_memory_allocator-gcc-13.patch
+Patch10:    chromium-gcc-12-r1181503.patch
+Patch11:    chromium-vulkan_memory_allocator-gcc-13.patch
 
 # Fix missing includes
 Patch20:    chromium-maldoca-cstdint.patch
 Patch21:    chromium-ruy-string.patch
+
+# Pull patches from Matt.Jolly
+# https://gitlab.com/Matt.Jolly/chromium-patches/-/commit/9f0846cc290d5d11
+# https://gitlab.com/Matt.Jolly/chromium-patches/-/commit/55f31e3ac9880a09
+Patch30:    chromium-use-system-zstd.patch
+Patch31:    chromium-material_color_utilities-cmath.patch
 
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
@@ -180,6 +184,7 @@ BuildRequires: pkgconfig(dav1d)
 %endif
 BuildRequires: pkgconfig(libxml-2.0)
 BuildRequires: pkgconfig(libxslt)
+BuildRequires: pkgconfig(libzstd)
 BuildRequires: opus-devel
 BuildRequires: re2-devel
 BuildRequires: snappy-devel
@@ -262,7 +267,6 @@ find -type f -exec \
     third_party/angle/src/common/third_party/xxhash \
     third_party/angle/src/third_party/ceval \
     third_party/angle/src/third_party/libXNVCtrl \
-    third_party/angle/src/third_party/systeminfo \
     third_party/angle/src/third_party/volk \
     third_party/apple_apsl \
     third_party/axe-core \
@@ -321,6 +325,7 @@ find -type f -exec \
     third_party/devtools-frontend/src/front_end/third_party/marked \
     third_party/devtools-frontend/src/front_end/third_party/puppeteer \
     third_party/devtools-frontend/src/front_end/third_party/puppeteer/package/lib/esm/third_party/mitt \
+    third_party/devtools-frontend/src/front_end/third_party/puppeteer/package/lib/esm/third_party/rxjs \
     third_party/devtools-frontend/src/front_end/third_party/vscode.web-custom-data \
     third_party/devtools-frontend/src/front_end/third_party/wasmparser \
     third_party/devtools-frontend/src/test/unittests/front_end/third_party/i18n \
@@ -422,7 +427,6 @@ find -type f -exec \
     third_party/pdfium/third_party/lcms \
     third_party/pdfium/third_party/libopenjpeg \
     third_party/pdfium/third_party/libtiff \
-    third_party/pdfium/third_party/skia_shared \
     third_party/perfetto \
     third_party/perfetto/protos/third_party/chromium \
     third_party/pffft \
@@ -532,7 +536,8 @@ find -type f -exec \
     re2 \
 %endif
     snappy \
-    zlib
+    zlib \
+    zstd
 
 sed -i 's|//third_party/usb_ids|/usr/share/hwdata|g' \
     services/device/public/cpp/usb/BUILD.gn
@@ -764,6 +769,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Sep 20 2023 - Ting-Wei Lan <lantw44@gmail.com> - 117.0.5938.88-100
+- Update to 117.0.5938.88
+
 * Sun Sep 17 2023 - Ting-Wei Lan <lantw44@gmail.com> - 116.0.5845.187-100
 - Update to 116.0.5845.187
 
