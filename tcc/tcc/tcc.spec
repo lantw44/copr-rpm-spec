@@ -10,13 +10,13 @@
 %global debug_package %{nil}
 %endif
 
-%global date 20230415
-%global gitrev 6a24b762d3e1086dcffd002c68cb5ca3a33a5c6d
+%global date 20231008
+%global gitrev 08c777053cb3b7f4f5d33bb0beeb82787d30ebe0
 %global shortgitrev %(c=%{gitrev}; echo "${c:0:7}")
 
 Name:       %{pkg_fullname}
 Version:    0.9.28
-Release:    0.5.%{date}git%{shortgitrev}%{?dist}
+Release:    0.6.%{date}git%{shortgitrev}%{?dist}
 Summary:    Tiny C Compiler
 
 License:    LGPLv2
@@ -140,6 +140,9 @@ fi
 
 
 %changelog
+* Sat Oct 14 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.9.28-0.6.20231008git08c7770
+- Update to the latest git snapshot
+
 * Tue Apr 18 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.9.28-0.5.20230415git6a24b76
 - Update to the latest git snapshot
 
