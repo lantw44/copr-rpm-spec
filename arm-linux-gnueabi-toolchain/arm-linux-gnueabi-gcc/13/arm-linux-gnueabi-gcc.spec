@@ -30,7 +30,7 @@
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    13.2.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -416,6 +416,9 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 
 
 %changelog
+* Sun Oct 15 2023 Ting-Wei Lan <lantw44@gmail.com> - 13.2.0-2
+- Rebuilt for Fedora 39 and 40
+
 * Fri Aug 04 2023 Ting-Wei Lan <lantw44@gmail.com> - 13.2.0-1
 - Update to new stable release 13.2.0
 

@@ -49,7 +49,7 @@
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.38
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -519,6 +519,9 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Sun Oct 15 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.38-2
+- Rebuilt for Fedora 39 and 40
+
 * Fri Aug 04 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.38-1
 - Update to 2.38
 - Enable _FORTIFY_SOURCE

@@ -8,7 +8,7 @@
 
 Name:       %{cross_triplet}-binutils
 Version:    2.41
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 License:    GPLv3+
@@ -120,6 +120,9 @@ rmdir %{buildroot}%{_sysconfdir}
 
 
 %changelog
+* Sun Oct 15 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.41-2
+- Rebuilt for Fedora 39 and 40
+
 * Fri Aug 04 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.41-1
 - Update to 2.41
 
