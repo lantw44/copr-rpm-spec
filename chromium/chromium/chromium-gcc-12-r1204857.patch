@@ -1,0 +1,32 @@
+From 90240a9448babf3b6c6c12a85ee25f47cdebe009 Mon Sep 17 00:00:00 2001
+From: Elly <ellyjones@chromium.org>
+Date: Tue, 3 Oct 2023 21:07:39 +0000
+Subject: [PATCH] gwp-asan: iwyu of <memory> for unique_ptr
+
+Bug: None
+Change-Id: Ifa1ac8a782878b8d1c4a4784d45068fcae506e6d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4909748
+Auto-Submit: Elly FJ <ellyjones@chromium.org>
+Commit-Queue: Matthew Denton <mpdenton@chromium.org>
+Commit-Queue: Elly FJ <ellyjones@chromium.org>
+Reviewed-by: Matthew Denton <mpdenton@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1204857}
+---
+ components/gwp_asan/client/lightweight_detector.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/components/gwp_asan/client/lightweight_detector.h b/components/gwp_asan/client/lightweight_detector.h
+index f1d125ff9626c..658462e7b107f 100644
+--- a/components/gwp_asan/client/lightweight_detector.h
++++ b/components/gwp_asan/client/lightweight_detector.h
+@@ -6,6 +6,7 @@
+ #define COMPONENTS_GWP_ASAN_CLIENT_LIGHTWEIGHT_DETECTOR_H_
+ 
+ #include <atomic>
++#include <memory>
+ 
+ #include "base/gtest_prod_util.h"
+ #include "components/gwp_asan/client/export.h"
+-- 
+2.41.0
+
