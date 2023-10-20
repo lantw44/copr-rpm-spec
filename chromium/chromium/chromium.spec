@@ -71,7 +71,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    118.0.5993.70
+Version:    118.0.5993.88
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -138,6 +138,10 @@ Patch30:    chromium-use-system-zstd.patch
 Patch31:    chromium-material_color_utilities-cmath.patch
 Patch32:    chromium-partition_root-gcc-12.patch
 
+# Pull patches from Fedora
+# https://src.fedoraproject.org/rpms/chromium/c/820d621e374d616e
+Patch40:    chromium-python-3.12.patch
+
 # I don't have time to test whether it work on other architectures
 ExclusiveArch: x86_64
 
@@ -163,6 +167,8 @@ BuildRequires: pkgconfig(libffi), pkgconfig(nss), pkgconfig(libexif)
 BuildRequires: pkgconfig(xtst), pkgconfig(xscrnsaver), pkgconfig(xshmfence)
 BuildRequires: pkgconfig(dbus-1), pkgconfig(libudev), pkgconfig(libevdev)
 BuildRequires: pkgconfig(libva), pkgconfig(gnome-keyring-1)
+# remove_bundled_libraries.py --do-remove
+BuildRequires: python3-six
 # replace_gn_files.py --system-libraries
 BuildRequires: flac-devel
 %if %{with system_freetype}
@@ -289,7 +295,6 @@ find -type f -exec \
     third_party/catapult/third_party/beautifulsoup4-4.9.3 \
     third_party/catapult/third_party/html5lib-1.1 \
     third_party/catapult/third_party/polymer \
-    third_party/catapult/third_party/six \
     third_party/catapult/tracing/third_party/d3 \
     third_party/catapult/tracing/third_party/gl-matrix \
     third_party/catapult/tracing/third_party/jpeg-js \
@@ -456,7 +461,6 @@ find -type f -exec \
     third_party/selenium-atoms \
     third_party/shell-encryption \
     third_party/simplejson \
-    third_party/six \
     third_party/skia \
     third_party/skia/include/third_party/vulkan \
     third_party/skia/third_party/vulkan \
@@ -775,6 +779,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Oct 20 2023 - Ting-Wei Lan <lantw44@gmail.com> - 118.0.5993.88-100
+- Update to 118.0.5993.88
+- Unbundle six to fix Python 3.12 issues on Fedora 39
+
 * Wed Oct 18 2023 - Ting-Wei Lan <lantw44@gmail.com> - 118.0.5993.70-100
 - Update to 118.0.5993.70
 
