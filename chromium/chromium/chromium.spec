@@ -71,7 +71,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    118.0.5993.88
+Version:    118.0.5993.117
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -779,6 +779,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Oct 29 2023 - Ting-Wei Lan <lantw44@gmail.com> - 118.0.5993.117-100
+- Update to 118.0.5993.117
+
 * Fri Oct 20 2023 - Ting-Wei Lan <lantw44@gmail.com> - 118.0.5993.88-100
 - Update to 118.0.5993.88
 - Unbundle six to fix Python 3.12 issues on Fedora 39
