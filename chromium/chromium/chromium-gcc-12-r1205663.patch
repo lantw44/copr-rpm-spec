@@ -1,0 +1,62 @@
+From f6671f7e69c8167ce1031b17f7f98e54dd3f721c Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Thu, 5 Oct 2023 06:03:18 +0000
+Subject: [PATCH] GCC: use all brace-initializers NoDestructor in
+ floss_dbus_client
+
+GCC fails to resolve from constructor to initializer list.
+
+Bug: 819294
+Change-Id: I1a34aba8eef1cab9054d6da7b945b2577ecb62eb
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4909951
+Commit-Queue: Stephan Hartmann <stha09@googlemail.com>
+Reviewed-by: Katherine Lai <laikatherine@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1205663}
+---
+ device/bluetooth/floss/floss_dbus_client.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/device/bluetooth/floss/floss_dbus_client.h b/device/bluetooth/floss/floss_dbus_client.h
+index 181ad3a491383..7927565b7832b 100644
+--- a/device/bluetooth/floss/floss_dbus_client.h
++++ b/device/bluetooth/floss/floss_dbus_client.h
+@@ -413,9 +413,9 @@ template <typename T>
+ const DBusTypeInfo& GetDBusTypeInfo(const std::vector<T>*) {
+   static const base::NoDestructor<DBusTypeInfo> elem_info(
+       GetDBusTypeInfo(static_cast<T*>(nullptr)));
+-  static const base::NoDestructor<DBusTypeInfo> info(
++  static const base::NoDestructor<DBusTypeInfo> info{
+       {base::StrCat({"a", elem_info->dbus_signature}),
+-       base::StrCat({"vector<", elem_info->type_name, ">"})});
++       base::StrCat({"vector<", elem_info->type_name, ">"})}};
+   return *info;
+ }
+ 
+@@ -425,11 +425,11 @@ const DBusTypeInfo& GetDBusTypeInfo(const std::map<T, U>*) {
+       GetDBusTypeInfo(static_cast<T*>(nullptr)));
+   static const base::NoDestructor<DBusTypeInfo> val_info(
+       GetDBusTypeInfo(static_cast<U*>(nullptr)));
+-  static const base::NoDestructor<DBusTypeInfo> info(
++  static const base::NoDestructor<DBusTypeInfo> info{
+       {base::StrCat(
+            {"a{", key_info->dbus_signature, val_info->dbus_signature, "}"}),
+        base::StrCat(
+-           {"map<", key_info->type_name, ", ", val_info->type_name, ">"})});
++           {"map<", key_info->type_name, ", ", val_info->type_name, ">"})}};
+   return *info;
+ }
+ 
+@@ -437,8 +437,8 @@ template <typename T>
+ const DBusTypeInfo& GetDBusTypeInfo(const absl::optional<T>*) {
+   static const base::NoDestructor<DBusTypeInfo> elem_info(
+       GetDBusTypeInfo(static_cast<T*>(nullptr)));
+-  static const base::NoDestructor<DBusTypeInfo> info(
+-      {"a{sv}", base::StrCat({"optional<", elem_info->type_name, ">"})});
++  static const base::NoDestructor<DBusTypeInfo> info{
++      {"a{sv}", base::StrCat({"optional<", elem_info->type_name, ">"})}};
+   return *info;
+ }
+ 
+-- 
+2.41.0
+

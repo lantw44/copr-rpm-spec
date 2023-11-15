@@ -71,7 +71,7 @@
 %bcond_with fedora_compilation_flags
 
 Name:       chromium
-Version:    118.0.5993.117
+Version:    119.0.6045.123
 Release:    100%{?dist}
 Summary:    A WebKit (Blink) powered web browser
 
@@ -120,23 +120,18 @@ Patch2:     chromium-python3.patch
 
 # Pull upstream patches
 Patch10:    chromium-vulkan_memory_allocator-gcc-13.patch
-Patch11:    chromium-gcc-12-r1193203.patch
-Patch12:    chromium-gcc-12-r1196995.patch
-Patch13:    chromium-gcc-12-r1197890.patch
-Patch14:    chromium-gcc-12-r1204857.patch
-Patch15:    chromium-freetype-r1195323.patch
+Patch11:    chromium-gcc-12-r1204857.patch
+Patch12:    chromium-gcc-12-r1205663.patch
+Patch13:    chromium-gn-r1219173.patch
 
 # Fix missing includes
-Patch20:    chromium-maldoca-cstdint.patch
-Patch21:    chromium-ruy-string.patch
+Patch20:    chromium-ruy-string.patch
 
 # Pull patches from Matt.Jolly
 # https://gitlab.com/Matt.Jolly/chromium-patches/-/commit/9f0846cc290d5d11
 # https://gitlab.com/Matt.Jolly/chromium-patches/-/commit/55f31e3ac9880a09
-# https://gitlab.com/Matt.Jolly/chromium-patches/-/commit/6a043280ed6f56ab
 Patch30:    chromium-use-system-zstd.patch
 Patch31:    chromium-material_color_utilities-cmath.patch
-Patch32:    chromium-partition_root-gcc-12.patch
 
 # Pull patches from Fedora
 # https://src.fedoraproject.org/rpms/chromium/c/820d621e374d616e
@@ -280,6 +275,7 @@ find -type f -exec \
     third_party/angle/src/third_party/ceval \
     third_party/angle/src/third_party/libXNVCtrl \
     third_party/angle/src/third_party/volk \
+    third_party/anonymous_tokens \
     third_party/apple_apsl \
     third_party/axe-core \
     third_party/bidimapper \
@@ -480,6 +476,7 @@ find -type f -exec \
     third_party/tflite \
     third_party/tflite/src/third_party/eigen3 \
     third_party/tflite/src/third_party/fft2d \
+    third_party/tflite/src/third_party/xla/third_party/tsl \
     third_party/ukey2 \
     third_party/unrar \
     third_party/usb_ids \
@@ -779,6 +776,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Nov 15 2023 - Ting-Wei Lan <lantw44@gmail.com> - 119.0.6045.123-100
+- Update to 119.0.6045.123
+
 * Sun Oct 29 2023 - Ting-Wei Lan <lantw44@gmail.com> - 118.0.5993.117-100
 - Update to 118.0.5993.117
 
