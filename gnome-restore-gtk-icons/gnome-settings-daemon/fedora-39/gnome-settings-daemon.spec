@@ -27,7 +27,7 @@
 %global major_version %%(echo %{version} | cut -f 1 -d '~' | cut -f 1 -d '.')
 
 Name:           gnome-settings-daemon
-Version:        45.0
+Version:        45.1
 Release:        %autorelease.1
 Summary:        The daemon sharing settings from GNOME to GTK+/KDE applications (Copr: lantw44/gnome-restore-gtk-icons)
 
@@ -72,7 +72,6 @@ BuildRequires:  pkgconfig(xi)
 BuildRequires:  pkgconfig(wayland-client)
 %ifnarch s390 s390x
 BuildRequires:  pkgconfig(libwacom) >= 0.7
-BuildRequires:  pkgconfig(xorg-wacom)
 %endif
 
 Requires: colord >= %{colord_version}
@@ -213,6 +212,12 @@ developing applications that use %{name}.
 %{_libdir}/pkgconfig/gnome-settings-daemon.pc
 
 %changelog
+* Wed Jan 03 2024 Kalev Lember <klember@redhat.com> - 45.1-1
+- Update to 45.1
+
+* Thu Dec 07 2023 Yaakov Selkowitz <yselkowi@redhat.com> - 45.0-2
+- Drop unused xorg-wacom dependency
+
 * Tue Sep 19 2023 Kalev Lember <klember@redhat.com> - 45.0-1
 - Update to 45.0
 
