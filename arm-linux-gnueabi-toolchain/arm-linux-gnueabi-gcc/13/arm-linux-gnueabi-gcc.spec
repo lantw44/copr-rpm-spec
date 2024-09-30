@@ -29,8 +29,8 @@
 %bcond_without ada
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    13.2.0
-Release:    2%{?dist}
+Version:    13.3.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -38,6 +38,9 @@ Summary:    The GNU Compiler Collection (%{cross_triplet})
 License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
 URL:        https://gcc.gnu.org
 Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
+
+# https://github.com/crosstool-ng/crosstool-ng/pull/2011
+Patch0:     gcc-13-libsanitizer-crypt.patch
 
 BuildRequires: gcc, gcc-c++
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel
@@ -416,6 +419,10 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 
 
 %changelog
+* Mon Sep 30 2024 Ting-Wei Lan <lantw44@gmail.com> - 13.3.0-1
+- Update to new stable release 13.3.0
+- Fix build without libcrypt
+
 * Sun Oct 15 2023 Ting-Wei Lan <lantw44@gmail.com> - 13.2.0-2
 - Rebuilt for Fedora 39 and 40
 
