@@ -48,8 +48,8 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.38
-Release:    2%{?dist}
+Version:    2.40
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
@@ -116,7 +116,6 @@ export RANLIB=%{_bindir}/%{cross_triplet}-ranlib
     --enable-kernel=2.6.32 \
     --enable-add-ons \
     --enable-bind-now \
-    --enable-crypt \
     --enable-fortify-source \
     --enable-multi-arch \
     --enable-shared \
@@ -157,7 +156,6 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/%{lib_dir_name}/libanl.so.1
 %{cross_sysroot}/%{lib_dir_name}/libc.so.6
 %{cross_sysroot}/%{lib_dir_name}/libc_malloc_debug.so.0
-%{cross_sysroot}/%{lib_dir_name}/libcrypt.so.1
 %{cross_sysroot}/%{lib_dir_name}/libdl.so.2
 %{cross_sysroot}/%{lib_dir_name}/libm.so.6
 %{cross_sysroot}/%{lib_dir_name}/libmemusage.so
@@ -214,7 +212,6 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/include/byteswap.h
 %{cross_sysroot}/usr/include/complex.h
 %{cross_sysroot}/usr/include/cpio.h
-%{cross_sysroot}/usr/include/crypt.h
 %{cross_sysroot}/usr/include/ctype.h
 %{cross_sysroot}/usr/include/dirent.h
 %{cross_sysroot}/usr/include/dlfcn.h
@@ -344,6 +341,7 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/include/signal.h
 %{cross_sysroot}/usr/include/spawn.h
 %{cross_sysroot}/usr/include/stab.h
+%{cross_sysroot}/usr/include/stdbit.h
 %{cross_sysroot}/usr/include/stdc-predef.h
 %{cross_sysroot}/usr/include/stdint.h
 %{cross_sysroot}/usr/include/stdio.h
@@ -473,8 +471,6 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/%{lib_dir_name}/libc.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libc_malloc_debug.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libc_nonshared.a
-%{cross_sysroot}/usr/%{lib_dir_name}/libcrypt.a
-%{cross_sysroot}/usr/%{lib_dir_name}/libcrypt.so
 %{cross_sysroot}/usr/%{lib_dir_name}/libdl.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libg.a
 %{cross_sysroot}/usr/%{lib_dir_name}/libm.a
@@ -519,6 +515,10 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Mon Sep 30 2024 Ting-Wei Lan <lantw44@gmail.com> - 2.40-1
+- Update to 2.40
+- Remove libcrypt because GLIBC 2.39 removed them
+
 * Sun Oct 15 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.38-2
 - Rebuilt for Fedora 39 and 40
 
