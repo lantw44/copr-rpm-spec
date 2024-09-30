@@ -7,8 +7,8 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.41
-Release:    2%{?dist}
+Version:    2.43.1
+Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 License:    GPLv3+
@@ -43,12 +43,16 @@ Requires:   %{cross_triplet}-filesystem
     --enable-new-dtags \
     --enable-plugins \
     --enable-relro \
+    --enable-rosegment \
     --enable-separate-code \
     --enable-threads \
+    --enable-warn-execstack \
+    --enable-warn-rwx-segments \
     --disable-nls \
     --disable-rpath \
     --disable-shared \
     --disable-werror \
+    --disable-default-execstack \
     --with-sysroot=%{cross_sysroot} \
     --with-system-zlib \
 
@@ -120,6 +124,9 @@ rmdir %{buildroot}%{_sysconfdir}
 
 
 %changelog
+* Mon Sep 30 2024 Ting-Wei Lan <lantw44@gmail.com> - 2.43.1-1
+- Update to 2.43.1
+
 * Sun Oct 15 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.41-2
 - Rebuilt for Fedora 39 and 40
 
