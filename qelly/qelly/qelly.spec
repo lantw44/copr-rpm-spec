@@ -3,7 +3,7 @@
 
 Name:       qelly
 Version:    1.0
-Release:    0.23.20160403git%{shortcommit}%{?dist}
+Release:    0.24.20160403git%{shortcommit}%{?dist}
 Summary:    Qelly is a Qt port of Nally
 
 License:    GPLv3
@@ -43,6 +43,9 @@ install -m 755 bin/Qelly %{buildroot}/usr/bin
 %doc AUTHORS CHANGES README.md
 
 %changelog
+* Wed Oct 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.24.20160403git354e0b7
+- Rebuilt for Fedora 40, 41, 42
+
 * Sat Oct 14 2023 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.23.20160403git354e0b7
 - Rebuilt for Fedora 39 and 40
 
