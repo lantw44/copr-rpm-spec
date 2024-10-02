@@ -10,13 +10,13 @@
 %global debug_package %{nil}
 %endif
 
-%global date 20231008
-%global gitrev 08c777053cb3b7f4f5d33bb0beeb82787d30ebe0
+%global date 20240928
+%global gitrev 3ead10dd94d7080b54c20da1eb07c7b383fda058
 %global shortgitrev %(c=%{gitrev}; echo "${c:0:7}")
 
 Name:       %{pkg_fullname}
 Version:    0.9.28
-Release:    0.6.%{date}git%{shortgitrev}%{?dist}
+Release:    0.7.%{date}git%{shortgitrev}%{?dist}
 Summary:    Tiny C Compiler
 
 License:    LGPLv2
@@ -113,6 +113,7 @@ fi
 %{_libdir}/tcc/bt-log.o
 %{_libdir}/tcc/i386-libtcc1.a
 %{_libdir}/tcc/riscv64-libtcc1.a
+%{_libdir}/tcc/runmain.o
 %{_libdir}/tcc/x86_64-libtcc1.a
 %{_libdir}/tcc/x86_64-osx-libtcc1.a
 %dir %{_libdir}/tcc/include
@@ -140,6 +141,9 @@ fi
 
 
 %changelog
+* Wed Oct 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.9.28-0.7.20240928git3ead10d
+- Update to the latest git snapshot
+
 * Sat Oct 14 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.9.28-0.6.20231008git08c7770
 - Update to the latest git snapshot
 
