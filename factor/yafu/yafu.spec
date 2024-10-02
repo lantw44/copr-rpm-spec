@@ -1,6 +1,6 @@
 Name:       yafu
 Version:    1.34
-Release:    23%{?dist}
+Release:    24%{?dist}
 Summary:    Automated integer factorization
 
 License:    Public Domain
@@ -29,7 +29,7 @@ sed -i 's|-lmsieve|-lmsieve -lz|' Makefile
 
 %ifarch x86_64
 %make_build x86_64 NFS=1 USE_SSE41=1 \
-    CC="gcc %{build_cflags} %{build_ldflags} -fcommon"
+    CC="gcc $CFLAGS $LDFLAGS -fcommon -fpermissive"
 %else
 false
 %endif
@@ -47,6 +47,10 @@ install -m 755 yafu %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Oct 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 1.34-24
+- Downgrade GCC 14 compilation errors to warnings with -fpermissive
+- Use environment variables instead of RPM macros to get build flags
+
 * Sat Oct 14 2023 Ting-Wei Lan <lantw44@gmail.com> - 1.34-23
 - Rebuilt for Fedora 39 and 40
 
