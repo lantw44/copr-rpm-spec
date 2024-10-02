@@ -11,7 +11,7 @@
 %global pcre2_version 10.21
 
 Name:           vte291
-Version:        0.76.3
+Version:        0.76.4
 Release:        1%{?dist}.1
 Summary:        GTK+ 3 terminal emulator library (Copr: lantw44/vte-reduce-line-height)
 
@@ -189,6 +189,9 @@ sed -i -e "/^vte_systemduserunitdir =/s|vte_prefix|'/usr'|" meson.build
 %{_sysconfdir}/profile.d/vte.sh
 
 %changelog
+* Fri Sep 27 2024 David King <amigadave@amigadave.com> - 0.76.4-1
+- Update to 0.76.4
+
 * Mon Jun 10 2024 David King <amigadave@amigadave.com> - 0.76.3-1
 - Update to 0.76.3
 
