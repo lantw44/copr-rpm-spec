@@ -2,18 +2,12 @@
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global debug_package %{nil}
 
-# Workaround brp-strip failures on Fedora 35.
-# https://github.com/rpm-software-management/rpm/issues/1765
-%if 0%{?fedora} >= 35
-%global __brp_strip   %{nil}
-%endif
-
 %global pkg guix
 %global pkgname Guix
 
 Name:           emacs-%{pkg}
 Version:        0.5.2
-Release:        11.20221011git%{shortcommit}%{?dist}
+Release:        12.20221011git%{shortcommit}%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
@@ -109,6 +103,9 @@ fi
 
 
 %changelog
+* Sat Oct 05 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-12.20221011gitcf5b7a4
+- Drop the brp-strip workaround
+
 * Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-11.20221011gitcf5b7a4
 - Rebuilt for Fedora 38 and 39
 

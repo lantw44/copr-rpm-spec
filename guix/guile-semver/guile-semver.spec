@@ -1,14 +1,8 @@
 %global debug_package %{nil}
 
-# Workaround brp-strip failures on Fedora 35.
-# https://github.com/rpm-software-management/rpm/issues/1765
-%if 0%{?fedora} >= 35
-%global __brp_strip   %{nil}
-%endif
-
 Name:           guile-semver
 Version:        0.1.1
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Guile library for Semantic Versioning
 
 License:        GPLv3+
@@ -63,6 +57,9 @@ ranges. It supports:
 
 
 %changelog
+* Sat Oct 05 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-8
+- Drop the brp-strip workaround
+
 * Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-7
 - Rebuilt for Fedora 38 and 39
 

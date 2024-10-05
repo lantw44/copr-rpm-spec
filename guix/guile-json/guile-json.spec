@@ -1,14 +1,8 @@
 %global debug_package %{nil}
 
-# Workaround brp-strip failures on Fedora 35.
-# https://github.com/rpm-software-management/rpm/issues/1765
-%if 0%{?fedora} >= 35
-%global __brp_strip   %{nil}
-%endif
-
 Name:           guile-json
 Version:        4.7.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        JSON module for Guile
 
 License:        GPLv3+
@@ -66,6 +60,9 @@ features:
 
 
 %changelog
+* Sat Oct 05 2024 Ting-Wei Lan <lantw44@gmail.com> - 4.7.3-4
+- Drop the brp-strip workaround
+
 * Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 4.7.3-3
 - Rebuilt for Fedora 38 and 39
 

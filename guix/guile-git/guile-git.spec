@@ -1,14 +1,8 @@
 %global debug_package %{nil}
 
-# Workaround brp-strip failures on Fedora 35.
-# https://github.com/rpm-software-management/rpm/issues/1765
-%if 0%{?fedora} >= 35
-%global __brp_strip   %{nil}
-%endif
-
 Name:           guile-git
 Version:        0.5.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Guile bindings of libgit2
 
 License:        GPLv3+ and LGPLv3+
@@ -84,6 +78,9 @@ fi
 
 
 %changelog
+* Sat Oct 05 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-6
+- Drop the brp-strip workaround
+
 * Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-5
 - Skip tests/clone.scm on Fedora 38 and later because it needs known_hosts
 

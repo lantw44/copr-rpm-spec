@@ -1,14 +1,8 @@
 %global debug_package %{nil}
 
-# Workaround brp-strip failures on Fedora 35.
-# https://github.com/rpm-software-management/rpm/issues/1765
-%if 0%{?fedora} >= 35
-%global __brp_strip   %{nil}
-%endif
-
 Name:           guile-zlib
 Version:        0.1.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Guile bindings for zlib
 
 License:        GPLv3+
@@ -57,6 +51,9 @@ autoreconf -fiv
 
 
 %changelog
+* Sat Oct 05 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-7
+- Drop the brp-strip workaround
+
 * Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-6
 - Rebuilt for Fedora 38 and 39
 
