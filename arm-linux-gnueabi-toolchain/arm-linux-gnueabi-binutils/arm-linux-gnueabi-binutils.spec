@@ -8,12 +8,16 @@
 
 Name:       %{cross_triplet}-binutils
 Version:    2.43.1
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
 License:    GPLv3+
 URL:        https://www.gnu.org/software/binutils
 Source0:    https://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.xz
+
+# https://sourceware.org/bugzilla/show_bug.cgi?id=32241
+# https://sourceware.org/bugzilla/attachment.cgi?id=15731
+Patch0:     binutils-gprofng-Link-dbe_memmgr.o-directly.patch
 
 BuildRequires: gcc, gcc-c++
 BuildRequires: texinfo, gettext, flex, bison, jansson-devel, zlib-devel
@@ -124,6 +128,9 @@ rmdir %{buildroot}%{_sysconfdir}
 
 
 %changelog
+* Sat Oct 19 2024 Ting-Wei Lan <lantw44@gmail.com> - 2.43.1-2
+- Fix gprofng build for Fedora 41 and later
+
 * Mon Sep 30 2024 Ting-Wei Lan <lantw44@gmail.com> - 2.43.1-1
 - Update to 2.43.1
 

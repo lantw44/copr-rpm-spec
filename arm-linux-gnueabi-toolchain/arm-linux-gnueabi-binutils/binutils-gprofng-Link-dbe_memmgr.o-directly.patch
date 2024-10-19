@@ -1,0 +1,156 @@
+From 9a4c0a8e0160fadce4a578c80eb762b33563859c Mon Sep 17 00:00:00 2001
+From: "H.J. Lu" <hjl.tools@gmail.com>
+Date: Sun, 6 Oct 2024 14:36:17 +0800
+Subject: [PATCH] gprofng: Link dbe_memmgr.o directly
+
+Since malloc wrappers don't work if they are placed in an archive:
+
+https://sourceware.org/bugzilla/show_bug.cgi?id=32242
+
+link dbe_memmgr.o directly into gprofng program.
+
+	PR gprofng/32241
+	* src/Makefile.am (CSOURCES): Remove dbe_memmgr.c.
+	(gp_archive_SOURCES): Add dbe_memmgr.c.
+	(gp_collect_app_SOURCES): Likewise.
+	(gprofng_SOURCES): Likewise.
+	(gp_display_src_SOURCES): Likewise.
+	(gp_display_text_SOURCES): Likewise.
+
+Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
+---
+ gprofng/src/Makefile.am | 14 ++++++++------
+ gprofng/src/Makefile.in | 31 ++++++++++++++++++-------------
+ 2 files changed, 26 insertions(+), 19 deletions(-)
+
+diff --git a/gprofng/src/Makefile.am b/gprofng/src/Makefile.am
+index fb4b8a0fafa..51aefd042ca 100644
+--- a/gprofng/src/Makefile.am
++++ b/gprofng/src/Makefile.am
+@@ -92,7 +92,6 @@ CSOURCES = \
+ 	dbe_hwcdrv.c \
+ 	dbe_hwcfuncs.c \
+ 	dbe_hwctable.c \
+-	dbe_memmgr.c \
+ 	gethrtime.c \
+ 	$(NULL)
+ 
+@@ -155,19 +154,22 @@ dbe_DATA = $(srcdir)/gprofng.rc
+ 
+ bin_PROGRAMS = gp-archive gp-collect-app gprofng gp-display-text gp-display-src
+ 
+-gp_archive_SOURCES = gp-archive.cc ArchiveExp.cc
++# NB: Don't put dbe_memmgr.o in libgprofng.a since malloc wrappers don't
++# work if they are placed in an archive.  See:
++# https://sourceware.org/bugzilla/show_bug.cgi?id=32242
++gp_archive_SOURCES = gp-archive.cc ArchiveExp.cc dbe_memmgr.c
+ gp_archive_LDADD = $(LIBGPROFNG) $(CLOCK_GETTIME_LINK) $(ZLIB)
+ 
+-gp_collect_app_SOURCES = gp-collect-app.cc checks.cc envsets.cc count.cc
++gp_collect_app_SOURCES = gp-collect-app.cc checks.cc envsets.cc count.cc dbe_memmgr.c
+ gp_collect_app_LDADD = $(LIBGPROFNG) $(CLOCK_GETTIME_LINK) $(ZLIB)
+ 
+-gprofng_SOURCES = gprofng.cc
++gprofng_SOURCES = gprofng.cc dbe_memmgr.c
+ gprofng_LDADD = $(LIBGPROFNG) $(CLOCK_GETTIME_LINK) $(ZLIB)
+ 
+-gp_display_src_SOURCES = gp-display-src.cc
++gp_display_src_SOURCES = gp-display-src.cc dbe_memmgr.c
+ gp_display_src_LDADD = $(LIBGPROFNG) $(CLOCK_GETTIME_LINK) $(ZLIB)
+ 
+-gp_display_text_SOURCES = gp-display-text.cc ipc.cc ipcio.cc
++gp_display_text_SOURCES = gp-display-text.cc ipc.cc ipcio.cc dbe_memmgr.c
+ gp_display_text_LDADD = $(LIBGPROFNG) $(CLOCK_GETTIME_LINK) $(ZLIB)
+ 
+ # Distribution involves building the binaries to generate the manpage,
+diff --git a/gprofng/src/Makefile.in b/gprofng/src/Makefile.in
+index cef4b275305..4572c0b4726 100644
+--- a/gprofng/src/Makefile.in
++++ b/gprofng/src/Makefile.in
+@@ -178,7 +178,7 @@ am__objects_1 = Application.lo BaseMetric.lo BaseMetricTreeNode.lo \
+ 	QLParser.tab.lo dbe_collctrl.lo i18n.lo parse.lo UserLabel.lo \
+ 	util.lo Dbe.lo
+ am__objects_2 = dbe_hwcdrv.lo dbe_hwcfuncs.lo dbe_hwctable.lo \
+-	dbe_memmgr.lo gethrtime.lo
++	gethrtime.lo
+ am_libgprofng_la_OBJECTS = $(am__objects_1) $(am__objects_2)
+ libgprofng_la_OBJECTS = $(am_libgprofng_la_OBJECTS)
+ AM_V_lt = $(am__v_lt_@AM_V@)
+@@ -190,25 +190,27 @@ libgprofng_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+ 	$(AM_CXXFLAGS) $(CXXFLAGS) $(libgprofng_la_LDFLAGS) $(LDFLAGS) \
+ 	-o $@
+ PROGRAMS = $(bin_PROGRAMS)
+-am_gp_archive_OBJECTS = gp-archive.$(OBJEXT) ArchiveExp.$(OBJEXT)
++am_gp_archive_OBJECTS = gp-archive.$(OBJEXT) ArchiveExp.$(OBJEXT) \
++	dbe_memmgr.$(OBJEXT)
+ gp_archive_OBJECTS = $(am_gp_archive_OBJECTS)
+ gp_archive_DEPENDENCIES = $(LIBGPROFNG) $(am__DEPENDENCIES_1) \
+ 	$(am__DEPENDENCIES_1)
+ am_gp_collect_app_OBJECTS = gp-collect-app.$(OBJEXT) checks.$(OBJEXT) \
+-	envsets.$(OBJEXT) count.$(OBJEXT)
++	envsets.$(OBJEXT) count.$(OBJEXT) dbe_memmgr.$(OBJEXT)
+ gp_collect_app_OBJECTS = $(am_gp_collect_app_OBJECTS)
+ gp_collect_app_DEPENDENCIES = $(LIBGPROFNG) $(am__DEPENDENCIES_1) \
+ 	$(am__DEPENDENCIES_1)
+-am_gp_display_src_OBJECTS = gp-display-src.$(OBJEXT)
++am_gp_display_src_OBJECTS = gp-display-src.$(OBJEXT) \
++	dbe_memmgr.$(OBJEXT)
+ gp_display_src_OBJECTS = $(am_gp_display_src_OBJECTS)
+ gp_display_src_DEPENDENCIES = $(LIBGPROFNG) $(am__DEPENDENCIES_1) \
+ 	$(am__DEPENDENCIES_1)
+ am_gp_display_text_OBJECTS = gp-display-text.$(OBJEXT) ipc.$(OBJEXT) \
+-	ipcio.$(OBJEXT)
++	ipcio.$(OBJEXT) dbe_memmgr.$(OBJEXT)
+ gp_display_text_OBJECTS = $(am_gp_display_text_OBJECTS)
+ gp_display_text_DEPENDENCIES = $(LIBGPROFNG) $(am__DEPENDENCIES_1) \
+ 	$(am__DEPENDENCIES_1)
+-am_gprofng_OBJECTS = gprofng.$(OBJEXT)
++am_gprofng_OBJECTS = gprofng.$(OBJEXT) dbe_memmgr.$(OBJEXT)
+ gprofng_OBJECTS = $(am_gprofng_OBJECTS)
+ gprofng_DEPENDENCIES = $(LIBGPROFNG) $(am__DEPENDENCIES_1) \
+ 	$(am__DEPENDENCIES_1)
+@@ -519,7 +521,6 @@ CSOURCES = \
+ 	dbe_hwcdrv.c \
+ 	dbe_hwcfuncs.c \
+ 	dbe_hwctable.c \
+-	dbe_memmgr.c \
+ 	gethrtime.c \
+ 	$(NULL)
+ 
+@@ -559,15 +560,19 @@ libgprofng_la_LIBADD = $(top_builddir)/../opcodes/libopcodes.la \
+ 
+ dbedir = $(SYSCONFDIR)
+ dbe_DATA = $(srcdir)/gprofng.rc
+-gp_archive_SOURCES = gp-archive.cc ArchiveExp.cc
++
++# NB: Don't put dbe_memmgr.o in libgprofng.a since malloc wrappers don't
++# work if they are placed in an archive.  See:
++# https://sourceware.org/bugzilla/show_bug.cgi?id=32242
++gp_archive_SOURCES = gp-archive.cc ArchiveExp.cc dbe_memmgr.c
+ gp_archive_LDADD = $(LIBGPROFNG) $(CLOCK_GETTIME_LINK) $(ZLIB)
+-gp_collect_app_SOURCES = gp-collect-app.cc checks.cc envsets.cc count.cc
++gp_collect_app_SOURCES = gp-collect-app.cc checks.cc envsets.cc count.cc dbe_memmgr.c
+ gp_collect_app_LDADD = $(LIBGPROFNG) $(CLOCK_GETTIME_LINK) $(ZLIB)
+-gprofng_SOURCES = gprofng.cc
++gprofng_SOURCES = gprofng.cc dbe_memmgr.c
+ gprofng_LDADD = $(LIBGPROFNG) $(CLOCK_GETTIME_LINK) $(ZLIB)
+-gp_display_src_SOURCES = gp-display-src.cc
++gp_display_src_SOURCES = gp-display-src.cc dbe_memmgr.c
+ gp_display_src_LDADD = $(LIBGPROFNG) $(CLOCK_GETTIME_LINK) $(ZLIB)
+-gp_display_text_SOURCES = gp-display-text.cc ipc.cc ipcio.cc
++gp_display_text_SOURCES = gp-display-text.cc ipc.cc ipcio.cc dbe_memmgr.c
+ gp_display_text_LDADD = $(LIBGPROFNG) $(CLOCK_GETTIME_LINK) $(ZLIB)
+ all: $(BUILT_SOURCES)
+ 	$(MAKE) $(AM_MAKEFLAGS) all-am
+@@ -786,7 +791,7 @@ distclean-compile:
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dbe_hwcdrv.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dbe_hwcfuncs.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dbe_hwctable.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dbe_memmgr.Plo@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dbe_memmgr.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/envsets.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gethrtime.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gp-archive.Po@am__quote@
+-- 
+2.46.2
+
