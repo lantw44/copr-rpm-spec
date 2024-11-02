@@ -2,8 +2,8 @@
 #  [1] https://github.com/PhantomX/chinforpms/blob/991712ffa984e7fa/lzlib/lzlib.spec
 
 Name:           lzlib
-Version:        1.13
-Release:        3%{?dist}
+Version:        1.14
+Release:        1%{?dist}
 Summary:        A compression library for the lzip file format
 
 License:        GPLv2+
@@ -60,6 +60,9 @@ developing applications that use %{name}.
 
 
 %changelog
+* Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 1.14-1
+- Update to 1.14
+
 * Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 1.13-3
 - Rebuilt for Fedora 38 and 39
 
