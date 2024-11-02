@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           guile-lzlib
-Version:        0.0.2
-Release:        8%{?dist}
+Version:        0.3.0
+Release:        1%{?dist}
 Summary:        Guile bindings for lzlib
 
 License:        GPLv3+
@@ -52,6 +52,9 @@ autoreconf -fiv
 
 
 %changelog
+* Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.3.0-1
+- Update to 0.3.0
+
 * Sat Oct 05 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.0.2-8
 - Drop the brp-strip workaround
 
