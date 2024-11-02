@@ -1,0 +1,33 @@
+From c1359506ee6cfb1ea2538d96d125cdf8b7c2bb53 Mon Sep 17 00:00:00 2001
+From: "Artyom V. Poptsov" <poptsov.artyom@gmail.com>
+Date: Tue, 24 Sep 2024 20:15:39 +0300
+Subject: [PATCH] tests/key.scm: Bugfix: Handle DSA deprecation properly
+
+* tests/key.scm: Bugfix: Don't try to load a DSA key when DSA is not
+supported.
+---
+ tests/key.scm | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/tests/key.scm b/tests/key.scm
+index c1d073c..d844854 100644
+--- a/tests/key.scm
++++ b/tests/key.scm
+@@ -1,6 +1,6 @@
+ ;;; key.scm -- Testing of Guile-SSH keys
+ 
+-;; Copyright (C) 2014-2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
++;; Copyright (C) 2014-2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+ ;;
+ ;; This file is a part of Guile-SSH.
+ ;;
+@@ -70,7 +70,8 @@
+   (private-key-from-file %ecdsakey))
+ 
+ (define *rsa-pub-key*   (public-key-from-file %rsakey-pub))
+-(define *dsa-pub-key*   (public-key-from-file %dsakey-pub))
++(define *dsa-pub-key*   (and (dsa-support?)
++                             (public-key-from-file %dsakey-pub)))
+ (define *ecdsa-pub-key* (when-openssl
+                          (public-key-from-file %ecdsakey-pub)))
+ 
