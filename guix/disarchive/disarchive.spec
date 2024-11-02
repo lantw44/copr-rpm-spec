@@ -1,6 +1,6 @@
 Name:           disarchive
-Version:        0.5.0
-Release:        2%{?dist}
+Version:        0.6.0
+Release:        1%{?dist}
 Summary:        Disassembler of software archives for long-term preservation
 
 License:        GPLv3+
@@ -13,8 +13,8 @@ Source0:        https://files.ngyro.com/%{name}/%{name}-%{version}.tar.gz
 BuildRequires:  gcc
 BuildRequires:  make
 BuildRequires:  pkgconfig(guile-3.0), pkgconfig(zlib)
-BuildRequires:  guile-gcrypt, guile-lzma, guile-quickcheck
-Requires:       guile30, guile-gcrypt, guile-lzma
+BuildRequires:  guile-bzip2, guile-gcrypt, guile-lzma, guile-quickcheck
+Requires:       guile30, guile-bzip2, guile-gcrypt, guile-lzma
 Requires:       tar, gzip, xz
 
 %description
@@ -76,6 +76,9 @@ and the compression parameters used by Gzip.
 
 
 %changelog
+* Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-1
+- Update to 0.6.0
+
 * Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.5.0-2
 - Rebuilt for Fedora 38 and 39
 
