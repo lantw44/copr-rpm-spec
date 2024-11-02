@@ -1,11 +1,14 @@
 Name:           guile30-gnutls
-Version:        3.7.12
+Version:        4.0.0
 Release:        1%{?dist}
 Summary:        Guile bindings for the GnuTLS library
 
 License:        GPL-3.0-or-later AND LGPL-2.1-or-later
 URL:            https://gitlab.com/gnutls/guile
 Source0:        https://ftpmirror.gnu.org/gnutls/guile-gnutls-%{version}.tar.gz
+
+# https://gitlab.com/gnutls/guile/-/issues/25
+Patch0:         guile30-gnutls-4.0.0-tests-list-pk-algorithms.patch
 
 %global guile_source_dir     %{_datadir}/guile/site/3.0
 %global guile_ccache_dir     %{_libdir}/guile/3.0/site-ccache
@@ -61,6 +64,9 @@ rm %{buildroot}%{guile_extensions_dir}/guile-gnutls-v-2.la
 
 
 %changelog
+* Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 4.0.0-1
+- Update to 4.0.0
+
 * Sat May 13 2023 Ting-Wei Lan <lantw44@gmail.com> - 3.7.12-1
 - Update to 3.7.12
 
