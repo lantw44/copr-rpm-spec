@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           guile-lib
-Version:        0.2.7
-Release:        7%{?dist}
+Version:        0.2.8.1
+Release:        1%{?dist}
 Summary:        Guile-Lib is a repository of useful code written in Guile Scheme
 
 License:        GPLv3+
@@ -134,6 +134,9 @@ fi
 
 
 %changelog
+* Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.2.8.1-1
+- Update to 0.2.8.1
+
 * Sat Oct 05 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.2.7-7
 - Drop the brp-strip workaround
 
