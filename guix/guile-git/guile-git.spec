@@ -1,15 +1,13 @@
 %global debug_package %{nil}
 
 Name:           guile-git
-Version:        0.5.2
-Release:        6%{?dist}
+Version:        0.8.0
+Release:        1%{?dist}
 Summary:        Guile bindings of libgit2
 
 License:        GPLv3+ and LGPLv3+
 URL:            https://gitlab.com/guile-git/guile-git
-Source0:        https://gitlab.com/guile-git/guile-git/uploads/6450f3991aa524484038cdcea3fb248d/guile-git-%{version}.tar.gz
-Patch0:         guile-git-merge-31-fix-clone-tests.patch
-Patch1:         guile-git-merge-32-libgit2-1.2.0.patch
+Source0:        https://gitlab.com/guile-git/guile-git/-/archive/v%{version}/%{name}-v%{version}.tar.gz
 
 %global guile_source_dir %{_datadir}/guile/site/3.0
 %global guile_ccache_dir %{_libdir}/guile/3.0/site-ccache
@@ -28,7 +26,7 @@ repositories of the Git version control system.
 
 
 %prep
-%autosetup -n %{name}-%{version} -p1
+%autosetup -n %{name}-v%{version} -p1
 
 
 %build
@@ -78,6 +76,9 @@ fi
 
 
 %changelog
+* Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.8.0-1
+- Update to 0.8.0
+
 * Sat Oct 05 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-6
 - Drop the brp-strip workaround
 
