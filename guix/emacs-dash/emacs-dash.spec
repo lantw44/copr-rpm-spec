@@ -3,7 +3,7 @@
 
 Name:           emacs-%{pkg}
 Version:        2.19.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Dash is a modern list library for Emacs
 
 License:        GPLv3+
@@ -25,7 +25,7 @@ Emacs. No cl required.
 
 
 %build
-%make_build
+%make_build WERROR="'(setq byte-compile-error-on-warn nil)'"
 makeinfo --no-split dash.texi
 
 
@@ -66,6 +66,9 @@ fi
 
 
 %changelog
+* Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 2.19.1-5
+- Disable byte-compile-error-on-warn for Emacs 29
+
 * Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 2.19.1-4
 - Rebuilt for Fedora 38 and 39
 
