@@ -1,0 +1,20 @@
+diff --git a/tests/gremlin.scm b/tests/gremlin.scm
+index 3dbb8d3643..280b1d8819 100644
+--- a/tests/gremlin.scm
++++ b/tests/gremlin.scm
+@@ -136,6 +136,7 @@ (define ground-truth
+      (with-directory-excursion directory
+        (call-with-output-file "t.c"
+          (lambda (port)
++           (display "#include <stdio.h>\n" port)
+            (display "int main () { puts(\"hello\"); }" port)))
+        (invoke c-compiler "t.c"
+                "-Wl,--enable-new-dtags" "-Wl,-rpath=/foo" "-Wl,-rpath=/bar")
+@@ -164,6 +165,7 @@ (define ground-truth
+      (with-directory-excursion directory
+        (call-with-output-file "t.c"
+          (lambda (port)
++           (display "#include <stdio.h>\n" port)
+            (display "int main () { puts(\"hello\"); }" port)))
+ 
+        (invoke c-compiler "t.c"

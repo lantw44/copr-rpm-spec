@@ -6,7 +6,7 @@
 
 Name:           guix
 Version:        1.4.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -15,6 +15,9 @@ Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 
 # Fix tests/guix-home.sh when Guix is not installed.
 Patch0:         guix-1.4.0-tests-guix-home.patch
+
+# Fix tests/gremlin.scm for GCC 14.
+Patch1:         guix-1.4.0-tests-gremlin.patch
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
@@ -67,16 +70,13 @@ Requires:       disarchive
 
 Requires:       gzip, bzip2, xz
 Requires:       selinux-policy
-Requires:       %{_bindir}/dot
-Requires:       %{_libdir}/libgcrypt.so
-Requires(post): /usr/sbin/useradd
-Requires(post): /usr/sbin/usermod
-Requires(post): /usr/sbin/groupadd
-Requires(post): /usr/sbin/groupmod
-Requires(post): /usr/bin/gpasswd
+Requires:       graphviz
+Requires(post): shadow-utils
 Requires(post): libselinux-utils, policycoreutils
 Requires(post): info
 Requires(preun): info
+
+Provides:       %{_libexecdir}/guix/guile
 
 %{?systemd_requires}
 
@@ -129,6 +129,18 @@ if [ "${cwd_len}" -gt 36 ]; then
     echo "${cwd_str} is too long."
     echo 'The working directory cannot be longer than 36 bytes.'
     exit 1
+fi
+# Mounting proc in mock causes errors:
+# "mount ~S on ~S: ~A"
+# +   ("none"
+# +    "/tmp/guix-directory.XXXXXX/proc"
+# +    "Operation not permitted")
+# +   (1))
+if [ "$(id -un)" = mockbuild ]; then
+    sed -i \
+        -e 's|tests/containers\.scm||g' \
+        -e 's|tests/guix-environment-container\.sh||' \
+        Makefile
 fi
 # Running tests in parallel causes errors:
 # In procedure copy-file: Permission denied:
@@ -488,6 +500,13 @@ fi
 
 
 %changelog
+* Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 1.4.0-4
+- Fix tests with GCC 14 for Fedora 40 and later
+- Drop dependency on libgcrypt.so because it has been handled by guile-gcrypt
+- Convert path dependencies to packages for Fedora 40 DNF conditional file lists
+- Provide interpreter paths explicitly for Fedora 40 DNF conditional file lists
+- Skip container tests in mock because Fedora 38 broke them
+
 * Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 1.4.0-3
 - Rebuilt for Fedora 38 and 39
 
