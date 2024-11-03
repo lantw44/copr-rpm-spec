@@ -2,7 +2,7 @@
 
 Name:           guile-lzma
 Version:        0.1.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Guile bindings for liblzma
 
 License:        GPLv3+
@@ -52,6 +52,9 @@ interface similar to other Guile compression libraries, like Guile-zlib.
 
 
 %changelog
+* Sun Nov 03 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-4
+- Rebuilt for Fedora 39, 40, 41, 42
+
 * Sat Oct 05 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-3
 - Drop the brp-strip workaround
 

@@ -2,7 +2,7 @@
 
 Name:           guile-quickcheck
 Version:        0.1.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Randomized property-based testing for Guile
 
 License:        GPLv3+
@@ -53,6 +53,9 @@ seeing if it holds.
 
 
 %changelog
+* Sun Nov 03 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-4
+- Rebuilt for Fedora 39, 40, 41, 42
+
 * Sat Oct 05 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-3
 - Drop the brp-strip workaround
 

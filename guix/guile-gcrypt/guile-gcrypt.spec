@@ -2,7 +2,7 @@
 
 Name:           guile-gcrypt
 Version:        0.4.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Guile bindings to Libgcrypt
 
 License:        GPLv3+
@@ -66,6 +66,9 @@ fi
 
 
 %changelog
+* Sun Nov 03 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.4.0-4
+- Rebuilt for Fedora 39, 40, 41, 42
+
 * Sat Oct 05 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.4.0-3
 - Drop the brp-strip workaround
 

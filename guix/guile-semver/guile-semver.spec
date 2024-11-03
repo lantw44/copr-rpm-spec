@@ -2,7 +2,7 @@
 
 Name:           guile-semver
 Version:        0.1.1
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Guile library for Semantic Versioning
 
 License:        GPLv3+
@@ -57,6 +57,9 @@ ranges. It supports:
 
 
 %changelog
+* Sun Nov 03 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-9
+- Rebuilt for Fedora 39, 40, 41, 42
+
 * Sat Oct 05 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-8
 - Drop the brp-strip workaround
 
