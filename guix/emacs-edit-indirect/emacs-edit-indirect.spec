@@ -2,8 +2,8 @@
 %global pkgname edit-indirect
 
 Name:           emacs-%{pkg}
-Version:        0.1.10
-Release:        2%{?dist}
+Version:        0.1.13
+Release:        1%{?dist}
 Summary:        Edit regions in separate buffers
 
 License:        BSD
@@ -41,6 +41,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/edit-indirect/
 
 
 %changelog
+* Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.13-1
+- Update to 0.1.13
+
 * Wed Apr 19 2023 Ting-Wei Lan <lantw44@gmail.com> - 0.1.10-2
 - Rebuilt for Fedora 38 and 39
 
