@@ -1,4 +1,4 @@
-%global commit cf5b7a402ea503c3dcda85a86b9a6c6dd01896e0
+%global commit 455272c5cc72ed4ba5bad13c669f024f51479a58
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global debug_package %{nil}
 
@@ -7,7 +7,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.5.2
-Release:        12.20221011git%{shortcommit}%{?dist}
+Release:        13.20231206git%{shortcommit}%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
 License:        GPLv3+
@@ -58,7 +58,13 @@ autoreconf -fiv
     --with-popup-lispdir=%{_emacs_sitelispdir}/magit-popup \
     GUILE=%{_bindir}/guile3.0 \
     GUILD=%{_bindir}/guild3.0
-%make_build ELCFLAGS='-L %{_emacs_sitelispdir}/transient'
+
+# Fedora 40 has Guile 3.0.7, but cross-module-inlining is added in Guile 3.0.8.
+%if 0%{?fedora} < 41
+sed -i 's|-Ono-cross-module-inlining||g' scheme/Makefile
+%endif
+
+%make_build
 
 
 %install
@@ -103,6 +109,10 @@ fi
 
 
 %changelog
+* Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-13.20231206git455272c
+- Update to the latest git snapshot
+- Fix build with Guile 3.0.7 for Fedora 40
+
 * Sat Oct 05 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-12.20221011gitcf5b7a4
 - Drop the brp-strip workaround
 
