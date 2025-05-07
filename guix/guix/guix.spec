@@ -6,7 +6,7 @@
 
 Name:           guix
 Version:        1.4.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
 License:        GPLv3+
@@ -18,6 +18,9 @@ Patch0:         guix-1.4.0-tests-guix-home.patch
 
 # Fix tests/gremlin.scm for GCC 14.
 Patch1:         guix-1.4.0-tests-gremlin.patch
+
+# Fix tests/packages.scm for Guile 3.0.9.
+Patch2:         guix-1.4.0-guile-3.0.9.patch
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
@@ -36,13 +39,17 @@ BuildRequires:  gcc-c++
 BuildRequires:  autoconf, automake, gettext-devel, po4a, help2man, texinfo
 BuildRequires:  bzip2-devel, libgcrypt-devel, pkgconfig(sqlite3)
 BuildRequires:  gettext, graphviz
-BuildRequires:  bash-completion, fish
+BuildRequires:  pkgconfig(bash-completion), pkgconfig(fish)
 BuildRequires:  selinux-policy, systemd
 
 BuildRequires:  glibc-langpack-en
 BuildRequires:  pkgconfig(guile-3.0) >= 3.0.3
 BuildRequires:  guile-gcrypt >= 0.1.0
+%if 0%{?fedora} >= 41
+BuildRequires:  guile-gnutls
+%else
 BuildRequires:  guile30-gnutls
+%endif
 BuildRequires:  guile-sqlite3 >= 0.1.0
 BuildRequires:  guile-zlib >= 0.1.0
 BuildRequires:  guile-lzlib
@@ -58,7 +65,11 @@ BuildRequires:  disarchive
 
 Requires:       guile30 >= 3.0.3
 Requires:       guile-gcrypt >= 0.1.0
+%if 0%{?fedora} >= 41
+Requires:       guile-gnutls
+%else
 Requires:       guile30-gnutls
+%endif
 Requires:       guile-sqlite3 >= 0.1.0
 Requires:       guile-zlib >= 0.1.0
 Requires:       guile-lzlib
@@ -100,13 +111,13 @@ composed.
 
 
 %build
-# Rename test-tmp to t to save the length of the path.
+mktemp -d > guix_test_root.txt
 %configure \
     --disable-rpath \
     --with-bash-completion-dir=%{bash_completion_dir} \
     --with-fish-completion-dir=%{fish_completion_dir} \
     --with-selinux-policy-dir=%{_datadir}/selinux/packages \
-    ac_cv_guix_test_root="$(pwd)/t"
+    ac_cv_guix_test_root="$(< guix_test_root.txt)"
 # The progress bar of Guile compilation does not work with -O option.
 %global _make_output_sync %{nil}
 %make_build
@@ -117,17 +128,15 @@ if [ "$(curl http://fedoraproject.org/static/hotspot.txt)" != OK ]; then
     echo 'Guix tests require Internet access to work.'
     echo 'Expect failure if the build process has no access to Internet.'
 fi
-# The default path used by mock is /builddir/build/BUILD/guix-<version>, whose
-# length is at least 32 bytes. However, the test tests/gexp.scm fails when the
-# path is longer than 29 bytes because of the length limit of the shebang line.
-# We raise the working directory length limit from 29 to 36 by overriding the
-# autoconf cache variable ac_cv_guix_test_root, saving 7 bytes by renaming
-# test-tmp to t.
-cwd_str="$(pwd)"
-cwd_len="${#cwd_str}"
-if [ "${cwd_len}" -gt 36 ]; then
-    echo "${cwd_str} is too long."
-    echo 'The working directory cannot be longer than 36 bytes.'
+# The tests/gexp.scm test fails when the test root is longer than 38 bytes
+# because of the length limit of the shebang line. Move the test root to /tmp
+# by overriding the autoconf cache variable ac_cv_guix_test_root since the
+# default RPM build root is too long.
+test_root_str="$(< guix_test_root.txt)"
+test_root_len="${#test_root_str}"
+if [ "${test_root_len}" -gt 38 ]; then
+    echo "${test_root_str} is too long."
+    echo 'The Guix test root cannot be longer than 38 bytes.'
     exit 1
 fi
 # Mounting proc in mock causes errors:
@@ -146,8 +155,8 @@ fi
 # In procedure copy-file: Permission denied:
 # "/builddir/build/BUILD/guix-1.4.0/gnu/packages/bootstrap/i686-linux/bash"
 %{__make} check
-# Grant write permission so rpmbuild can clean the build root.
-chmod -R u+w "$(pwd)/t"
+chmod -R u+w "${test_root_str}"
+rm -r "${test_root_str}"
 
 
 %install
@@ -500,6 +509,14 @@ fi
 
 
 %changelog
+* Thu May 08 2025 Ting-Wei Lan <lantw44@gmail.com> - 1.4.0-5
+- Fix tests with Guile 3.0.9 for Fedora 41 and later
+- Switch to the official guile-gnutls package on Fedora 41 and later
+- Switch bash-completion and fish BuildRequires to pkgconfig dependencies since
+  Fedora 41 moves bash-completion.pc to the devel subpackage
+- Move the test root to /tmp since Fedora 41 RPM 4.20 per-build directory makes
+  the path too long to run the tests/gexp.scm test
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 1.4.0-4
 - Fix tests with GCC 14 for Fedora 40 and later
 - Drop dependency on libgcrypt.so because it has been handled by guile-gcrypt
