@@ -11,7 +11,7 @@
 %global pcre2_version 10.21
 
 Name:           vte291
-Version:        0.78.0
+Version:        0.78.4
 Release:        1%{?dist}.1
 Summary:        GTK terminal emulator library (Copr: lantw44/vte-reduce-line-height)
 
@@ -183,6 +183,15 @@ sed -i -e "/^vte_systemduserunitdir =/s|vte_prefix|'/usr'|" meson.build
 %{_sysconfdir}/profile.d/vte.sh
 
 %changelog
+* Mon Mar 24 2025 nmontero <nmontero@redhat.com> - 0.78.4-1
+- Update to 0.78.4
+
+* Mon Nov 25 2024 nmontero <nmontero@redhat.com> - 0.78.2-1
+- Update to 0.78.2
+
+* Tue Oct 22 2024 nmontero <nmontero@redhat.com> - 0.78.1-1
+- Update to 0.78.1
+
 * Mon Sep 16 2024 David King <amigadave@amigadave.com> - 0.78.0-1
 - Update to 0.78.0
 
