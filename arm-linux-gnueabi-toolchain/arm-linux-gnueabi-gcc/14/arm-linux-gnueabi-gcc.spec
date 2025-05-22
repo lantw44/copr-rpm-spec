@@ -26,16 +26,14 @@
   %endif
 %endif
 
-%bcond_without ada
-
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    14.2.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
 
-License:    GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
+License:    GPL-3.0-or-later AND LGPL-3.0-or-later AND (GPL-3.0-or-later WITH GCC-exception-3.1) AND (GPL-3.0-or-later WITH Texinfo-exception) AND (LGPL-2.1-or-later WITH GCC-exception-2.0) AND (GPL-2.0-or-later WITH GCC-exception-2.0) AND (GPL-2.0-or-later WITH GNU-compiler-exception) AND BSL-1.0 AND GFDL-1.3-or-later AND Linux-man-pages-copyleft-2-para AND SunPro AND BSD-1-Clause AND BSD-2-Clause AND BSD-2-Clause-Views AND BSD-3-Clause AND BSD-4-Clause AND BSD-Source-Code AND Zlib AND MIT AND Apache-2.0 AND (Apache-2.0 WITH LLVM-Exception) AND ZPL-2.1 AND ISC AND LicenseRef-Fedora-Public-Domain AND HP-1986 AND curl AND Martin-Birgmeier AND HPND-Markus-Kuhn AND dtoa AND SMLNJ AND AMD-newlib AND OAR AND HPND-merchantability-variant AND HPND-Intel
 URL:        https://gcc.gnu.org
 Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
 
@@ -163,11 +161,7 @@ export WINDMC_FOR_TARGET=%{_bindir}/%{cross_triplet}-windmc
 %make_build all-gcc all-target-libgcc all-target-libssp
 %endif
 %if "%{cross_stage}" == "final"
-%if %{with ada}
-    --enable-languages=c,c++,fortran,objc,obj-c++,go,d,m2,lto,ada \
-%else
-    --enable-languages=c,c++,fortran,objc,obj-c++,go,d,m2,lto \
-%endif
+    --enable-languages=c,c++,fortran,objc,obj-c++,ada,go,d,m2,lto \
 %if 0%{?fedora} <= 22
     --with-default-libstdcxx-abi=gcc4-compatible \
 %endif
@@ -226,7 +220,21 @@ rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-t
 rm -f %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools/mkinstalldirs
 rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/install-tools
 
-# Don't strip anything - /usr/bin/strip does not work on other architectures
+# Run gdb-add-index before find-debuginfo can see them, or find-debuginfo will
+# fail with 'ERROR:: GDB exited with exit status 1 during index generation.'
+%if "%{cross_stage}" == "pass2" || "%{cross_stage}" == "final"
+for i in %{buildroot}%{cross_sysroot}/%{lib_dir_name}/lib*.so; do
+    OBJCOPY=%{_bindir}/%{cross_triplet}-objcopy gdb-add-index "${i}"
+done
+%endif
+
+%if "%{cross_stage}" == "final"
+for i in %{buildroot}%{usr_lib_gcc_adalib_dir}/lib*.so; do
+    OBJCOPY=%{_bindir}/%{cross_triplet}-objcopy gdb-add-index "${i}"
+done
+%endif
+
+# Don't strip anything - /usr/bin/strip does not work on other architectures.
 %undefine __strip
 %global __strip /bin/true
 
@@ -318,6 +326,16 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 %{_bindir}/%{cross_triplet}-gdc
 %{_bindir}/%{cross_triplet}-gfortran
 %{_bindir}/%{cross_triplet}-gm2
+%{_bindir}/%{cross_triplet}-gnat
+%{_bindir}/%{cross_triplet}-gnatbind
+%{_bindir}/%{cross_triplet}-gnatchop
+%{_bindir}/%{cross_triplet}-gnatclean
+%{_bindir}/%{cross_triplet}-gnatkr
+%{_bindir}/%{cross_triplet}-gnatlink
+%{_bindir}/%{cross_triplet}-gnatls
+%{_bindir}/%{cross_triplet}-gnatmake
+%{_bindir}/%{cross_triplet}-gnatname
+%{_bindir}/%{cross_triplet}-gnatprep
 %dir %{_prefix}/%{cross_triplet}
 %dir %{_prefix}/%{cross_triplet}/include
 %dir %{_prefix}/%{cross_triplet}/include/c++
@@ -329,6 +347,9 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/d
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/objc
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/include/sanitizer
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/adainclude
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/adalib
+%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/ada_target_properties
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/finclude
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/libcaf_single.a
 %{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/m2
@@ -339,6 +360,7 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/d21
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/f951
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/go1
+%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/gnat1
 %{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/g++-mapper-server
 %dir %{cross_sysroot}/%{lib_dir_name}/go
 %{cross_sysroot}/%{lib_dir_name}/go/%{major_version}
@@ -398,26 +420,15 @@ rmdir --ignore-fail-on-non-empty %{buildroot}%{_libexecdir}/gcc/%{cross_triplet}
 %{cross_sysroot}/%{lib_dir_name}/libtsan_preinit.o
 %{cross_sysroot}/%{lib_dir_name}/libtsan.so*
 %endif
-%if %{with ada}
-%{_bindir}/%{cross_triplet}-gnat
-%{_bindir}/%{cross_triplet}-gnatbind
-%{_bindir}/%{cross_triplet}-gnatchop
-%{_bindir}/%{cross_triplet}-gnatclean
-%{_bindir}/%{cross_triplet}-gnatkr
-%{_bindir}/%{cross_triplet}-gnatlink
-%{_bindir}/%{cross_triplet}-gnatls
-%{_bindir}/%{cross_triplet}-gnatmake
-%{_bindir}/%{cross_triplet}-gnatname
-%{_bindir}/%{cross_triplet}-gnatprep
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/adainclude
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/adalib
-%{_prefix}/lib/gcc/%{cross_triplet}/%{major_version}/ada_target_properties
-%{_libexecdir}/gcc/%{cross_triplet}/%{major_version}/gnat1
-%endif
 %endif
 
 
 %changelog
+* Mon May 19 2025 Ting-Wei Lan <lantw44@gmail.com> - 14.2.0-2
+- Enable Ada support unconditionally
+- Make gdb-add-index work since find-debuginfo now requires it
+- Migrate to SPDX license by copying from the official Fedora package
+
 * Mon Sep 30 2024 Ting-Wei Lan <lantw44@gmail.com> - 14.2.0-1
 - Update to new stable release 14.2.0
 
