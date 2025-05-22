@@ -14,11 +14,11 @@
 
 Name:       %{cross_triplet}-filesystem
 Version:    3
-Release:    20%{?dist}
+Release:    21%{?dist}
 Summary:    Cross compilation toolchain filesystem layout (%{cross_triplet})
 
-License:    Public Domain
-URL:        https://copr.fedoraproject.org/coprs/lantw44/arm-linux-gnueabi-toolchain
+License:    LicenseRef-Not-Copyrightable
+URL:        https://copr.fedorainfracloud.org/coprs/lantw44/arm-linux-gnueabi-toolchain
 
 BuildArch:  noarch
 
@@ -83,6 +83,10 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 
 
 %changelog
+* Mon May 19 2025 Ting-Wei Lan <lantw44@gmail.com> - 3-21
+- Migrate to SPDX license
+- Update Fedora Copr URL
+
 * Tue Oct 01 2024 Ting-Wei Lan <lantw44@gmail.com> - 3-20
 - Rebuilt for Fedora 40, 41, 42
 
