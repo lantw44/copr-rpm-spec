@@ -7,20 +7,17 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.43.1
-Release:    2%{?dist}
+Version:    2.44
+Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
-License:    GPLv3+
+License:    GPL-3.0-or-later AND (GPL-3.0-or-later WITH Bison-exception-2.2) AND (LGPL-2.0-or-later WITH GCC-exception-2.0) AND BSD-3-Clause AND GFDL-1.3-or-later AND GPL-2.0-or-later AND LGPL-2.1-or-later AND LGPL-2.0-or-later
 URL:        https://www.gnu.org/software/binutils
-Source0:    https://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.xz
-
-# https://sourceware.org/bugzilla/show_bug.cgi?id=32241
-# https://sourceware.org/bugzilla/attachment.cgi?id=15731
-Patch0:     binutils-gprofng-Link-dbe_memmgr.o-directly.patch
+Source0:    https://ftp.gnu.org/gnu/binutils/binutils-with-gold-%{version}.tar.xz
 
 BuildRequires: gcc, gcc-c++
-BuildRequires: texinfo, gettext, flex, bison, jansson-devel, zlib-devel
+BuildRequires: texinfo, gettext, flex, bison
+BuildRequires: jansson-devel, xxhash-devel, zlib-devel
 BuildRequires: %{cross_triplet}-filesystem
 Requires:   %{cross_triplet}-filesystem
 
@@ -28,7 +25,7 @@ Requires:   %{cross_triplet}-filesystem
 
 
 %prep
-%autosetup -n binutils-%{version} -p1
+%autosetup -n binutils-with-gold-%{version} -p1
 
 
 %build
@@ -38,6 +35,7 @@ Requires:   %{cross_triplet}-filesystem
     --target=%{cross_triplet} \
     --program-prefix=%{cross_triplet}- \
     --enable-64-bit-bfd \
+    --enable-default-hash-style=gnu \
     --enable-ld=default \
     --enable-gold=yes \
     --enable-gprofng=yes \
@@ -59,6 +57,7 @@ Requires:   %{cross_triplet}-filesystem
     --disable-default-execstack \
     --with-sysroot=%{cross_sysroot} \
     --with-system-zlib \
+    --with-xxhash \
 
 %make_build
 
@@ -71,6 +70,7 @@ rm -rf %{buildroot}%{_infodir}
 rm -f %{buildroot}%{_libdir}/bfd-plugins/*.a
 rmdir %{buildroot}%{_libdir}/bfd-plugins
 %if "%{cross_arch}" == "arm64"
+rm -f %{buildroot}%{_bindir}/gp-*
 rm -f %{buildroot}%{_libdir}/gprofng/*.a
 rmdir %{buildroot}%{_libdir}/gprofng
 rm -f %{buildroot}%{_libdir}/libgprofng.a
@@ -79,6 +79,9 @@ rm -f %{buildroot}%{_includedir}/collectorAPI.h
 rm -f %{buildroot}%{_includedir}/libcollector.h
 rm -f %{buildroot}%{_includedir}/libfcollector.h
 rmdir %{buildroot}%{_includedir}
+rm -f %{buildroot}%{_docdir}/gprofng/examples.tar.gz
+rmdir %{buildroot}%{_docdir}/gprofng
+rmdir %{buildroot}%{_docdir}
 rm -f %{buildroot}%{_sysconfdir}/gprofng.rc
 rmdir %{buildroot}%{_sysconfdir}
 %endif
@@ -96,11 +99,11 @@ rmdir %{buildroot}%{_sysconfdir}
 %{_bindir}/%{cross_triplet}-gprof
 %if "%{cross_arch}" == "arm64"
 %{_bindir}/%{cross_triplet}-gprofng
-%{_bindir}/%{cross_triplet}-gp-archive
-%{_bindir}/%{cross_triplet}-gp-collect-app
-%{_bindir}/%{cross_triplet}-gp-display-html
-%{_bindir}/%{cross_triplet}-gp-display-src
-%{_bindir}/%{cross_triplet}-gp-display-text
+%{_bindir}/%{cross_triplet}-gprofng-archive
+%{_bindir}/%{cross_triplet}-gprofng-collect-app
+%{_bindir}/%{cross_triplet}-gprofng-display-html
+%{_bindir}/%{cross_triplet}-gprofng-display-src
+%{_bindir}/%{cross_triplet}-gprofng-display-text
 %endif
 %{_bindir}/%{cross_triplet}-ld
 %{_bindir}/%{cross_triplet}-ld.bfd
@@ -128,6 +131,10 @@ rmdir %{buildroot}%{_sysconfdir}
 
 
 %changelog
+* Mon May 19 2025 Ting-Wei Lan <lantw44@gmail.com> - 2.44-1
+- Update to 2.44
+- Migrate to SPDX license by copying from the official Fedora package
+
 * Sat Oct 19 2024 Ting-Wei Lan <lantw44@gmail.com> - 2.43.1-2
 - Fix gprofng build for Fedora 41 and later
 
