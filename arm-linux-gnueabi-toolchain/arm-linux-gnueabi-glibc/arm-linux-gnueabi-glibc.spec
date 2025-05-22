@@ -48,11 +48,11 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.40
+Version:    2.41
 Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
-License:    LGPLv2+ and LGPLv2+ with exceptions and GPLv2+
+License:    LGPL-2.1-or-later AND SunPro AND LGPL-2.1-or-later WITH GCC-exception-2.0 AND BSD-3-Clause AND GPL-2.0-or-later AND LGPL-2.1-or-later WITH GNU-compiler-exception AND GPL-2.0-only AND ISC AND LicenseRef-Fedora-Public-Domain AND HPND AND CMU-Mach AND LGPL-2.0-or-later AND Unicode-3.0 AND GFDL-1.1-or-later AND GPL-1.0-or-later AND FSFUL AND MIT AND Inner-Net-2.0 AND X11 AND GPL-2.0-or-later WITH GCC-exception-2.0 AND GFDL-1.3-only AND GFDL-1.1-only
 URL:        https://www.gnu.org/software/libc
 Source0:    https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 
@@ -138,7 +138,11 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/man
 rm -rf %{buildroot}%{cross_sysroot}/usr/share/info
 rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
-# Don't strip anything - /usr/bin/strip does not work on other architectures
+# find-debuginfo runs gdb-add-index, and gdb-add-index needs objcopy.
+%global __find_debuginfo \\\
+    OBJCOPY=%{_bindir}/%{cross_triplet}-objcopy %{__find_debuginfo}
+
+# Don't strip anything - /usr/bin/strip does not work on other architectures.
 %undefine __strip
 %global __strip /bin/true
 
@@ -515,6 +519,11 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Mon May 19 2025 Ting-Wei Lan <lantw44@gmail.com> - 2.41-1
+- Update to 2.41
+- Make gdb-add-index work since find-debuginfo now requires it
+- Migrate to SPDX license by copying from the official Fedora package
+
 * Mon Sep 30 2024 Ting-Wei Lan <lantw44@gmail.com> - 2.40-1
 - Update to 2.40
 - Remove libcrypt because GLIBC 2.39 removed them
