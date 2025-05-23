@@ -23,33 +23,29 @@
     %global loader_version    3
     %global gnu_hdr_suffix    -soft
     %global lib_dir_name      lib
-  %else
-    %if "%{arm_type}" == "gnueabihf"
-      %global loader_suffix   -armhf
-      %global loader_version  3
-      %global gnu_hdr_suffix  -hard
-      %global lib_dir_name    lib
-    %else
-      %{error:Unsupported ARM processor type}
-    %endif
-  %endif
-%else
-  %if "%{cross_arch}" == "arm64"
-    %global loader_suffix     -aarch64
-    %global loader_version    1
-    %global gnu_hdr_suffix    -lp64
-    %global lib_dir_name      lib64
-  %else
-    %global loader_suffix     %{nil}
-    %global loader_version    0
-    %global gnu_hdr_suffix    %{nil}
+  %elif "%{arm_type}" == "gnueabihf"
+    %global loader_suffix     -armhf
+    %global loader_version    3
+    %global gnu_hdr_suffix    -hard
     %global lib_dir_name      lib
+  %else
+    %{error:Unsupported ARM processor type}
   %endif
+%elif "%{cross_arch}" == "arm64"
+  %global loader_suffix       -aarch64
+  %global loader_version      1
+  %global gnu_hdr_suffix      -lp64
+  %global lib_dir_name        lib64
+%else
+  %global loader_suffix       %{nil}
+  %global loader_version      0
+  %global gnu_hdr_suffix      %{nil}
+  %global lib_dir_name        lib
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
 Version:    2.41
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
 License:    LGPL-2.1-or-later AND SunPro AND LGPL-2.1-or-later WITH GCC-exception-2.0 AND BSD-3-Clause AND GPL-2.0-or-later AND LGPL-2.1-or-later WITH GNU-compiler-exception AND GPL-2.0-only AND ISC AND LicenseRef-Fedora-Public-Domain AND HPND AND CMU-Mach AND LGPL-2.0-or-later AND Unicode-3.0 AND GFDL-1.1-or-later AND GPL-1.0-or-later AND FSFUL AND MIT AND Inner-Net-2.0 AND X11 AND GPL-2.0-or-later WITH GCC-exception-2.0 AND GFDL-1.3-only AND GFDL-1.1-only
@@ -502,12 +498,10 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V7_ILP32_OFFBIG
 %{cross_sysroot}/usr/libexec/getconf/XBS5_ILP32_OFF32
 %{cross_sysroot}/usr/libexec/getconf/XBS5_ILP32_OFFBIG
-%else
-%if "%{cross_arch}" == "arm64"
+%elif "%{cross_arch}" == "arm64"
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V6_LP64_OFF64
 %{cross_sysroot}/usr/libexec/getconf/POSIX_V7_LP64_OFF64
 %{cross_sysroot}/usr/libexec/getconf/XBS5_LP64_OFF64
-%endif
 %endif
 %{cross_sysroot}/usr/sbin/iconvconfig
 %{cross_sysroot}/usr/sbin/nscd
@@ -519,6 +513,9 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Thu May 22 2025 Ting-Wei Lan <lantw44@gmail.com> - 2.41-2
+- Use elif statement
+
 * Mon May 19 2025 Ting-Wei Lan <lantw44@gmail.com> - 2.41-1
 - Update to 2.41
 - Make gdb-add-index work since find-debuginfo now requires it

@@ -17,18 +17,16 @@
 %endif
 
 %if "%{cross_arch}" == "arm"
-  %global lib_dir_name        lib
+%global lib_dir_name    lib
+%elif "%{cross_arch}" == "arm64"
+%global lib_dir_name    lib64
 %else
-  %if "%{cross_arch}" == "arm64"
-    %global lib_dir_name      lib64
-  %else
-    %global lib_dir_name      lib
-  %endif
+%global lib_dir_name    lib
 %endif
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    14.2.0
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -424,6 +422,9 @@ done
 
 
 %changelog
+* Thu May 22 2025 Ting-Wei Lan <lantw44@gmail.com> - 14.2.0-3
+- Use elif statement
+
 * Mon May 19 2025 Ting-Wei Lan <lantw44@gmail.com> - 14.2.0-2
 - Enable Ada support unconditionally
 - Make gdb-add-index work since find-debuginfo now requires it

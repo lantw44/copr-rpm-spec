@@ -17,18 +17,16 @@
 %endif
 
 %if "%{cross_arch}" == "arm"
-  %global lib_dir_name        lib
+%global lib_dir_name    lib
+%elif "%{cross_arch}" == "arm64"
+%global lib_dir_name    lib64
 %else
-  %if "%{cross_arch}" == "arm64"
-    %global lib_dir_name      lib64
-  %else
-    %global lib_dir_name      lib
-  %endif
+%global lib_dir_name    lib
 %endif
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
 Version:    15.1.0
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -437,6 +435,9 @@ done
 
 
 %changelog
+* Thu May 22 2025 Ting-Wei Lan <lantw44@gmail.com> - 15.1.0-2
+- Use elif statement
+
 * Wed May 21 2025 Ting-Wei Lan <lantw44@gmail.com> - 15.1.0-1
 - Update to new stable release 15.1.0
 - Enable COBOL support

@@ -3,18 +3,16 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 %if "%{cross_arch}" == "arm"
-  %global lib_dir_name        lib
+%global lib_dir_name    lib
+%elif "%{cross_arch}" == "arm64"
+%global lib_dir_name    lib64
 %else
-  %if "%{cross_arch}" == "arm64"
-    %global lib_dir_name      lib64
-  %else
-    %global lib_dir_name      lib
-  %endif
+%global lib_dir_name    lib
 %endif
 
 Name:       %{cross_triplet}-filesystem
 Version:    3
-Release:    21%{?dist}
+Release:    22%{?dist}
 Summary:    Cross compilation toolchain filesystem layout (%{cross_triplet})
 
 License:    LicenseRef-Not-Copyrightable
@@ -83,6 +81,9 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 
 
 %changelog
+* Thu May 22 2025 Ting-Wei Lan <lantw44@gmail.com> - 3-22
+- Use elif statement
+
 * Mon May 19 2025 Ting-Wei Lan <lantw44@gmail.com> - 3-21
 - Migrate to SPDX license
 - Update Fedora Copr URL
