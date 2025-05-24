@@ -25,8 +25,8 @@
 %endif
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    14.2.0
-Release:    3%{?dist}
+Version:    14.3.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -422,6 +422,9 @@ done
 
 
 %changelog
+* Fri May 23 2025 Ting-Wei Lan <lantw44@gmail.com> - 14.3.0-1
+- Update to new stable release 14.3.0
+
 * Thu May 22 2025 Ting-Wei Lan <lantw44@gmail.com> - 14.2.0-3
 - Use elif statement
 
