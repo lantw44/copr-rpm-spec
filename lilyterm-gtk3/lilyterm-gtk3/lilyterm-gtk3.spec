@@ -3,10 +3,10 @@
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.26.20190725git%{shortcommit}%{?dist}
+Release:        0.27.20190725git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://lilyterm.luna.com.tw
 Source0:        https://github.com/Tetralet/LilyTerm/archive/%{commit}/LilyTerm-%{commit}.tar.gz
 Patch0:         lilyterm-gtk3.patch
@@ -52,6 +52,9 @@ rename lilyterm lilyterm-gtk3 data/lilyterm.*
 sed -i -e '/AUTHORS COPYING ChangeLog/,/COPYING/d' data/Makefile
 
 %build
+%if 0%{?fedora} >= 42
+export CC='gcc -std=gnu17'
+%endif
 %configure --with-gtk=3.0
 echo "EXAMPLES_DIR = %{_pkgdocdir}/examples" >> .config
 %make_build STRIP=:
@@ -83,6 +86,10 @@ desktop-file-install                                       \
 
 
 %changelog
+* Fri May 23 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.27.20190725gitfaf1254
+- Force C17 mode for GCC 15 on Fedora 42 and later
+- Migrate to SPDX license
+
 * Wed Oct 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.26.20190725gitfaf1254
 - Rebuilt for Fedora 40, 41, 42
 
