@@ -1,9 +1,9 @@
 Name:       yafu
 Version:    1.34
-Release:    24%{?dist}
+Release:    25%{?dist}
 Summary:    Automated integer factorization
 
-License:    Public Domain
+License:    LicenseRef-Fedora-Public-Domain
 URL:        https://sourceforge.net/projects/yafu
 Source0:    https://downloads.sourceforge.net/project/yafu/%{version}/%{name}-%{version}-src.zip
 
@@ -47,6 +47,9 @@ install -m 755 yafu %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri May 23 2025 Ting-Wei Lan <lantw44@gmail.com> - 1.34-25
+- Migrate to SPDX license
+
 * Wed Oct 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 1.34-24
 - Downgrade GCC 14 compilation errors to warnings with -fpermissive
 - Use environment variables instead of RPM macros to get build flags
