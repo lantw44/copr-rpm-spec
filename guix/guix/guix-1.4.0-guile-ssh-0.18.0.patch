@@ -1,0 +1,39 @@
+From b8a45bd0473ab2ba9b96b7ef429a557ece9bf06c Mon Sep 17 00:00:00 2001
+From: Tomas Volf <~@wolfsden.cz>
+Date: Wed, 11 Dec 2024 23:09:57 +0100
+Subject: [PATCH] build: Fix detection of guile-ssh.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Fixes <https://issues.guix.gnu.org/74800>.
+
+The check for make-session stopped working after update to 0.18.0.  This
+commit adds the additional `#:config #f' to skip reading the ssh
+configuration, arguably we did not want to do that anyway.
+
+* m4/guix.m4 (GUIX_CHECK_GUILE_SSH): Add `#:config #f' to make-session call.
+
+Change-Id: Id6ea3860292159ac2e6cf2a77df5f720f66aa071
+Signed-off-by: Ludovic Courtès <ludo@gnu.org>
+Reported-by: Dariqq <dariqq@posteo.net>
+---
+ m4/guix.m4 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/m4/guix.m4 b/m4/guix.m4
+index 8c2757a8b7..376f40943c 100644
+--- a/m4/guix.m4
++++ b/m4/guix.m4
+@@ -143,7 +143,7 @@ AC_DEFUN([GUIX_CHECK_GUILE_SSH], [
+             (@ (ssh popen) open-remote-pipe)
+             (@ (ssh dist node) node-eval)
+             (@ (ssh auth) userauth-gssapi!)
+-            ((@ (ssh session) make-session) #:nodelay #t))])
++            ((@ (ssh session) make-session) #:nodelay #t #:config #f))])
+      if test "$retval" = 0; then
+        guix_cv_have_recent_guile_ssh="yes"
+      else
+-- 
+2.49.0
+

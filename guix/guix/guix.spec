@@ -6,10 +6,10 @@
 
 Name:           guix
 Version:        1.4.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        A purely functional package manager for the GNU system
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://guix.gnu.org
 Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 
@@ -21,6 +21,12 @@ Patch1:         guix-1.4.0-tests-gremlin.patch
 
 # Fix tests/packages.scm for Guile 3.0.9.
 Patch2:         guix-1.4.0-guile-3.0.9.patch
+
+# Fix m4/guix.m4 for Guile-SSH 0.18.0.
+Patch3:         guix-1.4.0-guile-ssh-0.18.0.patch
+
+# Fix nix/libstore/build.cc for GCC 15.
+Patch4:         guix-1.4.0-gcc-15.patch
 
 %global guix_user         guixbuild
 %global guix_group        guixbuild
@@ -112,6 +118,7 @@ composed.
 
 %build
 mktemp -d > guix_test_root.txt
+./bootstrap
 %configure \
     --disable-rpath \
     --with-bash-completion-dir=%{bash_completion_dir} \
@@ -509,6 +516,11 @@ fi
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 1.4.0-6
+- Fix configure with Guile-SSH 0.18.0
+- Fix guix-daemon with GCC 15
+- Migrate to SPDX license
+
 * Thu May 08 2025 Ting-Wei Lan <lantw44@gmail.com> - 1.4.0-5
 - Fix tests with Guile 3.0.9 for Fedora 41 and later
 - Switch to the official guile-gnutls package on Fedora 41 and later
