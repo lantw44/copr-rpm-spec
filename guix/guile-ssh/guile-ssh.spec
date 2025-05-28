@@ -1,17 +1,11 @@
 Name:           guile-ssh
-Version:        0.17.0
+Version:        0.18.0
 Release:        1%{?dist}
 Summary:        A library that provides access to the SSH protocol for GNU Guile
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://memory-heap.org/~avp/projects/guile-ssh
 Source0:        https://github.com/artyom-poptsov/guile-ssh/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
-
-Patch0:         guile-ssh-0.17.0-bool.patch
-Patch1:         guile-ssh-0.17.0-dsa-1.patch
-Patch2:         guile-ssh-0.17.0-dsa-2.patch
-Patch3:         guile-ssh-0.17.0-dsa-3.patch
-Patch4:         guile-ssh-0.17.0-dsa-4.patch
 
 %global guile_source_dir %{_datadir}/guile/site/3.0
 %global guile_ccache_dir %{_libdir}/guile/3.0/site-ccache
@@ -80,6 +74,10 @@ fi
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.18.0-1
+- Update to 0.18.0
+- Migrate to SPDX license
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.17.0-1
 - Update to 0.17.0
 
