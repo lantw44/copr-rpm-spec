@@ -1,4 +1,4 @@
-%global commit 455272c5cc72ed4ba5bad13c669f024f51479a58
+%global commit 21e8ade02858fe633afb5dad11c59e0a779baea2
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global debug_package %{nil}
 
@@ -7,12 +7,12 @@
 
 Name:           emacs-%{pkg}
 Version:        0.5.2
-Release:        13.20231206git%{shortcommit}%{?dist}
+Release:        14.20250520git%{shortcommit}%{?dist}
 Summary:        Emacs-Guix is an Emacs interface for GNU Guix package manager
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://guix.gnu.org
-Source0:        https://git.savannah.gnu.org/cgit/guix/%{name}.git/snapshot/%{name}-%{commit}.tar.gz
+Source0:        https://codeberg.org/guix/%{name}/archive/%{commit}.tar.gz#/%{name}-%{commit}.tar.gz
 
 %global guile_source_dir %{_datadir}/guile/site/3.0
 %global guile_ccache_dir %{_libdir}/guile/3.0/site-ccache
@@ -44,7 +44,7 @@ available info about packages and to do many other things.
 
 
 %prep
-%autosetup -p1 -n %{name}-%{commit}
+%autosetup -p1 -n %{name}
 
 
 %build
@@ -109,6 +109,10 @@ fi
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-14.20250520git21e8ade
+- Update to the latest git snapshot
+- Migrate to SPDX license
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.5.2-13.20231206git455272c
 - Update to the latest git snapshot
 - Fix build with Guile 3.0.7 for Fedora 40
