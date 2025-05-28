@@ -1,11 +1,11 @@
 %global debug_package %{nil}
 
 Name:           guile-zlib
-Version:        0.2.1
+Version:        0.2.2
 Release:        1%{?dist}
 Summary:        Guile bindings for zlib
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://notabug.org/guile-zlib/guile-zlib
 Source0:        https://notabug.org/guile-zlib/guile-zlib/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
@@ -53,6 +53,10 @@ sed -i 's|(random-bytevector 65536)|(random-bytevector 200000)|' tests/zlib.scm
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.2.2-1
+- Update to 0.2.2
+- Migrate to SPDX license
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.2.1-1
 - Update to 0.2.1
 
