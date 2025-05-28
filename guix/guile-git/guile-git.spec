@@ -1,11 +1,11 @@
 %global debug_package %{nil}
 
 Name:           guile-git
-Version:        0.8.0
+Version:        0.10.0
 Release:        1%{?dist}
 Summary:        Guile bindings of libgit2
 
-License:        GPLv3+ and LGPLv3+
+License:        GPL-3.0-or-later
 URL:            https://gitlab.com/guile-git/guile-git
 Source0:        https://gitlab.com/guile-git/guile-git/-/archive/v%{version}/%{name}-v%{version}.tar.gz
 
@@ -36,11 +36,6 @@ autoreconf -fiv
 
 
 %check
-# libgit2 needs known_hosts to verify the server public key.
-# https://gitlab.com/guile-git/guile-git/-/issues/29
-%if 0%{?fedora} >= 38
-sed -i 's|tests/clone\.scm||' Makefile
-%endif
 %{__make} %{?_smp_mflags} check
 
 
@@ -59,7 +54,7 @@ fi
 
 
 %files
-%license COPYING COPYING.LESSER
+%license COPYING
 %doc NEWS README.md
 %{guile_source_dir}/git.scm
 %{guile_ccache_dir}/git.go
@@ -76,6 +71,12 @@ fi
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.10.0-1
+- Update to 0.10.0
+- Remove tests/clone.scm workaround
+- Remove LGPLv3+ since m4/guile.m4 is not installed
+- Migrate to SPDX license
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.8.0-1
 - Update to 0.8.0
 
