@@ -2,11 +2,11 @@
 #  [1] https://github.com/PhantomX/chinforpms/blob/991712ffa984e7fa/lzlib/lzlib.spec
 
 Name:           lzlib
-Version:        1.14
+Version:        1.15
 Release:        1%{?dist}
 Summary:        A compression library for the lzip file format
 
-License:        GPLv2+
+License:        BSD-2-Clause
 URL:            https://www.nongnu.org/lzip/lzlib.html
 Source0:        https://download.savannah.gnu.org/releases/lzip/%{name}/%{name}-%{version}.tar.gz
 
@@ -44,11 +44,12 @@ developing applications that use %{name}.
 
 %install
 %make_install
-
+# find-debuginfo checks the executable bit.
+chmod +x %{buildroot}/%{_libdir}/liblz.so
 
 
 %files
-%license COPYING COPYING.GPL
+%license COPYING
 %doc AUTHORS ChangeLog NEWS README
 %{_libdir}/liblz.so.*
 %{_infodir}/%{name}.info*
@@ -60,6 +61,11 @@ developing applications that use %{name}.
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 1.15-1
+- Update to 1.15
+- Remove GPLv2+ since minilzip is not installed
+- Migrate to SPDX license
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 1.14-1
 - Update to 1.14
 
