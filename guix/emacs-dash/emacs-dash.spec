@@ -2,14 +2,13 @@
 %global pkgname Dash
 
 Name:           emacs-%{pkg}
-Version:        2.19.1
-Release:        5%{?dist}
+Version:        2.20.0
+Release:        1%{?dist}
 Summary:        Dash is a modern list library for Emacs
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://github.com/magnars/dash.el
 Source0:        https://github.com/magnars/dash.el/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
-Patch0:         emacs-dash-2.19.1-emacs-28.patch
 
 BuildArch:      noarch
 BuildRequires:  emacs, make, texinfo
@@ -55,7 +54,7 @@ fi
 
 %files
 %license LICENSE
-%doc README.md
+%doc NEWS.md README.md
 %dir %{_emacs_sitelispdir}/dash
 %{_emacs_sitelispdir}/dash/dash.el
 %{_emacs_sitelispdir}/dash/dash.elc
@@ -66,6 +65,10 @@ fi
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 2.20.0-1
+- Update to 2.20.0
+- Migrate to SPDX license
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 2.19.1-5
 - Disable byte-compile-error-on-warn for Emacs 29
 
