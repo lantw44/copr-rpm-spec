@@ -2,10 +2,10 @@
 
 Name:           guile-json
 Version:        4.7.3
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        JSON module for Guile
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://savannah.nongnu.org/projects/guile-json
 Source0:        https://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.gz
 
@@ -60,6 +60,9 @@ features:
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 4.7.3-6
+- Migrate to SPDX license
+
 * Sun Nov 03 2024 Ting-Wei Lan <lantw44@gmail.com> - 4.7.3-5
 - Rebuilt for Fedora 39, 40, 41, 42
 

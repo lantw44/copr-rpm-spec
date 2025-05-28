@@ -3,10 +3,10 @@
 
 Name:           emacs-%{pkg}
 Version:        0.1.13
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Edit regions in separate buffers
 
-License:        BSD
+License:        BSD-2-Clause
 URL:            https://github.com/Fanael/edit-indirect
 Source0:        https://github.com/Fanael/edit-indirect/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
@@ -41,6 +41,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/edit-indirect/
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.1.13-2
+- Migrate to SPDX license
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.13-1
 - Update to 0.1.13
 

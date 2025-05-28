@@ -3,10 +3,10 @@
 
 Name:           emacs-%{pkg}
 Version:        0.28.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Support for Guile in Geiser
 
-License:        BSD
+License:        BSD-3-Clause
 URL:            https://nongnu.org/geiser
 Source0:        https://gitlab.com/emacs-geiser/guile/-/archive/%{version}/guile-%{version}.tar.gz#/%{pkg}-%{version}.tar.gz
 
@@ -67,6 +67,9 @@ fi
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.28.3-2
+- Migrate to SPDX license
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.28.3-1
 - Update to 0.28.3
 

@@ -2,10 +2,10 @@
 
 Name:           guile-lzma
 Version:        0.1.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Guile bindings for liblzma
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://ngyro.com/software/guile-lzma.html
 Source0:        https://files.ngyro.com/%{name}/%{name}-%{version}.tar.gz
 
@@ -52,6 +52,9 @@ interface similar to other Guile compression libraries, like Guile-zlib.
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-5
+- Migrate to SPDX license
+
 * Sun Nov 03 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-4
 - Rebuilt for Fedora 39, 40, 41, 42
 

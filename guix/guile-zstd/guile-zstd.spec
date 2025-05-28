@@ -2,10 +2,10 @@
 
 Name:           guile-zstd
 Version:        0.1.1
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        GNU Guile bindings to the zstd compression library
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://notabug.org/guile-zstd/guile-zstd
 Source0:        https://notabug.org/guile-zstd/guile-zstd/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
@@ -50,6 +50,9 @@ autoreconf -fiv
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-10
+- Migrate to SPDX license
+
 * Sun Nov 03 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-9
 - Rebuilt for Fedora 39, 40, 41, 42
 

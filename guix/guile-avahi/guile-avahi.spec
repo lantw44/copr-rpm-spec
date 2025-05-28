@@ -1,9 +1,9 @@
 Name:           guile-avahi
 Version:        0.4.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Avahi bindings for GNU Guile
 
-License:        LGPLv3+
+License:        LGPL-3.0-or-later
 URL:            https://www.nongnu.org/guile-avahi
 Source0:        https://download.savannah.nongnu.org/releases/%{name}/%{name}-%{version}.tar.gz
 
@@ -76,6 +76,9 @@ fi
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.4.1-4
+- Migrate to SPDX license
+
 * Sun Nov 03 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.4.1-3
 - Rebuilt for Fedora 39, 40, 41, 42
 

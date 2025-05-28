@@ -2,10 +2,10 @@
 
 Name:           guile-bzip2
 Version:        0.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Guile bindings for libbzip2
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://ngyro.com/software/guile-bzip2.html
 Source0:        https://files.ngyro.com/%{name}/%{name}-%{version}.tar.gz
 
@@ -53,5 +53,8 @@ interface similar to other Guile compression libraries, like Guile-zlib.
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-2
+- Migrate to SPDX license
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.0-1
 - Initial packaging

@@ -3,10 +3,10 @@
 
 Name:           emacs-%{pkg}
 Version:        1.2.1
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Buffer interface library for Emacs
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://github.com/alezost/bui.el
 Source0:        https://github.com/alezost/bui.el/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
@@ -48,6 +48,9 @@ install -m 644 *.el %{buildroot}%{_emacs_sitelispdir}/bui/
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 1.2.1-11
+- Migrate to SPDX license
+
 * Sun Nov 03 2024 Ting-Wei Lan <lantw44@gmail.com> - 1.2.1-10
 - Rebuilt for Fedora 39, 40, 41, 42
 

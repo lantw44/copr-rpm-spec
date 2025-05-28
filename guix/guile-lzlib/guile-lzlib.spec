@@ -2,10 +2,10 @@
 
 Name:           guile-lzlib
 Version:        0.3.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Guile bindings for lzlib
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://notabug.org/guile-lzlib/guile-lzlib
 Source0:        https://notabug.org/guile-lzlib/guile-lzlib/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
@@ -52,6 +52,9 @@ autoreconf -fiv
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.3.0-2
+- Migrate to SPDX license
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.3.0-1
 - Update to 0.3.0
 

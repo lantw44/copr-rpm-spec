@@ -1,9 +1,9 @@
 Name:           disarchive
 Version:        0.6.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Disassembler of software archives for long-term preservation
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://ngyro.com/software/disarchive.html
 Source0:        https://files.ngyro.com/%{name}/%{name}-%{version}.tar.gz
 
@@ -76,6 +76,9 @@ and the compression parameters used by Gzip.
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-2
+- Migrate to SPDX license
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.6.0-1
 - Update to 0.6.0
 

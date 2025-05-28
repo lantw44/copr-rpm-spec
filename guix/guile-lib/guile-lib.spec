@@ -2,10 +2,10 @@
 
 Name:           guile-lib
 Version:        0.2.8.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Guile-Lib is a repository of useful code written in Guile Scheme
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://www.nongnu.org/guile-lib
 Source0:        https://download.savannah.nongnu.org/releases/%{name}/%{name}-%{version}.tar.gz
 
@@ -134,6 +134,9 @@ fi
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.2.8.1-2
+- Migrate to SPDX license
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.2.8.1-1
 - Update to 0.2.8.1
 

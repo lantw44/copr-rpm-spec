@@ -3,10 +3,10 @@
 
 Name:           emacs-%{pkg}
 Version:        2.13.3
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Define prefix-infix-suffix command combos for Emacs
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://magit.vc
 Source0:        https://github.com/magit/magit-popup/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
@@ -66,6 +66,9 @@ fi
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 2.13.3-8
+- Migrate to SPDX license
+
 * Sun Nov 03 2024 Ting-Wei Lan <lantw44@gmail.com> - 2.13.3-7
 - Rebuilt for Fedora 39, 40, 41, 42
 

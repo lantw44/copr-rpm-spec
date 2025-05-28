@@ -3,10 +3,10 @@
 
 Name:           emacs-%{pkg}
 Version:        0.31.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Geiser is a generic Emacs/Scheme interaction mode
 
-License:        BSD
+License:        BSD-3-Clause
 URL:            https://nongnu.org/geiser
 Source0:        https://gitlab.com/emacs-geiser/geiser/-/archive/%{version}/%{pkg}-%{version}.tar.gz
 
@@ -65,6 +65,9 @@ fi
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.31.1-2
+- Migrate to SPDX license
+
 * Sat Nov 02 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.31.1-1
 - Update to 0.31.1
 - Use the builtin transient package

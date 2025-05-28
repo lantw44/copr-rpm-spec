@@ -2,10 +2,10 @@
 
 Name:           guile-semver
 Version:        0.1.1
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Guile library for Semantic Versioning
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://ngyro.com/software/guile-semver.html
 Source0:        https://files.ngyro.com/%{name}/%{name}-%{version}.tar.gz
 
@@ -57,6 +57,9 @@ ranges. It supports:
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-10
+- Migrate to SPDX license
+
 * Sun Nov 03 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.1.1-9
 - Rebuilt for Fedora 39, 40, 41, 42
 

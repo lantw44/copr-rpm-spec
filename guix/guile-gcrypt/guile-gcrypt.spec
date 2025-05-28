@@ -2,10 +2,10 @@
 
 Name:           guile-gcrypt
 Version:        0.4.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Guile bindings to Libgcrypt
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://notabug.org/cwebber/guile-gcrypt
 Source0:        https://notabug.org/cwebber/guile-gcrypt/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
@@ -66,6 +66,9 @@ fi
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.4.0-5
+- Migrate to SPDX license
+
 * Sun Nov 03 2024 Ting-Wei Lan <lantw44@gmail.com> - 0.4.0-4
 - Rebuilt for Fedora 39, 40, 41, 42
 

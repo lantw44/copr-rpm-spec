@@ -2,10 +2,10 @@
 
 Name:           guile-bytestructures
 Version:        1.0.10
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Structured access library to bytevector contents for Guile
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://github.com/TaylanUB/scheme-bytestructures
 Source0:        https://github.com/TaylanUB/scheme-bytestructures/releases/download/v%{version}/bytestructures-%{version}.tar.gz
 
@@ -57,6 +57,9 @@ first-class status.
 
 
 %changelog
+* Sat May 24 2025 Ting-Wei Lan <lantw44@gmail.com> - 1.0.10-9
+- Migrate to SPDX license
+
 * Sun Nov 03 2024 Ting-Wei Lan <lantw44@gmail.com> - 1.0.10-8
 - Rebuilt for Fedora 39, 40, 41, 42
 
