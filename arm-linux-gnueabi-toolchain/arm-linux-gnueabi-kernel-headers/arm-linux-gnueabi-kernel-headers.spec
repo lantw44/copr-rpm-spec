@@ -3,7 +3,7 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    6.14.7
+Version:    6.15.1
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -42,8 +42,12 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/asm/*.h
 %dir %{cross_sysroot}/usr/include/asm-generic
 %{cross_sysroot}/usr/include/asm-generic/*.h
+%dir %{cross_sysroot}/usr/include/cxl
+%{cross_sysroot}/usr/include/cxl/features.h
 %dir %{cross_sysroot}/usr/include/drm
 %{cross_sysroot}/usr/include/drm/*.h
+%dir %{cross_sysroot}/usr/include/fwctl
+%{cross_sysroot}/usr/include/fwctl/*.h
 %dir %{cross_sysroot}/usr/include/linux
 %{cross_sysroot}/usr/include/linux/*.h
 %dir %{cross_sysroot}/usr/include/linux/android
@@ -58,6 +62,8 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %dir %{cross_sysroot}/usr/include/linux/cifs
 %{cross_sysroot}/usr/include/linux/cifs/cifs_mount.h
 %{cross_sysroot}/usr/include/linux/cifs/cifs_netlink.h
+%dir %{cross_sysroot}/usr/include/linux/counter
+%{cross_sysroot}/usr/include/linux/counter/microchip-tcb-capture.h
 %dir %{cross_sysroot}/usr/include/linux/dvb
 %{cross_sysroot}/usr/include/linux/dvb/*.h
 %dir %{cross_sysroot}/usr/include/linux/genwqe
@@ -142,6 +148,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Mon Jun 09 2025 Ting-Wei Lan <lantw44@gmail.com> - 6.15.1-1
+- Update to 6.15.1
+
 * Mon May 19 2025 Ting-Wei Lan <lantw44@gmail.com> - 6.14.7-1
 - Update to 6.14.7
 - Migrate to SPDX license by copying from the official Fedora package
