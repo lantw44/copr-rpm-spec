@@ -11,7 +11,7 @@
 %global pcre2_version 10.21
 
 Name:           vte291
-Version:        0.80.3
+Version:        0.80.4
 Release:        1%{?dist}.1
 Summary:        GTK terminal emulator library (Copr: lantw44/vte-reduce-line-height)
 
@@ -188,6 +188,9 @@ rm %{buildroot}/%{_datadir}/applications/org.gnome.Vte.App.Gtk4.desktop
 %{_sysconfdir}/profile.d/vte.sh
 
 %changelog
+* Thu Oct 02 2025 David King <amigadave@amigadave.com> - 0.80.4-1
+- Update to 0.80.4
+
 * Wed Jul 09 2025 Milan Crha <mcrha@redhat.com> - 0.80.3-1
 - Update to 0.80.3
 
