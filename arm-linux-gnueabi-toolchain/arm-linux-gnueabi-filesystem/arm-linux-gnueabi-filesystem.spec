@@ -12,7 +12,7 @@
 
 Name:       %{cross_triplet}-filesystem
 Version:    3
-Release:    22%{?dist}
+Release:    23%{?dist}
 Summary:    Cross compilation toolchain filesystem layout (%{cross_triplet})
 
 License:    LicenseRef-Not-Copyrightable
@@ -81,6 +81,9 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 
 
 %changelog
+* Mon May 18 2026 Ting-Wei Lan <lantw44@gmail.com> - 3-23
+- Rebuilt for Fedora 43, 44, 45
+
 * Thu May 22 2025 Ting-Wei Lan <lantw44@gmail.com> - 3-22
 - Use elif statement
 
