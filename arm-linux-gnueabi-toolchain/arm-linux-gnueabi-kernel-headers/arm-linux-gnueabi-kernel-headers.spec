@@ -3,7 +3,7 @@
 %global cross_sysroot   %{_prefix}/%{cross_triplet}/sys-root
 
 Name:       %{cross_triplet}-kernel-headers
-Version:    6.15.1
+Version:    7.0.9
 Release:    1%{?dist}
 Summary:    Header files for the Linux kernel (%{cross_triplet})
 
@@ -12,7 +12,7 @@ Summary:    Header files for the Linux kernel (%{cross_triplet})
 
 License:    ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-2-Clause) AND ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-3-Clause) AND ((GPL-2.0-only WITH Linux-syscall-note) OR CDDL-1.0) AND ((GPL-2.0-only WITH Linux-syscall-note) OR Linux-OpenIB) AND ((GPL-2.0-only WITH Linux-syscall-note) OR MIT) AND ((GPL-2.0-or-later WITH Linux-syscall-note) OR BSD-3-Clause) AND ((GPL-2.0-or-later WITH Linux-syscall-note) OR MIT) AND 0BSD AND BSD-2-Clause AND (BSD-2-Clause OR Apache-2.0) AND BSD-3-Clause AND BSD-3-Clause-Clear AND CC0-1.0 AND GFDL-1.1-no-invariants-or-later AND GPL-1.0-or-later AND (GPL-1.0-or-later OR BSD-3-Clause) AND (GPL-1.0-or-later WITH Linux-syscall-note) AND GPL-2.0-only AND (GPL-2.0-only OR Apache-2.0) AND (GPL-2.0-only OR BSD-2-Clause) AND (GPL-2.0-only OR BSD-3-Clause) AND (GPL-2.0-only OR CDDL-1.0) AND (GPL-2.0-only OR GFDL-1.1-no-invariants-or-later) AND (GPL-2.0-only OR GFDL-1.2-no-invariants-only) AND (GPL-2.0-only WITH Linux-syscall-note) AND GPL-2.0-or-later AND (GPL-2.0-or-later OR BSD-2-Clause) AND (GPL-2.0-or-later OR BSD-3-Clause) AND (GPL-2.0-or-later OR CC-BY-4.0) AND (GPL-2.0-or-later WITH GCC-exception-2.0) AND (GPL-2.0-or-later WITH Linux-syscall-note) AND ISC AND LGPL-2.0-or-later AND (LGPL-2.0-or-later OR BSD-2-Clause) AND (LGPL-2.0-or-later WITH Linux-syscall-note) AND LGPL-2.1-only AND (LGPL-2.1-only OR BSD-2-Clause) AND (LGPL-2.1-only WITH Linux-syscall-note) AND LGPL-2.1-or-later AND (LGPL-2.1-or-later WITH Linux-syscall-note) AND (Linux-OpenIB OR GPL-2.0-only) AND (Linux-OpenIB OR GPL-2.0-only OR BSD-2-Clause) AND Linux-man-pages-copyleft AND MIT AND (MIT OR Apache-2.0) AND (MIT OR GPL-2.0-only) AND (MIT OR GPL-2.0-or-later) AND (MIT OR LGPL-2.1-only) AND (MPL-1.1 OR GPL-2.0-only) AND (X11 OR GPL-2.0-only) AND (X11 OR GPL-2.0-or-later) AND Zlib AND (copyleft-next-0.3.1 OR GPL-2.0-or-later)
 URL:        https://www.kernel.org/
-Source0:    https://www.kernel.org/pub/linux/kernel/v6.x/linux-%{kversion}.tar.xz
+Source0:    https://www.kernel.org/pub/linux/kernel/v7.x/linux-%{kversion}.tar.xz
 
 BuildRequires: %{cross_triplet}-filesystem
 BuildRequires: perl, rsync
@@ -53,6 +53,7 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %dir %{cross_sysroot}/usr/include/linux/android
 %{cross_sysroot}/usr/include/linux/android/binder.h
 %{cross_sysroot}/usr/include/linux/android/binderfs.h
+%{cross_sysroot}/usr/include/linux/android/binder_netlink.h
 %dir %{cross_sysroot}/usr/include/linux/byteorder
 %{cross_sysroot}/usr/include/linux/byteorder/*.h
 %dir %{cross_sysroot}/usr/include/linux/caif
@@ -74,9 +75,16 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 %{cross_sysroot}/usr/include/linux/hsi/*.h
 %dir %{cross_sysroot}/usr/include/linux/iio
 %{cross_sysroot}/usr/include/linux/iio/*.h
+%dir %{cross_sysroot}/usr/include/linux/io_uring
+%{cross_sysroot}/usr/include/linux/io_uring/*.h
 %dir %{cross_sysroot}/usr/include/linux/isdn
 %{cross_sysroot}/usr/include/linux/isdn/*.h
 %dir %{cross_sysroot}/usr/include/linux/media
+%{cross_sysroot}/usr/include/linux/media/*.h
+%dir %{cross_sysroot}/usr/include/linux/media/amlogic
+%{cross_sysroot}/usr/include/linux/media/amlogic/c3-isp-config.h
+%dir %{cross_sysroot}/usr/include/linux/media/arm
+%{cross_sysroot}/usr/include/linux/media/arm/mali-c55-config.h
 %dir %{cross_sysroot}/usr/include/linux/media/raspberrypi
 %{cross_sysroot}/usr/include/linux/media/raspberrypi/pisp_common.h
 %{cross_sysroot}/usr/include/linux/media/raspberrypi/pisp_be_config.h
@@ -148,6 +156,9 @@ find %{buildroot}%{cross_sysroot} -name ..install.cmd -delete
 
 
 %changelog
+* Mon May 18 2026 Ting-Wei Lan <lantw44@gmail.com> - 7.0.9-1
+- Update to 7.0.9
+
 * Mon Jun 09 2025 Ting-Wei Lan <lantw44@gmail.com> - 6.15.1-1
 - Update to 6.15.1
 
