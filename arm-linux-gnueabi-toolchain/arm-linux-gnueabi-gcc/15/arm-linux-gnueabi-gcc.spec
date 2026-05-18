@@ -25,8 +25,8 @@
 %endif
 
 Name:       %{cross_triplet}-gcc%{pkg_suffix}
-Version:    15.1.0
-Release:    2%{?dist}
+Version:    15.2.0
+Release:    1%{?dist}
 Summary:    The GNU Compiler Collection (%{cross_triplet})
 
 %global major_version   %(echo %{version} | sed 's/\\..*$//')
@@ -34,6 +34,7 @@ Summary:    The GNU Compiler Collection (%{cross_triplet})
 License:    GPL-3.0-or-later AND LGPL-3.0-or-later AND (GPL-3.0-or-later WITH GCC-exception-3.1) AND (GPL-3.0-or-later WITH Texinfo-exception) AND (LGPL-2.1-or-later WITH GCC-exception-2.0) AND (GPL-2.0-or-later WITH GCC-exception-2.0) AND (GPL-2.0-or-later WITH GNU-compiler-exception) AND BSL-1.0 AND GFDL-1.3-or-later AND Linux-man-pages-copyleft-2-para AND SunPro AND BSD-1-Clause AND BSD-2-Clause AND BSD-2-Clause-Views AND BSD-3-Clause AND BSD-4-Clause AND BSD-Source-Code AND Zlib AND MIT AND Apache-2.0 AND (Apache-2.0 WITH LLVM-Exception) AND ZPL-2.1 AND ISC AND LicenseRef-Fedora-Public-Domain AND HP-1986 AND curl AND Martin-Birgmeier AND HPND-Markus-Kuhn AND dtoa AND SMLNJ AND AMD-newlib AND OAR AND HPND-merchantability-variant AND HPND-Intel
 URL:        https://gcc.gnu.org
 Source0:    https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
+Patch0:     gcc-15-libgomp-glibc-2.43.patch
 
 BuildRequires: gcc, gcc-c++
 BuildRequires: texinfo, gettext, flex, bison, zlib-devel
@@ -435,6 +436,10 @@ done
 
 
 %changelog
+* Mon May 18 2026 Ting-Wei Lan <lantw44@gmail.com> - 15.2.0-1
+- Update to new stable release 15.2.0
+- Fix build failure with GLIBC 2.43
+
 * Thu May 22 2025 Ting-Wei Lan <lantw44@gmail.com> - 15.1.0-2
 - Use elif statement
 
