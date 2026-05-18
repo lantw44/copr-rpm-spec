@@ -7,7 +7,7 @@
 %endif
 
 Name:       %{cross_triplet}-binutils
-Version:    2.44
+Version:    2.46
 Release:    1%{?dist}
 Summary:    A GNU collection of binary utilities (%{cross_triplet})
 
@@ -47,6 +47,7 @@ Requires:   %{cross_triplet}-filesystem
     --enable-relro \
     --enable-rosegment \
     --enable-separate-code \
+    --enable-textrel-check=error \
     --enable-threads \
     --enable-warn-execstack \
     --enable-warn-rwx-segments \
@@ -99,11 +100,12 @@ rmdir %{buildroot}%{_sysconfdir}
 %{_bindir}/%{cross_triplet}-gprof
 %if "%{cross_arch}" == "arm64"
 %{_bindir}/%{cross_triplet}-gprofng
-%{_bindir}/%{cross_triplet}-gprofng-archive
-%{_bindir}/%{cross_triplet}-gprofng-collect-app
-%{_bindir}/%{cross_triplet}-gprofng-display-html
-%{_bindir}/%{cross_triplet}-gprofng-display-src
-%{_bindir}/%{cross_triplet}-gprofng-display-text
+%{_bindir}/%{cross_triplet}-gp{,rofng}-archive
+%{_bindir}/%{cross_triplet}-gp{,rofng}-collect-app
+%{_bindir}/%{cross_triplet}-gp{,rofng}-display-html
+%{_bindir}/%{cross_triplet}-gp{,rofng}-display-src
+%{_bindir}/%{cross_triplet}-gp{,rofng}-display-text
+%{_bindir}/%{cross_triplet}-gprofng-gmon
 %endif
 %{_bindir}/%{cross_triplet}-ld
 %{_bindir}/%{cross_triplet}-ld.bfd
@@ -131,6 +133,9 @@ rmdir %{buildroot}%{_sysconfdir}
 
 
 %changelog
+* Mon May 18 2026 Ting-Wei Lan <lantw44@gmail.com> - 2.46-1
+- Update to 2.46
+
 * Mon May 19 2025 Ting-Wei Lan <lantw44@gmail.com> - 2.44-1
 - Update to 2.44
 - Migrate to SPDX license by copying from the official Fedora package
