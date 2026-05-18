@@ -44,11 +44,11 @@
 %endif
 
 Name:       %{cross_triplet}-glibc%{pkg_suffix}
-Version:    2.41
-Release:    2%{?dist}
+Version:    2.43
+Release:    1%{?dist}
 Summary:    The GNU C Library (%{cross_triplet})
 
-License:    LGPL-2.1-or-later AND SunPro AND LGPL-2.1-or-later WITH GCC-exception-2.0 AND BSD-3-Clause AND GPL-2.0-or-later AND LGPL-2.1-or-later WITH GNU-compiler-exception AND GPL-2.0-only AND ISC AND LicenseRef-Fedora-Public-Domain AND HPND AND CMU-Mach AND LGPL-2.0-or-later AND Unicode-3.0 AND GFDL-1.1-or-later AND GPL-1.0-or-later AND FSFUL AND MIT AND Inner-Net-2.0 AND X11 AND GPL-2.0-or-later WITH GCC-exception-2.0 AND GFDL-1.3-only AND GFDL-1.1-only
+License:    LGPL-2.1-or-later AND SunPro AND LGPL-2.1-or-later WITH GCC-exception-2.0 AND BSD-3-Clause AND GPL-2.0-or-later AND LGPL-2.1-or-later WITH GNU-compiler-exception AND GPL-2.0-only AND ISC AND LicenseRef-Fedora-Public-Domain AND HPND AND CMU-Mach AND LGPL-2.0-or-later AND Unicode-3.0 AND GFDL-1.1-or-later AND GPL-1.0-or-later AND FSFUL AND MIT AND Inner-Net-2.0 AND X11 AND GPL-2.0-or-later WITH GCC-exception-2.0 AND GFDL-1.3-only AND GFDL-1.1-only AND GPL-3.0-or-later AND GPL-3.0-or-later WITH Autoconf-exception-generic-3.0 AND GPL-3.0-or-later WITH Texinfo-exception
 URL:        https://www.gnu.org/software/libc
 Source0:    https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 
@@ -144,8 +144,8 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %files
-%license COPYING COPYING.LIB LICENSES
-%doc MAINTAINERS NEWS README
+%license COPYINGv2 COPYING.LESSERv2 COPYING.LIB COPYINGv3 LICENSES
+%doc CONTRIBUTED-BY MAINTAINERS NEWS README SECURITY.md
 %{cross_sysroot}/etc/rpc
 %if "%{cross_arch}" == "arm64"
 %{cross_sysroot}/lib/ld-linux%{loader_suffix}.so.%{loader_version}
@@ -435,7 +435,6 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 %{cross_sysroot}/usr/include/sysexits.h
 %{cross_sysroot}/usr/include/syslog.h
 %{cross_sysroot}/usr/include/tar.h
-%{cross_sysroot}/usr/include/termio.h
 %{cross_sysroot}/usr/include/termios.h
 %{cross_sysroot}/usr/include/tgmath.h
 %{cross_sysroot}/usr/include/thread_db.h
@@ -513,6 +512,9 @@ rm -rf %{buildroot}%{cross_sysroot}/usr/share/locale
 
 
 %changelog
+* Mon May 18 2026 Ting-Wei Lan <lantw44@gmail.com> - 2.43-1
+- Update to 2.43
+
 * Thu May 22 2025 Ting-Wei Lan <lantw44@gmail.com> - 2.41-2
 - Use elif statement
 
