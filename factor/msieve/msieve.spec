@@ -1,6 +1,6 @@
 Name:       msieve
 Version:    1.53
-Release:    18%{?dist}
+Release:    19%{?dist}
 Summary:    Msieve is a C library to factor large integers.
 
 License:    LicenseRef-Fedora-Public-Domain
@@ -16,14 +16,19 @@ Msieve is a C library implementing a suite of algorithms to factor large
 integers. It contains an implementation of the SIQS and GNFS algorithms; the
 latter has helped complete some of the largest public factorizations known.
 
+
 %prep
-%autosetup -n %{name}-%{version} -p1
+%autosetup -p1 -n %{name}-%{version}
 
 
 %build
+# Downgrade type safety for legacy software.
+%global build_type_safety_c 2
+%global _legacy_common_support 1
+
 sed -i 's|-march=native||' Makefile
 %make_build all ECM=1 \
-    CC="gcc $CFLAGS $LDFLAGS -fcommon -fpermissive"
+    CC='%{build_cc} %{build_cflags} %{build_ldflags}'
 
 
 %install
@@ -39,8 +44,10 @@ install -m 644 libmsieve.a %{buildroot}%{_libdir}
 %doc Changes Readme Readme.nfs Readme.qs
 
 
-
 %changelog
+* Sun May 24 2026 Ting-Wei Lan <lantw44@gmail.com> - 1.53-19
+- Use RPM macros to enable legacy build flags
+
 * Fri May 23 2025 Ting-Wei Lan <lantw44@gmail.com> - 1.53-18
 - Migrate to SPDX license
 

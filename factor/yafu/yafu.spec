@@ -1,12 +1,13 @@
 Name:       yafu
 Version:    1.34
-Release:    25%{?dist}
+Release:    26%{?dist}
 Summary:    Automated integer factorization
 
 License:    LicenseRef-Fedora-Public-Domain
 URL:        https://sourceforge.net/projects/yafu
 Source0:    https://downloads.sourceforge.net/project/yafu/%{version}/%{name}-%{version}-src.zip
 
+ExclusiveArch: x86_64
 BuildRequires: gcc
 BuildRequires: msieve, gmp-ecm-devel
 
@@ -21,18 +22,17 @@ utilize multi- or many-core processors (including SNFS, GNFS, SIQS, and ECM).
 
 
 %prep
-%autosetup -n %{name}-%{version}.3 -p1
+%autosetup -p1 -n %{name}-%{version}.3
 
 
 %build
-sed -i 's|-lmsieve|-lmsieve -lz|' Makefile
+# Downgrade type safety for legacy software.
+%global build_type_safety_c 2
+%global _legacy_common_support 1
 
-%ifarch x86_64
+sed -i 's|-lmsieve|-lmsieve -lz|' Makefile
 %make_build x86_64 NFS=1 USE_SSE41=1 \
-    CC="gcc $CFLAGS $LDFLAGS -fcommon -fpermissive"
-%else
-false
-%endif
+    CC='%{build_cc} %{build_cflags} %{build_ldflags}'
 
 
 %install
@@ -45,8 +45,11 @@ install -m 755 yafu %{buildroot}%{_bindir}
 %doc CHANGES docfile.txt README yafu.ini
 
 
-
 %changelog
+* Sun May 24 2026 Ting-Wei Lan <lantw44@gmail.com> - 1.34-26
+- Use RPM macros to enable legacy build flags
+- Use ExclusiveArch and remove ifarch
+
 * Fri May 23 2025 Ting-Wei Lan <lantw44@gmail.com> - 1.34-25
 - Migrate to SPDX license
 
