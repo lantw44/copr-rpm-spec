@@ -3,7 +3,7 @@
 
 Name:       qelly
 Version:    1.0
-Release:    0.25.20160403git%{shortcommit}%{?dist}
+Release:    0.26.20160403git%{shortcommit}%{?dist}
 Summary:    Qelly is a Qt port of Nally
 
 License:    GPL-3.0-only
@@ -22,8 +22,10 @@ application with a native-looking interface for every operating system with
 minimal effort. The project is currently only a Qt version of Nally (hence the
 name), but more features from other Telnet/SSH clients are also planned.
 
+
 %prep
-%autosetup -n Qelly-%{commit} -p1
+%autosetup -p1 -n Qelly-%{commit}
+
 
 %build
 %{qmake_qt5}
@@ -37,12 +39,17 @@ mkdir -p %{buildroot}/usr/bin
 chrpath -d bin/Qelly
 install -m 755 bin/Qelly %{buildroot}/usr/bin
 
+
 %files
 %{_bindir}/Qelly
 %license LICENSE
 %doc AUTHORS CHANGES README.md
 
+
 %changelog
+* Sun May 24 2026 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.26.20160403git354e0b7
+- Rebuilt for Fedora 43, 44, 45
+
 * Fri May 23 2025 Ting-Wei Lan <lantw44@gmail.com> - 1.0-0.25.20160403git354e0b7
 - Migrate to SPDX license
 
