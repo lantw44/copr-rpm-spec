@@ -1,6 +1,6 @@
 Name:       yafu
 Version:    1.34
-Release:    26%{?dist}
+Release:    27%{?dist}
 Summary:    Automated integer factorization
 
 License:    LicenseRef-Fedora-Public-Domain
@@ -23,6 +23,7 @@ utilize multi- or many-core processors (including SNFS, GNFS, SIQS, and ECM).
 
 %prep
 %autosetup -p1 -n %{name}-%{version}.3
+sed -i 's|-lmsieve|-lmsieve -lz|' Makefile
 
 
 %build
@@ -30,7 +31,6 @@ utilize multi- or many-core processors (including SNFS, GNFS, SIQS, and ECM).
 %global build_type_safety_c 2
 %global _legacy_common_support 1
 
-sed -i 's|-lmsieve|-lmsieve -lz|' Makefile
 %make_build x86_64 NFS=1 USE_SSE41=1 \
     CC='%{build_cc} %{build_cflags} %{build_ldflags}'
 
@@ -46,6 +46,9 @@ install -m 755 yafu %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun May 24 2026 Ting-Wei Lan <lantw44@gmail.com> - 1.34-27
+- Move the sed patch from the build section to the prep section
+
 * Sun May 24 2026 Ting-Wei Lan <lantw44@gmail.com> - 1.34-26
 - Use RPM macros to enable legacy build flags
 - Use ExclusiveArch and remove ifarch
