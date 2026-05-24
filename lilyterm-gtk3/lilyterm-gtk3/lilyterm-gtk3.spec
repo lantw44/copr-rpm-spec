@@ -3,7 +3,7 @@
 
 Name:           lilyterm-gtk3
 Version:        0.9.9.5
-Release:        0.27.20190725git%{shortcommit}%{?dist}
+Release:        0.28.20190725git%{shortcommit}%{?dist}
 Summary:        Light and easy to use X Terminal Emulator (Copr: lantw44/lilyterm-gtk3)
 
 License:        GPL-3.0-or-later
@@ -16,11 +16,7 @@ Patch3:         lilyterm-gtk3-restore-configure.patch
 
 BuildRequires:  gcc
 BuildRequires:  gtk3-devel
-%if 0%{?fedora} >= 21 || 0%{?rhel} >= 7
 BuildRequires:  vte291-devel
-%else
-BuildRequires:  vte3-devel
-%endif
 BuildRequires:  desktop-file-utils intltool
 
 %description
@@ -47,29 +43,27 @@ lot of features:
 
 
 %prep
-%autosetup -n LilyTerm-%{commit} -p0
+%autosetup -p0 -n LilyTerm-%{commit}
 rename lilyterm lilyterm-gtk3 data/lilyterm.*
 sed -i -e '/AUTHORS COPYING ChangeLog/,/COPYING/d' data/Makefile
 
+
 %build
-%if 0%{?fedora} >= 42
-export CC='gcc -std=gnu17'
-%endif
+%global _pkg_extra_cflags -std=gnu17
 %configure --with-gtk=3.0
-echo "EXAMPLES_DIR = %{_pkgdocdir}/examples" >> .config
 %make_build STRIP=:
 
+
 %install
-rm -rf $RPM_BUILD_ROOT
 %make_install STRIP=:
 sed -i -e 's/LilyTerm/LilyTermGtk3/' -e 's/lilyterm/lilyterm-gtk3/' \
-  ${RPM_BUILD_ROOT}%{_datadir}/applications/%{name}.desktop
-desktop-file-install                                       \
-  --delete-original                                        \
-  --remove-category=Utility                                \
-  --add-category=System                                    \
-  --dir=${RPM_BUILD_ROOT}%{_datadir}/applications          \
-  ${RPM_BUILD_ROOT}%{_datadir}/applications/%{name}.desktop
+  %{buildroot}%{_datadir}/applications/%{name}.desktop
+desktop-file-install                                  \
+  --delete-original                                   \
+  --remove-category=Utility                           \
+  --add-category=System                               \
+  --dir=%{buildroot}%{_datadir}/applications          \
+  %{buildroot}%{_datadir}/applications/%{name}.desktop
 %find_lang %{name}
 
 
@@ -86,6 +80,11 @@ desktop-file-install                                       \
 
 
 %changelog
+* Sun May 24 2026 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.28.20190725gitfaf1254
+- Drop support for Fedora 42 and older
+- Use RPM macros to set extra build flags
+- Replace RPM_BUILD_ROOT environment variable with buildroot macro
+
 * Fri May 23 2025 Ting-Wei Lan <lantw44@gmail.com> - 0.9.9.5-0.27.20190725gitfaf1254
 - Force C17 mode for GCC 15 on Fedora 42 and later
 - Migrate to SPDX license
