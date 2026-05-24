@@ -11,8 +11,8 @@
 %endif
 
 Name:       %{cross_triplet}-filesystem
-Version:    3
-Release:    23%{?dist}
+Version:    4
+Release:    1%{?dist}
 Summary:    Cross compilation toolchain filesystem layout (%{cross_triplet})
 
 License:    LicenseRef-Not-Copyrightable
@@ -47,6 +47,8 @@ mkdir %{buildroot}%{cross_sysroot}/usr/include
 mkdir %{buildroot}%{cross_sysroot}/usr/lib
 %endif
 mkdir %{buildroot}%{cross_sysroot}/usr/%{lib_dir_name}
+mkdir %{buildroot}%{cross_sysroot}/usr/%{lib_dir_name}/cmake
+mkdir %{buildroot}%{cross_sysroot}/usr/%{lib_dir_name}/pkgconfig
 mkdir %{buildroot}%{cross_sysroot}/usr/libexec
 mkdir %{buildroot}%{cross_sysroot}/usr/sbin
 mkdir %{buildroot}%{cross_sysroot}/usr/share
@@ -72,6 +74,8 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 %dir %{cross_sysroot}/usr/lib
 %endif
 %dir %{cross_sysroot}/usr/%{lib_dir_name}
+%dir %{cross_sysroot}/usr/%{lib_dir_name}/cmake
+%dir %{cross_sysroot}/usr/%{lib_dir_name}/pkgconfig
 %dir %{cross_sysroot}/usr/libexec
 %dir %{cross_sysroot}/usr/sbin
 %dir %{cross_sysroot}/usr/share
@@ -79,8 +83,10 @@ mkdir %{buildroot}%{cross_sysroot}/var/db
 %dir %{cross_sysroot}/var/db
 
 
-
 %changelog
+* Sun May 24 2026 Ting-Wei Lan <lantw44@gmail.com> - 4-1
+- Add pkg-config and CMake directories
+
 * Mon May 18 2026 Ting-Wei Lan <lantw44@gmail.com> - 3-23
 - Rebuilt for Fedora 43, 44, 45
 
